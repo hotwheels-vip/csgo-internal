@@ -5,6 +5,8 @@ struct module_info_t {
 public:
 	const char* m_name = nullptr;
 	void* m_value      = nullptr;
+
+	unsigned char* find_pattern( const char* signature );
 };
 
 enum e_module_names : int {
