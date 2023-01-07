@@ -21,7 +21,7 @@ static DWORD WINAPI on_attach( void* instance )
 	else
 		g_console.print( xs( "initialised module handles" ) );
 
-	while ( !GetAsyncKeyState( VK_END ) && !GetAsyncKeyState( VK_DELETE ) )
+	while ( !GetAsyncKeyState( VK_END ) && !GetAsyncKeyState( VK_DELETE ) ) /* TODO ~ replace with our own input system :3 */
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
 	g_console.on_release( );
