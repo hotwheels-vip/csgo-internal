@@ -1,0 +1,80 @@
+#include "hooks.h"
+
+bool hooks_t::on_attach( )
+{
+	auto initialise_hook = []( c_detour_hook& detour_class, void* function, void* detour, const char* hook_name ) {
+		if ( !detour_class.create( function, detour ) ) {
+			console.print( xs( "failed to hook {:s} @ {:p}" ), hook_name, function );
+			return false;
+		} else {
+			console.print( xs( "{:s} hooked @ {:p}" ), hook_name, function );
+			return true;
+		}
+	};
+
+	try {
+		static const auto alloc_key_values_memory_address = utilities.get_virtual_function( memory.m_key_values_system, 2 );
+		static const auto create_move_address             = utilities.get_virtual_function( interfaces.m_client, 22 );
+		static const auto frame_stage_notify_address      = utilities.get_virtual_function( interfaces.m_client, 37 );
+		static const auto on_add_entity_address =
+			reinterpret_cast< void* >( memory.m_modules[ e_module_names::client ].find_pattern( xs( "55 8B EC 51 8B 45 0C 53 56 8B F1 57" ) ) );
+		static const auto on_remove_entity_address = reinterpret_cast< void* >(
+			memory.m_modules[ e_module_names::client ].find_pattern( xs( "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07" ) ) );
+		static const auto level_init_pre_entity_address = utilities.get_virtual_function( interfaces.m_client, 5 );
+		static const auto level_shutdown_address        = utilities.get_virtual_function( interfaces.m_client, 7 );
+		static const auto paint_traverse_address        = utilities.get_virtual_function( interfaces.m_panel, 41 );
+
+		static const auto lock_cursor_address = utilities.get_virtual_function( interfaces.m_surface, 67 );
+		static const auto reset_address       = utilities.get_virtual_function( memory.m_device, 16 );
+		static const auto end_scene_address   = utilities.get_virtual_function( memory.m_device, 42 );
+		static const auto vsnprint_address    = reinterpret_cast< void* >(
+            memory.m_modules[ e_module_names::client ].find_pattern( xs( "55 8B EC 51 56 8B 75 0C 8D 45 14 57 8B 7D 08 8B D6 50 51 FF 75 10 8B CF E8 "
+		                                                                       "? ? ? ? 83 C4 0C 85 C0 78 08 85 F6 7E 0C 3B C6 7C 08 8D 46 FF" ) ) );
+		static const auto draw_print_text_address = utilities.get_virtual_function( interfaces.m_surface, 28 );
+		static const auto emit_sound_address      = utilities.get_virtual_function( interfaces.m_engine_sound, 5 );
+		static const auto override_mouse_input_address      = utilities.get_virtual_function( memory.m_client_mode, 23 );
+
+		if ( MH_Initialize( ) != MH_OK ) {
+			throw std::runtime_error( xs( "failed initialize minhook" ) );
+			return false;
+		}
+
+		initialise_hook( hooks.alloc_key_values_memory, alloc_key_values_memory_address, &n_detoured_functions::alloc_key_values_memory,
+		                 xs( "IKeyValuesSystem::AllocKeyValuesMemory()" ) );
+		initialise_hook( hooks.create_move_proxy, create_move_address, &n_detoured_functions::create_move_proxy, xs( "CHLClient::CreateMove()" ) );
+		initialise_hook( hooks.frame_stage_notify, frame_stage_notify_address, &n_detoured_functions::frame_stage_notify,
+		                 xs( "CHLClient::FrameStageNotify()" ) );
+		initialise_hook( hooks.on_add_entity, on_add_entity_address, &n_detoured_functions::on_add_entity, xs( "IClientEntityList::OnAddEntity()" ) );
+		initialise_hook( hooks.on_remove_entity, on_remove_entity_address, &n_detoured_functions::on_remove_entity,
+		                 xs( "IClientEntityList::OnRemoveEntity()" ) );
+		initialise_hook( hooks.level_init_pre_entity, level_init_pre_entity_address, &n_detoured_functions::level_init_pre_entity,
+		                 xs( "CHLClient::LevelInitPreEntity()" ) );
+		initialise_hook( hooks.level_shutdown, level_shutdown_address, &n_detoured_functions::level_shutdown, xs( "CHLClient::LevelShutdown()" ) );
+		initialise_hook( hooks.paint_traverse, paint_traverse_address, &n_detoured_functions::paint_traverse, xs( "IPanel::PaintTraverse()" ) );
+		initialise_hook( hooks.lock_cursor, lock_cursor_address, &n_detoured_functions::lock_cursor, xs( "ISurface::LockCursor()" ) );
+		initialise_hook( hooks.reset, reset_address, &n_detoured_functions::reset, xs( "IDirect3DDevice9::Reset()" ) );
+		initialise_hook( hooks.end_scene, end_scene_address, &n_detoured_functions::end_scene, xs( "IDirect3DDevice9::EndScene()" ) );
+		initialise_hook( hooks.vsnprintf, vsnprint_address, &n_detoured_functions::vsnprintf, xs( "vsnprintf" ) );
+		initialise_hook( hooks.draw_print_text, draw_print_text_address, &n_detoured_functions::draw_print_text, xs( "ISurface::DrawPrintText()" ) );
+		initialise_hook( hooks.emit_sound, emit_sound_address, &n_detoured_functions::emit_sound, xs( "IEngineSound::EmitSound()" ) );
+		initialise_hook( hooks.override_mouse_input, override_mouse_input_address, &n_detoured_functions::override_mouse_input,
+		                 xs( "IClientModeShared::OverrideMouseInput()" ) );
+
+		if ( interfaces.m_engine->is_in_game( ) ) {
+			console.print( "force updated entity cache" );
+			memory.m_client_state->m_delta_tick = -1;
+		}
+
+		return true;
+	} catch ( const std::exception& ex ) {
+		console.print( xs( "{:s}" ), ex.what( ) );
+
+#ifdef _DEBUG
+		_RPT0( _CRT_ERROR, ex.what( ) );
+#else
+		std::abort( );
+#endif
+	}
+
+	return false;
+}
