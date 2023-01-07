@@ -2,14 +2,13 @@
 #include <chrono>
 #include <thread>
 
-#include "utilities/console.h"
-#include "utilities/modules.h"
-#include "utilities/utilities.h"
+#include "utilities/console/console.hh"
+#include "utilities/modules/modules.hh"
+#include "utilities/utilities.hh"
 
 /* pattern scanning example, Regards */
 /* 
-
-static auto address = g_modules.get( e_module_names::module_index )
+	static auto address = g_modules.get( idx )
                                        .find_pattern(xs("55 8B EC 51 56 8B 75 0C 8D 45 14 57 8B 7D 08 8B D6 50 51 FF 75 10 8B CF E8 "
 	                                                      "? ? ? ? 83 C4 0C 85 C0 78 08 85 F6 7E 0C 3B C6 7C 08 8D 46 FF"));
 */

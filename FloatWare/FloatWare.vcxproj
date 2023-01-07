@@ -19,18 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="utilities\console.cpp" />
-    <ClCompile Include="utilities\modules.cpp" />
+    <ClCompile Include="dllmain.cc" />
+    <ClCompile Include="utilities\console\console.cc" />
+    <ClCompile Include="utilities\modules\modules.cc" />
     <ClCompile Include="utilities\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dependencies\lazy_importer.h" />
-    <ClInclude Include="dependencies\win\mem\pe32.h" />
-    <ClInclude Include="dependencies\xorstr.h" />
-    <ClInclude Include="utilities\console.h" />
-    <ClInclude Include="utilities\modules.h" />
-    <ClInclude Include="utilities\utilities.h" />
+    <ClInclude Include="dependencies\lazy_importer.hh" />
+    <ClInclude Include="utilities\structs\pe32.hh" />
+    <ClInclude Include="dependencies\xorstr.hh" />
+    <ClInclude Include="utilities\console\console.hh" />
+    <ClInclude Include="utilities\modules\modules.hh" />
+    <ClInclude Include="utilities\utilities.hh" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

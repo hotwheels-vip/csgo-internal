@@ -1,6 +1,6 @@
-#include "modules.h"
-#include "console.h"
-#include "utilities.h"
+#include "modules.hh"
+#include "../console/console.hh"
+#include "../utilities.hh"
 
 unsigned char* module_info_t::find_pattern( const char* signature )
 {

@@ -1,5 +1,5 @@
-#include "utilities.h"
-#include "../dependencies/win/mem/pe32.h"
+#include "utilities.hh"
+#include "structs/pe32.hh"
 
 #include <intrin.h>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../dependencies/lazy_importer.h"
-#include "../dependencies/xorstr.h"
+#include "../../dependencies/lazy_importer.hh"
+#include "../../dependencies/xorstr.hh"
 #include <spdlog/spdlog.h>
 
 namespace console
