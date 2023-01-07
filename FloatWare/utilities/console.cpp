@@ -2,7 +2,6 @@
 
 #include <format>
 #include <iostream>
-#include <windows.h>
 
 void console::impl::on_attach(const char* title)
 {
