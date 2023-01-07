@@ -24,18 +24,27 @@
     <ClCompile Include="utilities\modules\modules.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utilities\utilities.cpp">
+    <ClCompile Include="utilities\utilities.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks\hooks.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities\classes\detour_hook.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks\functions\vnsprintf.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dependencies\lazy_importer.hh">
+    <ClInclude Include="dependencies\lazy_importer\lazy_importer.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utilities\console\console.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\xorstr.hh">
+    <ClInclude Include="dependencies\xorstr\xorstr.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utilities\modules\modules.hh">
@@ -45,6 +54,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utilities\structs\pe32.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks\hooks.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities\classes\detour_hook.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

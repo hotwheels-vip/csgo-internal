@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../dependencies/lazy_importer.hh"
-#include "../../dependencies/xorstr.hh"
+#include "../../dependencies/lazy_importer/lazy_importer.hh"
+#include "../../dependencies/xorstr/xorstr.hh"
 #include <spdlog/spdlog.h>
 
 namespace console
@@ -15,10 +15,11 @@ namespace console
 		void print( const char* text, const Args_t&... args )
 		{
 #ifdef _DEBUG
+
 			if constexpr ( sizeof...( args ) > 0 )
-				spdlog::info( xs( "hotwheels | {:s}" ), std::vformat( text, std::make_format_args( args... ) ) );
+				spdlog::info( xs( "[hotwheels] | {:s}" ), std::vformat( text, std::make_format_args( args... ) ) );
 			else
-				spdlog::info( xs( "hotwheels | {:s}" ), text );
+				spdlog::info( xs( "[hotwheels] | {:s}" ), text );
 #endif
 		}
 	};

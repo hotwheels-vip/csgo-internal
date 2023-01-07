@@ -2,15 +2,16 @@
 #include <chrono>
 #include <thread>
 
+#include "hooks/hooks.hh"
 #include "utilities/console/console.hh"
 #include "utilities/modules/modules.hh"
 #include "utilities/utilities.hh"
 
 /* pattern scanning example, Regards */
-/* 
-	static auto address = g_modules.get( idx )
+/*
+    static auto address = g_modules.get( idx )
                                        .find_pattern(xs("55 8B EC 51 56 8B 75 0C 8D 45 14 57 8B 7D 08 8B D6 50 51 FF 75 10 8B CF E8 "
-	                                                      "? ? ? ? 83 C4 0C 85 C0 78 08 85 F6 7E 0C 3B C6 7C 08 8D 46 FF"));
+                                                          "? ? ? ? 83 C4 0C 85 C0 78 08 85 F6 7E 0C 3B C6 7C 08 8D 46 FF"));
 */
 
 static DWORD WINAPI on_attach( void* instance )
@@ -28,8 +29,16 @@ static DWORD WINAPI on_attach( void* instance )
 	else
 		g_console.print( xs( "initialised module handles" ) );
 
+			g_console.print( xs( "initialising hooks" ) );
+	if ( !g_hooks.on_attach( ) )
+		g_console.print( xs( "failed to initialise hooks" ) );
+	else
+		g_console.print( xs( "initialised hooks" ) );
+
 	while ( !GetAsyncKeyState( VK_END ) && !GetAsyncKeyState( VK_DELETE ) ) /* TODO ~ replace with our own input system :3 */
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+
+	g_hooks.on_release( );
 
 	g_console.on_release( );
 
