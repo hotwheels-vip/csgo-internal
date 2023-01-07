@@ -1,2 +1,0 @@
-# merdahook
-merdahook reborn nigga
