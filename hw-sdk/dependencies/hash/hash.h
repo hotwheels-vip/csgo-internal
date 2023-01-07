@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <string>
 
 constexpr static std::uint32_t default_offset_basis = 0x811C9DC5;
 constexpr static std::uint32_t prime                = 0x01000193;

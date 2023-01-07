@@ -5,6 +5,7 @@
 
 #include <mutex>
 #include <source_location>
+#include <optional>
 
 // False state mocking utility with pointer overloads
 namespace mocking_bird
