@@ -23,8 +23,8 @@ bool config_t::on_attach( )
 bool config_t::save( std::string_view file_name )
 {
 	std::filesystem::path file_path( file_name );
-	if ( file_path.extension( ) != xs( ".fart" ) )
-		file_path.replace_extension( xs( ".fart" ) );
+	if ( file_path.extension( ) != xs( ".hw" ) )
+		file_path.replace_extension( xs( ".hw" ) );
 
 	const std::string file = std::filesystem::path( this->path / file_path ).string( );
 	nlohmann::json config  = { };
@@ -280,7 +280,7 @@ void config_t::refresh( )
 	this->m_file_names.clear( );
 
 	for ( const auto& it : std::filesystem::directory_iterator( this->path ) )
-		if ( it.path( ).filename( ).extension( ) == xs( ".fart" ) )
+		if ( it.path( ).filename( ).extension( ) == xs( ".hw" ) )
 			this->m_file_names.push_back( it.path( ).filename( ).string( ) );
 }
 

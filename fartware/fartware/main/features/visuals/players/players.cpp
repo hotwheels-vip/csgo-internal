@@ -93,7 +93,7 @@ void players_t::on_paint_traverse( )
 		const auto health = entity->health( );
 		const auto team   = entity->team( );
 
-		/* TODO ~ float ~ move these lambdas into a separate function if you want breh */
+		/* TODO ~ move these lambdas into a separate function if you want breh */
 		auto bounding_box = [ & ]( ) {
 			if ( GET_CONFIG_BOOL( variables.m_visuals.m_bounding_box ) ) {
 				render.m_draw_data.emplace_back(

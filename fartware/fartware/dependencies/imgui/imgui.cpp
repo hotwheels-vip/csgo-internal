@@ -5830,7 +5830,8 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 
 	if ( border ) {
 		parent_window->DrawList->AddRect(
-			child_window->Pos - ImVec2( 0.f, 20.f ), child_window->Pos - ImVec2( 0.f, 20.f ) + child_window->Size + ImVec2( 0.f, 20.f ),
+			child_window->Pos - ImVec2( 0.f, show_text ? 20.f : 0.f ),
+			child_window->Pos - ImVec2( 0.f, show_text ? 20.f : 0.f ) + child_window->Size + ImVec2( 0.f, show_text ? 20.f : 0.f ),
 			ImColor( 50, 50, 50, 100 ), g.Style.WindowRounding - 2.f /* NOTE ~ float ~ liga, if u see this baby , ,, . . . Am very Sorry X D */,
 			ImDrawCornerFlags_Top );
 	}
@@ -5842,6 +5843,12 @@ bool ImGui::BeginChild( const char* str_id, const ImVec2& size_arg, bool border,
 {
 	ImGuiWindow* window = GetCurrentWindow( );
 	return BeginChildEx( str_id, window->GetID( str_id ), size_arg, border, extra_flags, show_text );
+}
+
+bool ImGui::BeginChild( ImGuiID id, const ImVec2& size_arg, bool border, ImGuiWindowFlags extra_flags, bool show_text )
+{
+	ImGuiWindow* window = GetCurrentWindow( );
+	return BeginChildEx( NULL, id, size_arg, border, extra_flags, show_text );
 }
 
 bool ImGui::BeginChild( ImGuiID id, const ImVec2& size_arg, bool border, ImGuiWindowFlags extra_flags )
@@ -5932,7 +5939,7 @@ bool ImGui::BeginChildFrame( ImGuiID id, const ImVec2& size, ImGuiWindowFlags ex
 	PushStyleVar( ImGuiStyleVar_ChildRounding, style.FrameRounding );
 	PushStyleVar( ImGuiStyleVar_ChildBorderSize, style.FrameBorderSize );
 	PushStyleVar( ImGuiStyleVar_WindowPadding, style.FramePadding );
-	bool ret = BeginChild( id, size, true, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysUseWindowPadding | extra_flags );
+	bool ret = BeginChild( id, size, true, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysUseWindowPadding | extra_flags, false );
 	PopStyleVar( 3 );
 	PopStyleColor( );
 	return ret;

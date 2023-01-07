@@ -22,7 +22,7 @@ void render_t::on_end_scene( const std::function< void( ) >& function, IDirect3D
 			D3DXCreateTextureFromFileInMemory( device, &counter_terrorist_avatar_data, sizeof( counter_terrorist_avatar_data ),
 			                                   &render.m_counter_terrorist_avatar );
 
-	auto& style = ImGui::GetStyle( );
+		auto& style = ImGui::GetStyle( );
 
 		/* setup styles */
 		[ & ]( ) {
@@ -53,6 +53,7 @@ void render_t::on_end_scene( const std::function< void( ) >& function, IDirect3D
 		[ & ]( ) {
 			style.Colors[ ImGuiCol_::ImGuiCol_WindowBg ]  = ImVec4( 10 / 255.f, 10 / 255.f, 10 / 255.f, 1.f );
 			style.Colors[ ImGuiCol_::ImGuiCol_ChildBg ]   = ImVec4( 15 / 255.f, 15 / 255.f, 15 / 255.f, 1.f );
+			style.Colors[ ImGuiCol_::ImGuiCol_FrameBg ]   = ImVec4( 25 / 255.f, 25 / 255.f, 25 / 255.f, 1.f );
 			style.Colors[ ImGuiCol_::ImGuiCol_PopupBg ]   = ImVec4( 20 / 255.f, 20 / 255.f, 20 / 255.f, 1.f );
 			style.Colors[ ImGuiCol_::ImGuiCol_CheckMark ] = ImVec4( 0 / 255.f, 0 / 255.f, 0 / 255.f, 1.f );
 			style.Colors[ ImGuiCol_::ImGuiCol_Button ]    = ImVec4( 20 / 255.f, 20 / 255.f, 20 / 255.f, 1.f );
@@ -77,8 +78,9 @@ void render_t::on_end_scene( const std::function< void( ) >& function, IDirect3D
 
 			ImFontConfig icon_font_config     = { };
 			icon_font_config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_LightHinting |
-			                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
-			constexpr ImWchar icon_ranges[]   = { 0xE000, 0xF8FF, 0 };
+			                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome |
+			                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
+			constexpr ImWchar icon_ranges[] = { 0xE000, 0xF8FF, 0 };
 
 			m_fonts[ e_font_names::font_name_icon_11 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
 				weapon_icons_compressed_data, weapon_icons_compressed_size, 10.f, &icon_font_config, icon_ranges );
@@ -160,26 +162,26 @@ IDirect3DTexture9* render_t::steam_image( CSteamID steam_id )
 	if ( image_index == -1 )
 		return nullptr;
 
-	uint32 avatar_width = { }, avatar_height = { };
+	unsigned int avatar_width = { }, avatar_height = { };
 
 	if ( !SteamUtils->GetImageSize( image_index, &avatar_width, &avatar_height ) )
 		return nullptr;
 
 	const int image_size_in_bytes = avatar_width * avatar_height * 4;
-	uint8* avatar_rgba            = new uint8[ image_size_in_bytes ];
+	unsigned char* avatar_rgba    = new unsigned char[ image_size_in_bytes ];
 
 	if ( !SteamUtils->GetImageRGBA( image_index, avatar_rgba, image_size_in_bytes ) ) {
 		delete[] avatar_rgba;
 		return nullptr;
 	}
 
-	HRESULT result = memory.m_device->CreateTexture( avatar_width, avatar_height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT,
+	long result = memory.m_device->CreateTexture( avatar_width, avatar_height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT,
 	                                                 &created_texture, nullptr );
 
-	std::vector< uint8_t > texture_data = { };
-	texture_data.resize( avatar_width * avatar_height * 4u );
+	std::vector< unsigned char > texture_data = { };
+	texture_data.resize( avatar_width * avatar_height * 4U );
 
-	this->copy_and_convert( avatar_rgba, texture_data.data( ), avatar_width * avatar_height * 4u );
+	this->copy_and_convert( avatar_rgba, texture_data.data( ), avatar_width * avatar_height * 4U );
 
 	D3DLOCKED_RECT locked_rect = { };
 	if ( !created_texture )
@@ -187,7 +189,7 @@ IDirect3DTexture9* render_t::steam_image( CSteamID steam_id )
 
 	result   = created_texture->LockRect( 0, &locked_rect, nullptr, D3DLOCK_DISCARD );
 	auto src = texture_data.data( );
-	auto dst = reinterpret_cast< uint8_t* >( locked_rect.pBits );
+	auto dst = reinterpret_cast< unsigned char* >( locked_rect.pBits );
 
 	for ( auto y = 0u; y < avatar_height; ++y ) {
 		std::copy( src, src + ( avatar_width * 4 ), dst );
