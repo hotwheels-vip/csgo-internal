@@ -20,4 +20,6 @@ bool modules::impl::on_attach( const std::vector< const char* >& modules )
 
 		g_console.print( xs( "found {:s} @ {:p}" ), module_data.m_name, module_data.m_value );
 	}
+
+	return true;
 }
