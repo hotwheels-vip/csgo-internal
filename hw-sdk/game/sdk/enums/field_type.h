@@ -1,0 +1,40 @@
+#pragma once
+
+namespace sdk
+{
+	enum class field_type : int
+	{
+		UNKNOWN = 0,
+		FLOAT,
+		STRING,
+		VECTOR,
+		QUATERNION,
+		INTEGER,
+		BOOLEAN,
+		SHORT,
+		CHARACTER,
+		COLOR32,
+		EMBEDDED,
+		CUSTOM,
+		CLASSPTR,
+		EHANDLE,
+		EDICT,
+		POSITION_VECTOR,
+		TIME,
+		TICK,
+		MODELNAME,
+		SOUNDNAME,
+		INPUT,
+		FUNCTION,
+		VMATRIX,
+		VMATRIX_WORLDSPACE,
+		MATRIX3X4_WORLDSPACE,
+		INTERVAL,
+		MODELINDEX,
+		MATERIALINDEX,
+		VECTOR2D,
+		INTEGER64,
+		VECTOR4D,
+		TYPECOUNT
+	};
+} // namespace sdk

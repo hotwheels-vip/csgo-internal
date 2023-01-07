@@ -1,0 +1,18 @@
+#pragma once
+
+namespace sdk
+{
+	enum hitgroup : int
+	{
+		HITGROUP_GENERIC = 1,
+		HITGROUP_HEAD,
+		HITGROUP_CHEST,
+		HITGROUP_STOMACH,
+		HITGROUP_LEFTARM,
+		HITGROUP_RIGHTARM,
+		HITGROUP_LEFTLEG,
+		HITGROUP_RIGHTLEG,
+		HITGROUP_NECK,
+		HITGROUP_GEAR
+	};
+} // namespace sdk
