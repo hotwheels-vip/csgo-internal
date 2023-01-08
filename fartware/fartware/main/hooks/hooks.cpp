@@ -54,8 +54,8 @@ bool hooks_t::on_attach( )
 		initialise_hook( hooks.lock_cursor, lock_cursor_address, &n_detoured_functions::lock_cursor, ( "ISurface::LockCursor()" ) );
 		initialise_hook( hooks.reset, reset_address, &n_detoured_functions::reset, ( "IDirect3DDevice9::Reset()" ) );
 		initialise_hook( hooks.end_scene, end_scene_address, &n_detoured_functions::end_scene, ( "IDirect3DDevice9::EndScene()" ) );
-		initialise_hook( hooks.vsnprintf, vsnprint_address, &n_detoured_functions::vsnprintf, ( "vsnprintf" ) );
-		initialise_hook( hooks.draw_print_text, draw_print_text_address, &n_detoured_functions::draw_print_text, ( "ISurface::DrawPrintText()" ) );
+		// initialise_hook( hooks.vsnprintf, vsnprint_address, &n_detoured_functions::vsnprintf, ( "vsnprintf" ) );
+		// initialise_hook( hooks.draw_print_text, draw_print_text_address, &n_detoured_functions::draw_print_text, ( "ISurface::DrawPrintText()" ) );
 		initialise_hook( hooks.emit_sound, emit_sound_address, &n_detoured_functions::emit_sound, ( "IEngineSound::EmitSound()" ) );
 		initialise_hook( hooks.override_mouse_input, override_mouse_input_address, &n_detoured_functions::override_mouse_input,
 		                 ( "IClientModeShared::OverrideMouseInput()" ) );

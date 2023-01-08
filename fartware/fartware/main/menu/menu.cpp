@@ -280,7 +280,30 @@ void menu_t::on_end_scene( )
 					                 &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_custom_color ) );
 
 					ImGui::SliderInt( "position##velocity indicator",
-					                  &GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_indicator_position ), 0,
+					                  &GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_indicator_position ), 30,
+					                  globals.m_display_size.y );
+				}
+
+				ImGui::Checkbox( "stamina indicator", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator ) );
+				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator ) ) {
+					ImGui::ColorEdit4( "##stamina indicator color 1",
+					                   &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_stamina_indicator_color1 ), color_picker_alpha_flags );
+
+					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+					ImGui::ColorEdit4( "##stamina indicator color 2",
+					                   &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_stamina_indicator_color2 ), color_picker_alpha_flags );
+
+					ImGui::SetCursorPosX( 26.f );
+					ImGui::Checkbox( "show pre speed##stamina indicator",
+					                 &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator_show_pre_speed ) );
+
+					ImGui::SetCursorPosX( 26.f );
+					ImGui::Checkbox( "fade alpha##stamina indicator",
+					                 &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator_fade_alpha ) );
+
+					ImGui::SliderInt( "position##stamina indicator",
+					                  &GET_CONFIG_INT( variables.m_movement.m_indicators.m_stamina_indicator_position ), 30,
 					                  globals.m_display_size.y );
 				}
 

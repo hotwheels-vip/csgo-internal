@@ -170,6 +170,7 @@ public:
 	add_datafield( int, button_released, this->prediction_desc_map( ), "m_afButtonReleased" );
 	add_pdatafield( int, impulse, this->prediction_desc_map( ), "m_nImpulse" );
 	add_datafield( unsigned int, ground_entity, this->prediction_desc_map( ), "m_hGroundEntity" );
+	add_datafield( float, stamina, this->prediction_desc_map( ), "m_flStamina" );
 
 	/* offsets */
 	add_offset( unsigned int, index, 0x64 );
