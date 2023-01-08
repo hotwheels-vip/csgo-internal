@@ -1050,7 +1050,7 @@ class binary_reader
             case 0x9F:
                 return get_msgpack_array(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x0Fu));
 
-            // fixstr
+            // fitr
             case 0xA0:
             case 0xA1:
             case 0xA2:
@@ -1246,7 +1246,7 @@ class binary_reader
 
         switch (current)
         {
-            // fixstr
+            // fitr
             case 0xA0:
             case 0xA1:
             case 0xA2:

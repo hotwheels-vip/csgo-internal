@@ -15,7 +15,7 @@ class c_collideable
 private:
 	enum e_indexes {
 		_obb_mins = 1,
-		_obb_maxs = 2,
+		_obb_ma = 2,
 	};
 
 public:
@@ -25,10 +25,10 @@ public:
 		return ( *( fn** )this )[ this->e_indexes::_obb_mins ]( this );
 	}
 
-	const c_vector& obb_maxs( )
+	const c_vector& obb_ma( )
 	{
 		using fn = const c_vector&( __thiscall* )( c_collideable* );
-		return ( *( fn** )this )[ this->e_indexes::_obb_maxs ]( this );
+		return ( *( fn** )this )[ this->e_indexes::_obb_ma ]( this );
 	}
 };
 

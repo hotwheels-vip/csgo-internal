@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../hashing/strings/xorstr.h"
 #include "../../memory/memory.h"
 #include "../../source_engine/classes/c_prediction.h"
 

@@ -42,7 +42,7 @@ void players_t::on_paint_traverse( )
 		}
 
 		const bool in_view_frustrum =
-			!interfaces.m_engine->cull_box( collideable->obb_mins( ) + entity->origin( ), collideable->obb_maxs( ) + entity->origin( ) );
+			!interfaces.m_engine->cull_box( collideable->obb_mins( ) + entity->origin( ), collideable->obb_ma( ) + entity->origin( ) );
 
 		auto out_of_fov_arrows = [ & ]( ) {
 			if ( !GET_CONFIG_BOOL( variables.m_visuals.m_out_of_fov_arrows ) || in_view_frustrum )
@@ -113,10 +113,10 @@ void players_t::on_paint_traverse( )
 			if ( GET_CONFIG_BOOL( variables.m_visuals.m_player_name ) ) {
 				std::string converted_name = player_info.m_name;
 				if ( converted_name.length( ) > 24U )
-					converted_name = converted_name.substr( 0U, 24U ).append( xs( "..." ) );
+					converted_name = converted_name.substr( 0U, 24U ).append( ( "..." ) );
 
 				if ( player_info.m_fake_player )
-					converted_name.insert( 0, xs( "[bot] " ) );
+					converted_name.insert( 0, ( "[bot] " ) );
 
 				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, converted_name.c_str( ) );
@@ -270,7 +270,7 @@ void players_t::on_paint_traverse( )
 
 		auto player_flags = [ & ]( ) {
 			if ( config.get< std::vector< bool > >( variables.m_visuals.m_player_flags )[ e_player_flags::player_flag_money ] ) {
-				const auto text = std::to_string( entity->money( ) ).insert( 0U, xs( "$" ) );
+				const auto text = std::to_string( entity->money( ) ).insert( 0U, ( "$" ) );
 
 				const auto text_size = render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->CalcTextSizeA(
 					render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
@@ -290,7 +290,7 @@ void players_t::on_paint_traverse( )
 				if ( !( entity->armor( ) > 0 ) )
 					return;
 
-				const auto text = entity->helmet( ) ? xs( "HK" ) : xs( "K" );
+				const auto text = entity->helmet( ) ? ( "HK" ) : ( "K" );
 
 				const auto text_size = render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->CalcTextSizeA(
 					render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->FontSize, FLT_MAX, 0.f, text );

@@ -71,7 +71,7 @@ public:
 	virtual void finish_track_prediction_errors( c_base_entity* entity )        = 0;
 	virtual void diff_print( char const* fmt, ... )                             = 0;
 	virtual c_vector const& get_player_mins( bool ducked ) const                = 0;
-	virtual c_vector const& get_player_maxs( bool ducked ) const                = 0;
+	virtual c_vector const& get_player_ma( bool ducked ) const                = 0;
 	virtual c_vector const& get_player_view_offset( bool ducked ) const         = 0;
 	virtual bool is_moving_player_stuck( ) const                                = 0;
 	virtual c_base_entity* get_moving_player( ) const                           = 0;

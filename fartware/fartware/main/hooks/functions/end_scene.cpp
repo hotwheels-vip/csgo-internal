@@ -1,7 +1,5 @@
 #include "../hooks.h"
 
-#include "../../features/entities/entities.h"
-#include "../../features/visuals/players/players.h"
 #include "../../menu/menu.h"
 
 long __stdcall n_detoured_functions::end_scene( IDirect3DDevice9* device )
@@ -17,7 +15,7 @@ long __stdcall n_detoured_functions::end_scene( IDirect3DDevice9* device )
 		char module_name[ MAX_PATH ] = { };
 		GetModuleFileName( static_cast< HMODULE >( memory_basic_information.AllocationBase ), module_name, MAX_PATH );
 
-		if ( strstr( module_name, xs( "gameoverlayrenderer.dll" ) ) != nullptr )
+		if ( strstr( module_name, ( "gameoverlayrenderer.dll" ) ) != nullptr )
 			used_address = _ReturnAddress( );
 	}
 

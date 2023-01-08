@@ -19,7 +19,6 @@
 #include "config/variables.h"
 
 #include "hashing/strings/fnv1a.h"
-#include "hashing/strings/xorstr.h"
 
 #include "../dependencies/imgui/imgui.h"
 #include "../dependencies/imgui/imgui_freetype.h"

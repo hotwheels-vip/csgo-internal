@@ -7328,8 +7328,8 @@ void ImGui::End( )
 	IM_ASSERT( g.CurrentWindowStack.Size > 0 );
 
 	// Error checking: verify that user doesn't directly call End() on a child window.
-	if ( window->Flags & ImGuiWindowFlags_ChildWindow )
-		IM_ASSERT_USER_ERROR( g.WithinEndChild, "Must call EndChild() and not End()!" );
+	/*if ( window->Flags & ImGuiWindowFlags_ChildWindow )
+		IM_ASSERT_USER_ERROR( g.WithinEndChild, "Must call EndChild() and not End()!" );*/
 
 	// Close anything that is open
 	if ( window->DC.CurrentColumns )
@@ -14056,7 +14056,7 @@ void ImGui::DebugNodeDrawCmdShowMeshAndBoundingBox( ImDrawList* out_draw_list, c
 
 	// Draw wire-frame version of all triangles
 	ImRect clip_rect = draw_cmd->ClipRect;
-	ImRect vtxs_rect( FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX );
+	ImRect vt_rect( FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX );
 	ImDrawListFlags backup_flags = out_draw_list->Flags;
 	out_draw_list->Flags &= ~ImDrawListFlags_AntiAliasedLines; // Disable AA on triangle outlines is more readable for very large and thin triangles.
 	for ( unsigned int idx_n = draw_cmd->IdxOffset, idx_end = draw_cmd->IdxOffset + draw_cmd->ElemCount; idx_n < idx_end; ) {
@@ -14068,7 +14068,7 @@ void ImGui::DebugNodeDrawCmdShowMeshAndBoundingBox( ImDrawList* out_draw_list, c
 
 		ImVec2 triangle[ 3 ];
 		for ( int n = 0; n < 3; n++, idx_n++ )
-			vtxs_rect.Add( ( triangle[ n ] = vtx_buffer[ idx_buffer ? idx_buffer[ idx_n ] : idx_n ].pos ) );
+			vt_rect.Add( ( triangle[ n ] = vtx_buffer[ idx_buffer ? idx_buffer[ idx_n ] : idx_n ].pos ) );
 		if ( show_mesh )
 			out_draw_list->AddPolyline( triangle, 3, IM_COL32( 255, 255, 0, 255 ), ImDrawFlags_Closed, 1.0f ); // In yellow: mesh triangles
 	}
@@ -14076,7 +14076,7 @@ void ImGui::DebugNodeDrawCmdShowMeshAndBoundingBox( ImDrawList* out_draw_list, c
 	if ( show_aabb ) {
 		out_draw_list->AddRect( ImFloor( clip_rect.Min ), ImFloor( clip_rect.Max ),
 		                        IM_COL32( 255, 0, 255, 255 ) ); // In pink: clipping rectangle submitted to GPU
-		out_draw_list->AddRect( ImFloor( vtxs_rect.Min ), ImFloor( vtxs_rect.Max ),
+		out_draw_list->AddRect( ImFloor( vt_rect.Min ), ImFloor( vt_rect.Max ),
 		                        IM_COL32( 0, 255, 255, 255 ) ); // In cyan: bounding box of triangles
 	}
 	out_draw_list->Flags = backup_flags;

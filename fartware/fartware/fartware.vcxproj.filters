@@ -75,7 +75,6 @@
     <ClInclude Include="main\utilities\memory\pe32.h" />
     <ClInclude Include="main\source_engine\interfaces\interfaces.h" />
     <ClInclude Include="main\hashing\strings\fnv1a.h" />
-    <ClInclude Include="main\hashing\strings\xorstr.h" />
     <ClInclude Include="main\includes.h" />
     <ClInclude Include="main\hashing\imports\lazy_importer.h" />
     <ClInclude Include="main\source_engine\classes\c_engine.h" />

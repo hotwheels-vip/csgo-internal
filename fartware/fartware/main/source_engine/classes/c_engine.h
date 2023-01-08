@@ -90,10 +90,10 @@ public:
 		return ( *( fn** )this )[ this->e_indexes::_get_local_player ]( this );
 	}
 
-	bool cull_box( const c_vector& mins, const c_vector& maxs )
+	bool cull_box( const c_vector& mins, const c_vector& ma )
 	{
 		using fn = bool( __thiscall* )( c_engine*, const c_vector&, const c_vector& );
-		return ( *( fn** )this )[ this->e_indexes::_cull_box ]( this, std::cref( mins ), std::cref( maxs ) );
+		return ( *( fn** )this )[ this->e_indexes::_cull_box ]( this, std::cref( mins ), std::cref( ma ) );
 	}
 
 	const view_matrix_t& world_to_screen_matrix( )

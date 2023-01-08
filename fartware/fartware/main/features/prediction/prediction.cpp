@@ -11,9 +11,9 @@ void prediction_t::begin( )
 
 	static bool once = [ & ]( ) {
 		this->m_prediction_random_seed = *reinterpret_cast< unsigned int** >(
-			memory.m_modules[ e_module_names::client ].find_pattern( xs( "8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04" ) ) + 0x2 );
+			memory.m_modules[ e_module_names::client ].find_pattern( ( "8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04" ) ) + 0x2 );
 		this->m_prediction_player = *reinterpret_cast< c_base_entity*** >(
-			memory.m_modules[ e_module_names::client ].find_pattern( xs( "89 35 ? ? ? ? F3 0F 10 48 20" ) ) + 0x2 );
+			memory.m_modules[ e_module_names::client ].find_pattern( ( "89 35 ? ? ? ? F3 0F 10 48 20" ) ) + 0x2 );
 		return true;
 	}( );
 

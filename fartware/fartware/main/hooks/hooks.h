@@ -29,7 +29,7 @@ public:
 
 		if ( status != MH_OK )
 			throw std::runtime_error(
-				std::vformat( xs( "failed to create hook function, status: {}\nbase function -> {:#08X}" ),
+				std::vformat( ( "failed to create hook function, status: {}\nbase function -> {:#08X}" ),
 			                  std::make_format_args( MH_StatusToString( status ), reinterpret_cast< std::uintptr_t >( m_base_fn ) ) ) );
 
 		if ( !this->replace( ) )
@@ -50,7 +50,7 @@ public:
 
 		if ( status != MH_OK )
 			throw std::runtime_error(
-				std::vformat( xs( "failed to enable hook function, status: {}\nbase function -> {:#08X} address" ),
+				std::vformat( ( "failed to enable hook function, status: {}\nbase function -> {:#08X} address" ),
 			                  std::make_format_args( MH_StatusToString( status ), reinterpret_cast< std::uintptr_t >( m_base_fn ) ) ) );
 
 		m_is_hooked = true;

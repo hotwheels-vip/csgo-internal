@@ -6,7 +6,6 @@
 #include <spdlog/spdlog.h>
 
 #include "../../hashing/imports/lazy_importer.h"
-#include "../../hashing/strings/xorstr.h"
 
 struct console_t {
 	void on_attach( const char* window_title )
@@ -14,7 +13,7 @@ struct console_t {
 #ifdef _DEBUG
 		LI_FN( AllocConsole )( );
 
-		freopen_s( reinterpret_cast< _iobuf** >( stdout ), xs( "conout$" ), xs( "w" ), static_cast< _iobuf* >( stdout ) );
+		freopen_s( reinterpret_cast< _iobuf** >( stdout ), ( "conout$" ), ( "w" ), static_cast< _iobuf* >( stdout ) );
 
 		if ( window_title )
 			LI_FN( SetConsoleTitleA )( window_title );
@@ -35,9 +34,9 @@ struct console_t {
 	{
 #ifdef _DEBUG
 		if constexpr ( sizeof...( args ) > 0 )
-			spdlog::info( xs( "hotwheels | {:s}" ), std::vformat( text, std::make_format_args( args... ) ) );
+			spdlog::info( ( "hotwheels | {:s}" ), std::vformat( text, std::make_format_args( args... ) ) );
 		else
-			spdlog::info( xs( "hotwheels | {:s}" ), text );
+			spdlog::info( ( "hotwheels | {:s}" ), text );
 #endif
 	}
 };

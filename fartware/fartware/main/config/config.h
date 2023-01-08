@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "../hashing/strings/fnv1a.h"
-#include "../hashing/strings/xorstr.h"
 #include "../source_engine/structs/key_bind_t.h"
 
 template< typename T, std::size_t S >
@@ -50,7 +49,7 @@ struct config_t {
 
 	std::size_t get_variable_index( const unsigned int name_hash );
 
-	const std::filesystem::path path             = std::string( xs( "settings" ) );
+	const std::filesystem::path path             = std::string( ( "settings" ) );
 	std::deque< std::string > m_file_names       = { };
 	std::vector< variable_object_t > m_variables = { };
 

@@ -10,10 +10,6 @@ constexpr int color_picker_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiColo
 constexpr int color_picker_no_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_InputRGB |
                                             ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoDragDrop |
                                             ImGuiColorEditFlags_PickerHueBar | ImGuiColorEditFlags_NoBorder;
-
-/* TODO ~ float ~ add popup system (on right click) render settings popup (render keybinder last) */
-
-/* TODO ~ float ~ XORstr :4 */
 void menu_t::on_end_scene( )
 {
 	if ( !this->m_opened )
@@ -48,11 +44,11 @@ void menu_t::on_end_scene( )
 			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + background_height - 1.f ), ImVec2( size.x, 1.f ),
 			                         ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
 
-			const auto title_text      = xs( "hotwheels" );
+			const auto title_text      = ( "hotwheels" );
 			const auto title_text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 				render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
 
-			const auto vip_title_text      = xs( ".vip" );
+			const auto vip_title_text      = ( ".vip" );
 			const auto vip_title_text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 				render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, vip_title_text );
 
@@ -83,7 +79,7 @@ void menu_t::on_end_scene( )
 			                         ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
 
 			std::vector< const char* > tab_names = {
-				xs( "aimbot" ), xs( "visuals" ), xs( "movement" ), xs( "misc" ), xs( "skins" ), xs( "settings" )
+				( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" )
 			};
 
 			/* tab logic */
@@ -133,62 +129,62 @@ void menu_t::on_end_scene( )
 		switch ( tab_number ) {
 		case 1: /* visuals */ {
 			if ( ImGui::BeginChild(
-					 xs( "esp" ),
+					 ( "esp" ),
 					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
 					 0, true ) ) {
-				ImGui::Checkbox( xs( "bounding box" ), &GET_CONFIG_BOOL( variables.m_visuals.m_bounding_box ) );
+				ImGui::Checkbox( ( "bounding box" ), &GET_CONFIG_BOOL( variables.m_visuals.m_bounding_box ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_bounding_box ) ) {
-					ImGui::ColorEdit4( xs( "##bounding box color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_bounding_box_color ),
+					ImGui::ColorEdit4( ( "##bounding box color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_bounding_box_color ),
 					                   color_picker_alpha_flags );
-					ImGui::Checkbox( xs( "outline##bounding box" ), &GET_CONFIG_BOOL( variables.m_visuals.m_bounding_box_outline ) );
+					ImGui::Checkbox( ( "outline##bounding box" ), &GET_CONFIG_BOOL( variables.m_visuals.m_bounding_box_outline ) );
 				}
 
-				ImGui::Checkbox( xs( "player name" ), &GET_CONFIG_BOOL( variables.m_visuals.m_player_name ) );
+				ImGui::Checkbox( ( "player name" ), &GET_CONFIG_BOOL( variables.m_visuals.m_player_name ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_player_name ) ) {
-					ImGui::ColorEdit4( xs( "##player name color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_player_name_color ),
+					ImGui::ColorEdit4( ( "##player name color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_player_name_color ),
 					                   color_picker_alpha_flags );
 				}
 
-				ImGui::Checkbox( xs( "player health bar" ), &GET_CONFIG_BOOL( variables.m_visuals.m_player_health_bar ) );
+				ImGui::Checkbox( ( "player health bar" ), &GET_CONFIG_BOOL( variables.m_visuals.m_player_health_bar ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_player_health_bar ) ) {
-					ImGui::Checkbox( xs( "custom color##player health bar" ), &GET_CONFIG_BOOL( variables.m_visuals.m_custom_color_health_bar ) );
+					ImGui::Checkbox( ( "custom color##player health bar" ), &GET_CONFIG_BOOL( variables.m_visuals.m_custom_color_health_bar ) );
 
 					if ( GET_CONFIG_BOOL( variables.m_visuals.m_custom_color_health_bar ) )
-						ImGui::ColorEdit4( xs( "##player health bar color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_player_health_bar_color ),
+						ImGui::ColorEdit4( ( "##player health bar color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_player_health_bar_color ),
 						                   color_picker_alpha_flags );
 				}
 
-				ImGui::MultiCombo( xs( "player flags" ), config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ),
-				                   { xs( "money" ), xs( "armor" ) },
+				ImGui::MultiCombo( ( "player flags" ), config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ),
+				                   { ( "money" ), ( "armor" ) },
 				                   config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ).size( ) );
 
-				ImGui::Checkbox( xs( "active weapon name" ), &GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_name ) );
+				ImGui::Checkbox( ( "active weapon name" ), &GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_name ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_name ) ) {
-					ImGui::ColorEdit4( xs( "##active weapon name color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_active_weapon_name_color ),
+					ImGui::ColorEdit4( ( "##active weapon name color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_active_weapon_name_color ),
 					                   color_picker_alpha_flags );
 				}
 
-				ImGui::Checkbox( xs( "active weapon icon" ), &GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_icon ) );
+				ImGui::Checkbox( ( "active weapon icon" ), &GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_icon ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_icon ) ) {
-					ImGui::ColorEdit4( xs( "##active weapon icon color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_active_weapon_icon_color ),
+					ImGui::ColorEdit4( ( "##active weapon icon color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_active_weapon_icon_color ),
 					                   color_picker_alpha_flags );
 				}
 
-				ImGui::Checkbox( xs( "weapon ammo bar" ), &GET_CONFIG_BOOL( variables.m_visuals.m_weapon_ammo_bar ) );
+				ImGui::Checkbox( ( "weapon ammo bar" ), &GET_CONFIG_BOOL( variables.m_visuals.m_weapon_ammo_bar ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_weapon_ammo_bar ) ) {
-					ImGui::ColorEdit4( xs( "##weapon ammo bar color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_weapon_ammo_bar_color ),
+					ImGui::ColorEdit4( ( "##weapon ammo bar color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_weapon_ammo_bar_color ),
 					                   color_picker_alpha_flags );
 				}
 
-				ImGui::Checkbox( xs( "player avatar" ), &GET_CONFIG_BOOL( variables.m_visuals.m_player_avatar ) );
+				ImGui::Checkbox( ( "player avatar" ), &GET_CONFIG_BOOL( variables.m_visuals.m_player_avatar ) );
 				/*if ( GET_CONFIG_BOOL( variables.m_visuals.m_player_avatar ) ) {
 				    ImGui::ColorEdit4( "##player avatar color", &GET_CONFIG_COLOR( variables.m_visuals.m_player_avatar_color ),
 				                       color_picker_alpha_flags );
 				}*/
 
-				ImGui::Checkbox( xs( "out of fov arrows" ), &GET_CONFIG_BOOL( variables.m_visuals.m_out_of_fov_arrows ) );
+				ImGui::Checkbox( ( "out of fov arrows" ), &GET_CONFIG_BOOL( variables.m_visuals.m_out_of_fov_arrows ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_out_of_fov_arrows ) ) {
-					ImGui::ColorEdit4( xs( "##out of fov arrows color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_out_of_fov_arrows_color ),
+					ImGui::ColorEdit4( ( "##out of fov arrows color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_out_of_fov_arrows_color ),
 					                   color_picker_alpha_flags );
 				}
 
@@ -199,23 +195,23 @@ void menu_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			if ( ImGui::BeginChild(
-					 xs( "glow" ),
+					 ( "glow" ),
 					 ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true, 0,
 					 true ) ) {
 				ImGui::EndChild( );
 			}
 
-			if ( ImGui::BeginChild( xs( "chams" ),
+			if ( ImGui::BeginChild( ( "chams" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
 				ImGui::EndChild( );
 			}
 			break;
 		}
-		case 2: /* misc */ {
+		case 2: /* movement */ {
 			if ( ImGui::BeginChild(
-					 xs( "movement" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
+					 ( "movement" ),
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true,
 					 0, true ) ) {
 
 				ImGui::Checkbox( "bunny hop", &GET_CONFIG_BOOL( variables.m_movement.m_bunny_hop ) );
@@ -243,22 +239,25 @@ void menu_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			if ( ImGui::BeginChild(
-					 xs( "indicators" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true, 0,
+					 ( "indicators" ),
+					 ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
 					 true ) ) {
 				ImGui::EndChild( );
 			}
-
-			if ( ImGui::BeginChild( xs( "game" ),
-			                        ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
-			                        true, 0, true ) ) {
+			break;
+		}
+		case 3: /* misc */
+		{
+			if ( ImGui::BeginChild(
+					 ( "game" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+					 true, 0, true ) ) {
 				ImGui::EndChild( );
 			}
 
 			ImGui::SameLine( );
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
-			if ( ImGui::BeginChild( xs( "exploits" ),
+			if ( ImGui::BeginChild( ( "exploits" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
 				ImGui::EndChild( );
@@ -267,10 +266,10 @@ void menu_t::on_end_scene( )
 		}
 		case 5: /* settings */
 		{
-			if ( ImGui::BeginChild( xs( "settings" ),
+			if ( ImGui::BeginChild( ( "settings" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-				ImGui::InputText( xs( "config file name" ), this->m_config_file, sizeof( this->m_config_file ) );
+				ImGui::InputText( ( "config file name" ), this->m_config_file, sizeof( this->m_config_file ) );
 
 				std::string converted_file_name = this->m_config_file;
 
@@ -281,13 +280,13 @@ void menu_t::on_end_scene( )
 				ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_FramePadding, ImVec2( 0.f, 3.f ) );
 
 				ImGui::ListBox(
-					xs( "##config list" ), &this->m_selected_config, []( int index ) { return config.m_file_names[ index ].c_str( ); },
+					( "##config list" ), &this->m_selected_config, []( int index ) { return config.m_file_names[ index ].c_str( ); },
 					config.m_file_names.size( ), 5 );
 
 				ImGui::PopStyleVar( );
 				selected_config_name = !config.m_file_names.empty( ) ? config.m_file_names[ this->m_selected_config ] : "";
 
-				if ( ImGui::Button( xs( "create" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
+				if ( ImGui::Button( ( "create" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 					if ( !config.save( converted_file_name ) )
 						console.print( "failed to create {:s}", converted_file_name );
 
@@ -295,20 +294,20 @@ void menu_t::on_end_scene( )
 					config.refresh( );
 				}
 
-				if ( ImGui::Button( xs( "save" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
+				if ( ImGui::Button( ( "save" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
 					if ( !config.save( selected_config_name ) )
 						console.print( "failed to save {:s}", selected_config_name );
 
-				if ( ImGui::Button( xs( "load" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
+				if ( ImGui::Button( ( "load" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
 					if ( !config.load( selected_config_name ) )
 						console.print( "failed to load {:s}", converted_file_name );
 
-				if ( ImGui::Button( xs( "remove" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
+				if ( ImGui::Button( ( "remove" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 					config.remove( this->m_selected_config );
 					this->m_selected_config = 0;
 				}
 
-				if ( ImGui::Button( xs( "refresh" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
+				if ( ImGui::Button( ( "refresh" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
 					config.refresh( );
 
 				ImGui::EndChild( );

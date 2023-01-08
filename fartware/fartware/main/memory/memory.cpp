@@ -7,16 +7,16 @@ bool memory_t::on_attach( const std::vector< const char* >& modules )
 
 	for ( auto& module_data : m_modules ) {
 		if ( !module_data.m_name ) {
-			console.print( xs( "failed to find {:s}" ), module_data.m_name );
+			console.print( ( "failed to find {:s}" ), module_data.m_name );
 			return false;
 		}
 
 		if ( !module_data.m_value ) {
-			console.print( xs( "module handle {:s} was {:p}" ), module_data.m_name, module_data.m_value );
+			console.print( ( "module handle {:s} was {:p}" ), module_data.m_name, module_data.m_value );
 			return false;
 		}
 
-		console.print( xs( "found {:s} @ {:p}" ), module_data.m_name, module_data.m_value );
+		console.print( ( "found {:s} @ {:p}" ), module_data.m_name, module_data.m_value );
 	}
 
 	return true;
@@ -25,52 +25,52 @@ bool memory_t::on_attach( const std::vector< const char* >& modules )
 bool memory_t::on_attach( )
 {
 	if ( ( this->m_input = *reinterpret_cast< c_input** >(
-			   memory.m_modules[ e_module_names::client ].find_pattern( xs( "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" ) ) + 0x1 ) ) == nullptr )
+			   memory.m_modules[ e_module_names::client ].find_pattern( ( "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" ) ) + 0x1 ) ) == nullptr )
 		return false;
 	else
-		console.print( xs( "found CInput @ {:p}" ), reinterpret_cast< void* >( this->m_input ) );
+		console.print( ( "found CInput @ {:p}" ), reinterpret_cast< void* >( this->m_input ) );
 
 	if ( ( this->m_key_values_system = reinterpret_cast< key_values_system_fn >(
-			   utilities.get_export_address( this->m_modules[ e_module_names::vstdlib ].m_value, xs( "KeyValuesSystem" ) ) )( ) ) == nullptr )
+			   utilities.get_export_address( this->m_modules[ e_module_names::vstdlib ].m_value, ( "KeyValuesSystem" ) ) )( ) ) == nullptr )
 		return false;
 	else
-		console.print( xs( "found KeyValuesSystem @ {:p}" ), reinterpret_cast< void* >( this->m_key_values_system ) );
+		console.print( ( "found KeyValuesSystem @ {:p}" ), reinterpret_cast< void* >( this->m_key_values_system ) );
 
 	if ( ( this->m_device = **reinterpret_cast< IDirect3DDevice9*** >(
-			   memory.m_modules[ e_module_names::shaderapidx9 ].find_pattern( xs( "A1 ? ? ? ? 50 8B 08 FF 51 0C" ) ) + 0x1 ) ) == nullptr )
+			   memory.m_modules[ e_module_names::shaderapidx9 ].find_pattern( ( "A1 ? ? ? ? 50 8B 08 FF 51 0C" ) ) + 0x1 ) ) == nullptr )
 		return false;
 	else
-		console.print( xs( "found IDirect3DDevice9 @ {:p}" ), reinterpret_cast< void* >( this->m_device ) );
+		console.print( ( "found IDirect3DDevice9 @ {:p}" ), reinterpret_cast< void* >( this->m_device ) );
 
 	if ( ( this->m_client_state = **reinterpret_cast< c_client_state*** >(
-			   memory.m_modules[ e_module_names::engine ].find_pattern( xs( "A1 ? ? ? ? 8B 88 ? ? ? ? 85 C9 75 07" ) ) + 0x1 ) ) == nullptr )
+			   memory.m_modules[ e_module_names::engine ].find_pattern( ( "A1 ? ? ? ? 8B 88 ? ? ? ? 85 C9 75 07" ) ) + 0x1 ) ) == nullptr )
 		return false;
 	else
-		console.print( xs( "found IClientState @ {:p}" ), reinterpret_cast< void* >( this->m_client_state ) );
+		console.print( ( "found IClientState @ {:p}" ), reinterpret_cast< void* >( this->m_client_state ) );
 
 	if ( ( this->m_weapon_system = *reinterpret_cast< c_weapon_system** >(
-			   memory.m_modules[ e_module_names::client ].find_pattern( xs( "8B 35 ? ? ? ? FF 10 0F B7 C0" ) ) + 0x2 ) ) == nullptr )
+			   memory.m_modules[ e_module_names::client ].find_pattern( ( "8B 35 ? ? ? ? FF 10 0F B7 C0" ) ) + 0x2 ) ) == nullptr )
 		return false;
 	else
-		console.print( xs( "found IWeaponSystem @ {:p}" ), reinterpret_cast< void* >( this->m_weapon_system ) );
+		console.print( ( "found IWeaponSystem @ {:p}" ), reinterpret_cast< void* >( this->m_weapon_system ) );
 
 	if ( ( this->m_globals =
 	           **reinterpret_cast< c_globals*** >( utilities.get_virtual_function< std::uintptr_t >( interfaces.m_client, 11 ) + 0xA ) ) == nullptr )
 		return false;
 	else
-		console.print( xs( "found IGlobalsVarsBase @ {:p}" ), reinterpret_cast< void* >( this->m_globals ) );
+		console.print( ( "found IGlobalsVarsBase @ {:p}" ), reinterpret_cast< void* >( this->m_globals ) );
 
 	if ( ( this->m_move_helper = **reinterpret_cast< c_move_helper*** >(
-			   memory.m_modules[ e_module_names::client ].find_pattern( xs( "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" ) ) + 0x2 ) ) == nullptr )
+			   memory.m_modules[ e_module_names::client ].find_pattern( ( "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" ) ) + 0x2 ) ) == nullptr )
 		return false;
 	else
-		console.print( xs( "found IMoveHelper @ {:p}" ), reinterpret_cast< void* >( this->m_move_helper ) );
+		console.print( ( "found IMoveHelper @ {:p}" ), reinterpret_cast< void* >( this->m_move_helper ) );
 
 	if ( ( this->m_client_mode =
 	           **reinterpret_cast< void*** >( utilities.get_virtual_function< std::uintptr_t >( interfaces.m_client, 10 ) + 0x5 ) ) == nullptr )
 		return false;
 	else
-		console.print( xs( "found IClientModeShared @ {:p}" ), reinterpret_cast< void* >( this->m_client_mode ) );
+		console.print( ( "found IClientModeShared @ {:p}" ), reinterpret_cast< void* >( this->m_client_mode ) );
 
 	return true;
 }
@@ -121,7 +121,7 @@ std::uint8_t* module_handle_info_t::find_pattern( const char* signature )
 			return &scan_bytes[ i ];
 	}
 
-	console.print( xs( "failed to find pattern {:s} in module {:s}" ), signature, this->m_name );
+	console.print( ( "failed to find pattern {:s} in module {:s}" ), signature, this->m_name );
 
 	return nullptr;
 }

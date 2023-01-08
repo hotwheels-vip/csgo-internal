@@ -1,7 +1,5 @@
 #include "../hooks.h"
 
-#include "../../hashing/strings/xorstr.h"
-
 int __cdecl n_detoured_functions::vsnprintf( char* dest, int text_length, const char* fmt, ... )
 {
 	int v4 = { }; // ecx
@@ -9,17 +7,17 @@ int __cdecl n_detoured_functions::vsnprintf( char* dest, int text_length, const 
 	va_list args = { };
 	va_start( args, fmt );
 
-	if ( strstr( fmt, xs( "fps:" ) ) ) {
-		fmt = interfaces.m_engine->is_in_game( ) ? xs( "fps: %5i / %4.1f var / %i ms" ) : xs( "fps: %5i / var: %4.1f ms / (v%u%s)" );
+	if ( strstr( fmt, ( "fps:" ) ) ) {
+		fmt = interfaces.m_engine->is_in_game( ) ? ( "fps: %5i / %4.1f var / %i ms" ) : ( "fps: %5i / var: %4.1f ms / (v%u%s)" );
 		v4  = _vsnprintf( dest, text_length, fmt, args );
-	} else if ( strstr( fmt, xs( "loss:" ) ) ) {
-		fmt = xs( " %3i%% lost / %2i%% choked" );
+	} else if ( strstr( fmt, ( "loss:" ) ) ) {
+		fmt = ( " %3i%% lost / %2i%% choked" );
 		v4  = _vsnprintf( dest, text_length, fmt, args );
-	} else if ( strstr( fmt, xs( "tick:" ) ) ) {
-		fmt = xs( "tr:%5.1f / " );
+	} else if ( strstr( fmt, ( "tick:" ) ) ) {
+		fmt = ( "tr:%5.1f / " );
 		v4  = _vsnprintf( dest, text_length, fmt, args );
-	} else if ( strstr( fmt, xs( "sv:" ) ) ) {
-		fmt = xs( "sv:%5.1f %s%4.1f ms" );
+	} else if ( strstr( fmt, ( "sv:" ) ) ) {
+		fmt = ( "sv:%5.1f %s%4.1f ms" );
 		v4  = _vsnprintf( dest, text_length, fmt, args );
 	} else
 		v4 = _vsnprintf( dest, text_length, fmt, args );

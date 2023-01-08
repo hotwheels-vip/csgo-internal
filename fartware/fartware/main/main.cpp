@@ -18,66 +18,66 @@
 static DWORD WINAPI on_attach( void* instance )
 {
 	[ & ]( ) {
-		while ( !utilities.get_module_handle( xs( "serverbrowser.dll" ) ) )
+		while ( !utilities.get_module_handle( ( "serverbrowser.dll" ) ) )
 			std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
 
-		console.on_attach( xs( "debug console" ) );
+		console.on_attach( ( "debug console" ) );
 
-		const std::vector< const char* >& modules = { xs( "client.dll" ),         xs( "engine.dll" ),         xs( "vgui2.dll" ),
-			                                          xs( "vguimatsurface.dll" ), xs( "localize.dll" ),       xs( "server.dll" ),
-			                                          xs( "panorama.dll" ),       xs( "materialsystem.dll" ), xs( "vstdlib.dll" ),
-			                                          xs( "shaderapidx9.dll" ),
-			                                          xs( "inputsystem.dll" ),
-			                                          xs( "steam_api.dll" ),
-			                                          xs( "datacache.dll" ) };
+		const std::vector< const char* >& modules = { ( "client.dll" ),         ( "engine.dll" ),         ( "vgui2.dll" ),
+			                                          ( "vguimatsurface.dll" ), ( "localize.dll" ),       ( "server.dll" ),
+			                                          ( "panorama.dll" ),       ( "materialsystem.dll" ), ( "vstdlib.dll" ),
+			                                          ( "shaderapidx9.dll" ),
+			                                          ( "inputsystem.dll" ),
+			                                          ( "steam_api.dll" ),
+			                                          ( "datacache.dll" ) };
 
-		console.print( xs( "initialising module handles" ) );
+		console.print( ( "initialising module handles" ) );
 		if ( !memory.on_attach( modules ) )
-			console.print( xs( "failed to initialise module handles" ) );
+			console.print( ( "failed to initialise module handles" ) );
 		else
-			console.print( xs( "initialised module handles" ) );
+			console.print( ( "initialised module handles" ) );
 
-		console.print( xs( "initialising interfaces" ) );
+		console.print( ( "initialising interfaces" ) );
 		if ( !interfaces.on_attach( ) )
-			console.print( xs( "failed to initialise interfaces" ) );
+			console.print( ( "failed to initialise interfaces" ) );
 		else
-			console.print( xs( "initialised interfaces" ) );
+			console.print( ( "initialised interfaces" ) );
 
-		console.print( xs( "initialising custom interfaces" ) );
+		console.print( ( "initialising custom interfaces" ) );
 		if ( !memory.on_attach( ) )
-			console.print( xs( "failed to initialise custom interfaces" ) );
+			console.print( ( "failed to initialise custom interfaces" ) );
 		else
-			console.print( xs( "initialised custom interfaces" ) );
+			console.print( ( "initialised custom interfaces" ) );
 
-		console.print( xs( "initialising netvars" ) );
+		console.print( ( "initialising netvars" ) );
 		if ( !netvars.on_attach( ) )
-			console.print( xs( "failed to initialise netvars" ) );
+			console.print( ( "failed to initialise netvars" ) );
 		else
-			console.print( xs( "initialised netvars" ) );
+			console.print( ( "initialised netvars" ) );
 
-		console.print( xs( "initialising convars" ) );
+		console.print( ( "initialising convars" ) );
 		if ( !convars.on_attach( ) )
-			console.print( xs( "failed to initialise convars" ) );
+			console.print( ( "failed to initialise convars" ) );
 		else
-			console.print( xs( "initialised convars" ) );
+			console.print( ( "initialised convars" ) );
 
-		console.print( xs( "initialising input" ) );
+		console.print( ( "initialising input" ) );
 		if ( !input.on_attach( ) )
-			console.print( xs( "failed to initialise input" ) );
+			console.print( ( "failed to initialise input" ) );
 		else
-			console.print( xs( "initialised input" ) );
+			console.print( ( "initialised input" ) );
 
-		console.print( xs( "initialising hooks" ) );
+		console.print( ( "initialising hooks" ) );
 		if ( !hooks.on_attach( ) )
-			console.print( xs( "failed to initialise hooks" ) );
+			console.print( ( "failed to initialise hooks" ) );
 		else
-			console.print( xs( "initialised hooks" ) );
+			console.print( ( "initialised hooks" ) );
 
-		console.print( xs( "initialising configuration system" ) );
+		console.print( ( "initialising configuration system" ) );
 		if ( !config.on_attach( ) )
-			console.print( xs( "failed to initialise configuration system" ) );
+			console.print( ( "failed to initialise configuration system" ) );
 		else
-			console.print( xs( "initialised configuration system" ) );
+			console.print( ( "initialised configuration system" ) );
 
 		/* lua_State* L = lua_open( );
 		luaL_openlibs( L );

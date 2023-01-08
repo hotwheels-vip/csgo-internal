@@ -264,11 +264,11 @@ class ISteamRemoteStorage
 		virtual bool UpdatePublishedFileTags( PublishedFileUpdateHandle_t updateHandle, SteamParamStringArray_t *pTags ) = 0;
 		CALL_RESULT( RemoteStorageUpdatePublishedFileResult_t )
 		virtual SteamAPICall_t	CommitPublishedFileUpdate( PublishedFileUpdateHandle_t updateHandle ) = 0;
-		// Gets published file details for the given publishedfileid.  If unMaxSecondsOld is greater than 0,
+		// Gets published file details for the given publishedfileid.  If unMaecondsOld is greater than 0,
 		// cached data may be returned, depending on how long ago it was cached.  A value of 0 will force a refresh.
 		// A value of k_WorkshopForceLoadPublishedFileDetailsFromCache will use cached data if it exists, no matter how old it is.
 		CALL_RESULT( RemoteStorageGetPublishedFileDetailsResult_t )
-		virtual SteamAPICall_t	GetPublishedFileDetails( PublishedFileId_t unPublishedFileId, uint32 unMaxSecondsOld ) = 0;
+		virtual SteamAPICall_t	GetPublishedFileDetails( PublishedFileId_t unPublishedFileId, uint32 unMaecondsOld ) = 0;
 		CALL_RESULT( RemoteStorageDeletePublishedFileResult_t )
 		virtual SteamAPICall_t	DeletePublishedFile( PublishedFileId_t unPublishedFileId ) = 0;
 		// enumerate the files that the current user published with this app

@@ -447,7 +447,7 @@ class binary_writer
                 const auto N = j.m_value.string->size();
                 if (N <= 31)
                 {
-                    // fixstr
+                    // fitr
                     write_number(static_cast<std::uint8_t>(0xA0 | N));
                 }
                 else if (N <= (std::numeric_limits<std::uint8_t>::max)())

@@ -23,8 +23,8 @@ bool config_t::on_attach( )
 bool config_t::save( std::string_view file_name )
 {
 	std::filesystem::path file_path( file_name );
-	if ( file_path.extension( ) != xs( ".hw" ) )
-		file_path.replace_extension( xs( ".hw" ) );
+	if ( file_path.extension( ) != ( ".hw" ) )
+		file_path.replace_extension( ( ".hw" ) );
 
 	const std::string file = std::filesystem::path( this->path / file_path ).string( );
 	nlohmann::json config  = { };
@@ -33,24 +33,24 @@ bool config_t::save( std::string_view file_name )
 		for ( auto& variable : this->m_variables ) {
 			nlohmann::json entry = { };
 
-			entry[ xs( "name-id" ) ] = variable.m_name_hash;
-			entry[ xs( "type-id" ) ] = variable.m_type_hash;
+			entry[ ( "name-id" ) ] = variable.m_name_hash;
+			entry[ ( "type-id" ) ] = variable.m_type_hash;
 
 			switch ( variable.m_type_hash ) {
 			case fnv1a::hash_const( "int" ): {
-				entry[ xs( "value" ) ] = variable.get< int >( );
+				entry[ ( "value" ) ] = variable.get< int >( );
 				break;
 			}
 			case fnv1a::hash_const( "float" ): {
-				entry[ xs( "value" ) ] = variable.get< float >( );
+				entry[ ( "value" ) ] = variable.get< float >( );
 				break;
 			}
 			case fnv1a::hash_const( "bool" ): {
-				entry[ xs( "value" ) ] = variable.get< bool >( );
+				entry[ ( "value" ) ] = variable.get< bool >( );
 				break;
 			}
 			case fnv1a::hash_const( "std::string" ): {
-				entry[ xs( "value" ) ] = variable.get< std::string >( );
+				entry[ ( "value" ) ] = variable.get< std::string >( );
 				break;
 			}
 			case fnv1a::hash_const( "c_color" ): {
@@ -63,7 +63,7 @@ bool config_t::save( std::string_view file_name )
 				sub.push_back( color.get< e_color_type::color_type_b >( ) );
 				sub.push_back( color.get< e_color_type::color_type_a >( ) );
 
-				entry[ xs( "value" ) ] = sub.dump( );
+				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
 			case fnv1a::hash_const( "key_bind_t" ): {
@@ -74,7 +74,7 @@ bool config_t::save( std::string_view file_name )
 				sub.push_back( bind.m_key );
 				sub.push_back( bind.m_key_style );
 
-				entry[ xs( "value" ) ] = sub.dump( );
+				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<bool>" ): {
@@ -85,7 +85,7 @@ bool config_t::save( std::string_view file_name )
 				for ( const auto&& value : booleans )
 					sub.push_back( static_cast< bool >( value ) );
 
-				entry[ xs( "value" ) ] = sub.dump( );
+				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<int>" ): {
@@ -96,7 +96,7 @@ bool config_t::save( std::string_view file_name )
 				for ( const auto& value : integers )
 					sub.push_back( value );
 
-				entry[ xs( "value" ) ] = sub.dump( );
+				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<float>" ): {
@@ -107,7 +107,7 @@ bool config_t::save( std::string_view file_name )
 				for ( const auto& value : floats )
 					sub.push_back( value );
 
-				entry[ xs( "value" ) ] = sub.dump( );
+				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<std::string>" ): {
@@ -118,7 +118,7 @@ bool config_t::save( std::string_view file_name )
 				for ( const auto& value : strings )
 					sub.push_back( value );
 
-				entry[ xs( "value" ) ] = sub.dump( );
+				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
 			default:
@@ -128,7 +128,7 @@ bool config_t::save( std::string_view file_name )
 			config.push_back( entry );
 		}
 	} catch ( const nlohmann::detail::exception& ex ) {
-		console.print( xs( "failed to save {}" ), ex.what( ) );
+		console.print( ( "failed to save {}" ), ex.what( ) );
 		return false;
 	}
 
@@ -140,7 +140,7 @@ bool config_t::save( std::string_view file_name )
 		output_file << config.dump( 4 );
 		output_file.close( );
 	} catch ( std::ofstream::failure& ex ) {
-		console.print( xs( "failed to save {}" ), ex.what( ) );
+		console.print( ( "failed to save {}" ), ex.what( ) );
 		return false;
 	}
 
@@ -165,38 +165,38 @@ bool config_t::load( std::string_view file_name )
 
 		input_file.close( );
 	} catch ( std::ifstream::failure& ex ) {
-		console.print( xs( "failed to load {}" ), ex.what( ) );
+		console.print( ( "failed to load {}" ), ex.what( ) );
 		return false;
 	}
 
 	try {
 		for ( const auto& variable : config ) {
-			const unsigned int index = this->get_variable_index( variable[ xs( "name-id" ) ].get< unsigned int >( ) );
+			const unsigned int index = this->get_variable_index( variable[ ( "name-id" ) ].get< unsigned int >( ) );
 
 			if ( index == INVALID_VARIABLE )
 				continue;
 
 			auto& entry = this->m_variables[ index ];
 
-			switch ( variable[ xs( "type-id" ) ].get< unsigned int >( ) ) {
+			switch ( variable[ ( "type-id" ) ].get< unsigned int >( ) ) {
 			case fnv1a::hash_const( "bool" ): {
-				entry.set< bool >( variable[ xs( "value" ) ].get< bool >( ) );
+				entry.set< bool >( variable[ ( "value" ) ].get< bool >( ) );
 				break;
 			}
 			case fnv1a::hash_const( "float" ): {
-				entry.set< float >( variable[ xs( "value" ) ].get< float >( ) );
+				entry.set< float >( variable[ ( "value" ) ].get< float >( ) );
 				break;
 			}
 			case fnv1a::hash_const( "int" ): {
-				entry.set< int >( variable[ xs( "value" ) ].get< int >( ) );
+				entry.set< int >( variable[ ( "value" ) ].get< int >( ) );
 				break;
 			}
 			case fnv1a::hash_const( "std::string" ): {
-				entry.set< std::string >( variable[ xs( "value" ) ].get< std::string >( ) );
+				entry.set< std::string >( variable[ ( "value" ) ].get< std::string >( ) );
 				break;
 			}
 			case fnv1a::hash_const( "c_color" ): {
-				const nlohmann::json vector = nlohmann::json::parse( variable[ xs( "value" ) ].get< std::string >( ) );
+				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 
 				entry.set< c_color >( c_color( vector[ 0 ].get< std::uint8_t >( ), vector[ 1 ].get< std::uint8_t >( ),
 				                               vector[ 2 ].get< std::uint8_t >( ), vector[ 3 ].get< std::uint8_t >( ) ) );
@@ -204,14 +204,14 @@ bool config_t::load( std::string_view file_name )
 				break;
 			}
 			case fnv1a::hash_const( "key_bind_t" ): {
-				const nlohmann::json vector = nlohmann::json::parse( variable[ xs( "value" ) ].get< std::string >( ) );
+				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 
 				entry.set< key_bind_t >( key_bind_t( vector[ 0 ].get< int >( ), vector[ 1 ].get< int >( ) ) );
 
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<bool>" ): {
-				const nlohmann::json vector = nlohmann::json::parse( variable[ xs( "value" ) ].get< std::string >( ) );
+				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 				auto& booleans              = entry.get< std::vector< bool > >( );
 
 				for ( std::size_t i = 0U; i < vector.size( ); i++ ) {
@@ -222,7 +222,7 @@ bool config_t::load( std::string_view file_name )
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<int>" ): {
-				const nlohmann::json vector = nlohmann::json::parse( variable[ xs( "value" ) ].get< std::string >( ) );
+				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 				auto& integers              = entry.get< std::vector< int > >( );
 
 				for ( std::size_t i = 0U; i < vector.size( ); i++ ) {
@@ -233,7 +233,7 @@ bool config_t::load( std::string_view file_name )
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<float>" ): {
-				const nlohmann::json vector = nlohmann::json::parse( variable[ xs( "value" ) ].get< std::string >( ) );
+				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 				auto& floats                = entry.get< std::vector< float > >( );
 
 				for ( std::size_t i = 0U; i < vector.size( ); i++ ) {
@@ -244,7 +244,7 @@ bool config_t::load( std::string_view file_name )
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<std::string>" ): {
-				const nlohmann::json vector = nlohmann::json::parse( variable[ xs( "value" ) ].get< std::string >( ) );
+				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 				auto& strings               = entry.get< std::vector< std::string > >( );
 
 				for ( std::size_t i = 0U; i < vector.size( ); i++ ) {
@@ -259,7 +259,7 @@ bool config_t::load( std::string_view file_name )
 			}
 		}
 	} catch ( const nlohmann::detail::exception& ex ) {
-		console.print( xs( "json load failed {}" ), ex.what( ) );
+		console.print( ( "json load failed {}" ), ex.what( ) );
 		return false;
 	}
 
@@ -280,7 +280,7 @@ void config_t::refresh( )
 	this->m_file_names.clear( );
 
 	for ( const auto& it : std::filesystem::directory_iterator( this->path ) )
-		if ( it.path( ).filename( ).extension( ) == xs( ".hw" ) )
+		if ( it.path( ).filename( ).extension( ) == ( ".hw" ) )
 			this->m_file_names.push_back( it.path( ).filename( ).string( ) );
 }
 

@@ -135,7 +135,6 @@
     <ClInclude Include="main\memory\memory.h" />
     <ClInclude Include="main\hashing\imports\lazy_importer.h" />
     <ClInclude Include="main\hashing\strings\fnv1a.h" />
-    <ClInclude Include="main\hashing\strings\xorstr.h" />
     <ClInclude Include="main\menu\menu.h" />
     <ClInclude Include="main\source_engine\classes\c_angle.h" />
     <ClInclude Include="main\source_engine\classes\c_base_entity.h" />

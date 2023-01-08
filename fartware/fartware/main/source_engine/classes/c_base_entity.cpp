@@ -3,9 +3,9 @@
 #include "../../utilities/mathematics/mathematics.h"
 #include "../../utilities/render/render.h"
 
-#include "../../hashing/strings/xorstr.h"
 #include "../../memory/memory.h"
 #include "../enumerations/e_flags.h"
+
 #include <array>
 
 bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
@@ -17,12 +17,12 @@ bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
 	/* https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/game/shared/collisionproperty.h#L77 */
 
 	const c_vector mins = collideable->obb_mins( );
-	const c_vector maxs = collideable->obb_maxs( );
+	const c_vector ma = collideable->obb_ma( );
 
-	std::array< c_vector, 8U > points = { c_vector( mins.m_x, mins.m_y, mins.m_z ), c_vector( mins.m_x, maxs.m_y, mins.m_z ),
-		                                  c_vector( maxs.m_x, maxs.m_y, mins.m_z ), c_vector( maxs.m_x, mins.m_y, mins.m_z ),
-		                                  c_vector( maxs.m_x, maxs.m_y, maxs.m_z ), c_vector( mins.m_x, maxs.m_y, maxs.m_z ),
-		                                  c_vector( mins.m_x, mins.m_y, maxs.m_z ), c_vector( maxs.m_x, mins.m_y, maxs.m_z ) };
+	std::array< c_vector, 8U > points = { c_vector( mins.m_x, mins.m_y, mins.m_z ), c_vector( mins.m_x, ma.m_y, mins.m_z ),
+		                                  c_vector( ma.m_x, ma.m_y, mins.m_z ), c_vector( ma.m_x, mins.m_y, mins.m_z ),
+		                                  c_vector( ma.m_x, ma.m_y, ma.m_z ), c_vector( mins.m_x, ma.m_y, ma.m_z ),
+		                                  c_vector( mins.m_x, mins.m_y, ma.m_z ), c_vector( ma.m_x, mins.m_y, ma.m_z ) };
 
 	if ( !( points.data( ) ) )
 		return false;
@@ -57,21 +57,21 @@ bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
 c_user_cmd& c_base_entity::last_command( )
 {
 	static const std::uintptr_t last_command_offset =
-		*reinterpret_cast< std::uintptr_t* >( memory.m_modules[ e_module_names::client ].find_pattern( xs( "8D 8E ? ? ? ? 89 5C 24 3C" ) ) + 0x2 );
+		*reinterpret_cast< std::uintptr_t* >( memory.m_modules[ e_module_names::client ].find_pattern( ( "8D 8E ? ? ? ? 89 5C 24 3C" ) ) + 0x2 );
 	return *reinterpret_cast< c_user_cmd* >( reinterpret_cast< std::uintptr_t >( this ) + last_command_offset );
 }
 
 bool c_base_entity::physics_run_think( int think_method )
 {
 	static auto original_physics_run_think = reinterpret_cast< bool( __thiscall* )( void*, int ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( xs( "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87" ) ) );
+		memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87" ) ) );
 	return original_physics_run_think( this, think_method );
 }
 
 void c_base_entity::set_next_think( int think )
 {
 	static auto original_set_next_think = reinterpret_cast< void( __thiscall* )( void*, int ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( xs( "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B" ) ) );
+		memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B" ) ) );
 
 	original_set_next_think( this, think );
 }
@@ -79,17 +79,17 @@ void c_base_entity::set_next_think( int think )
 void c_base_entity::set_abs_origin( const c_vector& origin )
 {
 	static auto original_set_abs_origin = reinterpret_cast< void( __thiscall* )( void*, const c_vector& ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( xs( "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8" ) ) );
+		memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8" ) ) );
 	original_set_abs_origin( this, origin );
 }
 
 void c_base_entity::post_think_chungy( )
 {
 	static auto post_think_vphysics = reinterpret_cast< bool( __thiscall* )( c_base_entity* ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( xs( ( "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB" ) ) ) );
+		memory.m_modules[ e_module_names::client ].find_pattern( ( ( "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB" ) ) ) );
 
 	static auto simulate_player_simulated_entities = reinterpret_cast< void( __thiscall* )( c_base_entity* ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( xs( ( "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74" ) ) ) );
+		memory.m_modules[ e_module_names::client ].find_pattern( ( ( "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74" ) ) ) );
 
 	interfaces.m_mdl_cache->begin_lock( );
 
