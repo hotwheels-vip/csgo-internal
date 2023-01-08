@@ -41,6 +41,16 @@ void prediction_t::begin( )
 
 	interfaces.m_game_movement->start_track_prediction_errors( globals.m_local );
 
+	if ( globals.m_cmd->m_weapon_select ) {
+		static auto active_weapon = reinterpret_cast< c_base_entity* >(
+			interfaces.m_client_entity_list->get_client_entity_from_handle( globals.m_local->active_weapon_handle( ) ) );
+		if ( active_weapon ) {
+			static auto weapon_data = memory.m_weapon_system->get_weapon_data( active_weapon->item_definition_index( ) );
+			if ( weapon_data )
+				globals.m_local->select_item( weapon_data->m_weapon_name, globals.m_cmd->m_weapon_sub_type );
+		}
+	}
+
 	const int buttons         = globals.m_cmd->m_buttons;
 	const int local_buttons   = *globals.m_local->buttons( );
 	const int buttons_changed = buttons ^ local_buttons;

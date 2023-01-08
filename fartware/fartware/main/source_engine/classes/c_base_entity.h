@@ -15,7 +15,7 @@ class c_collideable
 private:
 	enum e_indexes {
 		_obb_mins = 1,
-		_obb_ma = 2,
+		_obb_ma   = 2,
 	};
 
 public:
@@ -45,6 +45,7 @@ private:
 		_pre_think               = 318,
 		_is_player               = 158,
 		_studio_frame_advance    = 220,
+		_select_item             = 330,
 		_update_collision_bounds = 340
 	};
 
@@ -82,6 +83,12 @@ public:
 	bool is_alive( )
 	{
 		return ( this->life_state( ) == 0 /* e_life_states::life_state_alive */ );
+	}
+
+	void select_item( const char* str, int sub_type )
+	{
+		using fn = void( __thiscall* )( c_base_entity*, const char*, int );
+		return ( *( fn** )this )[ this->e_indexes::_select_item ]( this, str, sub_type );
 	}
 
 	void think( )
