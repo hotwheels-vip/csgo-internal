@@ -34,9 +34,9 @@ struct console_t {
 	{
 #ifdef _DEBUG
 		if constexpr ( sizeof...( args ) > 0 )
-			spdlog::info( ( "hotwheels | {:s}" ), std::vformat( text, std::make_format_args( args... ) ) );
+			spdlog::info( std::vformat( text, std::make_format_args( args... ) ) );
 		else
-			spdlog::info( ( "hotwheels | {:s}" ), text );
+			spdlog::info( text );
 #endif
 	}
 };

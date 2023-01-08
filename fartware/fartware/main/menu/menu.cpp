@@ -10,6 +10,7 @@ constexpr int color_picker_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiColo
 constexpr int color_picker_no_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_InputRGB |
                                             ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoDragDrop |
                                             ImGuiColorEditFlags_PickerHueBar | ImGuiColorEditFlags_NoBorder;
+
 void menu_t::on_end_scene( )
 {
 	if ( !this->m_opened )
@@ -78,9 +79,7 @@ void menu_t::on_end_scene( )
 			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + size.y - background_height ), ImVec2( size.x, 1.f ),
 			                         ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
 
-			std::vector< const char* > tab_names = {
-				( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" )
-			};
+			std::vector< const char* > tab_names = { ( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" ) };
 
 			/* tab logic */
 			for ( int iterator = { }; iterator < static_cast< int >( tab_names.size( ) ); iterator++ ) {
@@ -155,8 +154,7 @@ void menu_t::on_end_scene( )
 				}
 
 				ImGui::MultiCombo( ( "player flags" ), config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ),
-				                   { ( "money" ), ( "armor" ) },
-				                   config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ).size( ) );
+				                   { ( "money" ), ( "armor" ) }, config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ).size( ) );
 
 				ImGui::Checkbox( ( "active weapon name" ), &GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_name ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_name ) ) {
@@ -195,9 +193,8 @@ void menu_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			if ( ImGui::BeginChild(
-					 ( "glow" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true, 0,
-					 true ) ) {
+					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
+					 true, 0, true ) ) {
 				ImGui::EndChild( );
 			}
 
@@ -211,9 +208,8 @@ void menu_t::on_end_scene( )
 		case 2: /* movement */ {
 			if ( ImGui::BeginChild(
 					 ( "movement" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true,
-					 0, true ) ) {
-
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
+					 true ) ) {
 				ImGui::Checkbox( "bunny hop", &GET_CONFIG_BOOL( variables.m_movement.m_bunny_hop ) );
 
 				ImGui::Checkbox( "edge jump", &GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) );
@@ -238,10 +234,56 @@ void menu_t::on_end_scene( )
 			ImGui::SameLine( );
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
-			if ( ImGui::BeginChild(
-					 ( "indicators" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
-					 true ) ) {
+			if ( ImGui::BeginChild( ( "indicators" ),
+			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+			                        true, 0, true ) ) {
+				ImGui::Checkbox( "velocity indicator", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator ) );
+				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator ) ) {
+					if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_custom_color ) ) {
+						ImGui::ColorEdit4( "##velocity indicator color 1",
+						                   &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_velocity_indicator_color1 ),
+						                   color_picker_alpha_flags );
+
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+						ImGui::ColorEdit4( "##velocity indicator color 2",
+						                   &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_velocity_indicator_color2 ),
+						                   color_picker_alpha_flags );
+					} else {
+						ImGui::ColorEdit4( "##velocity indicator color 3",
+						                   &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_velocity_indicator_color3 ),
+						                   color_picker_alpha_flags );
+
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+						ImGui::ColorEdit4( "##velocity indicator color 4",
+						                   &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_velocity_indicator_color4 ),
+						                   color_picker_alpha_flags );
+
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 50.f );
+
+						ImGui::ColorEdit4( "##velocity indicator color 5",
+						                   &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_velocity_indicator_color5 ),
+						                   color_picker_alpha_flags );
+					}
+
+					ImGui::SetCursorPosX( 26.f );
+					ImGui::Checkbox( "show pre speed##velocity indicator",
+					                 &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_show_pre_speed ) );
+
+					ImGui::SetCursorPosX( 26.f );
+					ImGui::Checkbox( "fade alpha##velocity indicator",
+					                 &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_fade_alpha ) );
+
+					ImGui::SetCursorPosX( 26.f );
+					ImGui::Checkbox( "custom color##velocity indicator",
+					                 &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_custom_color ) );
+
+					ImGui::SliderInt( "position##velocity indicator",
+					                  &GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_indicator_position ), 0,
+					                  globals.m_display_size.y );
+				}
+
 				ImGui::EndChild( );
 			}
 			break;
@@ -279,9 +321,8 @@ void menu_t::on_end_scene( )
 
 				ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_FramePadding, ImVec2( 0.f, 3.f ) );
 
-				ImGui::ListBox(
-					( "##config list" ), &this->m_selected_config, []( int index ) { return config.m_file_names[ index ].c_str( ); },
-					config.m_file_names.size( ), 5 );
+				ImGui::ListBox( ( "##config list" ), &this->m_selected_config, []( int index ) { return config.m_file_names[ index ].c_str( ); },
+				                config.m_file_names.size( ), 5 );
 
 				ImGui::PopStyleVar( );
 				selected_config_name = !config.m_file_names.empty( ) ? config.m_file_names[ this->m_selected_config ] : "";

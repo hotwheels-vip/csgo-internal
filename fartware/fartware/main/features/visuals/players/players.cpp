@@ -11,6 +11,9 @@ void players_t::on_paint_traverse( )
 	if ( !render.m_initialised )
 		return;
 
+	if ( !globals.m_local )
+		return;
+
 	const float delta_time = ( 1.f / 0.8f ) * memory.m_globals->m_frame_time;
 
 	/* TODO ~ float ~ store this shart globally */
@@ -76,7 +79,7 @@ void players_t::on_paint_traverse( )
 				std::make_any< triangle_draw_object_t >(
 					triangle_render_points[ 0 ], triangle_render_points[ 1 ], triangle_render_points[ 2 ],
 					GET_CONFIG_COLOR( variables.m_visuals.m_out_of_fov_arrows_color ).get_u32( this->m_fading_alpha[ index ] ),
-					e_triangle_render_flags::triangle_render_flag_filled | e_triangle_render_flags::triangle_render_flag_outline ) );
+					e_triangle_render_flags::triangle_render_flag_filled ) );
 		};
 		out_of_fov_arrows( );
 

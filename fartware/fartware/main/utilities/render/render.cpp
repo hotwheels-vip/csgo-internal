@@ -85,6 +85,9 @@ void render_t::on_end_scene( const std::function< void( ) >& function, IDirect3D
 			m_fonts[ e_font_names::font_name_icon_11 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
 				weapon_icons_compressed_data, weapon_icons_compressed_size, 10.f, &icon_font_config, icon_ranges );
 
+			m_fonts[ e_font_names::font_name_indicator_28 ] =
+				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 28.f );
+
 			ImGuiFreeType::BuildFontAtlas( io.Fonts, 0x0 );
 		}( );
 
@@ -94,6 +97,8 @@ void render_t::on_end_scene( const std::function< void( ) >& function, IDirect3D
 	ImGui_ImplDX9_NewFrame( );
 	ImGui_ImplWin32_NewFrame( );
 	ImGui::NewFrame( );
+
+	globals.m_display_size = ImGui::GetIO( ).DisplaySize;
 
 	this->render_cached_draw_data( );
 
@@ -176,7 +181,7 @@ IDirect3DTexture9* render_t::steam_image( CSteamID steam_id )
 	}
 
 	long result = memory.m_device->CreateTexture( avatar_width, avatar_height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT,
-	                                                 &created_texture, nullptr );
+	                                              &created_texture, nullptr );
 
 	std::vector< unsigned char > texture_data = { };
 	texture_data.resize( avatar_width * avatar_height * 4U );
