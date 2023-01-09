@@ -2,8 +2,6 @@
 
 #include "../../dependencies/minhook/include/MinHook.h"
 
-#include "../source_engine/enumerations/e_client_frame_stage.h"
-
 #include "../includes.h"
 
 class c_detour_hook
@@ -95,6 +93,7 @@ struct hooks_t {
 	c_detour_hook vsnprintf               = { };
 	c_detour_hook emit_sound              = { };
 	c_detour_hook override_mouse_input    = { };
+	c_detour_hook modify_eye_position     = { };
 };
 
 inline hooks_t hooks = { };
@@ -118,6 +117,6 @@ namespace n_detoured_functions
 	void __fastcall draw_print_text( int ecx, int edx, const wchar_t* text, int text_length, int draw_type );
 	int __cdecl vsnprintf( char* dest, int text_length, const char* fmt, ... );
 	void __fastcall override_mouse_input( void* thisptr, int edx, float* x, float* y );
-
+	void __fastcall modify_eye_position( c_anim_state* anim_state, void* edx, c_vector& input_eye_pos );
 	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );
 } // namespace n_detoured_functions

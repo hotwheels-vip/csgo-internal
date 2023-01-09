@@ -13,26 +13,29 @@ bool hooks_t::on_attach( )
 	};
 
 	try {
-		static const auto alloc_key_values_memory_address = utilities.get_virtual_function( memory.m_key_values_system, 2 );
-		static const auto create_move_address             = utilities.get_virtual_function( interfaces.m_client, 22 );
-		static const auto frame_stage_notify_address      = utilities.get_virtual_function( interfaces.m_client, 37 );
-		static const auto on_add_entity_address =
+		const auto alloc_key_values_memory_address = utilities.get_virtual_function( memory.m_key_values_system, 2 );
+		const auto create_move_address             = utilities.get_virtual_function( interfaces.m_client, 22 );
+		const auto frame_stage_notify_address      = utilities.get_virtual_function( interfaces.m_client, 37 );
+		const auto on_add_entity_address =
 			reinterpret_cast< void* >( memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 51 8B 45 0C 53 56 8B F1 57" ) ) );
-		static const auto on_remove_entity_address = reinterpret_cast< void* >(
+		const auto on_remove_entity_address = reinterpret_cast< void* >(
 			memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07" ) ) );
-		static const auto level_init_pre_entity_address = utilities.get_virtual_function( interfaces.m_client, 5 );
-		static const auto level_shutdown_address        = utilities.get_virtual_function( interfaces.m_client, 7 );
-		static const auto paint_traverse_address        = utilities.get_virtual_function( interfaces.m_panel, 41 );
+		const auto level_init_pre_entity_address = utilities.get_virtual_function( interfaces.m_client, 5 );
+		const auto level_shutdown_address        = utilities.get_virtual_function( interfaces.m_client, 7 );
+		const auto paint_traverse_address        = utilities.get_virtual_function( interfaces.m_panel, 41 );
 
-		static const auto lock_cursor_address = utilities.get_virtual_function( interfaces.m_surface, 67 );
-		static const auto reset_address       = utilities.get_virtual_function( memory.m_device, 16 );
-		static const auto end_scene_address   = utilities.get_virtual_function( memory.m_device, 42 );
-		static const auto vsnprint_address    = reinterpret_cast< void* >(
+		const auto lock_cursor_address = utilities.get_virtual_function( interfaces.m_surface, 67 );
+		const auto reset_address       = utilities.get_virtual_function( memory.m_device, 16 );
+		const auto end_scene_address   = utilities.get_virtual_function( memory.m_device, 42 );
+		const auto vsnprint_address    = reinterpret_cast< void* >(
             memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 51 56 8B 75 0C 8D 45 14 57 8B 7D 08 8B D6 50 51 FF 75 10 8B CF E8 "
 		                                                                  "? ? ? ? 83 C4 0C 85 C0 78 08 85 F6 7E 0C 3B C6 7C 08 8D 46 FF" ) ) );
-		static const auto draw_print_text_address      = utilities.get_virtual_function( interfaces.m_surface, 28 );
-		static const auto emit_sound_address           = utilities.get_virtual_function( interfaces.m_engine_sound, 5 );
-		static const auto override_mouse_input_address = utilities.get_virtual_function( memory.m_client_mode, 23 );
+		const auto draw_print_text_address      = utilities.get_virtual_function( interfaces.m_surface, 28 );
+		const auto emit_sound_address           = utilities.get_virtual_function( interfaces.m_engine_sound, 5 );
+		const auto override_mouse_input_address = utilities.get_virtual_function( memory.m_client_mode, 23 );
+
+		const auto modify_eye_pos_address = reinterpret_cast< void* >(
+			memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60" ) ) );
 
 		if ( MH_Initialize( ) != MH_OK ) {
 			throw std::runtime_error( ( "failed initialize minhook" ) );
@@ -59,6 +62,8 @@ bool hooks_t::on_attach( )
 		initialise_hook( hooks.emit_sound, emit_sound_address, &n_detoured_functions::emit_sound, ( "IEngineSound::EmitSound()" ) );
 		initialise_hook( hooks.override_mouse_input, override_mouse_input_address, &n_detoured_functions::override_mouse_input,
 		                 ( "IClientModeShared::OverrideMouseInput()" ) );
+		initialise_hook( hooks.modify_eye_position, modify_eye_pos_address, &n_detoured_functions::modify_eye_position,
+		                 ( "CBaseAnimating::ModifyEyePos()" ) );
 
 		if ( interfaces.m_engine->is_in_game( ) ) {
 			console.print( "force updated entity cache" );

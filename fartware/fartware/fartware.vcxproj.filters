@@ -211,6 +211,8 @@
     <ClInclude Include="dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="main\source_engine\classes\c_anim_state.h" />
+    <ClInclude Include="main\utilities\macros.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />
@@ -264,6 +266,7 @@
     <ClCompile Include="dependencies\imgui\imgui_draw.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="main\hooks\functions\modify_eye_position.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />

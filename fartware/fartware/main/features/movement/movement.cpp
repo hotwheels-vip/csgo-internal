@@ -5,6 +5,14 @@ void movement_t::on_create_move_pre( )
 	prediction.m_data.m_flags    = globals.m_local->flags( );
 	prediction.m_data.m_velocity = globals.m_local->velocity( );
 
+	// no crouch cooldown
+	[]( ) {
+		if ( !GET_CONFIG_BOOL( variables.m_movement.m_fast_duck ) )
+			return;
+
+		globals.m_cmd->m_buttons |= e_buttons::in_bullrush;
+	}( );
+
 	const auto move_type = globals.m_local->move_type( );
 	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_observer )
 		return;

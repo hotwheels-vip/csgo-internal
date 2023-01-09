@@ -228,6 +228,8 @@ void menu_t::on_end_scene( )
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) )
 					ImGui::Keybind( "jump bug key", &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) );
 
+				ImGui::Checkbox( "no crouch cooldown", &GET_CONFIG_BOOL( variables.m_movement.m_fast_duck ) );
+
 				ImGui::EndChild( );
 			}
 
@@ -307,7 +309,7 @@ void menu_t::on_end_scene( )
 					                  globals.m_display_size.y );
 				}
 
-								ImGui::Checkbox( "sub indicators", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) );
+				ImGui::Checkbox( "sub indicators", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) );
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) )
 					ImGui::SliderInt( "position##sub indicators", &GET_CONFIG_INT( variables.m_movement.m_indicators.m_sub_indicators_position ), 30,
 					                  globals.m_display_size.y );

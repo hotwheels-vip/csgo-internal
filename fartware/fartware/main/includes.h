@@ -9,8 +9,10 @@
 
 #include "globals.h"
 
+#include "source_engine/classes/c_anim_state.h"
 #include "source_engine/classes/c_color.h"
 #include "source_engine/classes/c_user_cmd.h"
+#include "source_engine/enumerations/e_client_frame_stage.h"
 #include "source_engine/enumerations/e_move_types.h"
 #include "source_engine/interfaces/interfaces.h"
 #include "source_engine/structs/matrix_t.h"

@@ -24,7 +24,7 @@ void indicators_t::on_paint_traverse( )
 	static float take_off_time_stamina = 0.f;
 	static bool last_on_ground_stamina = false;
 
-	auto reset_data = [ & ]( ) {
+	constexpr auto reset_data = [ & ]( ) {
 		last_velocity           = 0;
 		tick_prev_velocity      = 0;
 		take_off_velocity       = 0;
@@ -179,7 +179,8 @@ void indicators_t::on_paint_traverse( )
 
 		/* TODO ~ change indicator colors when predicted or what ever u get it like blarity. . , .. . . . LOL XD dxdxdx :3 Sussuy Among Su */
 
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) )
+		// only render ej text when not ljing, else just render lj
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) && !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) )
 			render_indicator( "ej", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_long_jump ) )
