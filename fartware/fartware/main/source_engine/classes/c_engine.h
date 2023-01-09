@@ -57,6 +57,7 @@ private:
 		_get_player_info        = 8,
 		_get_local_player       = 12,
 		_get_view_angles        = 18,
+		_set_view_angles        = 19,
 		_is_in_game             = 26,
 		_cull_box               = 34,
 		_world_to_screen_matrix = 37,
@@ -66,6 +67,7 @@ private:
 	};
 
 public:
+	// todo: clean this shit
 	bool is_in_game( )
 	{
 		using fn = bool( __thiscall* )( c_engine* );
@@ -76,6 +78,12 @@ public:
 	{
 		using fn = void( __thiscall* )( c_engine*, c_angle& );
 		return ( *( fn** )this )[ this->e_indexes::_get_view_angles ]( this, std::ref( view_angle ) );
+	}
+
+	void set_view_angles( c_angle& view_angle )
+	{
+		using fn = void( __thiscall* )( c_engine*, c_angle& );
+		return ( *( fn** )this )[ this->e_indexes::_set_view_angles ]( this, std::ref( view_angle ) );
 	}
 
 	bool get_player_info( int index, player_info_t* player_info )

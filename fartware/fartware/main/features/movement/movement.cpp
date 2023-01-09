@@ -96,7 +96,8 @@ void movement_t::on_create_move_post( )
 		if ( !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) )
 			return;
 
-		if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) ) {
+		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
+		{
 			static bool ducked = false;
 
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -107,7 +108,9 @@ void movement_t::on_create_move_post( )
 
 			if ( prediction.m_data.m_flags & e_flags::fl_onground && ducked )
 				ducked = false;
-		} else {
+		}
+		else
+		{
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
 
@@ -158,5 +161,63 @@ void movement_t::on_create_move_post( )
 
 		globals.m_cmd->m_forward_move = std::clamp( x, -max_forward_speed, max_forward_speed );
 		globals.m_cmd->m_side_move    = std::clamp( y, -max_side_speed, max_side_speed );
+	}( );
+
+	// auto align
+	[ & ]( ) {
+		if ( prediction.m_data.m_flags & e_flags::fl_onground )
+			return;
+
+		struct {
+			c_vector start_pos;
+			c_vector end_pos;
+		} align_info;
+
+		float movement_angle = 0.f;
+
+		const bool back    = globals.m_cmd->m_buttons & e_buttons::in_back;
+		const bool forward = globals.m_cmd->m_buttons & e_buttons::in_forward;
+		const bool right   = globals.m_cmd->m_buttons & e_buttons::in_moveleft;
+		const bool left    = globals.m_cmd->m_buttons & e_buttons::in_moveright;
+
+		// diagonal rotation based on pressed keys
+		if ( back ) {
+			movement_angle = -180.f;
+
+			if ( right )
+				movement_angle -= 45.f;
+
+			else if ( left )
+				movement_angle += 45.f;
+		} else if ( right ) {
+			movement_angle = 90.f;
+
+			if ( back )
+				movement_angle += 45.f;
+
+			else if ( forward )
+				movement_angle -= 45.f;
+		} else if ( left ) {
+			movement_angle = -90.f;
+
+			if ( back )
+				movement_angle -= 45.f;
+
+			else if ( forward )
+				movement_angle += 45.f;
+		} else
+			movement_angle = 0.f;
+
+		const c_vector wish_direction{ std::cos( DEG2RAD( globals.m_cmd->m_view_point.m_y + movement_angle ) ) * 17.f,
+			                           std::sin( DEG2RAD( globals.m_cmd->m_view_point.m_y + movement_angle ) ) * 17.f, 0.f };
+
+		if ( wish_direction.is_zero( ) )
+			return;
+
+		// set our start and finish points for engine tracing
+		align_info.start_pos = globals.m_local->abs_origin( );
+		align_info.end_pos   = align_info.start_pos + wish_direction;
+
+		// TODO @float: add trace ray class so i can finish this
 	}( );
 }
