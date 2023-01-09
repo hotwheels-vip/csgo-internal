@@ -3,6 +3,7 @@
 #include "../../includes.h"
 #include "../../source_engine/enumerations/e_flags.h"
 #include "../../source_engine/enumerations/e_move_types.h"
+#include "../../utilities/mathematics/mathematics.h"
 #include "../prediction/prediction.h"
 
 void movement_t::on_create_move_pre( )
@@ -115,5 +116,47 @@ void movement_t::on_create_move_post( )
 			if ( !( flags & fl_onground ) && prediction.m_data.m_flags & fl_onground )
 				globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
 		}
+	}( );
+
+	// movement correction
+	[ & ]( ) {
+		const float max_forward_speed = convars.find( fnv1a::hash_const( "cl_forwardspeed" ) )->get_float( );
+		const float max_side_speed    = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
+		const float max_up_speed      = convars.find( fnv1a::hash_const( "cl_upspeed" ) )->get_float( );
+
+		c_vector forward = { }, right = { }, up = { };
+		mathematics.angle_vectors( globals.m_old_view_point, &forward, &right, &up );
+
+		forward.m_z = right.m_z = up.m_x = up.m_y = 0.f;
+
+		forward.normalize_in_place( );
+		right.normalize_in_place( );
+		up.normalize_in_place( );
+
+		c_vector old_forward = { }, old_right = { }, old_up = { };
+		mathematics.angle_vectors( globals.m_cmd->m_view_point, &old_forward, &old_right, &old_up );
+
+		old_forward.m_z = old_right.m_z = old_up.m_x = old_up.m_y = 0.f;
+
+		old_forward.normalize_in_place( );
+		old_right.normalize_in_place( );
+		old_up.normalize_in_place( );
+
+		const float pitch_forward = forward.m_x * globals.m_cmd->m_forward_move;
+		const float yaw_forward   = forward.m_y * globals.m_cmd->m_forward_move;
+		const float pitch_side    = right.m_x * globals.m_cmd->m_side_move;
+		const float yaw_side      = right.m_y * globals.m_cmd->m_side_move;
+		const float roll_up       = up.m_z * globals.m_cmd->m_up_move;
+
+		const float x = old_forward.m_x * pitch_side + old_forward.m_y * yaw_side + old_forward.m_x * pitch_forward + old_forward.m_y * yaw_forward +
+		                old_forward.m_z * roll_up;
+		const float y = old_right.m_x * pitch_side + old_right.m_y * yaw_side + old_right.m_x * pitch_forward + old_right.m_y * yaw_forward +
+		                old_right.m_z * roll_up;
+		const float z =
+			old_up.m_x * yaw_side + old_up.m_y * pitch_side + old_up.m_x * yaw_forward + old_up.m_y * pitch_forward + old_up.m_z * roll_up;
+
+		globals.m_cmd->m_forward_move = std::clamp( x, -max_forward_speed, max_forward_speed );
+		globals.m_cmd->m_side_move    = std::clamp( y, -max_side_speed, max_side_speed );
+		globals.m_cmd->m_up_move      = std::clamp( z, -max_up_speed, max_up_speed );
 	}( );
 }

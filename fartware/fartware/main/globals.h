@@ -10,6 +10,7 @@ struct globals_t {
 	c_user_cmd* m_cmd      = nullptr;
 	view_matrix_t m_view_matrix = { };
 	ImVec2 m_display_size       = { };
+	c_angle m_old_view_point    = { };
 };
 
 inline globals_t globals = { };

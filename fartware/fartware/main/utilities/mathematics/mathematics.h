@@ -1,19 +1,21 @@
 #pragma once
+#include "../../source_engine/classes/c_angle.h"
 #include "../../source_engine/classes/c_vector.h"
 #include "../../source_engine/structs/matrix_t.h"
 #include <directxmath.h>
 
 struct mathematics_t {
 	c_vector vector_transform( const c_vector& vector_to_transform, const matrix3x4_t& matrix );
+	void angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right = nullptr, c_vector* up = nullptr );
 };
 
 inline mathematics_t mathematics = { };
 
-#define HPI   DirectX::XM_PIDIV2 
-#define QPI   DirectX::XM_PIDIV4 
-#define PI    DirectX::XM_PI     
-#define GPI   1.6180339887498f   
-#define RADPI 57.295779513082f   
+#define HPI   DirectX::XM_PIDIV2
+#define QPI   DirectX::XM_PIDIV4
+#define PI    DirectX::XM_PI
+#define GPI   1.6180339887498f
+#define RADPI 57.295779513082f
 
 #define METRE2INCH( x ) ( ( x ) / 0.0254f )
 #define INCH2METRE( x ) ( ( x )*0.0254f )
