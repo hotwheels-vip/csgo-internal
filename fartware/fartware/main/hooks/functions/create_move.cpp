@@ -15,12 +15,10 @@ static void __stdcall create_move( int sequence_number, float input_sample_frame
 	if ( !cmd || !verified_cmd || !is_active )
 		return;
 
-	globals.m_cmd = cmd;
+	globals.m_cmd            = cmd;
 	globals.m_old_view_point = cmd->m_view_point;
 
-	const bool valid = memory.m_client_state->m_delta_tick > 0;
-
-	if ( valid )
+	if ( const bool valid = memory.m_client_state->m_delta_tick > 0; valid )
 		interfaces.m_prediction->update( memory.m_client_state->m_delta_tick, valid, memory.m_client_state->m_last_command_ack,
 		                                 memory.m_client_state->m_last_outgoing_command + memory.m_client_state->m_choked_commands );
 

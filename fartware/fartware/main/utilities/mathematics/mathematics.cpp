@@ -21,7 +21,7 @@ void mathematics_t::angle_vectors( const c_angle& angle, c_vector* forward, c_ve
 		forward->m_z = -sp;
 	}
 
-	if ( right  ) {
+	if ( right ) {
 		right->m_x = -1 * sr * sp * cy + -1 * cr * -sy;
 		right->m_y = -1 * sr * sp * sy + -1 * cr * cy;
 		right->m_z = -1 * sr * cp;

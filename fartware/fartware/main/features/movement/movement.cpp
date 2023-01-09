@@ -1,10 +1,4 @@
 #include "movement.h"
-#include "../../convars/convars.h"
-#include "../../includes.h"
-#include "../../source_engine/enumerations/e_flags.h"
-#include "../../source_engine/enumerations/e_move_types.h"
-#include "../../utilities/mathematics/mathematics.h"
-#include "../prediction/prediction.h"
 
 void movement_t::on_create_move_pre( )
 {
@@ -122,7 +116,6 @@ void movement_t::on_create_move_post( )
 	[ & ]( ) {
 		const float max_forward_speed = convars.find( fnv1a::hash_const( "cl_forwardspeed" ) )->get_float( );
 		const float max_side_speed    = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
-		const float max_up_speed      = convars.find( fnv1a::hash_const( "cl_upspeed" ) )->get_float( );
 
 		c_vector forward = { }, right = { }, up = { };
 		mathematics.angle_vectors( globals.m_old_view_point, &forward, &right, &up );
@@ -157,6 +150,5 @@ void movement_t::on_create_move_post( )
 
 		globals.m_cmd->m_forward_move = std::clamp( x, -max_forward_speed, max_forward_speed );
 		globals.m_cmd->m_side_move    = std::clamp( y, -max_side_speed, max_side_speed );
-		globals.m_cmd->m_up_move      = std::clamp( z, -max_up_speed, max_up_speed );
 	}( );
 }
