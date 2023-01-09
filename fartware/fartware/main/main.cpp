@@ -11,7 +11,7 @@
 #include <thread>
 
 /* TODO ~ float
- *	~ make a lambada for exception handling or something similar, so we can use it in hooks and other
+ *	~ make a lambda for exception handling or something similar, so we can use it in hooks and other
  *  ~ lua (jit)
  */
 
@@ -23,12 +23,9 @@ static DWORD WINAPI on_attach( void* instance )
 
 		console.on_attach( ( "debug console" ) );
 
-		const std::vector< const char* >& modules = { ( "client.dll" ),         ( "engine.dll" ),         ( "vgui2.dll" ),
-			                                          ( "vguimatsurface.dll" ), ( "localize.dll" ),       ( "server.dll" ),
-			                                          ( "panorama.dll" ),       ( "materialsystem.dll" ), ( "vstdlib.dll" ),
-			                                          ( "shaderapidx9.dll" ),
-			                                          ( "inputsystem.dll" ),
-			                                          ( "steam_api.dll" ),
+		const std::vector< const char* >& modules = { ( "client.dll" ),   ( "engine.dll" ),       ( "vgui2.dll" ),       ( "vguimatsurface.dll" ),
+			                                          ( "localize.dll" ), ( "server.dll" ),       ( "panorama.dll" ),    ( "materialsystem.dll" ),
+			                                          ( "vstdlib.dll" ),  ( "shaderapidx9.dll" ), ( "inputsystem.dll" ), ( "steam_api.dll" ),
 			                                          ( "datacache.dll" ) };
 
 		console.print( ( "initialising module handles" ) );
