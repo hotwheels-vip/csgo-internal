@@ -239,7 +239,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{cf5f1289-c527-463f-8ee6-cb6e8f856d7f}</ProjectGuid>
-    <RootNamespace>aurora</RootNamespace>
+    <RootNamespace>hotwheels</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>hotwheels</ProjectName>
   </PropertyGroup>
