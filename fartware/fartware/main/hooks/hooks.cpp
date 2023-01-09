@@ -2,7 +2,7 @@
 
 bool hooks_t::on_attach( )
 {
-	auto initialise_hook = []( c_detour_hook& detour_class, void* function, void* detour, const char* hook_name ) {
+	constexpr auto initialise_hook = []( c_detour_hook& detour_class, void* function, void* detour, const char* hook_name ) {
 		if ( !detour_class.create( function, detour ) ) {
 			console.print( ( "failed to hook {:s} @ {:p}" ), hook_name, function );
 			return false;
@@ -29,10 +29,10 @@ bool hooks_t::on_attach( )
 		static const auto end_scene_address   = utilities.get_virtual_function( memory.m_device, 42 );
 		static const auto vsnprint_address    = reinterpret_cast< void* >(
             memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 51 56 8B 75 0C 8D 45 14 57 8B 7D 08 8B D6 50 51 FF 75 10 8B CF E8 "
-		                                                                       "? ? ? ? 83 C4 0C 85 C0 78 08 85 F6 7E 0C 3B C6 7C 08 8D 46 FF" ) ) );
-		static const auto draw_print_text_address = utilities.get_virtual_function( interfaces.m_surface, 28 );
-		static const auto emit_sound_address      = utilities.get_virtual_function( interfaces.m_engine_sound, 5 );
-		static const auto override_mouse_input_address      = utilities.get_virtual_function( memory.m_client_mode, 23 );
+		                                                                  "? ? ? ? 83 C4 0C 85 C0 78 08 85 F6 7E 0C 3B C6 7C 08 8D 46 FF" ) ) );
+		static const auto draw_print_text_address      = utilities.get_virtual_function( interfaces.m_surface, 28 );
+		static const auto emit_sound_address           = utilities.get_virtual_function( interfaces.m_engine_sound, 5 );
+		static const auto override_mouse_input_address = utilities.get_virtual_function( memory.m_client_mode, 23 );
 
 		if ( MH_Initialize( ) != MH_OK ) {
 			throw std::runtime_error( ( "failed initialize minhook" ) );
