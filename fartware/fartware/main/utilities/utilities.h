@@ -2,27 +2,6 @@
 
 #include <string_view>
 
-template< typename T >
-class c_singleton
-{
-protected:
-	c_singleton( ) { }
-	~c_singleton( ) { }
-
-	c_singleton( const c_singleton& )            = delete;
-	c_singleton& operator=( const c_singleton& ) = delete;
-
-	c_singleton( c_singleton&& )            = delete;
-	c_singleton& operator=( c_singleton&& ) = delete;
-
-public:
-	static T& get( )
-	{
-		static T instance{ };
-		return instance;
-	}
-};
-
 struct utilities_t {
 	void* get_module_handle( const std::string_view module_name );
 	void* get_export_address( const void* module_handle, const std::string_view export_name );
