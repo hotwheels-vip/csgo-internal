@@ -67,7 +67,7 @@ struct variables_t {
 
 			ADD_VARIABLE( bool, m_velocity_indicator_fade_alpha, false );
 			ADD_VARIABLE( bool, m_velocity_indicator_custom_color, false );
-			ADD_VARIABLE( int, m_velocity_indicator_position, 0 );
+			ADD_VARIABLE( int, m_velocity_indicator_position, 30 );
 
 			ADD_VARIABLE( bool, m_stamina_indicator, false );
 			ADD_VARIABLE( bool, m_stamina_indicator_show_pre_speed, false );
@@ -75,7 +75,10 @@ struct variables_t {
 			ADD_VARIABLE( c_color, m_stamina_indicator_color2, c_color( 255, 255, 255, 255 ) );
 
 			ADD_VARIABLE( bool, m_stamina_indicator_fade_alpha, false );
-			ADD_VARIABLE( int, m_stamina_indicator_position, 0 );
+			ADD_VARIABLE( int, m_stamina_indicator_position, 30 );
+
+			ADD_VARIABLE( bool, m_sub_indicators, false );
+			ADD_VARIABLE( int, m_sub_indicators_position, 30 );
 
 		} m_indicators;
 	} m_movement;

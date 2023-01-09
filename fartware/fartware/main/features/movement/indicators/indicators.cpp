@@ -45,7 +45,8 @@ void indicators_t::on_paint_traverse( )
 
 	const bool on_ground = ( globals.m_local->flags( ) & e_flags::fl_onground );
 
-	auto velocity_indicator = [ & ]( ) {
+	// velocity indicator
+	[ & ]( ) {
 		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator ) )
 			return;
 
@@ -77,7 +78,7 @@ void indicators_t::on_paint_traverse( )
 		const std::string text = std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
 
 		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_28 ]->CalcTextSizeA(
-			render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, FLT_MAX, text.c_str( ) );
+			render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
 
 		render.m_draw_data.emplace_back(
 			e_draw_type::draw_type_text,
@@ -100,10 +101,10 @@ void indicators_t::on_paint_traverse( )
 		}
 
 		last_on_ground_velocity = on_ground;
-	};
-	velocity_indicator( );
+	}( );
 
-	auto stamina_indicator = [ & ]( ) {
+	// stamina indicator
+	[ & ]( ) {
 		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator ) )
 			return;
 
@@ -126,7 +127,7 @@ void indicators_t::on_paint_traverse( )
 			std::vformat( should_draw_take_off ? "{:.1f} ({:.1f})" : "{:.1f}", std::make_format_args( stamina, take_off_stamina ) );
 
 		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_28 ]->CalcTextSizeA(
-			render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, FLT_MAX, text.c_str( ) );
+			render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
 
 		render.m_draw_data.emplace_back(
 			e_draw_type::draw_type_text,
@@ -146,6 +147,48 @@ void indicators_t::on_paint_traverse( )
 		}
 
 		last_on_ground_stamina = on_ground;
-	};
-	stamina_indicator( );
+	}( );
+
+	// movement indicators
+	[ & ]( ) {
+		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) )
+			return;
+
+		float offset                = 0.f;
+		const auto render_indicator = [ & ]( const char* indicator_name, const c_color& color, bool active ) {
+			ImAnimationHelper indicator_animation = ImAnimationHelper( fnv1a::hash( indicator_name ), ImGui::GetIO( ).DeltaTime );
+			indicator_animation.Update( 2.f, active ? 2.f : -2.f );
+
+			if ( indicator_animation.AnimationData->second <= 0.f )
+				return;
+
+			const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_28 ]->CalcTextSizeA(
+				render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, 0.f, indicator_name );
+
+			render.m_draw_data.emplace_back(
+				e_draw_type::draw_type_text,
+				std::make_any< text_draw_object_t >(
+					render.m_fonts[ e_font_names::font_name_indicator_28 ],
+					c_vector_2d( ( globals.m_display_size.x - text_size.x ) / 2.f,
+			                     globals.m_display_size.y - offset - GET_CONFIG_INT( variables.m_movement.m_indicators.m_sub_indicators_position ) ),
+					indicator_name, color.get_u32( indicator_animation.AnimationData->second ),
+					ImColor( 0.f, 0.f, 0.f, indicator_animation.AnimationData->second ), e_text_render_flags::text_render_flag_dropshadow ) );
+
+			offset -= ( text_size.y * indicator_animation.AnimationData->second );
+		};
+
+		/* TODO ~ change indicator colors when predicted or what ever u get it like blarity. . , .. . . . LOL XD dxdxdx :3 Sussuy Among Su */
+
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) )
+			render_indicator( "ej", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) ) );
+
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_long_jump ) )
+			render_indicator( "lj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) );
+
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_mini_jump ) )
+			render_indicator( "mj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_mini_jump_key ) ) );
+
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) )
+			render_indicator( "jb", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) );
+	}( );
 }
