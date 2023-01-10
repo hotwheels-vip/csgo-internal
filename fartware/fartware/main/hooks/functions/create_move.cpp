@@ -14,9 +14,6 @@ bool __stdcall n_detoured_functions::create_move( float input_sample_time, c_use
 	if ( !interfaces.m_engine->is_in_game( ) )
 		return true;
 
-	if ( original( input_sample_time, cmd ) )
-		interfaces.m_prediction->set_local_view_angles( cmd->m_view_point );
-
 	globals.m_cmd = cmd;
 
 	if ( !memory.m_client_state /*|| interfaces.m_engine->is_playing_demo( )*/ )
