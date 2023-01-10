@@ -45,6 +45,25 @@ void movement_t::on_create_move_post( )
 	const auto max_forward_speed = convars.find( fnv1a::hash_const( "cl_forwardspeed" ) )->get_float( );
 	const auto max_side_speed    = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
 
+	// delay hop
+	[ & ]( ) {
+		if ( !GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) )
+			return;
+
+		if ( !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) )
+			return;
+
+		static int ticks;
+
+		if ( flags & e_flags::fl_onground )
+			ticks++;
+		else
+			ticks = 0;
+
+		if ( ticks >= 4 && flags & e_flags::fl_onground )
+			globals.m_cmd->m_buttons |= e_buttons::in_jump;
+	}( );
+
 	// edgejump
 	[ & ]( ) {
 		if ( !GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) )
@@ -352,7 +371,12 @@ void movement_t::on_create_move_post( )
 		}
 	}( );
 
+	int buttons = globals.m_cmd->m_buttons;
 	edgebug( );
+	if ( !movement.m_edgebug_data.m_will_edgebug )
+		globals.m_cmd->m_buttons = buttons;
+	if ( interfaces.m_prediction->m_commands_predicted > 1 )
+		prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
 }
 
 // handles strafing to edgebug
@@ -362,31 +386,30 @@ void movement_t::handle_edgebug_view_point( )
 	if ( !movement.m_edgebug_data.m_will_edgebug || !movement.m_edgebug_data.m_should_strafe )
 		return;
 
-	struct {
-		c_angle wish_angles = { };
-		float hit_time_delta{ };
-		float cur_time_delta{ };
+	c_angle wish_angles = { };
+	float hit_time_delta{ };
+	float cur_time_delta{ };
 
-		float final_yaw{ };
-	} info;
+	float final_yaw{ };
 
-	info.wish_angles = { globals.m_old_view_point.m_x, movement.m_edgebug_data.m_starting_yaw, globals.m_old_view_point.m_z };
+	wish_angles = { globals.m_old_view_point.m_x, movement.m_edgebug_data.m_starting_yaw, globals.m_old_view_point.m_z };
 
-	info.hit_time_delta = mathematics.ticks_to_time( movement.m_edgebug_data.m_ticks_to_stop + 1 );
-	info.cur_time_delta = memory.m_globals->m_current_time - mathematics.ticks_to_time( movement.m_edgebug_data.m_last_tick );
+	hit_time_delta = mathematics.ticks_to_time( movement.m_edgebug_data.m_ticks_to_stop + 1 );
+	cur_time_delta = memory.m_globals->m_current_time - mathematics.ticks_to_time( movement.m_edgebug_data.m_last_tick );
 
-	info.final_yaw = mathematics.normalize_yaw( movement.m_edgebug_data.m_yaw_delta *
-	                                            ( movement.m_edgebug_data.m_last_tick * ( info.cur_time_delta / info.hit_time_delta ) ) );
+	final_yaw = mathematics.normalize_yaw( movement.m_edgebug_data.m_yaw_delta *
+	                                       ( movement.m_edgebug_data.m_last_tick * ( cur_time_delta / hit_time_delta ) ) );
 
-	info.wish_angles.m_y += info.final_yaw;
+	wish_angles.m_y += final_yaw;
 
-	interfaces.m_engine->set_view_angles( info.wish_angles );
+	interfaces.m_engine->set_view_angles( wish_angles );
 }
 
 void movement_t::detect_edgebug( )
 {
 	if ( !globals.m_local || !globals.m_local->is_alive( ) || globals.m_local->move_type( ) & e_move_types::move_type_noclip ||
-	     globals.m_local->move_type( ) & e_move_types::move_type_ladder || round( globals.m_local->velocity( ).m_z ) == 0 ) {
+	     globals.m_local->move_type( ) & e_move_types::move_type_ladder || round( globals.m_local->velocity( ).m_z ) == 0 ||
+	     globals.m_local->flags( ) & e_flags::fl_onground ) {
 		movement.m_edgebug_data.m_will_edgebug = false;
 		movement.m_edgebug_data.m_will_fail    = true;
 		return;
@@ -415,6 +438,9 @@ void movement_t::detect_edgebug( )
 				movement.m_edgebug_data.m_will_fail    = true;
 			}
 		}
+	} else {
+		movement.m_edgebug_data.m_will_edgebug = false;
+		movement.m_edgebug_data.m_will_fail    = true;
 	}
 }
 
@@ -423,25 +449,7 @@ void movement_t::edgebug( )
 	if ( !GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) || !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) ) {
 		movement.m_edgebug_data.m_ticks_to_stop = 0;
 		movement.m_edgebug_data.m_last_tick     = 0;
-		return;
-	}
-
-	if ( movement.m_edgebug_data.m_will_edgebug ) {
-		// crouch/uncrouch accordingly
-		movement.m_edgebug_data.m_should_crouch ? globals.m_cmd->m_buttons |= e_buttons::in_duck : globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
-
-		if ( movement.m_edgebug_data.m_should_strafe ) {
-			globals.m_cmd->m_forward_move = movement.m_edgebug_data.m_forward_move;
-			globals.m_cmd->m_side_move    = movement.m_edgebug_data.m_side_move;
-
-			globals.m_cmd->m_view_point.m_y = mathematics.normalize_yaw(
-				movement.m_edgebug_data.m_starting_yaw +
-				( movement.m_edgebug_data.m_yaw_delta * ( memory.m_globals->m_tick_count - movement.m_edgebug_data.m_last_tick ) ) );
-		} else // not a strafed edgebug
-		{
-			globals.m_cmd->m_side_move = globals.m_cmd->m_forward_move = 0.f;
-		}
-
+		movement.m_edgebug_data.m_will_edgebug  = false;
 		return;
 	}
 
@@ -527,7 +535,9 @@ void movement_t::edgebug( )
 			for ( int predicted_tick = 0; predicted_tick < GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ); predicted_tick++ ) {
 				// calculate our strafe delta based on current prediction tick
 				if ( prediction.m_data.m_flags & e_flags::fl_onground || prediction.m_data.m_velocity.m_z > 0 ) {
-					movement.m_edgebug_data.m_will_edgebug = false;
+					movement.m_edgebug_data.m_will_edgebug  = false;
+					movement.m_edgebug_data.m_ticks_to_stop = 0;
+					movement.m_edgebug_data.m_last_tick     = 0;
 					break;
 				}
 
@@ -580,4 +590,21 @@ void movement_t::edgebug( )
 	globals.m_cmd->m_forward_move = original_movement.forward_move;
 	globals.m_cmd->m_side_move    = original_movement.side_move;
 	globals.m_cmd->m_buttons      = original_movement.buttons;
+
+	if ( movement.m_edgebug_data.m_will_edgebug ) {
+		// crouch/uncrouch accordingly
+		movement.m_edgebug_data.m_should_crouch ? globals.m_cmd->m_buttons |= e_buttons::in_duck : globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
+
+		if ( movement.m_edgebug_data.m_should_strafe ) {
+			globals.m_cmd->m_forward_move = movement.m_edgebug_data.m_forward_move;
+			globals.m_cmd->m_side_move    = movement.m_edgebug_data.m_side_move;
+
+			globals.m_cmd->m_view_point.m_y = mathematics.normalize_yaw(
+				movement.m_edgebug_data.m_starting_yaw +
+				( movement.m_edgebug_data.m_yaw_delta * ( memory.m_globals->m_tick_count - movement.m_edgebug_data.m_last_tick ) ) );
+		} else // not a strafed edgebug
+		{
+			globals.m_cmd->m_side_move = globals.m_cmd->m_forward_move = 0.f;
+		}
+	}
 }

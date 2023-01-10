@@ -60,8 +60,11 @@ struct variables_t {
 		ADD_VARIABLE( int, m_edge_bug_ticks, 32 );
 		ADD_VARIABLE( float, m_edge_bug_lock_amt, 0.3f );
 
-				ADD_VARIABLE( bool, m_pixel_surf, false );
+		ADD_VARIABLE( bool, m_pixel_surf, false );
 		ADD_VARIABLE( key_bind_t, m_pixel_surf_key, key_bind_t( 0, 1 ) );
+
+		ADD_VARIABLE( bool, m_delay_hop, false );
+		ADD_VARIABLE( key_bind_t, m_delay_hop_key, key_bind_t( 0, 1 ) );
 
 		ADD_VARIABLE( bool, m_fast_duck, false );
 

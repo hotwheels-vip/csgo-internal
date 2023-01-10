@@ -10,6 +10,10 @@ bool __stdcall n_detoured_functions::create_move( float input_sample_time, c_use
 	if ( !cmd || !cmd->m_command_number )
 		return original( input_sample_time, cmd );
 
+	// trust me.
+	if ( !interfaces.m_engine->is_in_game( ) )
+		return true;
+
 	if ( original( input_sample_time, cmd ) )
 		interfaces.m_prediction->set_local_view_angles( cmd->m_view_point );
 

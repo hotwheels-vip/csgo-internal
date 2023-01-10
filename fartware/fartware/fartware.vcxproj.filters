@@ -269,6 +269,7 @@
     <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="main\hooks\functions\modify_eye_position.cpp" />
     <ClCompile Include="main\hooks\functions\draw_set_color.cpp" />
+    <ClCompile Include="main\source_engine\classes\c_anim_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />

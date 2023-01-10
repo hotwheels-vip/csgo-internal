@@ -229,6 +229,7 @@
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="main\memory\memory.cpp" />
     <ClCompile Include="main\menu\menu.cpp" />
+    <ClCompile Include="main\source_engine\classes\c_anim_state.cpp" />
     <ClCompile Include="main\source_engine\classes\c_base_entity.cpp" />
     <ClCompile Include="main\source_engine\interfaces\interfaces.cpp" />
     <ClCompile Include="main\source_engine\netvars\netvars.cpp" />

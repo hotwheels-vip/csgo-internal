@@ -145,6 +145,10 @@ public:
 		return ( *( fn** )this )[ this->e_indexes::_abs_origin ]( this );
 	}
 
+	int lookup_bone( const char* bone );
+
+	void get_bone_position( const int bone, c_vector& origin );
+
 	/* CCSPlayer */
 	add_variable( int, money, "CCSPlayer->m_iAccount" );
 	add_variable( int, armor, "CCSPlayer->m_ArmorValue" );

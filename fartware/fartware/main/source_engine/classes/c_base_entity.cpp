@@ -83,6 +83,24 @@ void c_base_entity::set_abs_origin( const c_vector& origin )
 	original_set_abs_origin( this, origin );
 }
 
+int c_base_entity::lookup_bone( const char* bone )
+{
+	static auto lookup_bone_fn = reinterpret_cast< int( __thiscall* )( void*, const char* ) >(
+		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 53 56 8B F1 57 83 BE ? ? ? ? ? 75" ) );
+
+	return lookup_bone_fn( this, bone );
+}
+
+void c_base_entity::get_bone_position( const int bone, c_vector& origin )
+{
+	static auto get_bone_position_fn = reinterpret_cast< void( __thiscall* )( void*, int, c_vector* ) >(
+		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 83 E4 F8 56 8B F1 57 83" ) );
+
+	c_vector return_value[ 4 ];
+	get_bone_position_fn( this, bone, return_value );
+	origin = { return_value[ 1 ][ 0 ], return_value[ 2 ][ 1 ], return_value[ 3 ][ 2 ] };
+}
+
 void c_base_entity::post_think( )
 {
 	static auto post_think_vphysics = reinterpret_cast< bool( __thiscall* )( c_base_entity* ) >(

@@ -65,4 +65,6 @@ class c_anim_state
 	float aim_pitch_min;
 	float aim_pitch_max;
 	int animstate_version;
+
+	void modify_eye_position( c_vector& input_eye_pos );
 };

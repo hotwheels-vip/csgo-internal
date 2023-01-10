@@ -5,6 +5,7 @@
 #include "../../../source_engine/enumerations/e_flags.h"
 #include "../../../source_engine/enumerations/e_move_types.h"
 #include "../../prediction/prediction.h"
+#include "../movement.h"
 
 void indicators_t::on_paint_traverse( )
 {
@@ -179,12 +180,23 @@ void indicators_t::on_paint_traverse( )
 
 		/* TODO ~ change indicator colors when predicted or what ever u get it like blarity. . , .. . . . LOL XD dxdxdx :3 Sussuy Among Su */
 
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) )
+			render_indicator( "ps", movement.m_pixel_surf_data.m_in_pixel_surf ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
+			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) );
+
 		// only render ej text when not ljing, else just render lj
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) && !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) )
 			render_indicator( "ej", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_long_jump ) )
 			render_indicator( "lj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) );
+
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) )
+			render_indicator( "eb", movement.m_edgebug_data.m_will_edgebug ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
+			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
+
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) )
+			render_indicator( "dh", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_mini_jump ) )
 			render_indicator( "mj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_mini_jump_key ) ) );
