@@ -10,30 +10,32 @@
 
 struct movement_t {
 	struct edgebug_data_t {
-		bool will_edgebug{ };
-		bool will_fail{ };
-		bool should_crouch{ };
-		bool should_strafe{ };
+		bool m_will_edgebug{ };
+		bool m_will_fail{ };
+		bool m_should_crouch{ };
+		bool m_should_strafe{ };
 
-		float yaw_delta;
-		float forward_move, side_move;
-		float starting_yaw;
+		float m_yaw_delta;
+		float m_forward_move, m_side_move;
+		float m_starting_yaw;
 
-		double saved_mousedx{ };
-		int ticks_to_stop{ };
-		int last_tick{ };
-	} edgebug_data; /* TODO ~ @DREAM m_ prefix :3 when u have time: 3;3;3;3;3 */
+		double m_saved_mousedx{ };
+		int m_ticks_to_stop{ };
+		int m_last_tick{ };
+	} m_edgebug_data;
 
 	struct pixel_surf_data_t {
 		bool m_predicted_succesful = { }, m_in_pixel_surf = { }, m_should_duck = { };
-		int m_prediction_ticks = { };
-		c_user_cmd* m_simulated_cmd      = { };
+		int m_prediction_ticks      = { };
+		c_user_cmd* m_simulated_cmd = { };
 	} m_pixel_surf_data;
 
 	void on_create_move_pre( );
 	void on_create_move_post( );
 
 	void edgebug( );
+
+	void handle_edgebug_view_point( );
 
 private:
 	void detect_edgebug( );

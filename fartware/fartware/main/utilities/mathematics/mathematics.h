@@ -12,6 +12,10 @@ struct mathematics_t {
 	void angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right = nullptr, c_vector* up = nullptr );
 
 	float normalize_yaw( float yaw );
+
+	std::int32_t time_to_ticks( float time );
+
+	float ticks_to_time( std::int32_t ticks );
 };
 
 inline mathematics_t mathematics = { };

@@ -1,4 +1,5 @@
 #include "mathematics.h"
+#include "../../memory/memory.h"
 
 c_vector mathematics_t::vector_transform( const c_vector& vector_to_transform, const matrix3x4_t& matrix )
 {
@@ -32,6 +33,16 @@ void mathematics_t::angle_vectors( const c_angle& angle, c_vector* forward, c_ve
 		up->m_y = cr * sp * sy + -sr * cy;
 		up->m_z = cr * cp;
 	}
+}
+
+std::int32_t mathematics_t::time_to_ticks( float time )
+{
+	return static_cast< std::int32_t >( 0.5f + time / memory.m_globals->m_interval_per_tick );
+}
+
+float mathematics_t::ticks_to_time( std::int32_t ticks )
+{
+	return static_cast< float >( ticks ) * memory.m_globals->m_interval_per_tick;
 }
 
 c_vector mathematics_t::to_angle( const c_vector& in )
