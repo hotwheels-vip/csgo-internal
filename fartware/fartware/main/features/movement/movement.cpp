@@ -168,12 +168,18 @@ void movement_t::on_create_move_post( )
 		if ( prediction.m_data.m_flags & e_flags::fl_onground )
 			return;
 
+		c_game_trace trace, second_trace;
+		ray_t ray, second_ray;
+		c_trace_filter filter, second_filter;
+
 		struct {
 			c_vector start_pos;
-			c_vector end_pos;
+			c_vector end_pos, second_end_pos;
+			c_vector current_velocity;
+			float movement_angle = 0.f;
+			float velocity       = 0.f;
+			float ideal_delta    = 0.f;
 		} align_info;
-
-		float movement_angle = 0.f;
 
 		const bool back    = globals.m_cmd->m_buttons & e_buttons::in_back;
 		const bool forward = globals.m_cmd->m_buttons & e_buttons::in_forward;
@@ -182,34 +188,34 @@ void movement_t::on_create_move_post( )
 
 		// diagonal rotation based on pressed keys
 		if ( back ) {
-			movement_angle = -180.f;
+			align_info.movement_angle = -180.f;
 
 			if ( right )
-				movement_angle -= 45.f;
+				align_info.movement_angle -= 45.f;
 
 			else if ( left )
-				movement_angle += 45.f;
+				align_info.movement_angle += 45.f;
 		} else if ( right ) {
-			movement_angle = 90.f;
+			align_info.movement_angle = 90.f;
 
 			if ( back )
-				movement_angle += 45.f;
+				align_info.movement_angle += 45.f;
 
 			else if ( forward )
-				movement_angle -= 45.f;
+				align_info.movement_angle -= 45.f;
 		} else if ( left ) {
-			movement_angle = -90.f;
+			align_info.movement_angle = -90.f;
 
 			if ( back )
-				movement_angle -= 45.f;
+				align_info.movement_angle -= 45.f;
 
 			else if ( forward )
-				movement_angle += 45.f;
+				align_info.movement_angle += 45.f;
 		} else
-			movement_angle = 0.f;
+			align_info.movement_angle = 0.f;
 
-		const c_vector wish_direction{ std::cos( DEG2RAD( globals.m_cmd->m_view_point.m_y + movement_angle ) ) * 17.f,
-			                           std::sin( DEG2RAD( globals.m_cmd->m_view_point.m_y + movement_angle ) ) * 17.f, 0.f };
+		const c_vector wish_direction{ std::cos( DEG2RAD( globals.m_cmd->m_view_point.m_y + align_info.movement_angle ) ) * 17.f,
+			                           std::sin( DEG2RAD( globals.m_cmd->m_view_point.m_y + align_info.movement_angle ) ) * 17.f, 0.f };
 
 		if ( wish_direction.is_zero( ) )
 			return;
@@ -218,6 +224,47 @@ void movement_t::on_create_move_post( )
 		align_info.start_pos = globals.m_local->abs_origin( );
 		align_info.end_pos   = align_info.start_pos + wish_direction;
 
-		// TODO @float: add trace ray class so i can finish this
+		ray.init( align_info.start_pos, align_info.end_pos );
+
+		filter.skip = globals.m_local;
+
+		// our wish direction trace
+		interfaces.m_engine_trace->trace_ray( ray, masks::MASK_PLAYERSOLID, &filter, &trace );
+
+		// if trace hit anything
+		if ( trace.fraction < 1.f && trace.plane.normal.m_z == 0.f ) {
+			// wall angles
+			c_vector angles = { trace.plane.normal.m_x * -16.005f, trace.plane.normal.m_y * -16.005f, 0.f };
+
+			// initialize our second trace
+			align_info.second_end_pos = align_info.start_pos + angles;
+			second_ray.init( align_info.start_pos, align_info.second_end_pos );
+			interfaces.m_engine_trace->trace_ray( second_ray, masks::MASK_PLAYERSOLID, &filter, &second_trace );
+
+			if ( trace.plane != second_trace.plane ) {
+				c_vector angle_to_wall = mathematics.to_angle( angles );
+
+				align_info.velocity = std::hypotf( globals.m_local->velocity( ).m_x, globals.m_local->velocity( ).m_y );
+				align_info.ideal_delta =
+					RAD2DEG( atanf( ( globals.m_cmd->m_buttons & in_duck ? 4.6775f : 4.5500f ) / align_info.velocity ) ) * ( 2.f * PI );
+
+				align_info.current_velocity     = globals.m_local->velocity( );
+				align_info.current_velocity.m_z = 0.f;
+
+				c_vector current_velocity_angle = mathematics.to_angle( align_info.current_velocity );
+
+				c_vector delta = current_velocity_angle - angle_to_wall;
+
+				delta.normalize_in_place( );
+
+				delta.m_y >= 0.f ? angle_to_wall.m_y += align_info.ideal_delta : angle_to_wall.m_y -= align_info.ideal_delta;
+
+				float cos_rot = std::cos( DEG2RAD( angle_to_wall.m_y - globals.m_cmd->m_view_point.m_y ) );
+				float sin_rot = std::sin( DEG2RAD( angle_to_wall.m_y - globals.m_cmd->m_view_point.m_y ) );
+
+				globals.m_cmd->m_forward_move = cos_rot * 450.f;
+				globals.m_cmd->m_side_move    = -sin_rot * 450.f;
+			}
+		}
 	}( );
 }

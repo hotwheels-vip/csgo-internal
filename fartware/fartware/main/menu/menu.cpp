@@ -230,6 +230,8 @@ void menu_t::on_end_scene( )
 
 				ImGui::Checkbox( "no crouch cooldown", &GET_CONFIG_BOOL( variables.m_movement.m_fast_duck ) );
 
+				ImGui::Checkbox( "auto align", &GET_CONFIG_BOOL( variables.m_movement.m_auto_align ) );
+
 				ImGui::EndChild( );
 			}
 
@@ -309,7 +311,7 @@ void menu_t::on_end_scene( )
 					                  globals.m_display_size.y );
 				}
 
-				ImGui::Checkbox( "sub indicators", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) );
+				ImGui::Checkbox( "keybind indicators", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) );
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) )
 					ImGui::SliderInt( "position##sub indicators", &GET_CONFIG_INT( variables.m_movement.m_indicators.m_sub_indicators_position ), 30,
 					                  globals.m_display_size.y );

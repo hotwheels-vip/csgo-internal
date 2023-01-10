@@ -33,3 +33,8 @@ void mathematics_t::angle_vectors( const c_angle& angle, c_vector* forward, c_ve
 		up->m_z = cr * cp;
 	}
 }
+
+c_vector mathematics_t::to_angle( const c_vector& in )
+{
+	return c_vector{ RAD2DEG( std::atan2( -in.m_z, std::hypot( in.m_x, in.m_y ) ) ), RAD2DEG( std::atan2( in.m_y, in.m_x ) ), 0.0f };
+};

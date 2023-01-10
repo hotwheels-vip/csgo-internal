@@ -8,19 +8,18 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* thisptr, int edx
 	if ( !interfaces.m_engine->is_in_game( ) )
 		return original( thisptr, edx, stage );
 
-	c_base_entity* local = globals.m_local =
+	globals.m_local =
 		reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity( interfaces.m_engine->get_local_player( ) ) );
-	if ( !local )
+
+	if ( !globals.m_local )
 		return original( thisptr, edx, stage );
 
-	switch ( stage) {
+	switch ( stage ) {
 	case e_client_frame_stage::start:
-	{
 		globals.m_view_matrix = interfaces.m_engine->world_to_screen_matrix( );
 
 		avatar_cache.on_frame_stage_notify( );
 		break;
-	}
 	}
 
 	original( thisptr, edx, stage );

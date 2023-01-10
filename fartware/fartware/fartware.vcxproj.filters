@@ -213,6 +213,7 @@
     <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="main\source_engine\classes\c_anim_state.h" />
     <ClInclude Include="main\utilities\macros.h" />
+    <ClInclude Include="main\source_engine\classes\c_engine_trace.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />

@@ -56,6 +56,8 @@ struct variables_t {
 
 		ADD_VARIABLE( bool, m_fast_duck, false );
 
+		ADD_VARIABLE( bool, m_auto_align, false );
+
 		struct indicators_t {
 			ADD_VARIABLE( bool, m_velocity_indicator, false );
 			ADD_VARIABLE( bool, m_velocity_indicator_show_pre_speed, false );

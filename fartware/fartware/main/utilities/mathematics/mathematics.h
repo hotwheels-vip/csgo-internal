@@ -7,6 +7,7 @@
 struct mathematics_t {
 	c_vector vector_transform( const c_vector& vector_to_transform, const matrix3x4_t& matrix );
 	void angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right = nullptr, c_vector* up = nullptr );
+	c_vector to_angle( const c_vector& in );
 };
 
 inline mathematics_t mathematics = { };

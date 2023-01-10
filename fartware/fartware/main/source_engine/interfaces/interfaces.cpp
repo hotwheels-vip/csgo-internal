@@ -43,8 +43,7 @@ bool interfaces_t::on_attach( )
 	if ( ( this->m_engine_sound = this->find< void >( memory.m_modules[ e_module_names::engine ].m_value, ( "IEngineSoundClient" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_surface = this->find< c_surface >( memory.m_modules[ e_module_names::vguimatsurface ].m_value, ( "VGUI_Surface" ) ) ) ==
-	     nullptr )
+	if ( ( this->m_surface = this->find< c_surface >( memory.m_modules[ e_module_names::vguimatsurface ].m_value, ( "VGUI_Surface" ) ) ) == nullptr )
 		return false;
 
 	if ( ( this->m_input_system =
@@ -64,13 +63,19 @@ bool interfaces_t::on_attach( )
 	if ( ( this->m_convar = this->find< c_convar >( memory.m_modules[ e_module_names::vstdlib ].m_value, ( "VEngineCvar" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_game_movement = this->find< c_game_movement >( memory.m_modules[ e_module_names::client ].m_value, ( "GameMovement" ) ) ) == nullptr )
+	if ( ( this->m_game_movement = this->find< c_game_movement >( memory.m_modules[ e_module_names::client ].m_value, ( "GameMovement" ) ) ) ==
+	     nullptr )
 		return false;
 
-	if ( ( this->m_prediction = this->find< c_prediction >( memory.m_modules[ e_module_names::client ].m_value, ( "VClientPrediction" ) ) ) == nullptr )
+	if ( ( this->m_prediction = this->find< c_prediction >( memory.m_modules[ e_module_names::client ].m_value, ( "VClientPrediction" ) ) ) ==
+	     nullptr )
 		return false;
 
 	if ( ( this->m_mdl_cache = this->find< c_mdl_cache >( memory.m_modules[ e_module_names::datacache ].m_value, ( "MDLCache" ) ) ) == nullptr )
+		return false;
+
+	if ( ( this->m_engine_trace =
+	           this->find< c_engine_trace_client >( memory.m_modules[ e_module_names::engine ].m_value, ( "EngineTraceClient" ) ) ) == nullptr )
 		return false;
 
 	/* TODO ~ float ~ snake_caseify this */

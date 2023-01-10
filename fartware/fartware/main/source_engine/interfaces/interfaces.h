@@ -6,6 +6,7 @@
 #include "../classes/c_client_entity_list.h"
 #include "../classes/c_convar.h"
 #include "../classes/c_engine.h"
+#include "../classes/c_engine_trace.h"
 #include "../classes/c_input_system.h"
 #include "../classes/c_localize.h"
 #include "../classes/c_mdl_cache.h"
@@ -43,6 +44,7 @@ struct interfaces_t {
 	c_game_movement* m_game_movement           = nullptr;
 	void* m_engine_sound                       = nullptr;
 	c_mdl_cache* m_mdl_cache                   = nullptr;
+	c_engine_trace_client* m_engine_trace      = nullptr;
 };
 
 inline interfaces_t interfaces = { };

@@ -23,9 +23,7 @@ public:
 class c_vector
 {
 public:
-	constexpr c_vector( float m_x = 0.f, float m_y = 0.f, float m_z = 0.f ) : m_x( m_x ), m_y( m_y ), m_z( m_z )
-	{
-	}
+	constexpr c_vector( float m_x = 0.f, float m_y = 0.f, float m_z = 0.f ) : m_x( m_x ), m_y( m_y ), m_z( m_z ) { }
 
 	constexpr c_vector( const float* vector ) : m_x( vector[ 0 ] ), m_y( vector[ 1 ] ), m_z( vector[ 2 ] ) { }
 
@@ -286,10 +284,7 @@ public:
 class c_vector_4d
 {
 public:
-	constexpr c_vector_4d( float m_x = 0.f, float m_y = 0.f, float m_z = 0.f, float w = 0.f )
-		: m_x( m_x ), m_y( m_y ), m_z( m_z ), w( w )
-	{
-	}
+	constexpr c_vector_4d( float m_x = 0.f, float m_y = 0.f, float m_z = 0.f, float w = 0.f ) : m_x( m_x ), m_y( m_y ), m_z( m_z ), w( w ) { }
 
 public:
 	float m_x = { }, m_y = { }, m_z = { }, w = { };
