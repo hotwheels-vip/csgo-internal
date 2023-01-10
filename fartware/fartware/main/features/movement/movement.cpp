@@ -155,8 +155,6 @@ void movement_t::on_create_move_post( )
 		                old_forward.m_z * roll_up;
 		const float y = old_right.m_x * pitch_side + old_right.m_y * yaw_side + old_right.m_x * pitch_forward + old_right.m_y * yaw_forward +
 		                old_right.m_z * roll_up;
-		const float z =
-			old_up.m_x * yaw_side + old_up.m_y * pitch_side + old_up.m_x * yaw_forward + old_up.m_y * pitch_forward + old_up.m_z * roll_up;
 
 		globals.m_cmd->m_forward_move = std::clamp( x, -max_forward_speed, max_forward_speed );
 		globals.m_cmd->m_side_move    = std::clamp( y, -max_side_speed, max_side_speed );
@@ -274,7 +272,7 @@ void movement_t::detect_edgebug( ) { }
 
 void movement_t::edgebug( )
 {
-	if ( !GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) || !!input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) ) {
+	if ( !GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) || !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) ) {
 		movement.edgebug_data.ticks_to_stop = 0;
 		movement.edgebug_data.last_tick     = 0;
 		return;

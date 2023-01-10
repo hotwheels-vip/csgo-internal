@@ -102,7 +102,7 @@ inline hooks_t hooks = { };
 namespace n_detoured_functions
 {
 	void* __fastcall alloc_key_values_memory( c_key_values_system* thisptr, int edx, int size );
-	bool __fastcall create_move( float input_sample_time, c_user_cmd* cmd );
+	bool __stdcall create_move( float input_sample_time, c_user_cmd* cmd );
 	void __stdcall emit_sound( void* filter, int idx, int channel, const char* sound_entry, unsigned int sound_entry_hash, const char* sample,
 	                           float volume, int seed, float attenuation, int flags, int pitch, const c_vector* origin, const c_vector* direction,
 	                           void* utl_vec_origins, bool update_pos, float soundtime, int speakerentity, int unk );

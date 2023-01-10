@@ -20,9 +20,9 @@ bool __stdcall n_detoured_functions::create_move( float input_sample_time, c_use
 
 	globals.m_old_view_point = cmd->m_view_point;
 
-	if ( const bool valid = memory.m_client_state->m_delta_tick > 0; valid )
+	/*if ( const bool valid = memory.m_client_state->m_delta_tick > 0; valid )
 		interfaces.m_prediction->update( memory.m_client_state->m_delta_tick, valid, memory.m_client_state->m_last_command_ack,
-		                                 memory.m_client_state->m_last_outgoing_command + memory.m_client_state->m_choked_commands );
+		                                 memory.m_client_state->m_last_outgoing_command + memory.m_client_state->m_choked_commands );*/
 
 	[ & ]( ) {
 		if ( !globals.m_local || !globals.m_local->is_alive( ) || !globals.m_cmd ) {
