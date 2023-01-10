@@ -79,7 +79,7 @@ struct hooks_t {
 	}
 
 	c_detour_hook alloc_key_values_memory = { };
-	c_detour_hook create_move_proxy       = { };
+	c_detour_hook create_move             = { };
 	c_detour_hook frame_stage_notify      = { };
 	c_detour_hook on_add_entity           = { };
 	c_detour_hook on_remove_entity        = { };
@@ -94,6 +94,7 @@ struct hooks_t {
 	c_detour_hook emit_sound              = { };
 	c_detour_hook override_mouse_input    = { };
 	c_detour_hook modify_eye_position     = { };
+	c_detour_hook draw_set_color          = { };
 };
 
 inline hooks_t hooks = { };
@@ -101,7 +102,7 @@ inline hooks_t hooks = { };
 namespace n_detoured_functions
 {
 	void* __fastcall alloc_key_values_memory( c_key_values_system* thisptr, int edx, int size );
-	void __fastcall create_move_proxy( void* thisptr, int edx, int sequence_number, float input_sample_frametime, bool is_active );
+	bool __stdcall create_move( float input_sample_time, c_user_cmd* cmd );
 	void __stdcall emit_sound( void* filter, int idx, int channel, const char* sound_entry, unsigned int sound_entry_hash, const char* sample,
 	                           float volume, int seed, float attenuation, int flags, int pitch, const c_vector* origin, const c_vector* direction,
 	                           void* utl_vec_origins, bool update_pos, float soundtime, int speakerentity, int unk );
@@ -119,4 +120,5 @@ namespace n_detoured_functions
 	void __fastcall override_mouse_input( void* thisptr, int edx, float* x, float* y );
 	void __fastcall modify_eye_position( c_anim_state* anim_state, void* edx, c_vector& input_eye_pos );
 	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );
+	void __stdcall draw_set_color( int r, int g, int b, int a );
 } // namespace n_detoured_functions

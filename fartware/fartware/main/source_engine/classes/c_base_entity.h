@@ -119,7 +119,7 @@ public:
 
 	bool get_bounding_box( bounding_box_t* bbox );
 	c_user_cmd& last_command( );
-	void post_think_chungy( );
+	void post_think( );
 	void set_next_think( int think );
 	void set_abs_origin( const c_vector& origin );
 

@@ -40,8 +40,10 @@ void movement_t::on_create_move_post( )
 		return;
 
 	/* TODO ~ float ~ store these somewhere to be accessed globally */
-	const auto flags    = globals.m_local->flags( );
-	const auto velocity = globals.m_local->velocity( );
+	const auto flags             = globals.m_local->flags( );
+	const auto velocity          = globals.m_local->velocity( );
+	const auto max_forward_speed = convars.find( fnv1a::hash_const( "cl_forwardspeed" ) )->get_float( );
+	const auto max_side_speed    = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
 
 	// edgejump
 	[ & ]( ) {
@@ -125,9 +127,6 @@ void movement_t::on_create_move_post( )
 
 	// movement correction
 	[ & ]( ) {
-		const float max_forward_speed = convars.find( fnv1a::hash_const( "cl_forwardspeed" ) )->get_float( );
-		const float max_side_speed    = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
-
 		c_vector forward = { }, right = { }, up = { };
 		mathematics.angle_vectors( globals.m_old_view_point, &forward, &right, &up );
 
@@ -262,9 +261,13 @@ void movement_t::on_create_move_post( )
 				float cos_rot = std::cos( DEG2RAD( angle_to_wall.m_y - globals.m_cmd->m_view_point.m_y ) );
 				float sin_rot = std::sin( DEG2RAD( angle_to_wall.m_y - globals.m_cmd->m_view_point.m_y ) );
 
-				globals.m_cmd->m_forward_move = cos_rot * 450.f;
-				globals.m_cmd->m_side_move    = -sin_rot * 450.f;
+				globals.m_cmd->m_forward_move = cos_rot * max_forward_speed;
+				globals.m_cmd->m_side_move    = -sin_rot * max_side_speed;
 			}
 		}
 	}( );
 }
+
+void movement_t::detect_edgebug( ) { }
+
+void movement_t::edgebug( ) { }

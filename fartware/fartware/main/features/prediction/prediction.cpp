@@ -83,7 +83,7 @@ void prediction_t::begin( )
 	interfaces.m_prediction->finish_move( globals.m_local, globals.m_cmd, &this->m_move_data );
 	memory.m_move_helper->process_impacts( );
 
-	globals.m_local->post_think_chungy( );
+	globals.m_local->post_think( );
 
 	globals.m_local->tick_base( ) = old_tick_base;
 

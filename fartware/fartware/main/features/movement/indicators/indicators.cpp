@@ -86,7 +86,7 @@ void indicators_t::on_paint_traverse( )
 				render.m_fonts[ e_font_names::font_name_indicator_28 ],
 				c_vector_2d( ( globals.m_display_size.x - text_size.x ) / 2.f,
 		                     globals.m_display_size.y - GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_indicator_position ) ),
-				text,
+				globals.m_local->move_type( ) & e_move_types::move_type_noclip ? "noclip" : text,
 				GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_custom_color )
 					? ImColor( blended_color.Value.x, blended_color.Value.y, blended_color.Value.z,
 		                       blended_color.Value.w * GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_fade_alpha ) ? alpha

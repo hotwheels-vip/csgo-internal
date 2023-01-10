@@ -210,6 +210,7 @@
     <ClCompile Include="main\hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="main\hooks\functions\create_move.cpp" />
     <ClCompile Include="main\hooks\functions\draw_print_text.cpp" />
+    <ClCompile Include="main\hooks\functions\draw_set_color.cpp" />
     <ClCompile Include="main\hooks\functions\emit_sound.cpp" />
     <ClCompile Include="main\hooks\functions\end_scene.cpp" />
     <ClCompile Include="main\hooks\functions\frame_stage_notify.cpp" />

@@ -9,6 +9,12 @@ void __fastcall n_detoured_functions::modify_eye_position( c_anim_state* anim_st
 	if ( !entity )
 		return original( anim_state, std::cref( input_eye_pos ) );
 
+	static auto calc_view_return_address =
+		reinterpret_cast< void* >( memory.m_modules[ e_module_names::client ].find_pattern( ( "8B ? ? ? ? ? 30 ? ? ? ? C0 ? 50 " ) ) );
+
+	if ( _ReturnAddress( ) == calc_view_return_address )
+		return;
+
 	if ( globals.m_local && entity != globals.m_local )
 		original( anim_state, std::cref( input_eye_pos ) );
 }

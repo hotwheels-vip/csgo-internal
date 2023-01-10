@@ -54,16 +54,17 @@ class c_engine
 {
 private:
 	enum e_indexes {
-		_get_player_info        = 8,
-		_get_local_player       = 12,
-		_get_view_angles        = 18,
-		_set_view_angles        = 19,
-		_is_in_game             = 26,
-		_cull_box               = 34,
-		_world_to_screen_matrix = 37,
-		_get_level_name         = 52,
-		_get_level_name_short   = 53,
-		_steam_api_context      = 185,
+		_get_player_info         = 8,
+		_get_local_player        = 12,
+		_get_view_angles         = 18,
+		_set_view_angles         = 19,
+		_is_in_game              = 26,
+		_cull_box                = 34,
+		_world_to_screen_matrix  = 37,
+		_get_level_name          = 52,
+		_get_level_name_short    = 53,
+		_steam_api_context       = 185,
+		_client_cmd_unrestricted = 114,
 	};
 
 public:
@@ -91,7 +92,11 @@ public:
 		using fn = bool( __thiscall* )( c_engine*, int, player_info_t* );
 		return ( *( fn** )this )[ this->e_indexes::_get_player_info ]( this, index, player_info );
 	}
-
+	void client_cmd_unrestricted( const char* szCommand )
+	{
+		using fn = void( __thiscall* )( void*, const char*, bool );
+		return ( *( fn** )this )[ this->e_indexes::_client_cmd_unrestricted ]( this, szCommand, false );
+	}
 	int get_local_player( )
 	{
 		using fn = int( __thiscall* )( c_engine* );

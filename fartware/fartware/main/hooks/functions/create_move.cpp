@@ -3,30 +3,35 @@
 #include "../../features/prediction/prediction.h"
 #include "../hooks.h"
 
-static void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
+bool __stdcall n_detoured_functions::create_move( float input_sample_time, c_user_cmd* cmd )
 {
-	static auto original = hooks.create_move_proxy.get_original< decltype( &n_detoured_functions::create_move_proxy ) >( );
+	static auto original = hooks.create_move.get_original< decltype( &n_detoured_functions::create_move ) >( );
 
-	original( interfaces.m_client, 0, sequence_number, input_sample_frametime, is_active );
+	original( input_sample_time, cmd );
 
-	c_user_cmd* cmd                   = memory.m_input->get_user_cmd( sequence_number );
-	c_verified_user_cmd* verified_cmd = memory.m_input->get_verified_cmd( sequence_number );
-
-	if ( !cmd || !verified_cmd || !is_active )
-		return;
-
-	interfaces.m_engine->set_view_angles( cmd->m_view_point );
+	if ( !cmd || !cmd->m_command_number )
+		return original( input_sample_time, cmd );
 
 	globals.m_cmd            = cmd;
 	globals.m_old_view_point = cmd->m_view_point;
+
+	// returning true here calls set local view angles and fixes air stutter.
+	if ( !interfaces.m_engine->is_in_game( ) )
+		return true;
+
+	if ( !globals.m_local )
+		return original( input_sample_time, cmd );
 
 	if ( const bool valid = memory.m_client_state->m_delta_tick > 0; valid )
 		interfaces.m_prediction->update( memory.m_client_state->m_delta_tick, valid, memory.m_client_state->m_last_command_ack,
 		                                 memory.m_client_state->m_last_outgoing_command + memory.m_client_state->m_choked_commands );
 
 	[ & ]( ) {
-		if ( !globals.m_local || !globals.m_local->is_alive( ) )
+		if ( !globals.m_local->is_alive( ) ) {
+			movement.edgebug_data.ticks_to_stop = 0;
+			movement.edgebug_data.last_tick     = 0;
 			return;
+		}
 
 		movement.on_create_move_pre( );
 
@@ -39,27 +44,9 @@ static void __stdcall create_move( int sequence_number, float input_sample_frame
 	cmd->m_view_point.normalize( );
 	cmd->m_view_point.clamp( );
 
-	verified_cmd->m_user_cmd = *cmd;
-	verified_cmd->m_hash_crc = cmd->get_checksum( );
-}
+	unsigned int* frame;
+	__asm mov frame, ebp;
+	bool& send_packet = *reinterpret_cast< bool* >( *frame - 0x1C );
 
-__declspec( naked ) void __fastcall n_detoured_functions::create_move_proxy( [[maybe_unused]] void* thisptr, [[maybe_unused]] int edx,
-                                                                             [[maybe_unused]] int sequence_number,
-                                                                             [[maybe_unused]] float input_sample_frametime,
-                                                                             [[maybe_unused]] bool is_active )
-{
-	__asm
-	{
-		push	ebp
-		mov		ebp, esp; 
-		push	ebx; 
-		push	esp; 
-		push	dword ptr[is_active]; 
-		push	dword ptr[input_sample_frametime]; 
-		push	dword ptr[sequence_number];
-		call	create_move
-		pop		ebx
-		pop		ebp
-		retn	0Ch
-	}
+	return false;
 }

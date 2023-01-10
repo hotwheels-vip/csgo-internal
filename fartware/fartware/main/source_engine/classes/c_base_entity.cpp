@@ -17,12 +17,12 @@ bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
 	/* https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/game/shared/collisionproperty.h#L77 */
 
 	const c_vector mins = collideable->obb_mins( );
-	const c_vector ma = collideable->obb_ma( );
+	const c_vector ma   = collideable->obb_ma( );
 
 	std::array< c_vector, 8U > points = { c_vector( mins.m_x, mins.m_y, mins.m_z ), c_vector( mins.m_x, ma.m_y, mins.m_z ),
-		                                  c_vector( ma.m_x, ma.m_y, mins.m_z ), c_vector( ma.m_x, mins.m_y, mins.m_z ),
-		                                  c_vector( ma.m_x, ma.m_y, ma.m_z ), c_vector( mins.m_x, ma.m_y, ma.m_z ),
-		                                  c_vector( mins.m_x, mins.m_y, ma.m_z ), c_vector( ma.m_x, mins.m_y, ma.m_z ) };
+		                                  c_vector( ma.m_x, ma.m_y, mins.m_z ),     c_vector( ma.m_x, mins.m_y, mins.m_z ),
+		                                  c_vector( ma.m_x, ma.m_y, ma.m_z ),       c_vector( mins.m_x, ma.m_y, ma.m_z ),
+		                                  c_vector( mins.m_x, mins.m_y, ma.m_z ),   c_vector( ma.m_x, mins.m_y, ma.m_z ) };
 
 	if ( !( points.data( ) ) )
 		return false;
@@ -83,7 +83,7 @@ void c_base_entity::set_abs_origin( const c_vector& origin )
 	original_set_abs_origin( this, origin );
 }
 
-void c_base_entity::post_think_chungy( )
+void c_base_entity::post_think( )
 {
 	static auto post_think_vphysics = reinterpret_cast< bool( __thiscall* )( c_base_entity* ) >(
 		memory.m_modules[ e_module_names::client ].find_pattern( ( ( "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB" ) ) ) );

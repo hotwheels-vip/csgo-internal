@@ -212,6 +212,12 @@ void menu_t::on_end_scene( )
 					 true ) ) {
 				ImGui::Checkbox( "bunny hop", &GET_CONFIG_BOOL( variables.m_movement.m_bunny_hop ) );
 
+				ImGui::Checkbox( "edge bug", &GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) );
+				if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) ) {
+					ImGui::Keybind( "edge bug key", &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) );
+					ImGui::SliderInt( "edge bug predicted ticks", &GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ), 0, 32 );
+					ImGui::SliderFloat( "mouse lock scale", &GET_CONFIG_FLOAT( variables.m_movement.m_edge_bug_lock_amt ), 0.f, 1.f );
+				}
 				ImGui::Checkbox( "edge jump", &GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) );
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) )
 					ImGui::Keybind( "edge jump key", &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) );
