@@ -363,10 +363,8 @@ void movement_t::edgebug( )
 					globals.m_cmd->m_view_point.m_y =
 						mathematics.normalize_yaw( original_movement.view_point.m_y + ( info.yaw_delta * predicted_tick ) );
 
-				if ( movement.edgebug_data.should_crouch ) {
-					prediction.begin( );
-					prediction.end( );
-				}
+				prediction.begin( );
+				prediction.end( );
 
 				detect_edgebug( );
 
