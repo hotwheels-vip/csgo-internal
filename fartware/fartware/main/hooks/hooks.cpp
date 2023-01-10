@@ -35,7 +35,7 @@ bool hooks_t::on_attach( )
 		const auto override_mouse_input_address = utilities.get_virtual_function( memory.m_client_mode, 23 );
 
 		const auto modify_eye_pos_address = reinterpret_cast< void* >(
-			memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60" ) ) );
+			memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14" ) ) );
 
 		if ( MH_Initialize( ) != MH_OK ) {
 			throw std::runtime_error( ( "failed initialize minhook" ) );

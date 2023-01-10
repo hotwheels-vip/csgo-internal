@@ -76,7 +76,10 @@ void indicators_t::on_paint_traverse( )
 		const bool should_draw_take_off = ( !on_ground || ( take_off_time_velocity > memory.m_globals->m_current_time ) ) &&
 		                                  ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_show_pre_speed ) );
 
-		const std::string text = std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
+		const std::string text =
+			globals.m_local->move_type( ) & e_move_types::move_type_noclip
+				? "noclip"
+				: std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
 
 		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_28 ]->CalcTextSizeA(
 			render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
@@ -87,7 +90,7 @@ void indicators_t::on_paint_traverse( )
 				render.m_fonts[ e_font_names::font_name_indicator_28 ],
 				c_vector_2d( ( globals.m_display_size.x - text_size.x ) / 2.f,
 		                     globals.m_display_size.y - GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_indicator_position ) ),
-				globals.m_local->move_type( ) & e_move_types::move_type_noclip ? "noclip" : text,
+				text,
 				GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_custom_color )
 					? ImColor( blended_color.Value.x, blended_color.Value.y, blended_color.Value.z,
 		                       blended_color.Value.w * GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_fade_alpha ) ? alpha
