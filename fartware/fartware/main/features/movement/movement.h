@@ -22,7 +22,13 @@ struct movement_t {
 		double saved_mousedx{ };
 		int ticks_to_stop{ };
 		int last_tick{ };
-	} edgebug_data;
+	} edgebug_data; /* TODO ~ @DREAM m_ prefix :3 when u have time: 3;3;3;3;3 */
+
+	struct pixel_surf_data_t {
+		bool m_predicted_succesful = { }, m_in_pixel_surf = { }, m_should_duck = { };
+		int m_prediction_ticks = { };
+		c_user_cmd* m_simulated_cmd      = { };
+	} m_pixel_surf_data;
 
 	void on_create_move_pre( );
 	void on_create_move_post( );

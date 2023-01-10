@@ -235,6 +235,10 @@ void menu_t::on_end_scene( )
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) )
 					ImGui::Keybind( "jump bug key", &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) );
 
+				ImGui::Checkbox( "pixel surf", &GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) );
+				if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) )
+					ImGui::Keybind( "pixel surf key", &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) );
+
 				ImGui::Checkbox( "no crouch cooldown", &GET_CONFIG_BOOL( variables.m_movement.m_fast_duck ) );
 
 				ImGui::Checkbox( "auto align", &GET_CONFIG_BOOL( variables.m_movement.m_auto_align ) );

@@ -128,7 +128,7 @@ int prediction_t::get_tick_base( )
 
 void prediction_t::restore_entity_to_predicted_frame( int frame )
 {
-	auto fn = reinterpret_cast< void( __stdcall* )( int, int ) >(
+	static auto fn = reinterpret_cast< void( __stdcall* )( int, int ) >(
 		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 8B 4D ? 56 E8 ? ? ? ? 8B 75" ) );
 	fn( 0, frame );
 }

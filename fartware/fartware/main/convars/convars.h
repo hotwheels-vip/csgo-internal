@@ -6,7 +6,8 @@ class c_cconvar;
 struct convars_t {
 	bool on_attach( );
 
-	inline c_cconvar* find(unsigned int hash) {
+	c_cconvar* find( unsigned int hash )
+	{
 		return this->m_convars[ hash ];
 	}
 

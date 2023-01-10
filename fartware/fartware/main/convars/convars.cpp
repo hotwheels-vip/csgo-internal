@@ -14,7 +14,7 @@ bool convars_t::on_attach( )
 		const auto convar_name = c->m_name;
 		const auto hashed_convar_name = fnv1a::hash( convar_name );
 
-		auto convar_value = interfaces.m_convar->find_var( convar_name );
+		const auto convar_value = interfaces.m_convar->find_var( convar_name );
 		if ( !convar_value )
 			continue;
 
