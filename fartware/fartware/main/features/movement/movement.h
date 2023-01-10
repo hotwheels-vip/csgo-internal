@@ -13,7 +13,7 @@ struct movement_t {
 		bool will_edgebug{ };
 		bool will_fail{ };
 		bool should_crouch{ };
-		bool strafing{ };
+		bool should_strafe{ };
 
 		float yaw_delta;
 		float forward_move, side_move;

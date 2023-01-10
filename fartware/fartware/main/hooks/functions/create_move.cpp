@@ -3,9 +3,10 @@
 #include "../../features/prediction/prediction.h"
 #include "../hooks.h"
 
-bool __stdcall n_detoured_functions::create_move( float input_sample_time, c_user_cmd* cmd )
+bool __fastcall n_detoured_functions::create_move( float input_sample_time, c_user_cmd* cmd )
 {
-	static auto original = hooks.create_move.get_original< decltype( &n_detoured_functions::create_move ) >( );
+	using fn             = bool( __stdcall* )( float, c_user_cmd* );
+	static auto original = hooks.create_move.get_original< fn >( );
 
 	original( input_sample_time, cmd );
 
@@ -41,8 +42,9 @@ bool __stdcall n_detoured_functions::create_move( float input_sample_time, c_use
 		movement.on_create_move_post( );
 	}( );
 
-	cmd->m_view_point.normalize( );
-	cmd->m_view_point.clamp( );
+	globals.m_cmd->m_view_point.normalize( );
+	globals.m_cmd->m_view_point.clamp( );
+	globals.m_last_tick_yaw = globals.m_cmd->m_view_point.m_y;
 
 	unsigned int* frame;
 	__asm mov frame, ebp;

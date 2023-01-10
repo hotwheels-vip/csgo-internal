@@ -71,7 +71,7 @@ public:
 	virtual void finish_track_prediction_errors( c_base_entity* entity )        = 0;
 	virtual void diff_print( char const* fmt, ... )                             = 0;
 	virtual c_vector const& get_player_mins( bool ducked ) const                = 0;
-	virtual c_vector const& get_player_ma( bool ducked ) const                = 0;
+	virtual c_vector const& get_player_ma( bool ducked ) const                  = 0;
 	virtual c_vector const& get_player_view_offset( bool ducked ) const         = 0;
 	virtual bool is_moving_player_stuck( ) const                                = 0;
 	virtual c_base_entity* get_moving_player( ) const                           = 0;
@@ -101,21 +101,16 @@ public:
 	int i_previous_start_frame;
 	int n_incoming_packet_number;
 	float fl_last_server_world_time_stamp;
-
-	struct split_t {
-		bool m_is_first_time_predicted;
-		char pad0[ 0x3 ];
-		int m_commands_predicted;
-		int m_server_commands_acknowledged;
-		int m_previous_ack_had_errors;
-		float m_ideal_pitch;
-		int m_last_command_acknowledged;
-		bool m_previous_ack_error_triggers_full_latch_reset;
-		c_utl_vector< unsigned int > m_entities_with_prediction_errors_in_last_ack;
-		bool m_performed_tick_shift;
-	};
-
-	split_t split[ 1 ];
+	bool sp_is_first_time_predicted;
+	char pad1[ 0x3 ];
+	int m_commands_predicted;
+	int m_server_commands_acknowledged;
+	int m_previous_ack_had_errors;
+	float m_ideal_pitch;
+	int m_last_command_acknowledged;
+	bool m_previous_ack_error_triggers_full_latch_reset;
+	c_utl_vector< unsigned int > m_entities_with_prediction_errors_in_last_ack;
+	bool m_performed_tick_shift;
 
 public:
 	void update( int start_frame, bool valid_frame, int incoming_acknowledged, int outgoing_command )

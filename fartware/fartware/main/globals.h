@@ -12,6 +12,7 @@ struct globals_t {
 	ImVec2 m_display_size       = { };
 	c_angle m_old_view_point    = { };
 	bool m_console_being_drawn  = false;
+	float m_last_tick_yaw       = { };
 };
 
 inline globals_t globals = { };

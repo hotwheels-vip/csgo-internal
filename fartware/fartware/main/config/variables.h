@@ -55,6 +55,7 @@ struct variables_t {
 		ADD_VARIABLE( key_bind_t, m_jump_bug_key, key_bind_t( 0, 1 ) );
 
 		ADD_VARIABLE( bool, m_edge_bug, false );
+		ADD_VARIABLE( bool, m_advanced_detection, false );
 		ADD_VARIABLE( key_bind_t, m_edge_bug_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( int, m_edge_bug_ticks, 32 );
 		ADD_VARIABLE( float, m_edge_bug_lock_amt, 0.3f );

@@ -1,4 +1,4 @@
-#include "../hooks.h"
+﻿#include "../hooks.h"
 
 #include "../../features/entities/entities.h"
 #include "../../features/movement/indicators/indicators.h"
@@ -11,9 +11,33 @@ void __fastcall n_detoured_functions::paint_traverse( c_surface* thisptr, int ed
 	const unsigned int panel_hash = fnv1a::hash( interfaces.m_panel->get_panel_name( panel ) );
 
 	static bool print_to_console = []( ) {
-		interfaces.m_engine->client_cmd_unrestricted( "clear; console" );
-		interfaces.m_convar->console_color_printf( { Accent[ 0 ] * 255.f, Accent[ 1 ] * 255.f, Accent[ 2 ] * 255.f }, "[hotwheels.vip] " );
-		interfaces.m_convar->console_color_printf( { 210, 210, 210 }, "injection succesfull.\n" );
+		interfaces.m_engine->client_cmd_unrestricted( "clear" );
+		interfaces.m_engine->client_cmd_unrestricted( "echo injection succesfull.\n" );
+
+		const char8_t* hook[] = {
+			( u8"\n" ),
+			( u8"\n" ),
+			( u8"⣿⣿⣿⣿⣿⣿⣿⡿⠟⠛⠉⠉⠉⠉⠋⠉⠉⠙⠛⠛⠻⠿⢿⣿⣿⣿⣿⣿⣿⣿\n" ),
+			( u8"⣿⣿⣿⣿⠿⠋⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⠉⠻⣿⣿⣿⣿⣿\n" ),
+			( u8"⣿⣿⡟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠙⢻⣿⣿⣿\n" ),
+			( u8"⣿⠏⠄⠄⠄⠄⠄⠄⠄⠄⢀⣔⢤⣄⡀⠄⡄⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⢻⣿⣿\n" ),
+			( u8"⠏⠄⠄⠄⠄⠄⠄⠄⢀⣀⣨⣵⣿⣿⣿⣿⣧⣦⣤⣀⣿⣷⡐⠄⠄⠄⠄⠄⢿⣿\n" ),
+			( u8"⠄⠄⠄⠄⠄⠄⠐⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠄⠄⠄⢚⣿\n" ),
+			( u8"⣆⠄⠄⠄⠄⠄⠄⢻⣿⣿⣿⣿⡿⠛⠛⠛⠛⣿⢿⣿⣿⣿⡿⢟⣻⣄⣤⣮⡝⣿\n" ),
+			( u8"⣿⠆⠄⠄⠄⠄⠄⠄⠄⠄⠉⠘⣿⡗⡕⣋⢉⣩⣽⣬⣭⣶⣿⣿⣿⣿⣝⣻⣷⣿\n" ),
+			( u8"⣿⣦⡀⠄⠄⠠⢀⠄⠄⠁⠄⠄⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿\n" ),
+			( u8"⣿⣿⣿⡆⠄⠄⠰⣶⡗⠄⠄⠄⣿⣿⣿⣿⣦⣌⠙⠿⣿⣿⣿⣿⣿⣿⣿⡛⠱⢿\n" ),
+			( u8"⣿⣿⣿⣿⡀⠄⠄⠿⣿⠄⠄⠄⠨⡿⠿⠿⣿⣟⣿⣯⣹⣿⣿⣿⣿⣿⣿⣿⣦⡀\n" ),
+			( u8"⣿⣿⣿⣿⣷⠄⠄⠄⢷⣦⠄⠄⠐⢶⢾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇\n" ),
+			( u8"⣿⣿⣿⣿⣿⣧⡄⠄⠄⠉⠄⠄⠄⢉⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠄\n" ),
+			( u8"⣿⣿⣿⣿⣿⠟⠋⠄⠄⠄⠄⠄⠄⠈⠛⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠄⠄\n" ),
+			( u8"⣿⠿⠛⠉⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠘⠿⢿⣿⣿⣿⣿⣿⠿⠋⠄⠄⠄⠄\n" ),
+			( u8"\n" ),
+		};
+
+		for ( auto& i : hook )
+			interfaces.m_convar->console_printf( ( "echo %s" ), i );
+
 		return true;
 	}( );
 

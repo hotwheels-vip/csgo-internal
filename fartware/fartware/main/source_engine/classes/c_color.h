@@ -9,6 +9,16 @@ enum e_color_type {
 	color_type_a = 3
 };
 
+struct c_unsigned_char_color {
+	unsigned char r, g, b, a;
+	constexpr c_unsigned_char_color( ) : r( 0 ), g( 0 ), b( 0 ), a( 255 ) { }
+
+	constexpr c_unsigned_char_color( unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 255 )
+		: r{ red }, g{ green }, b{ blue }, a{ alpha }
+	{
+	}
+};
+
 class c_color
 {
 public:

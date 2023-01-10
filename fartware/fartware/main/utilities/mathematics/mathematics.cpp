@@ -38,3 +38,17 @@ c_vector mathematics_t::to_angle( const c_vector& in )
 {
 	return c_vector{ RAD2DEG( std::atan2( -in.m_z, std::hypot( in.m_x, in.m_y ) ) ), RAD2DEG( std::atan2( in.m_y, in.m_x ) ), 0.0f };
 };
+
+float mathematics_t::normalize_yaw( float yaw )
+{
+	if ( !std::isfinite( yaw ) )
+		return 0.0f;
+
+	if ( yaw >= -180.f && yaw <= 180.f )
+		return yaw;
+
+	const float rot = std::round( std::abs( yaw / 360.f ) );
+
+	yaw = ( yaw < 0.f ) ? yaw + ( 360.f * rot ) : yaw - ( 360.f * rot );
+	return yaw;
+}

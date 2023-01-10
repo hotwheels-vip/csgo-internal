@@ -7,6 +7,8 @@ struct prediction_t {
 	void begin( );
 	void end( ) const;
 
+	void restore_entity_to_predicted_frame( int frame );
+
 	static int get_tick_base( );
 
 	struct prediction_data_t {
