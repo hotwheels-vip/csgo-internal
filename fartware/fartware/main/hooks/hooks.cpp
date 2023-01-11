@@ -63,8 +63,8 @@ bool hooks_t::on_attach( )
 		initialise_hook( hooks.emit_sound, emit_sound_address, &n_detoured_functions::emit_sound, ( "IEngineSound::EmitSound()" ) );
 		initialise_hook( hooks.override_mouse_input, override_mouse_input_address, &n_detoured_functions::override_mouse_input,
 		                 ( "IClientModeShared::OverrideMouseInput()" ) );
-		/*initialise_hook( hooks.modify_eye_position, modify_eye_pos_address, &n_detoured_functions::modify_eye_position,
-		                 ( "CBaseAnimating::ModifyEyePos()" ) );*/
+		initialise_hook( hooks.modify_eye_position, modify_eye_pos_address, &n_detoured_functions::modify_eye_position,
+		                 ( "CBaseAnimating::ModifyEyePos()" ) );
 
 		if ( interfaces.m_engine->is_in_game( ) ) {
 			console.print( "force updated entity cache" );

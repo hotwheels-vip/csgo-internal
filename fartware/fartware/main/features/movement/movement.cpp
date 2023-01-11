@@ -371,12 +371,7 @@ void movement_t::on_create_move_post( )
 		}
 	}( );
 
-	const int backup_buttons = globals.m_cmd->m_buttons;
-
 	edgebug( );
-
-	if ( !movement.m_edgebug_data.m_will_edgebug )
-		globals.m_cmd->m_buttons = backup_buttons;
 }
 
 // handles strafing to edgebug
@@ -471,8 +466,6 @@ void movement_t::edgebug( )
 		std::clamp( globals.m_cmd->m_view_point.m_y - globals.m_last_tick_yaw, -( 180.f / GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ) ),
 	                180.f / GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ) );
 
-	static movement_t backup_movement;
-
 	movement_t original_movement;
 	original_movement.view_point   = globals.m_cmd->m_view_point;
 	original_movement.forward_move = globals.m_cmd->m_forward_move;
@@ -480,8 +473,6 @@ void movement_t::edgebug( )
 	original_movement.buttons      = globals.m_cmd->m_buttons;
 
 	if ( !movement.m_edgebug_data.m_will_edgebug ) {
-		backup_movement = original_movement;
-
 		// both ducked and unducked(2), and ducked unducked strafing(4)
 		const int max_prediction_types =
 			( GET_CONFIG_BOOL( variables.m_movement.m_advanced_detection ) && info.yaw_delta < maximum_strafe_delta ) ? 4 : 2;
