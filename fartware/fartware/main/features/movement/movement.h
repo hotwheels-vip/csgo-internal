@@ -25,8 +25,8 @@ struct movement_t {
 	} m_edgebug_data;
 
 	struct pixel_surf_data_t {
-		bool m_predicted_succesful = { }, m_in_pixel_surf = { }, m_should_duck = { };
-		int m_prediction_ticks      = { };
+		bool m_predicted_succesful = false, m_in_pixel_surf = false, m_should_duck = false;
+		int m_prediction_ticks      = 0;
 		c_user_cmd* m_simulated_cmd = { };
 	} m_pixel_surf_data;
 

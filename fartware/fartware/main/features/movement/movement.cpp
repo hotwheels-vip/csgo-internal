@@ -117,8 +117,7 @@ void movement_t::on_create_move_post( )
 		if ( !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) )
 			return;
 
-		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
-		{
+		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) ) {
 			static bool ducked = false;
 
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -129,9 +128,7 @@ void movement_t::on_create_move_post( )
 
 			if ( prediction.m_data.m_flags & e_flags::fl_onground && ducked )
 				ducked = false;
-		}
-		else
-		{
+		} else {
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
 
@@ -144,129 +141,7 @@ void movement_t::on_create_move_post( )
 		}
 	}( );
 
-	const float target_ps_velocity = convars.find( fnv1a::hash( "sv_gravity" ) )->get_float( ) * 0.5f * memory.m_globals->m_interval_per_tick;
-
-	// pixel surf (logic)
-	[ & ]( ) {
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) &&
-		     input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) ) {
-			if ( this->m_pixel_surf_data.m_in_pixel_surf || globals.m_local->flags( ) & e_flags::fl_onground ||
-			     globals.m_local->velocity( ).m_z >= 0.f )
-				return;
-
-			if ( !this->m_pixel_surf_data.m_predicted_succesful ) {
-				this->m_pixel_surf_data.m_should_duck = false;
-
-				for ( int prediction_type = 0; prediction_type < 2; prediction_type++ ) {
-					if ( this->m_pixel_surf_data.m_in_pixel_surf )
-						break;
-
-					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
-
-					int backup_flags         = globals.m_local->flags( );
-					c_vector backup_velocity = globals.m_local->velocity( );
-
-					for ( int predicted_tick = 0; predicted_tick < 12 /* TODO ~ make customizeable */; predicted_tick++ ) {
-						auto simulated_cmd = new c_user_cmd( *globals.m_cmd );
-
-						if ( prediction_type == 0 )
-							simulated_cmd->m_buttons |= e_buttons::in_duck;
-						else
-							simulated_cmd->m_buttons &= ~e_buttons::in_duck;
-
-						prediction.begin( );
-						prediction.end( );
-
-						if ( backup_flags & e_flags::fl_onground )
-							break;
-
-						if ( globals.m_local->velocity( ).m_z == -target_ps_velocity && backup_velocity.m_z == -target_ps_velocity ) {
-							this->m_pixel_surf_data.m_prediction_ticks = globals.m_cmd->m_tick_count + predicted_tick;
-							this->m_pixel_surf_data.m_simulated_cmd    = simulated_cmd;
-							this->m_pixel_surf_data.m_should_duck      = !( prediction_type == 1 );
-							this->m_pixel_surf_data.m_in_pixel_surf    = true;
-							break;
-						}
-
-						backup_velocity = globals.m_local->velocity( );
-						backup_flags    = globals.m_local->flags( );
-
-						delete simulated_cmd;
-					}
-
-					prediction.begin( );
-					prediction.end( );
-
-					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
-				}
-			}
-
-		} else {
-			this->m_pixel_surf_data.m_predicted_succesful = false;
-			this->m_pixel_surf_data.m_in_pixel_surf       = false;
-			this->m_pixel_surf_data.m_should_duck         = false;
-			this->m_pixel_surf_data.m_prediction_ticks    = 0;
-			this->m_pixel_surf_data.m_simulated_cmd       = nullptr;
-			return;
-		}
-	}( );
-
-	// movement correction
-	[ & ]( ) {
-		c_vector forward = { }, right = { }, up = { };
-		mathematics.angle_vectors( globals.m_old_view_point, &forward, &right, &up );
-
-		forward.m_z = right.m_z = up.m_x = up.m_y = 0.f;
-
-		forward.normalize_in_place( );
-		right.normalize_in_place( );
-		up.normalize_in_place( );
-
-		c_vector old_forward = { }, old_right = { }, old_up = { };
-		mathematics.angle_vectors( globals.m_cmd->m_view_point, &old_forward, &old_right, &old_up );
-
-		old_forward.m_z = old_right.m_z = old_up.m_x = old_up.m_y = 0.f;
-
-		old_forward.normalize_in_place( );
-		old_right.normalize_in_place( );
-		old_up.normalize_in_place( );
-
-		const float pitch_forward = forward.m_x * globals.m_cmd->m_forward_move;
-		const float yaw_forward   = forward.m_y * globals.m_cmd->m_forward_move;
-		const float pitch_side    = right.m_x * globals.m_cmd->m_side_move;
-		const float yaw_side      = right.m_y * globals.m_cmd->m_side_move;
-		const float roll_up       = up.m_z * globals.m_cmd->m_up_move;
-
-		const float x = old_forward.m_x * pitch_side + old_forward.m_y * yaw_side + old_forward.m_x * pitch_forward + old_forward.m_y * yaw_forward +
-		                old_forward.m_z * roll_up;
-		const float y = old_right.m_x * pitch_side + old_right.m_y * yaw_side + old_right.m_x * pitch_forward + old_right.m_y * yaw_forward +
-		                old_right.m_z * roll_up;
-
-		globals.m_cmd->m_forward_move = std::clamp( x, -max_forward_speed, max_forward_speed );
-		globals.m_cmd->m_side_move    = std::clamp( y, -max_side_speed, max_side_speed );
-	}( );
-
-	// pixel surf (locking)
-	[ & ]( ) {
-		if ( this->m_pixel_surf_data.m_in_pixel_surf ) {
-			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
-
-			if ( this->m_pixel_surf_data.m_should_duck )
-				globals.m_cmd->m_buttons |= e_buttons::in_duck;
-			else
-				globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
-
-			if ( this->m_pixel_surf_data.m_predicted_succesful && !( globals.m_local->velocity( ).m_z == -target_ps_velocity ) ) {
-				this->m_pixel_surf_data.m_in_pixel_surf       = false;
-				this->m_pixel_surf_data.m_predicted_succesful = false;
-				return;
-			}
-
-			return;
-		}
-	}( );
-
-	// auto align
+		// auto align
 	[ & ]( ) {
 		if ( prediction.m_data.m_flags & e_flags::fl_onground )
 			return;
@@ -368,6 +243,136 @@ void movement_t::on_create_move_post( )
 				globals.m_cmd->m_forward_move = cos_rot * max_forward_speed;
 				globals.m_cmd->m_side_move    = -sin_rot * max_side_speed;
 			}
+		}
+	}( );
+
+	const float target_ps_velocity = convars.find( fnv1a::hash( "sv_gravity" ) )->get_float( ) * 0.5f * memory.m_globals->m_interval_per_tick;
+
+	// pixel surf (logic)
+	[ & ]( ) {
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) &&
+		     input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) ) {
+			if ( this->m_pixel_surf_data.m_in_pixel_surf || globals.m_local->flags( ) & e_flags::fl_onground ||
+			     globals.m_local->velocity( ).m_z >= 0.f )
+				return;
+
+			if ( !this->m_pixel_surf_data.m_predicted_succesful ) {
+				this->m_pixel_surf_data.m_should_duck = false;
+				for ( int prediction_type = 0; prediction_type < 2; prediction_type++ ) {
+					if ( this->m_pixel_surf_data.m_in_pixel_surf )
+						break;
+
+					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+					int iFlags           = globals.m_local->flags( );
+					c_vector vecVelocity = globals.m_local->velocity( );
+
+					for ( int i = 0; i < 32; i++ ) {
+						c_user_cmd* pNewCmd = new c_user_cmd( *globals.m_cmd );
+
+						if ( prediction_type == 0 )
+							pNewCmd->m_buttons |= e_buttons::in_duck;
+						else
+							pNewCmd->m_buttons &= ~e_buttons::in_duck;
+
+						prediction.begin( );
+						prediction.end( );
+
+						if ( iFlags & e_flags::fl_onground )
+							break;
+
+						if ( globals.m_local->velocity( ).m_z == -target_ps_velocity && vecVelocity.m_z == -target_ps_velocity ) {
+							this->m_pixel_surf_data.m_prediction_ticks = globals.m_cmd->m_tick_count + i;
+							this->m_pixel_surf_data.m_simulated_cmd    = pNewCmd;
+							this->m_pixel_surf_data.m_should_duck      = !( prediction_type == 1 );
+							this->m_pixel_surf_data.m_in_pixel_surf    = true;
+							break;
+						}
+
+						vecVelocity = globals.m_local->velocity( );
+						iFlags      = globals.m_local->flags( );
+
+						delete pNewCmd;
+					}
+
+					prediction.begin( );
+					prediction.end( );
+
+					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+				}
+			}
+
+		} else {
+			this->m_pixel_surf_data.m_predicted_succesful = false;
+			this->m_pixel_surf_data.m_in_pixel_surf       = false;
+			this->m_pixel_surf_data.m_should_duck         = false;
+			this->m_pixel_surf_data.m_prediction_ticks    = 0;
+			return;
+		}
+	}( );
+
+	// movement correction
+	[ & ]( ) {
+		c_vector forward = { }, right = { }, up = { };
+		mathematics.angle_vectors( globals.m_old_view_point, &forward, &right, &up );
+
+		forward.m_z = right.m_z = up.m_x = up.m_y = 0.f;
+
+		forward.normalize_in_place( );
+		right.normalize_in_place( );
+		up.normalize_in_place( );
+
+		c_vector old_forward = { }, old_right = { }, old_up = { };
+		mathematics.angle_vectors( globals.m_cmd->m_view_point, &old_forward, &old_right, &old_up );
+
+		old_forward.m_z = old_right.m_z = old_up.m_x = old_up.m_y = 0.f;
+
+		old_forward.normalize_in_place( );
+		old_right.normalize_in_place( );
+		old_up.normalize_in_place( );
+
+		const float pitch_forward = forward.m_x * globals.m_cmd->m_forward_move;
+		const float yaw_forward   = forward.m_y * globals.m_cmd->m_forward_move;
+		const float pitch_side    = right.m_x * globals.m_cmd->m_side_move;
+		const float yaw_side      = right.m_y * globals.m_cmd->m_side_move;
+		const float roll_up       = up.m_z * globals.m_cmd->m_up_move;
+
+		const float x = old_forward.m_x * pitch_side + old_forward.m_y * yaw_side + old_forward.m_x * pitch_forward + old_forward.m_y * yaw_forward +
+		                old_forward.m_z * roll_up;
+		const float y = old_right.m_x * pitch_side + old_right.m_y * yaw_side + old_right.m_x * pitch_forward + old_right.m_y * yaw_forward +
+		                old_right.m_z * roll_up;
+
+		globals.m_cmd->m_forward_move = std::clamp( x, -max_forward_speed, max_forward_speed );
+		globals.m_cmd->m_side_move    = std::clamp( y, -max_side_speed, max_side_speed );
+	}( );
+
+	// pixel surf (locking)
+	[ & ]( ) {
+		if ( this->m_pixel_surf_data.m_in_pixel_surf ) {
+			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+			if ( !this->m_pixel_surf_data.m_predicted_succesful ) {
+				if ( this->m_pixel_surf_data.m_prediction_ticks < globals.m_cmd->m_tick_count )
+					this->m_pixel_surf_data.m_predicted_succesful = true;
+
+				globals.m_cmd->m_buttons      = this->m_pixel_surf_data.m_simulated_cmd->m_buttons;
+				globals.m_cmd->m_view_point   = this->m_pixel_surf_data.m_simulated_cmd->m_view_point;
+				globals.m_cmd->m_side_move    = this->m_pixel_surf_data.m_simulated_cmd->m_side_move;
+				globals.m_cmd->m_forward_move = this->m_pixel_surf_data.m_simulated_cmd->m_forward_move;
+				globals.m_cmd->m_up_move      = this->m_pixel_surf_data.m_simulated_cmd->m_up_move;
+			}
+
+			if ( this->m_pixel_surf_data.m_should_duck )
+				globals.m_cmd->m_buttons |= e_buttons::in_duck;
+			else
+				globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
+
+			if ( this->m_pixel_surf_data.m_predicted_succesful && !( globals.m_local->velocity( ).m_z == -target_ps_velocity ) ) {
+				this->m_pixel_surf_data.m_in_pixel_surf       = false;
+				this->m_pixel_surf_data.m_predicted_succesful = false;
+				return;
+			}
+			return;
 		}
 	}( );
 
