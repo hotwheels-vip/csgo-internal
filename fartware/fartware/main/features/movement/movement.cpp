@@ -371,10 +371,12 @@ void movement_t::on_create_move_post( )
 		}
 	}( );
 
-	int buttons = globals.m_cmd->m_buttons;
+	const int backup_buttons = globals.m_cmd->m_buttons;
+
 	edgebug( );
+
 	if ( !movement.m_edgebug_data.m_will_edgebug )
-		globals.m_cmd->m_buttons = buttons;
+		globals.m_cmd->m_buttons = backup_buttons;
 }
 
 // handles strafing to edgebug
