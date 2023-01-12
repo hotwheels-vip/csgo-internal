@@ -120,14 +120,9 @@ static void __stdcall create_move( int sequence_number, float input_sample_frame
 
 	[ & ]( ) {
 		if ( !globals.m_local || !globals.m_local->is_alive( ) || !globals.m_cmd ) {
-			movement.m_edgebug_data.m_ticks_to_stop = 0;
-			movement.m_edgebug_data.m_last_tick     = 0;
+			movement.m_edgebug_data.reset( );
+			movement.m_pixelsurf_data.reset( );
 
-			edgebug_g::will_edgebug      = true;
-			edgebug_g::will_fail         = false;
-			edgebug_g::edgebug_ticks     = 0;
-			edgebug_g::edgebug_tickcount = 0;
-			edgebug_g::edgebug_method    = edgebug_type::standing;
 			return;
 		}
 
@@ -137,8 +132,6 @@ static void __stdcall create_move( int sequence_number, float input_sample_frame
 		prediction.end( );
 
 		movement.on_create_move_post( );
-
-		movement.edgebug( globals.m_cmd );
 	}( );
 
 	globals.m_cmd->m_view_point.normalize( );

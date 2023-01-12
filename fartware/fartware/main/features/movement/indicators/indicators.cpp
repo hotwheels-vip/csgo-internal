@@ -81,13 +81,13 @@ void indicators_t::on_paint_traverse( )
 				? "noclip"
 				: std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
 
-		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_28 ]->CalcTextSizeA(
-			render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
+		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
+			render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
 
 		render.m_draw_data.emplace_back(
 			e_draw_type::draw_type_text,
 			std::make_any< text_draw_object_t >(
-				render.m_fonts[ e_font_names::font_name_indicator_28 ],
+				render.m_fonts[ e_font_names::font_name_indicator_29 ],
 				c_vector_2d( ( globals.m_display_size.x - text_size.x ) / 2.f,
 		                     globals.m_display_size.y - GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_indicator_position ) ),
 				text,
@@ -130,13 +130,13 @@ void indicators_t::on_paint_traverse( )
 		const std::string text =
 			std::vformat( should_draw_take_off ? "{:.1f} ({:.1f})" : "{:.1f}", std::make_format_args( stamina, take_off_stamina ) );
 
-		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_28 ]->CalcTextSizeA(
-			render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
+		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
+			render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
 
 		render.m_draw_data.emplace_back(
 			e_draw_type::draw_type_text,
 			std::make_any< text_draw_object_t >(
-				render.m_fonts[ e_font_names::font_name_indicator_28 ],
+				render.m_fonts[ e_font_names::font_name_indicator_29 ],
 				c_vector_2d( ( globals.m_display_size.x - text_size.x ) / 2.f,
 		                     globals.m_display_size.y - GET_CONFIG_INT( variables.m_movement.m_indicators.m_stamina_indicator_position ) ),
 				text,
@@ -166,13 +166,13 @@ void indicators_t::on_paint_traverse( )
 			if ( indicator_animation.AnimationData->second <= 0.f )
 				return;
 
-			const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_28 ]->CalcTextSizeA(
-				render.m_fonts[ e_font_names::font_name_indicator_28 ]->FontSize, FLT_MAX, 0.f, indicator_name );
+			const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
+				render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, indicator_name );
 
 			render.m_draw_data.emplace_back(
 				e_draw_type::draw_type_text,
 				std::make_any< text_draw_object_t >(
-					render.m_fonts[ e_font_names::font_name_indicator_28 ],
+					render.m_fonts[ e_font_names::font_name_indicator_29 ],
 					c_vector_2d( ( globals.m_display_size.x - text_size.x ) / 2.f,
 			                     globals.m_display_size.y - offset - GET_CONFIG_INT( variables.m_movement.m_indicators.m_sub_indicators_position ) ),
 					indicator_name, color.get_u32( indicator_animation.AnimationData->second ),
@@ -184,7 +184,7 @@ void indicators_t::on_paint_traverse( )
 		/* TODO ~ change indicator colors when predicted or what ever u get it like blarity. . , .. . . . LOL XD dxdxdx :3 Sussuy Among Su */
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) )
-			render_indicator( "ps", movement.m_pixel_surf_data.m_in_pixel_surf ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
+			render_indicator( "ps", movement.m_pixelsurf_data.m_will_pixelsurf ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) );
 
 		// only render ej text when not ljing, else just render lj
@@ -195,7 +195,7 @@ void indicators_t::on_paint_traverse( )
 			render_indicator( "lj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) )
-			render_indicator( "eb", edgebug_g::will_edgebug ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
+			render_indicator( "eb", movement.m_edgebug_data.m_will_edgebug ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) )

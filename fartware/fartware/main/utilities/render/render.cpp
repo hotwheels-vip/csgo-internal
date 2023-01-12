@@ -85,8 +85,8 @@ void render_t::on_end_scene( const std::function< void( ) >& function, IDirect3D
 			m_fonts[ e_font_names::font_name_icon_11 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
 				weapon_icons_compressed_data, weapon_icons_compressed_size, 10.f, &icon_font_config, icon_ranges );
 
-			m_fonts[ e_font_names::font_name_indicator_28 ] =
-				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 28.f );
+			m_fonts[ e_font_names::font_name_indicator_29 ] =
+				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 29.f );
 
 			ImGuiFreeType::BuildFontAtlas( io.Fonts, 0x0 );
 		}( );

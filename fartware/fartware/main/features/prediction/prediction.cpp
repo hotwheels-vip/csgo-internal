@@ -84,7 +84,7 @@ void prediction_t::begin( c_user_cmd* cmd )
 
 	interfaces.m_prediction->setup_move( globals.m_local, cmd, memory.m_move_helper, &prediction.m_move_data );
 
-	movement.handle_edgebug_move_data( );
+	movement.handle_move_data( );
 
 	interfaces.m_game_movement->process_movement( globals.m_local, &prediction.m_move_data );
 
