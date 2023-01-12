@@ -195,7 +195,7 @@ void indicators_t::on_paint_traverse( )
 			render_indicator( "lj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) )
-			render_indicator( "eb", movement.m_edgebug_data.m_will_edgebug ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
+			render_indicator( "eb", edgebug_g::will_edgebug ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) )

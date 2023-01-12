@@ -14,12 +14,12 @@ struct prediction_t {
 		c_vector m_velocity = { };
 	} m_data;
 
-	c_user_cmd* m_last_cmd = nullptr;
+	c_user_cmd* m_last_cmd  = nullptr;
+	c_move_data m_move_data = { };
 
 private:
 	unsigned int* m_prediction_random_seed = nullptr;
 	c_base_entity** m_prediction_player    = nullptr;
-	c_move_data m_move_data                = { };
 
 	float m_old_current_time = 0.f;
 	float m_old_frame_time   = 0.f;

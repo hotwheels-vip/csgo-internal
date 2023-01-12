@@ -8,6 +8,21 @@
 #include "../../utilities/mathematics/mathematics.h"
 #include "../prediction/prediction.h"
 
+enum edgebug_type : int {
+	standing = 0,
+	ducking,
+};
+
+namespace edgebug_g
+{
+	inline int edgebug_ticks{ };
+	inline static int edgebug_mode{ };
+	inline int edgebug_tickcount{ };
+	inline float edgebug_mouse_offset{ };
+	inline edgebug_type edgebug_method{ };
+	inline static bool will_edgebug = false, will_fail = false;
+} // namespace edgebug_g
+
 struct movement_t {
 	struct edgebug_data_t {
 		bool m_will_edgebug{ };
@@ -33,9 +48,11 @@ struct movement_t {
 	void on_create_move_pre( );
 	void on_create_move_post( );
 
-	void edgebug( );
+	void edgebug( c_user_cmd* cmd );
 
 	void handle_edgebug_view_point( );
+
+	void handle_edgebug_move_data( );
 
 private:
 	void detect_edgebug( );
