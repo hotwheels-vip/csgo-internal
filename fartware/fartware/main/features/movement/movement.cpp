@@ -454,7 +454,7 @@ void movement_t::on_create_move_post( )
 				prediction.begin( globals.m_cmd );
 				prediction.end( );
 
-				detect_edgebug( );
+				// detect_edgebug( );
 
 				if ( movement.m_edgebug_data.m_will_edgebug ) {
 					movement.m_edgebug_data.m_ticks_to_stop = predicted_tick;
@@ -513,7 +513,7 @@ void movement_t::handle_edgebug_view_point( )
 	interfaces.m_engine->set_view_angles( wish_angles );
 }
 
-void movement_t::detect_edgebug( )
+void movement_t::detect_edgebug( c_user_cmd* cmd )
 {
 	if ( !globals.m_local || !globals.m_local->is_alive( ) || globals.m_local->move_type( ) & e_move_types::move_type_noclip ||
 	     globals.m_local->move_type( ) & e_move_types::move_type_ladder || globals.m_local->flags( ) & e_flags::fl_onground ) {
@@ -535,7 +535,7 @@ void movement_t::detect_edgebug( )
 			edgebug_g::will_edgebug = true;
 			edgebug_g::will_fail    = false;
 		} else {
-			prediction.begin( globals.m_cmd );
+			prediction.begin( cmd );
 			prediction.end( );
 
 			const float own_prediction = round(
@@ -570,9 +570,9 @@ void movement_t::handle_edgebug_move_data( )
 	//	prediction.m_move_data.m_buttons |= in_duck;
 	// } else
 	//	prediction.m_move_data.m_buttons &= ~in_duck;
-	//
-	// prediction.m_move_data.m_forward_move = 0;
-	// prediction.m_move_data.m_side_move    = 0;
+
+	prediction.m_move_data.m_forward_move = 0;
+	prediction.m_move_data.m_side_move    = 0;
 }
 
 void movement_t::edgebug( c_user_cmd* cmd )
@@ -583,23 +583,6 @@ void movement_t::edgebug( c_user_cmd* cmd )
 		edgebug_g::edgebug_ticks     = 0;
 		edgebug_g::edgebug_tickcount = 0;
 		edgebug_g::edgebug_method    = edgebug_type::standing;
-		return;
-	}
-
-	if ( edgebug_g::will_edgebug ) {
-		if ( memory.m_globals->m_tick_count < edgebug_g::edgebug_ticks + 1 + edgebug_g::edgebug_tickcount ) {
-			cmd->m_side_move    = 0.f;
-			cmd->m_forward_move = 0.f;
-
-			if ( edgebug_g::edgebug_method == edgebug_type::ducking ) {
-				cmd->m_buttons |= in_duck;
-			} else
-				cmd->m_buttons &= ~in_duck;
-		} else {
-			edgebug_g::will_edgebug   = false;
-			edgebug_g::edgebug_method = edgebug_type::standing;
-			edgebug_g::edgebug_ticks  = 0;
-		}
 		return;
 	}
 
@@ -614,8 +597,8 @@ void movement_t::edgebug( c_user_cmd* cmd )
 		cmd->m_buttons &= ~in_forward;
 		cmd->m_buttons &= ~in_back;
 
-		cmd->m_forward_move = 0;
-		cmd->m_side_move    = 0;
+		// cmd->m_forward_move = 0;
+		// cmd->m_side_move    = 0;
 
 		if ( ducked ) {
 			cmd->m_buttons |= in_duck;
@@ -628,7 +611,7 @@ void movement_t::edgebug( c_user_cmd* cmd )
 		memcpy( saved_local, globals.m_local, 0x3870 );
 		memcpy( saved_cmd, cmd, sizeof( c_user_cmd ) );
 
-		for ( int i = 1; i <= GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ); i++ ) {
+		for ( int i = 0; i <= 32; i++ ) {
 			prediction.begin( cmd );
 			prediction.end( );
 
@@ -639,11 +622,11 @@ void movement_t::edgebug( c_user_cmd* cmd )
 			}
 
 			if ( !edgebug_g::will_edgebug )
-				this->detect_edgebug( );
+				this->detect_edgebug( cmd );
 
 			if ( edgebug_g::will_edgebug ) {
 				edgebug_g::edgebug_mouse_offset = abs( cmd->m_mouse_delta_x );
-				edgebug_g::edgebug_ticks        = i;
+				edgebug_g::edgebug_ticks        = i + 1;
 				edgebug_g::edgebug_tickcount    = memory.m_globals->m_tick_count;
 
 				if ( ducked )
@@ -662,10 +645,10 @@ void movement_t::edgebug( c_user_cmd* cmd )
 				break;
 			}
 
-			if ( edgebug_g::will_fail ) {
-				edgebug_g::will_fail = false;
-				break;
-			}
+			// if ( edgebug_g::will_fail ) {
+			//	edgebug_g::will_fail = false;
+			//	break;
+			// }
 		}
 
 		// if ( edgebug_g::will_edgebug )
@@ -683,6 +666,25 @@ void movement_t::edgebug( c_user_cmd* cmd )
 		loop_through_ticks( true );
 	// if ( !edgebug_g::will_edgebug )
 	cmd->m_buttons = saved_buttons;
+
+	if ( edgebug_g::will_edgebug ) {
+		if ( memory.m_globals->m_tick_count < edgebug_g::edgebug_ticks + 1 + edgebug_g::edgebug_tickcount ) {
+			cmd->m_side_move    = 0.f;
+			cmd->m_forward_move = 0.f;
+			cmd->m_buttons &= ~in_moveleft;
+			cmd->m_buttons &= ~in_moveright;
+			cmd->m_buttons &= ~in_forward;
+			cmd->m_buttons &= ~in_back;
+			if ( edgebug_g::edgebug_method == edgebug_type::ducking ) {
+				cmd->m_buttons |= in_duck;
+			} else
+				cmd->m_buttons &= ~in_duck;
+		} else {
+			edgebug_g::will_edgebug   = false;
+			edgebug_g::edgebug_method = edgebug_type::standing;
+			edgebug_g::edgebug_ticks  = 0;
+		}
+	}
 
 	// if ( !GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) || !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) ) {
 	//	movement.m_edgebug_data.m_ticks_to_stop = 0;

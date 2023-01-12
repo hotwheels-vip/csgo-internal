@@ -54,7 +54,7 @@ struct movement_t {
 	void handle_edgebug_move_data( );
 
 private:
-	void detect_edgebug( );
+	void detect_edgebug( c_user_cmd* cmd );
 };
 
 inline movement_t movement = { };

@@ -145,8 +145,8 @@ static void __stdcall create_move( int sequence_number, float input_sample_frame
 	globals.m_cmd->m_view_point.clamp( );
 	globals.m_last_tick_yaw = globals.m_cmd->m_view_point.m_y;
 
-	verified_cmd->m_user_cmd = *globals.m_cmd;
-	verified_cmd->m_hash_crc = globals.m_cmd->get_checksum( );
+	verified_cmd->m_user_cmd = *cmd;
+	verified_cmd->m_hash_crc = cmd->get_checksum( );
 }
 
 __declspec( naked ) void __fastcall n_detoured_functions::create_move_proxy( [[maybe_unused]] void* thisptr, [[maybe_unused]] int edx,
