@@ -73,6 +73,9 @@ struct hooks_t {
 
 	inline void on_release( )
 	{
+		std::free( globals.backup.m_backup_cmd );
+		std::free( globals.backup.m_backup_local );
+
 		MH_DisableHook( MH_ALL_HOOKS );
 		MH_RemoveHook( MH_ALL_HOOKS );
 		MH_Uninitialize( );

@@ -14,9 +14,9 @@ bool hooks_t::on_attach( )
 
 	try {
 		const auto alloc_key_values_memory_address = utilities.get_virtual_function( memory.m_key_values_system, 2 );
-		//const auto create_move_address             = utilities.get_virtual_function( memory.m_client_mode, 24 );
-		const auto create_move_proxy_address             = utilities.get_virtual_function( interfaces.m_client, 22 );
-		const auto frame_stage_notify_address      = utilities.get_virtual_function( interfaces.m_client, 37 );
+		// const auto create_move_address             = utilities.get_virtual_function( memory.m_client_mode, 24 );
+		const auto create_move_proxy_address  = utilities.get_virtual_function( interfaces.m_client, 22 );
+		const auto frame_stage_notify_address = utilities.get_virtual_function( interfaces.m_client, 37 );
 		const auto on_add_entity_address =
 			reinterpret_cast< void* >( memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 51 8B 45 0C 53 56 8B F1 57" ) ) );
 		const auto on_remove_entity_address = reinterpret_cast< void* >(
@@ -46,7 +46,8 @@ bool hooks_t::on_attach( )
 		initialise_hook( hooks.alloc_key_values_memory, alloc_key_values_memory_address, &n_detoured_functions::alloc_key_values_memory,
 		                 ( "IKeyValuesSystem::AllocKeyValuesMemory()" ) );
 		// initialise_hook( hooks.create_move, create_move_address, &n_detoured_functions::create_move, ( "IClientMode::CreateMove()" ) );
-		initialise_hook( hooks.create_move_proxy, create_move_proxy_address, &n_detoured_functions::create_move_proxy, ( "CHLClient::CreateMove()" ) );
+		initialise_hook( hooks.create_move_proxy, create_move_proxy_address, &n_detoured_functions::create_move_proxy,
+		                 ( "CHLClient::CreateMove()" ) );
 		initialise_hook( hooks.frame_stage_notify, frame_stage_notify_address, &n_detoured_functions::frame_stage_notify,
 		                 ( "CHLClient::FrameStageNotify()" ) );
 		initialise_hook( hooks.on_add_entity, on_add_entity_address, &n_detoured_functions::on_add_entity, ( "IClientEntityList::OnAddEntity()" ) );
@@ -72,6 +73,10 @@ bool hooks_t::on_attach( )
 			console.print( "force updated entity cache" );
 			memory.m_client_state->m_delta_tick = -1;
 		}
+
+		globals.backup.m_backup_cmd = reinterpret_cast< c_user_cmd* >( std::malloc( sizeof( c_user_cmd ) ) );
+
+		globals.backup.m_backup_local = reinterpret_cast< c_base_entity* >( std::malloc( 0x3880 ) );
 
 		return true;
 	} catch ( const std::exception& ex ) {

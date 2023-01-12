@@ -4,17 +4,17 @@
 #include "../../source_engine/classes/c_prediction.h"
 
 struct prediction_t {
-	void begin( );
+	void begin( c_user_cmd* cmd );
 	void end( ) const;
 
 	void restore_entity_to_predicted_frame( int frame );
-
-	static int get_tick_base( );
 
 	struct prediction_data_t {
 		int m_flags         = { };
 		c_vector m_velocity = { };
 	} m_data;
+
+	c_user_cmd* m_last_cmd = nullptr;
 
 private:
 	unsigned int* m_prediction_random_seed = nullptr;
@@ -24,6 +24,7 @@ private:
 	float m_old_current_time = 0.f;
 	float m_old_frame_time   = 0.f;
 	int m_old_tick_count     = 0;
+	int m_correct_tick_base  = 0;
 };
 
 inline prediction_t prediction = { };

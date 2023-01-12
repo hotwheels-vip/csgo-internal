@@ -36,14 +36,23 @@ void movement_t::on_create_move_pre( )
 void movement_t::on_create_move_post( )
 {
 	const auto move_type = globals.m_local->move_type( );
-	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_observer )
-		return;
+	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip ||
+	     move_type == e_move_types::move_type_observer ) {
+		movement.m_edgebug_data.m_will_edgebug = false;
+		movement.m_edgebug_data.m_will_fail    = true;
 
+		movement.m_pixel_surf_data.m_in_pixel_surf       = false;
+		movement.m_pixel_surf_data.m_predicted_succesful = false;
+
+		return;
+	}
 	/* TODO ~ float ~ store these somewhere to be accessed globally */
-	const auto flags             = globals.m_local->flags( );
-	const auto velocity          = globals.m_local->velocity( );
+	const auto flags    = globals.m_local->flags( );
+	const auto velocity = globals.m_local->velocity( );
+
 	const auto max_forward_speed = convars.find( fnv1a::hash_const( "cl_forwardspeed" ) )->get_float( );
 	const auto max_side_speed    = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
+	const auto gravity           = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
 
 	// delay hop
 	[ & ]( ) {
@@ -117,7 +126,8 @@ void movement_t::on_create_move_post( )
 		if ( !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) )
 			return;
 
-		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) ) {
+		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
+		{
 			static bool ducked = false;
 
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -128,7 +138,9 @@ void movement_t::on_create_move_post( )
 
 			if ( prediction.m_data.m_flags & e_flags::fl_onground && ducked )
 				ducked = false;
-		} else {
+		}
+		else
+		{
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
 
@@ -141,7 +153,7 @@ void movement_t::on_create_move_post( )
 		}
 	}( );
 
-		// auto align
+	// auto align
 	[ & ]( ) {
 		if ( prediction.m_data.m_flags & e_flags::fl_onground )
 			return;
@@ -246,16 +258,19 @@ void movement_t::on_create_move_post( )
 		}
 	}( );
 
-	const float target_ps_velocity = convars.find( fnv1a::hash( "sv_gravity" ) )->get_float( ) * 0.5f * memory.m_globals->m_interval_per_tick;
+	const float target_ps_velocity = gravity * 0.5f * memory.m_globals->m_interval_per_tick;
 
 	// pixel surf (logic)
 	[ & ]( ) {
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) &&
 		     input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) ) {
 			if ( this->m_pixel_surf_data.m_in_pixel_surf || globals.m_local->flags( ) & e_flags::fl_onground ||
-			     globals.m_local->velocity( ).m_z >= 0.f )
+			     globals.m_local->velocity( ).m_z >= 0.f ) {
+				this->m_pixel_surf_data.m_predicted_succesful = false;
+				this->m_pixel_surf_data.m_should_duck         = false;
+				this->m_pixel_surf_data.m_in_pixel_surf       = false;
 				return;
-
+			}
 			if ( !this->m_pixel_surf_data.m_predicted_succesful ) {
 				this->m_pixel_surf_data.m_should_duck = false;
 				for ( int prediction_type = 0; prediction_type < 2; prediction_type++ ) {
@@ -275,7 +290,7 @@ void movement_t::on_create_move_post( )
 						else
 							pNewCmd->m_buttons &= ~e_buttons::in_duck;
 
-						prediction.begin( );
+						prediction.begin( globals.m_cmd );
 						prediction.end( );
 
 						if ( iFlags & e_flags::fl_onground )
@@ -295,7 +310,7 @@ void movement_t::on_create_move_post( )
 						delete pNewCmd;
 					}
 
-					prediction.begin( );
+					prediction.begin( globals.m_cmd );
 					prediction.end( );
 
 					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
@@ -307,7 +322,6 @@ void movement_t::on_create_move_post( )
 			this->m_pixel_surf_data.m_in_pixel_surf       = false;
 			this->m_pixel_surf_data.m_should_duck         = false;
 			this->m_pixel_surf_data.m_prediction_ticks    = 0;
-			return;
 		}
 	}( );
 
@@ -370,19 +384,108 @@ void movement_t::on_create_move_post( )
 			if ( this->m_pixel_surf_data.m_predicted_succesful && !( globals.m_local->velocity( ).m_z == -target_ps_velocity ) ) {
 				this->m_pixel_surf_data.m_in_pixel_surf       = false;
 				this->m_pixel_surf_data.m_predicted_succesful = false;
-				return;
 			}
-			return;
 		}
 	}( );
 
-	edgebug( );
+	// temp
+	// edgebug( );
+
+	// edgebug
+	[ & ]( bool can_edgebug ) {
+		if ( !can_edgebug || prediction.m_data.m_flags & e_flags::fl_onground || prediction.m_data.m_velocity.m_z > 0 ||
+		     globals.m_local->move_type( ) == e_move_types::move_type_ladder || globals.m_local->move_type( ) == e_move_types::move_type_noclip ||
+		     globals.m_local->flags( ) & e_flags::fl_onground ) {
+			movement.m_edgebug_data.m_will_edgebug  = false;
+			movement.m_edgebug_data.m_ticks_to_stop = 0;
+			movement.m_edgebug_data.m_last_tick     = 0;
+			movement.m_edgebug_data.m_should_crouch = false;
+			return;
+		}
+
+		if ( movement.m_edgebug_data.m_will_edgebug ) {
+			if ( memory.m_globals->m_tick_count < movement.m_edgebug_data.m_ticks_to_stop + movement.m_edgebug_data.m_last_tick ) {
+				// crouch/uncrouch accordingly
+				movement.m_edgebug_data.m_should_crouch ? globals.m_cmd->m_buttons |= e_buttons::in_duck
+														: globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
+
+				globals.m_cmd->m_side_move = globals.m_cmd->m_forward_move = 0.f;
+
+			} else {
+				movement.m_edgebug_data.m_will_edgebug  = false;
+				movement.m_edgebug_data.m_should_crouch = false;
+			}
+			return;
+		}
+
+		auto backup_cmd   = globals.backup.m_backup_cmd;
+		auto backup_local = globals.backup.m_backup_local;
+
+		static int backup_buttons = globals.m_cmd->m_buttons;
+
+		const auto run_eb = [ & ]( const bool crouched ) -> void {
+			if ( !crouched ) {
+				globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
+				globals.m_local->flags( ) &= ~e_flags::fl_ducking;
+			} else {
+				globals.m_cmd->m_buttons |= e_buttons::in_duck;
+				globals.m_local->flags( ) |= e_flags::fl_ducking;
+			}
+
+			std::memcpy( backup_local, globals.m_local, 0x3870 );
+			std::memcpy( backup_cmd, globals.m_cmd, sizeof( c_user_cmd ) );
+
+			for ( int predicted_tick = 1; predicted_tick <= GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ); predicted_tick++ ) {
+				if ( prediction.m_data.m_flags & e_flags::fl_onground || prediction.m_data.m_velocity.m_z > 0 ||
+				     globals.m_local->move_type( ) == e_move_types::move_type_ladder ||
+				     globals.m_local->move_type( ) == e_move_types::move_type_noclip || globals.m_local->flags( ) & e_flags::fl_onground ) {
+					movement.m_edgebug_data.m_will_edgebug  = false;
+					movement.m_edgebug_data.m_should_crouch = false;
+					movement.m_edgebug_data.m_ticks_to_stop = 0;
+					movement.m_edgebug_data.m_last_tick     = 0;
+					break;
+				}
+
+				prediction.begin( globals.m_cmd );
+				prediction.end( );
+
+				detect_edgebug( );
+
+				if ( movement.m_edgebug_data.m_will_edgebug ) {
+					movement.m_edgebug_data.m_ticks_to_stop = predicted_tick;
+					movement.m_edgebug_data.m_last_tick     = memory.m_globals->m_tick_count;
+					movement.m_edgebug_data.m_should_crouch = crouched;
+					movement.m_edgebug_data.m_saved_mousedx = abs( globals.m_cmd->m_mouse_delta_x );
+
+					break;
+				}
+
+				if ( movement.m_edgebug_data.m_will_fail ) {
+					movement.m_edgebug_data.m_will_fail = false;
+					break;
+				}
+			}
+
+			std::memmove( globals.m_local, backup_local, 0x3870 );
+			std::memmove( globals.m_cmd, backup_cmd, sizeof( c_user_cmd ) );
+		};
+
+		if ( !movement.m_edgebug_data.m_will_edgebug )
+			run_eb( false );
+		if ( !movement.m_edgebug_data.m_will_edgebug )
+			run_eb( true );
+
+		globals.m_cmd->m_buttons = backup_buttons;
+	}( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 }
 
 // handles strafing to edgebug
 // called on frame_stage_notify frame_start
 void movement_t::handle_edgebug_view_point( )
 {
+	// temp
+	return;
+
 	if ( !movement.m_edgebug_data.m_will_edgebug || !movement.m_edgebug_data.m_should_strafe )
 		return;
 
@@ -424,7 +527,7 @@ void movement_t::detect_edgebug( )
 			movement.m_edgebug_data.m_will_edgebug = true;
 			movement.m_edgebug_data.m_will_fail    = false;
 		} else {
-			prediction.begin( );
+			prediction.begin( globals.m_cmd );
 			prediction.end( );
 
 			const float own_prediction = round(
@@ -541,7 +644,7 @@ void movement_t::edgebug( )
 					globals.m_cmd->m_view_point.m_y =
 						mathematics.normalize_yaw( original_movement.view_point.m_y + ( info.yaw_delta * predicted_tick ) );
 
-				prediction.begin( );
+				prediction.begin( globals.m_cmd );
 				prediction.end( );
 
 				detect_edgebug( );
