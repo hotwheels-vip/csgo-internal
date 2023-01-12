@@ -16,11 +16,10 @@ enum edgebug_type : int {
 namespace edgebug_g
 {
 	inline int edgebug_ticks{ };
-	inline static int edgebug_mode{ };
 	inline int edgebug_tickcount{ };
 	inline float edgebug_mouse_offset{ };
 	inline edgebug_type edgebug_method{ };
-	inline static bool will_edgebug = false, will_fail = false;
+	inline bool will_edgebug = false, will_fail = false;
 } // namespace edgebug_g
 
 struct movement_t {

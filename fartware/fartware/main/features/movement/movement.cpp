@@ -614,6 +614,9 @@ void movement_t::edgebug( c_user_cmd* cmd )
 		cmd->m_buttons &= ~in_forward;
 		cmd->m_buttons &= ~in_back;
 
+		cmd->m_forward_move = 0;
+		cmd->m_side_move    = 0;
+
 		if ( ducked ) {
 			cmd->m_buttons |= in_duck;
 			globals.m_local->flags( ) |= fl_ducking;
