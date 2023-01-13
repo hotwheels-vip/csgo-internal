@@ -51,14 +51,24 @@ struct movement_t {
 	} m_pixelsurf_data;
 
 	void on_create_move_pre( );
+
 	void on_create_move_post( );
 
 	void handle_edgebug_view_point( );
 
 	void handle_move_data( );
 
+	void rotate_movement( c_angle& angle );
+
 private:
+
+	const float direction_yaw( );
+
 	void detect_edgebug( c_user_cmd* cmd );
+
+	void strafe_to_yaw( c_angle& angle, const float yaw );
+
+	float get_perfect_delta( );
 };
 
 inline movement_t movement = { };

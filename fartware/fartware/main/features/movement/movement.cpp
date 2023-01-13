@@ -54,12 +54,11 @@ void movement_t::on_create_move_post( )
 	const auto max_side_speed    = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
 	const auto gravity           = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
 
-	// delay hop
-	[ & ]( ) {
-		if ( !GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) )
-			return;
+	const float movement_angle = movement.direction_yaw( );
 
-		if ( !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) )
+	// delay hop
+	[ & ]( bool can_delay_hop ) {
+		if ( !can_delay_hop )
 			return;
 
 		static int ticks;
@@ -71,19 +70,16 @@ void movement_t::on_create_move_post( )
 
 		if ( ticks >= 4 && flags & e_flags::fl_onground )
 			globals.m_cmd->m_buttons |= e_buttons::in_jump;
-	}( );
+	}( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) );
 
 	// edgejump
-	[ & ]( ) {
-		if ( !GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) )
-			return;
-
-		if ( !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) ) )
+	[ & ]( bool can_edgejump ) {
+		if ( !can_edgejump )
 			return;
 
 		if ( ( prediction.m_data.m_flags & e_flags::fl_onground ) && !( flags & e_flags::fl_onground ) )
 			globals.m_cmd->m_buttons |= e_buttons::in_jump;
-	}( );
+	}( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) ) );
 
 	// longjump
 	[ & ]( ) {
@@ -119,11 +115,8 @@ void movement_t::on_create_move_post( )
 	}( );
 
 	// jumpbug
-	[ & ]( ) {
-		if ( !GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) )
-			return;
-
-		if ( !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) )
+	[ & ]( bool can_jump_bug ) {
+		if ( !can_jump_bug )
 			return;
 
 		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
@@ -151,11 +144,27 @@ void movement_t::on_create_move_post( )
 			if ( !( flags & fl_onground ) && prediction.m_data.m_flags & fl_onground )
 				globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
 		}
-	}( );
+	}( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) );
+
+	// auto strafe
+	[ & ]( bool can_autostrafe ) {
+		if ( !can_autostrafe )
+			return;
+
+		if ( movement.m_edgebug_data.m_will_edgebug || movement.m_pixelsurf_data.m_in_pixelsurf || prediction.m_data.m_flags & e_flags::fl_onground )
+			return;
+
+		c_angle angle{ };
+		interfaces.m_engine->get_view_angles( angle );
+
+		movement.strafe_to_yaw( angle, movement_angle );
+
+		movement.rotate_movement( angle );
+	}( GET_CONFIG_BOOL( variables.m_movement.m_autostrafe ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_autostrafe_key ) ) );
 
 	// auto align
 	[ & ]( ) {
-		if ( prediction.m_data.m_flags & e_flags::fl_onground || movement.m_pixelsurf_data.m_in_pixelsurf )
+		if ( prediction.m_data.m_flags & e_flags::fl_onground || movement.m_pixelsurf_data.m_in_pixelsurf || movement.m_edgebug_data.m_will_edgebug )
 			return;
 
 		c_game_trace trace, second_trace;
@@ -166,46 +175,12 @@ void movement_t::on_create_move_post( )
 			c_vector start_pos;
 			c_vector end_pos, second_end_pos;
 			c_vector current_velocity;
-			float movement_angle = 0.f;
-			float velocity       = 0.f;
-			float ideal_delta    = 0.f;
+			float velocity    = 0.f;
+			float ideal_delta = 0.f;
 		} align_info;
 
-		const bool back    = globals.m_cmd->m_buttons & e_buttons::in_back;
-		const bool forward = globals.m_cmd->m_buttons & e_buttons::in_forward;
-		const bool right   = globals.m_cmd->m_buttons & e_buttons::in_moveleft;
-		const bool left    = globals.m_cmd->m_buttons & e_buttons::in_moveright;
-
-		// diagonal rotation based on pressed keys
-		if ( back ) {
-			align_info.movement_angle = -180.f;
-
-			if ( right )
-				align_info.movement_angle -= 45.f;
-
-			else if ( left )
-				align_info.movement_angle += 45.f;
-		} else if ( right ) {
-			align_info.movement_angle = 90.f;
-
-			if ( back )
-				align_info.movement_angle += 45.f;
-
-			else if ( forward )
-				align_info.movement_angle -= 45.f;
-		} else if ( left ) {
-			align_info.movement_angle = -90.f;
-
-			if ( back )
-				align_info.movement_angle -= 45.f;
-
-			else if ( forward )
-				align_info.movement_angle += 45.f;
-		} else
-			align_info.movement_angle = 0.f;
-
-		const c_vector wish_direction{ std::cos( DEG2RAD( globals.m_cmd->m_view_point.m_y + align_info.movement_angle ) ) * 17.f,
-			                           std::sin( DEG2RAD( globals.m_cmd->m_view_point.m_y + align_info.movement_angle ) ) * 17.f, 0.f };
+		const c_vector wish_direction{ std::cos( DEG2RAD( globals.m_cmd->m_view_point.m_y + movement_angle ) ) * 17.f,
+			                           std::sin( DEG2RAD( globals.m_cmd->m_view_point.m_y + movement_angle ) ) * 17.f, 0.f };
 
 		if ( wish_direction.is_zero( ) )
 			return;
@@ -256,41 +231,6 @@ void movement_t::on_create_move_post( )
 				globals.m_cmd->m_side_move    = -sin_rot * max_side_speed;
 			}
 		}
-	}( );
-
-	// movement correction
-	[ & ]( ) {
-		c_vector forward = { }, right = { }, up = { };
-		mathematics.angle_vectors( globals.m_old_view_point, &forward, &right, &up );
-
-		forward.m_z = right.m_z = up.m_x = up.m_y = 0.f;
-
-		forward.normalize_in_place( );
-		right.normalize_in_place( );
-		up.normalize_in_place( );
-
-		c_vector old_forward = { }, old_right = { }, old_up = { };
-		mathematics.angle_vectors( globals.m_cmd->m_view_point, &old_forward, &old_right, &old_up );
-
-		old_forward.m_z = old_right.m_z = old_up.m_x = old_up.m_y = 0.f;
-
-		old_forward.normalize_in_place( );
-		old_right.normalize_in_place( );
-		old_up.normalize_in_place( );
-
-		const float pitch_forward = forward.m_x * globals.m_cmd->m_forward_move;
-		const float yaw_forward   = forward.m_y * globals.m_cmd->m_forward_move;
-		const float pitch_side    = right.m_x * globals.m_cmd->m_side_move;
-		const float yaw_side      = right.m_y * globals.m_cmd->m_side_move;
-		const float roll_up       = up.m_z * globals.m_cmd->m_up_move;
-
-		const float x = old_forward.m_x * pitch_side + old_forward.m_y * yaw_side + old_forward.m_x * pitch_forward + old_forward.m_y * yaw_forward +
-		                old_forward.m_z * roll_up;
-		const float y = old_right.m_x * pitch_side + old_right.m_y * yaw_side + old_right.m_x * pitch_forward + old_right.m_y * yaw_forward +
-		                old_right.m_z * roll_up;
-
-		globals.m_cmd->m_forward_move = std::clamp( x, -max_forward_speed, max_forward_speed );
-		globals.m_cmd->m_side_move    = std::clamp( y, -max_side_speed, max_side_speed );
 	}( );
 
 	// pixelsurf
@@ -435,6 +375,11 @@ void movement_t::on_create_move_post( )
 
 					break;
 				}
+
+				if ( m_edgebug_data.m_will_fail ) {
+					m_edgebug_data.m_will_fail = false;
+					break;
+				}
 			}
 
 			std::memmove( globals.m_cmd, saved_cmd, sizeof( c_user_cmd ) );
@@ -497,9 +442,8 @@ void movement_t::handle_edgebug_view_point( )
 
 void movement_t::detect_edgebug( c_user_cmd* cmd )
 {
-	if ( !globals.m_local || !globals.m_local->is_alive( ) || globals.m_local->move_type( ) & e_move_types::move_type_noclip ||
-	     globals.m_local->move_type( ) & e_move_types::move_type_ladder || globals.m_local->flags( ) & e_flags::fl_onground ||
-	     globals.m_local->velocity( ).m_z > 6.f ) {
+	if ( globals.m_local->move_type( ) & e_move_types::move_type_noclip || globals.m_local->move_type( ) & e_move_types::move_type_ladder ||
+	     globals.m_local->flags( ) & e_flags::fl_onground ) {
 		m_edgebug_data.m_will_edgebug = false;
 		m_edgebug_data.m_will_fail    = true;
 		return;
@@ -530,7 +474,6 @@ void movement_t::detect_edgebug( c_user_cmd* cmd )
 		}
 	} else {
 		m_edgebug_data.m_will_edgebug = false;
-		m_edgebug_data.m_will_fail    = true;
 	}
 }
 
@@ -559,4 +502,91 @@ void movement_t::pixelsurf_data_t::reset( )
 	this->m_last_tick        = 0;
 	this->m_ticks_to_stop    = 0;
 	this->m_pixelsurf_method = pixelsurf_type_t::ps_standing;
+}
+
+void movement_t::rotate_movement( c_angle& angle )
+{
+	if ( angle.m_x == 0 && angle.m_y == 0 && angle.m_z == 0 )
+		interfaces.m_engine->get_view_angles( angle );
+
+	const c_vector movement = { globals.m_cmd->m_forward_move, globals.m_cmd->m_side_move, 0 };
+
+	const c_vector angle_movement = mathematics.vector_angle( movement );
+
+	const float rotation = DEG2RAD( globals.m_cmd->m_view_point.m_y - angle.m_y + angle_movement.m_y );
+
+	globals.m_cmd->m_forward_move = std::cosf( rotation ) * movement.length_2d( );
+	globals.m_cmd->m_side_move    = std::sinf( rotation ) * movement.length_2d( );
+}
+
+float movement_t::get_perfect_delta( )
+{
+	auto airaccel = convars.find( fnv1a::hash_const( "sv_airaccelerate" ) )->get_float( );
+	auto speedcap = convars.find( fnv1a::hash_const( "sv_air_max_wishspeed" ) )->get_float( );
+
+	if ( !airaccel )
+		airaccel = 12;
+	if ( !speedcap )
+		speedcap = 30;
+
+	auto speed       = std::hypotf( globals.m_local->velocity( ).m_x, globals.m_local->velocity( ).m_y );
+	auto accel_speed = std::min( memory.m_globals->m_interval_per_tick * 30 * airaccel, speedcap );
+
+	return std::atan( accel_speed / speed ) * ( 180 / PI );
+}
+
+void movement_t::strafe_to_yaw( c_angle& angle, const float yaw )
+{
+	const auto max_side_speed = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
+
+	angle.m_y += yaw;
+	globals.m_cmd->m_side_move    = 0.f;
+	globals.m_cmd->m_forward_move = 0.f;
+
+	const auto degrees = RAD2DEG( std::atan2f( globals.m_local->velocity( ).m_y, globals.m_local->velocity( ).m_x ) );
+
+	const auto delta = mathematics.normalize_yaw( angle.m_y - degrees );
+
+	globals.m_cmd->m_side_move = delta > 0.f ? -max_side_speed : max_side_speed;
+	angle.m_y                  = mathematics.normalize_yaw( angle.m_y - delta );
+}
+
+const float movement_t::direction_yaw( )
+{
+	float yaw = 0.f;
+
+	const bool back    = globals.m_cmd->m_buttons & e_buttons::in_back;
+	const bool forward = globals.m_cmd->m_buttons & e_buttons::in_forward;
+	const bool right   = globals.m_cmd->m_buttons & e_buttons::in_moveleft;
+	const bool left    = globals.m_cmd->m_buttons & e_buttons::in_moveright;
+
+	// diagonal rotation based on pressed keys
+	if ( back ) {
+		yaw = -180.f;
+
+		if ( right )
+			yaw -= 45.f;
+
+		else if ( left )
+			yaw += 45.f;
+	} else if ( right ) {
+		yaw = 90.f;
+
+		if ( back )
+			yaw += 45.f;
+
+		else if ( forward )
+			yaw -= 45.f;
+	} else if ( left ) {
+		yaw = -90.f;
+
+		if ( back )
+			yaw -= 45.f;
+
+		else if ( forward )
+			yaw += 45.f;
+	} else
+		yaw = 0.f;
+
+	return yaw;
 }

@@ -8,6 +8,26 @@ c_vector mathematics_t::vector_transform( const c_vector& vector_to_transform, c
 	                 vector_to_transform.dot_product( matrix[ 2 ] ) + matrix[ 2 ][ 3 ] );
 }
 
+c_vector mathematics_t::vector_angle( const c_vector vector )
+{
+	c_vector ret{ };
+	if ( vector.m_x == 0.0f && vector.m_y == 0.0f ) {
+		ret.m_x = ( vector.m_z > 0.0f ) ? 270.0f : 90.0f;
+		ret.m_y = 0.0f;
+	} else {
+		ret.m_x = RAD2DEG( std::atan2f( -vector.m_z, vector.length_2d( ) ) );
+		ret.m_y = RAD2DEG( std::atan2f( vector.m_y, vector.m_x ) );
+
+		if ( ret.m_y < 0.0f )
+			ret.m_y += 360.0f;
+
+		if ( ret.m_x < 0.0f )
+			ret.m_x += 360.0f;
+	}
+	ret.m_z = 0.0f;
+	return ret;
+}
+
 void mathematics_t::angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right, c_vector* up )
 {
 	float sp = { }, sy = { }, sr = { }, cp = { }, cy = { }, cr = { };

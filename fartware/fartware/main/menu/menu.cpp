@@ -213,35 +213,34 @@ void menu_t::on_end_scene( )
 				ImGui::Checkbox( "bunny hop", &GET_CONFIG_BOOL( variables.m_movement.m_bunny_hop ) );
 
 				ImGui::Checkbox( "edge bug", &GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) );
+				ImGui::Keybind( "edge bug key", &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) );
+
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) ) {
-					ImGui::Keybind( "edge bug key", &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) );
 					ImGui::SliderInt( "edge bug predicted ticks", &GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ), 0, 32 );
-					ImGui::Checkbox( "advanced detection", &GET_CONFIG_BOOL( variables.m_movement.m_advanced_detection ) );
+					ImGui::Checkbox( "advanced detection(wip)", &GET_CONFIG_BOOL( variables.m_movement.m_advanced_detection ) );
 					ImGui::SliderFloat( "mouse lock scale", &GET_CONFIG_FLOAT( variables.m_movement.m_edge_bug_lock_amt ), 0.f, 1.f );
 				}
+
 				ImGui::Checkbox( "edge jump", &GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) );
-				if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) )
-					ImGui::Keybind( "edge jump key", &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) );
+				ImGui::Keybind( "edge jump key", &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) );
 
 				ImGui::Checkbox( "long jump", &GET_CONFIG_BOOL( variables.m_movement.m_long_jump ) );
-				if ( GET_CONFIG_BOOL( variables.m_movement.m_long_jump ) )
-					ImGui::Keybind( "long jump key", &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) );
+				ImGui::Keybind( "long jump key", &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) );
 
 				ImGui::Checkbox( "mini jump", &GET_CONFIG_BOOL( variables.m_movement.m_mini_jump ) );
-				if ( GET_CONFIG_BOOL( variables.m_movement.m_mini_jump ) )
-					ImGui::Keybind( "mini jump key", &GET_CONFIG_BIND( variables.m_movement.m_mini_jump_key ) );
+				ImGui::Keybind( "mini jump key", &GET_CONFIG_BIND( variables.m_movement.m_mini_jump_key ) );
 
 				ImGui::Checkbox( "jump bug", &GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) );
-				if ( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) )
-					ImGui::Keybind( "jump bug key", &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) );
+				ImGui::Keybind( "jump bug key", &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) );
 
 				ImGui::Checkbox( "pixel surf", &GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) );
-				if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) )
-					ImGui::Keybind( "pixel surf key", &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) );
+				ImGui::Keybind( "pixel surf key", &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) );
 
 				ImGui::Checkbox( "delay hop", &GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) );
-				if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) )
-					ImGui::Keybind( "delay hop key", &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) );
+				ImGui::Keybind( "delay hop key", &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) );
+
+				ImGui::Checkbox( "autostrafe", &GET_CONFIG_BOOL( variables.m_movement.m_autostrafe ) );
+				ImGui::Keybind( "autostrafe key", &GET_CONFIG_BIND( variables.m_movement.m_autostrafe_key ) );
 
 				ImGui::Checkbox( "no crouch cooldown", &GET_CONFIG_BOOL( variables.m_movement.m_fast_duck ) );
 

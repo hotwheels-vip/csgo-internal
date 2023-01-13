@@ -158,7 +158,8 @@ void indicators_t::on_paint_traverse( )
 		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) )
 			return;
 
-		float offset                = 0.f;
+		float offset = 0.f;
+
 		const auto render_indicator = [ & ]( const char* indicator_name, const c_color& color, bool active ) {
 			ImAnimationHelper indicator_animation = ImAnimationHelper( fnv1a::hash( indicator_name ), ImGui::GetIO( ).DeltaTime );
 			indicator_animation.Update( 2.f, active ? 2.f : -2.f );
@@ -178,10 +179,14 @@ void indicators_t::on_paint_traverse( )
 					indicator_name, color.get_u32( indicator_animation.AnimationData->second ),
 					ImColor( 0.f, 0.f, 0.f, indicator_animation.AnimationData->second ), e_text_render_flags::text_render_flag_dropshadow ) );
 
-			offset -= ( text_size.y * indicator_animation.AnimationData->second );
+			offset -= ( text_size.y + 2 ) * indicator_animation.AnimationData->second;
 		};
 
 		/* TODO ~ change indicator colors when predicted or what ever u get it like blarity. . , .. . . . LOL XD dxdxdx :3 Sussuy Among Su */
+
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) )
+			render_indicator( "eb", movement.m_edgebug_data.m_will_edgebug ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
+			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) )
 			render_indicator( "ps", movement.m_pixelsurf_data.m_will_pixelsurf ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
@@ -193,10 +198,6 @@ void indicators_t::on_paint_traverse( )
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_long_jump ) )
 			render_indicator( "lj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) );
-
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) )
-			render_indicator( "eb", movement.m_edgebug_data.m_will_edgebug ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
-			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) )
 			render_indicator( "dh", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) );
