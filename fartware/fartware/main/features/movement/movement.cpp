@@ -227,7 +227,7 @@ void movement_t::on_create_move_post( )
 		}
 	}( );
 
-	// pixelsurf
+	// pixelsurf (logic)
 	const float target_ps_velocity = gravity * 0.5f * memory.m_globals->m_interval_per_tick; /* NOTE ~ should work for edge bug too. */
 	[ & ]( bool can_pixelsurf ) {
 		if ( can_pixelsurf ) {
@@ -243,10 +243,10 @@ void movement_t::on_create_move_post( )
 
 					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
 
-					int iFlags           = globals.m_local->flags( );
-					c_vector vecVelocity = globals.m_local->velocity( );
+					int backup_flags           = globals.m_local->flags( );
+					c_vector backup_velocity = globals.m_local->velocity( );
 
-					for ( int i = 0; i < 32; i++ ) {
+					for ( int i = 0; i < 12; i++ ) {
 						c_user_cmd* simulated_cmd = new c_user_cmd( *globals.m_cmd );
 
 						if ( prediction_type == 0 )
@@ -257,10 +257,10 @@ void movement_t::on_create_move_post( )
 						prediction.begin( simulated_cmd );
 						prediction.end( );
 
-						if ( iFlags & e_flags::fl_onground )
+						if ( backup_flags & e_flags::fl_onground )
 							break;
 
-						if ( globals.m_local->velocity( ).m_z == -target_ps_velocity && vecVelocity.m_z == -target_ps_velocity ) {
+						if ( globals.m_local->velocity( ).m_z == -target_ps_velocity && backup_velocity.m_z == -target_ps_velocity ) {
 							movement.m_pixelsurf_data.m_prediction_ticks = globals.m_cmd->m_tick_count + i;
 							movement.m_pixelsurf_data.m_simulated_cmd    = simulated_cmd;
 							movement.m_pixelsurf_data.m_should_duck      = !( prediction_type == 1 );
@@ -268,8 +268,8 @@ void movement_t::on_create_move_post( )
 							break;
 						}
 
-						vecVelocity = globals.m_local->velocity( );
-						iFlags      = globals.m_local->flags( );
+						backup_velocity = globals.m_local->velocity( );
+						backup_flags = globals.m_local->flags( );
 
 						delete simulated_cmd;
 					}
@@ -282,10 +282,7 @@ void movement_t::on_create_move_post( )
 			}
 
 		} else {
-			movement.m_pixelsurf_data.m_predicted_succesful = false;
-			movement.m_pixelsurf_data.m_in_pixel_surf       = false;
-			movement.m_pixelsurf_data.m_should_duck         = false;
-			movement.m_pixelsurf_data.m_prediction_ticks    = 0;
+			movement.m_pixelsurf_data.reset( );
 			return;
 		}
 	}( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) );
@@ -354,6 +351,7 @@ void movement_t::on_create_move_post( )
 			return;
 		}
 	}( );
+
 	// edgebug
 	[ & ]( bool can_edgebug ) {
 		if ( !can_edgebug ) {
@@ -441,7 +439,6 @@ void movement_t::on_create_move_post( )
 				m_edgebug_data.reset( );
 		}
 	}( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
-
 }
 
 // handles strafing to edgebug
@@ -527,6 +524,14 @@ void movement_t::edgebug_data_t::reset( )
 	this->m_will_fail      = false;
 }
 
+void movement_t::pixelsurf_data_t::reset( )
+{
+	movement.m_pixelsurf_data.m_predicted_succesful = false;
+	movement.m_pixelsurf_data.m_in_pixel_surf       = false;
+	movement.m_pixelsurf_data.m_should_duck         = false;
+	movement.m_pixelsurf_data.m_prediction_ticks    = 0;
+}
+
 void movement_t::rotate_movement( c_angle& angle )
 {
 	if ( angle.m_x == 0 && angle.m_y == 0 && angle.m_z == 0 )
@@ -544,16 +549,17 @@ void movement_t::rotate_movement( c_angle& angle )
 
 float movement_t::get_perfect_delta( )
 {
-	auto airaccel = convars.find( fnv1a::hash_const( "sv_airaccelerate" ) )->get_float( );
-	auto speedcap = convars.find( fnv1a::hash_const( "sv_air_max_wishspeed" ) )->get_float( );
+	float sv_airaccelerate     = convars.find( fnv1a::hash_const( "sv_airaccelerate" ) )->get_float( );
+	float sv_air_max_wishspeed = convars.find( fnv1a::hash_const( "sv_air_max_wishspeed" ) )->get_float( );
 
-	if ( !airaccel )
-		airaccel = 12;
-	if ( !speedcap )
-		speedcap = 30;
+	if ( !sv_airaccelerate )
+		sv_airaccelerate = 12;
 
-	auto speed       = std::hypotf( globals.m_local->velocity( ).m_x, globals.m_local->velocity( ).m_y );
-	auto accel_speed = std::min( memory.m_globals->m_interval_per_tick * 30 * airaccel, speedcap );
+	if ( !sv_air_max_wishspeed )
+		sv_air_max_wishspeed = 30;
+
+	const auto speed       = std::hypotf( globals.m_local->velocity( ).m_x, globals.m_local->velocity( ).m_y );
+	const auto accel_speed = std::min( memory.m_globals->m_interval_per_tick * 30 * sv_airaccelerate, sv_air_max_wishspeed );
 
 	return std::atan( accel_speed / speed ) * ( 180 / PI );
 }

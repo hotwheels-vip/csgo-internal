@@ -36,6 +36,8 @@ struct movement_t {
 		bool m_predicted_succesful = false, m_in_pixel_surf = false, m_should_duck = false;
 		int m_prediction_ticks      = 0;
 		c_user_cmd* m_simulated_cmd = { };
+
+		void reset( );
 	} m_pixelsurf_data;
 
 	void on_create_move_pre( );
