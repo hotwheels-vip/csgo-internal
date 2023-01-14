@@ -189,7 +189,10 @@ void indicators_t::on_paint_traverse( )
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) )
-			render_indicator( "ps", movement.m_pixelsurf_data.m_will_pixelsurf ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
+			render_indicator( "ps",
+			                  movement.m_pixelsurf_data.m_predicted_succesful || movement.m_pixelsurf_data.m_in_pixel_surf
+			                      ? c_color( 0., 1.f, 0.f, 1.f )
+			                      : c_color( 1.f, 1.f, 1.f, 1.f ),
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) );
 
 		// only render ej text when not ljing, else just render lj

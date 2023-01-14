@@ -15,11 +15,6 @@ enum edgebug_type_t : int {
 	eb_strafing_ducking
 };
 
-enum pixelsurf_type_t : int {
-	ps_standing = 0,
-	ps_ducking
-};
-
 struct movement_t {
 	struct edgebug_data_t {
 		edgebug_type_t m_edgebug_method{ };
@@ -38,16 +33,9 @@ struct movement_t {
 	} m_edgebug_data;
 
 	struct pixelsurf_data_t {
-		pixelsurf_type_t m_pixelsurf_method{ };
-
-		bool m_will_pixelsurf{ };
-
-		bool m_in_pixelsurf{ };
-
-		int m_ticks_to_stop{ };
-		int m_last_tick{ };
-
-		void reset( );
+		bool m_predicted_succesful = false, m_in_pixel_surf = false, m_should_duck = false;
+		int m_prediction_ticks      = 0;
+		c_user_cmd* m_simulated_cmd = { };
 	} m_pixelsurf_data;
 
 	void on_create_move_pre( );

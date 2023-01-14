@@ -121,8 +121,6 @@ static void __stdcall create_move( int sequence_number, float input_sample_frame
 	[ & ]( ) {
 		if ( !globals.m_local || !globals.m_local->is_alive( ) || !globals.m_cmd ) {
 			movement.m_edgebug_data.reset( );
-			movement.m_pixelsurf_data.reset( );
-
 			return;
 		}
 
