@@ -22,7 +22,12 @@ void movement_t::on_create_move_pre( )
 		if ( !GET_CONFIG_BOOL( variables.m_movement.m_bunny_hop ) )
 			return;
 
+		// dont run bhop while jbing
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) )
+			return;
+
+		// dont run bhop while delayhopping
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) )
 			return;
 
 		if ( convars.find( fnv1a::hash_const( "sv_autobunnyhopping" ) )->get_int( ) )
@@ -57,6 +62,10 @@ void movement_t::on_create_move_post( )
 	// delay hop
 	[ & ]( bool can_delay_hop ) {
 		if ( !can_delay_hop )
+			return;
+
+		// in onground and predicted to be onground
+		if ( prediction.m_data.m_flags & e_flags::fl_onground && prediction.m_data.m_flags )
 			return;
 
 		static int ticks;
@@ -117,7 +126,8 @@ void movement_t::on_create_move_post( )
 		if ( !can_jump_bug )
 			return;
 
-		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) ) {
+		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
+		{
 			static bool ducked = false;
 
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -128,7 +138,9 @@ void movement_t::on_create_move_post( )
 
 			if ( prediction.m_data.m_flags & e_flags::fl_onground && ducked )
 				ducked = false;
-		} else {
+		}
+		else
+		{
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
 
@@ -159,7 +171,7 @@ void movement_t::on_create_move_post( )
 
 	// auto align
 	[ & ]( ) {
-		constexpr float distance_till_adjust = 0.03125f;
+		constexpr static float distance_till_adjust = 0.03125f;
 
 		constexpr auto has_to_align = []( const c_vector& origin ) -> bool {
 			constexpr float distance_to_stop = 0.00200f;
