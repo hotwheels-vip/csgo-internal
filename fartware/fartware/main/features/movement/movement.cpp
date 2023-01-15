@@ -46,6 +46,7 @@ void movement_t::on_create_move_post( )
 	/* TODO ~ float ~ store these somewhere to be accessed globally */
 	const auto flags    = globals.m_local->flags( );
 	const auto velocity = globals.m_local->velocity( );
+	const auto origin   = globals.m_local->origin( );
 
 	const auto max_forward_speed = convars.find( fnv1a::hash_const( "cl_forwardspeed" ) )->get_float( );
 	const auto max_side_speed    = convars.find( fnv1a::hash_const( "cl_sidespeed" ) )->get_float( );
@@ -158,7 +159,22 @@ void movement_t::on_create_move_post( )
 
 	// auto align
 	[ & ]( ) {
-		if ( prediction.m_data.m_flags & e_flags::fl_onground || movement.m_pixelsurf_data.m_in_pixel_surf || movement.m_edgebug_data.m_will_edgebug )
+		constexpr float distance_till_adjust = 0.03125f;
+
+		constexpr auto has_to_align = []( const c_vector& origin ) -> bool {
+			constexpr float distance_to_stop = 0.00200f;
+
+			const c_vector_2d remainder1 = c_vector_2d( 1.f - ( origin.m_x - floor( origin.m_x ) ), 1.f - ( origin.m_y - floor( origin.m_y ) ) );
+			const c_vector_2d remainder2 = c_vector_2d( ( origin.m_x - floor( origin.m_x ) ), ( origin.m_y - floor( origin.m_y ) ) );
+
+			return ( ( remainder1.m_x >= distance_to_stop && remainder1.m_x <= distance_till_adjust ) ||
+			         ( remainder1.m_y >= distance_to_stop && remainder1.m_y <= distance_till_adjust ) ) ||
+			       ( ( remainder2.m_x >= distance_to_stop && remainder2.m_x <= distance_till_adjust ) ||
+			         ( remainder2.m_y >= distance_to_stop && remainder2.m_y <= distance_till_adjust ) );
+		};
+
+		if ( prediction.m_data.m_flags & e_flags::fl_onground || movement.m_pixelsurf_data.m_in_pixel_surf ||
+		     movement.m_edgebug_data.m_will_edgebug || !( has_to_align( origin ) ) )
 			return;
 
 		c_game_trace trace, second_trace;
@@ -243,7 +259,7 @@ void movement_t::on_create_move_post( )
 
 					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
 
-					int backup_flags           = globals.m_local->flags( );
+					int backup_flags         = globals.m_local->flags( );
 					c_vector backup_velocity = globals.m_local->velocity( );
 
 					for ( int i = 0; i < 12; i++ ) {
@@ -269,7 +285,7 @@ void movement_t::on_create_move_post( )
 						}
 
 						backup_velocity = globals.m_local->velocity( );
-						backup_flags = globals.m_local->flags( );
+						backup_flags    = globals.m_local->flags( );
 
 						delete simulated_cmd;
 					}
