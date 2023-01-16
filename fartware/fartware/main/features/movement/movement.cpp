@@ -389,6 +389,8 @@ void movement_t::on_create_move_post( )
 		const int32_t saved_buttons = globals.m_cmd->m_buttons;
 
 		const auto loop_through_ticks = [ & ]( const bool ducked ) {
+			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
 			globals.m_cmd->m_buttons &= ~e_buttons::in_moveleft;
 			globals.m_cmd->m_buttons &= ~e_buttons::in_moveright;
 			globals.m_cmd->m_buttons &= ~e_buttons::in_forward;
