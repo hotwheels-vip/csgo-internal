@@ -64,10 +64,6 @@ void movement_t::on_create_move_post( )
 		if ( !can_delay_hop )
 			return;
 
-		// in onground and predicted to be onground
-		if ( prediction.m_data.m_flags & e_flags::fl_onground && prediction.m_data.m_flags )
-			return;
-
 		static int ticks;
 
 		if ( flags & e_flags::fl_onground )
@@ -77,6 +73,8 @@ void movement_t::on_create_move_post( )
 
 		if ( ticks >= 4 && flags & e_flags::fl_onground )
 			globals.m_cmd->m_buttons |= e_buttons::in_jump;
+		else
+			globals.m_cmd->m_buttons &= ~e_buttons::in_jump;
 	}( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) );
 
 	// edgejump
@@ -499,29 +497,33 @@ void movement_t::handle_edgebug_view_point( )
 
 void movement_t::detect_edgebug( c_user_cmd* cmd )
 {
-	if ( globals.m_local->move_type( ) & e_move_types::move_type_noclip || globals.m_local->move_type( ) & e_move_types::move_type_ladder ||
-	     globals.m_local->flags( ) & e_flags::fl_onground ) {
+	if ( !globals.m_local || !globals.m_local->is_alive( ) || prediction.m_data.m_velocity.m_z > 0 ||
+	     globals.m_local->move_type( ) & move_type_noclip || globals.m_local->move_type( ) & move_type_ladder ) {
 		m_edgebug_data.m_will_edgebug = false;
 		m_edgebug_data.m_will_fail    = true;
 		return;
 	}
 
-	if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
-	     globals.m_local->velocity( ).m_z < -6.f && !( globals.m_local->flags( ) & fl_onground ) ) {
+	if ( round( globals.m_local->velocity( ).m_z ) == 0 || prediction.m_data.m_flags & fl_onground ) {
+		m_edgebug_data.m_will_edgebug = false;
+		m_edgebug_data.m_will_fail    = true;
+	} else if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
+	            globals.m_local->velocity( ).m_z < -6.f && !( globals.m_local->flags( ) & fl_onground ) ) {
 		const float before_detection_pred = globals.m_local->velocity( ).m_z;
+		const auto gravity                = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
 
 		if ( std::floor( prediction.m_data.m_velocity.m_z ) < -7 && std::floor( before_detection_pred ) == -7 &&
 		     globals.m_local->velocity( ).length_2d( ) >= prediction.m_data.m_velocity.length_2d( ) ) {
 			m_edgebug_data.m_will_edgebug = true;
 			m_edgebug_data.m_will_fail    = false;
 		} else {
-			prediction.begin( globals.m_cmd );
+			prediction.begin( cmd );
 			prediction.end( );
 
-			const float own_prediction = round(
-				( -convars.find( fnv1a::hash( "sv_gravity" ) )->get_float( ) * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
+			float own_prediction   = round( ( -gravity * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
+			float rounded_velocity = round( globals.m_local->velocity( ).m_z );
 
-			if ( own_prediction == round( globals.m_local->velocity( ).m_z ) ) {
+			if ( own_prediction == rounded_velocity ) {
 				m_edgebug_data.m_will_edgebug = true;
 				m_edgebug_data.m_will_fail    = false;
 			} else {
@@ -529,8 +531,6 @@ void movement_t::detect_edgebug( c_user_cmd* cmd )
 				m_edgebug_data.m_will_fail    = true;
 			}
 		}
-	} else {
-		m_edgebug_data.m_will_edgebug = false;
 	}
 }
 
