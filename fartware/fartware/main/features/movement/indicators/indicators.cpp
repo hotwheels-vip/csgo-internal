@@ -77,7 +77,7 @@ void indicators_t::on_paint_traverse( )
 		                                  ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_show_pre_speed ) );
 
 		const std::string text =
-			globals.m_local->move_type( ) & e_move_types::move_type_noclip
+			globals.m_local->move_type( ) & e_move_types::move_type_noclip && !( globals.m_local->move_type( ) & e_move_types::move_type_ladder )
 				? "noclip"
 				: std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
 
@@ -155,7 +155,7 @@ void indicators_t::on_paint_traverse( )
 
 	// movement indicators
 	[ & ]( ) {
-		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) )
+		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators_enable ) )
 			return;
 
 		float offset = 0.f;
@@ -184,31 +184,45 @@ void indicators_t::on_paint_traverse( )
 
 		/* TODO ~ change indicator colors when predicted or what ever u get it like blarity. . , .. . . . LOL XD dxdxdx :3 Sussuy Among Su */
 
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) )
-			render_indicator( "eb", movement.m_edgebug_data.m_will_edgebug ? c_color( 0., 1.f, 0.f, 1.f ) : c_color( 1.f, 1.f, 1.f, 1.f ),
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) &&
+		     config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators )[ e_keybind_indicators::key_eb ] )
+			render_indicator( "eb",
+			                  movement.m_edgebug_data.m_will_edgebug ? GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color_success )
+			                                                         : GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) )
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) &&
+		     config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators )[ e_keybind_indicators::key_ps ] )
 			render_indicator( "ps",
 			                  movement.m_pixelsurf_data.m_predicted_succesful || movement.m_pixelsurf_data.m_in_pixel_surf
-			                      ? c_color( 0., 1.f, 0.f, 1.f )
-			                      : c_color( 1.f, 1.f, 1.f, 1.f ),
+			                      ? GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color_success )
+			                      : GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) );
 
 		// only render ej text when not ljing, else just render lj
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) && !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) )
-			render_indicator( "ej", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) ) );
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_jump ) && !input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) &&
+		     config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators )[ e_keybind_indicators::key_ej ] )
+			render_indicator( "ej", GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
+			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_jump_key ) ) );
 
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_long_jump ) )
-			render_indicator( "lj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) );
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_long_jump ) &&
+		     config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators )[ e_keybind_indicators::key_lj ] )
+			render_indicator( "lj", GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
+			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_long_jump_key ) ) );
 
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) )
-			render_indicator( "dh", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) );
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) &&
+		     config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators )[ e_keybind_indicators::key_dh ] )
+			render_indicator( "dh", GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
+			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) );
 
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_mini_jump ) )
-			render_indicator( "mj", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_mini_jump_key ) ) );
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_mini_jump ) &&
+		     config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators )[ e_keybind_indicators::key_mj ] )
+			render_indicator( "mj", GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
+			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_mini_jump_key ) ) );
 
-		if ( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) )
-			render_indicator( "jb", c_color( 1.f, 1.f, 1.f, 1.f ), input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) );
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) &&
+		     config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators )[ e_keybind_indicators::key_jb ] )
+			render_indicator( "jb", GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
+			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) );
 	}( );
 }

@@ -464,6 +464,8 @@ void movement_t::on_create_move_post( )
 			} else
 				m_edgebug_data.reset( );
 		}
+
+		prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
 	}( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 }
 

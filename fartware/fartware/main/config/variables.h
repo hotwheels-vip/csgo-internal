@@ -8,6 +8,17 @@ enum e_player_flags {
 	player_flags_max
 };
 
+enum e_keybind_indicators {
+	key_eb = 0,
+	key_ps,
+	key_ej,
+	key_lj,
+	key_dh,
+	key_mj,
+	key_jb,
+	key_max
+};
+
 struct variables_t {
 	struct visuals_t {
 		ADD_VARIABLE( bool, m_bounding_box, false );
@@ -37,6 +48,8 @@ struct variables_t {
 
 		ADD_VARIABLE( bool, m_out_of_fov_arrows, false );
 		ADD_VARIABLE( c_color, m_out_of_fov_arrows_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( float, m_out_of_fov_arrows_size, 20.f );
+		ADD_VARIABLE( int, m_out_of_fov_arrows_distance, 200 );
 	} m_visuals;
 
 	struct movement_t {
@@ -84,6 +97,9 @@ struct variables_t {
 			ADD_VARIABLE( c_color, m_velocity_indicator_color4, c_color( 255, 119, 119, 255 ) );
 			ADD_VARIABLE( c_color, m_velocity_indicator_color5, c_color( 30, 255, 109, 255 ) );
 
+			ADD_VARIABLE( c_color, m_keybind_color, c_color( 255, 255, 255, 255 ) );
+			ADD_VARIABLE( c_color, m_keybind_color_success, c_color( 0, 255, 0, 255 ) );
+
 			ADD_VARIABLE( bool, m_velocity_indicator_fade_alpha, false );
 			ADD_VARIABLE( bool, m_velocity_indicator_custom_color, false );
 			ADD_VARIABLE( int, m_velocity_indicator_position, 30 );
@@ -96,8 +112,9 @@ struct variables_t {
 			ADD_VARIABLE( bool, m_stamina_indicator_fade_alpha, false );
 			ADD_VARIABLE( int, m_stamina_indicator_position, 30 );
 
-			ADD_VARIABLE( bool, m_sub_indicators, false );
+			ADD_VARIABLE( bool, m_sub_indicators_enable, false );
 			ADD_VARIABLE( int, m_sub_indicators_position, 30 );
+			ADD_VARIABLE_VECTOR( bool, e_keybind_indicators::key_max, m_sub_indicators, false );
 
 		} m_indicators;
 	} m_movement;

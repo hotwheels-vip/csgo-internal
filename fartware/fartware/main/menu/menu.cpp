@@ -184,6 +184,8 @@ void menu_t::on_end_scene( )
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_out_of_fov_arrows ) ) {
 					ImGui::ColorEdit4( ( "##out of fov arrows color" ), &GET_CONFIG_COLOR( variables.m_visuals.m_out_of_fov_arrows_color ),
 					                   color_picker_alpha_flags );
+					ImGui::SliderFloat( "arrows size", &GET_CONFIG_FLOAT( variables.m_visuals.m_out_of_fov_arrows_size ), 0.1f, 50.f, "%.1f px" );
+					ImGui::SliderInt( "arrows distance", &GET_CONFIG_INT( variables.m_visuals.m_out_of_fov_arrows_distance ), 10, 500, "%d px" );
 				}
 
 				ImGui::EndChild( );
@@ -325,10 +327,23 @@ void menu_t::on_end_scene( )
 					                  globals.m_display_size.y );
 				}
 
-				ImGui::Checkbox( "keybind indicators", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) );
-				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators ) )
+				ImGui::Checkbox( "keybind indicators", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators_enable ) );
+				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators_enable ) ) {
+					ImGui::ColorEdit4( "##keybind color", &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
+					                   color_picker_alpha_flags );
+
+					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+					ImGui::ColorEdit4( "##keybind success color", &GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color_success ),
+					                   color_picker_alpha_flags );
+
 					ImGui::SliderInt( "position##sub indicators", &GET_CONFIG_INT( variables.m_movement.m_indicators.m_sub_indicators_position ), 30,
 					                  globals.m_display_size.y );
+
+					ImGui::MultiCombo( "displayed keybinds", config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators ),
+					                   { "edgebug", "pixelsurf", "edgejump", "longjump", "delayhop", "minijump", "jumpbug" },
+					                   config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators ).size( ) );
+				}
 
 				ImGui::EndChild( );
 			}

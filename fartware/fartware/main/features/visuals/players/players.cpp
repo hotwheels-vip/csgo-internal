@@ -60,9 +60,8 @@ void players_t::on_paint_traverse( )
 				y /= len;
 			}
 
-			/* TODO ~ float ~ make customizeable */
-			constexpr float triangle_size          = 10.0f;
-			constexpr int triangle_screen_position = 200;
+			const float triangle_size          = GET_CONFIG_FLOAT( variables.m_visuals.m_out_of_fov_arrows_size );
+			const int triangle_screen_position = GET_CONFIG_INT( variables.m_visuals.m_out_of_fov_arrows_distance );
 
 			const c_vector_2d position = c_vector_2d( ImGui::GetIO( ).DisplaySize.x / 2.f + ( x * triangle_screen_position ),
 			                                          ImGui::GetIO( ).DisplaySize.y / 2.f + ( y * triangle_screen_position ) );
@@ -200,13 +199,13 @@ void players_t::on_paint_traverse( )
 						if ( converted_name.empty( ) )
 							return;
 
-						const auto text_size = render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->CalcTextSizeA(
-							render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->FontSize, FLT_MAX, 0.f, converted_name.c_str( ) );
+						const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+							render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, converted_name.c_str( ) );
 
 						render.m_draw_data.emplace_back(
 							e_draw_type::draw_type_text,
 							std::make_any< text_draw_object_t >(
-								render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ],
+								render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
 								c_vector_2d( bbox.m_left + ( bbox.m_width - text_size.x ) / 2,
 						                     bbox.m_bottom + 2 + padding[ e_padding_direction::padding_direction_bottom ] ),
 								converted_name,
@@ -275,13 +274,13 @@ void players_t::on_paint_traverse( )
 			if ( config.get< std::vector< bool > >( variables.m_visuals.m_player_flags )[ e_player_flags::player_flag_money ] ) {
 				const auto text = std::to_string( entity->money( ) ).insert( 0U, ( "$" ) );
 
-				const auto text_size = render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->CalcTextSizeA(
-					render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
+				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
 
 				render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(
-						render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ],
+						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
 						c_vector_2d( bbox.m_right + 2.f, bbox.m_top - 3.f + padding[ e_padding_direction::padding_direction_right ] ), text,
 						ImColor( 64 / 255.f, 245 / 255.f, 70 / 255.f, this->m_fading_alpha[ index ] ),
 						ImColor( 0.f, 0.f, 0.f, this->m_fading_alpha[ index ] ), e_text_render_flags::text_render_flag_dropshadow ) );
@@ -295,13 +294,13 @@ void players_t::on_paint_traverse( )
 
 				const auto text = entity->helmet( ) ? ( "HK" ) : ( "K" );
 
-				const auto text_size = render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->CalcTextSizeA(
-					render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ]->FontSize, FLT_MAX, 0.f, text );
+				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, text );
 
 				render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(
-						render.m_fonts[ e_font_names::font_name_smallest_pixel_10 ],
+						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
 						c_vector_2d( bbox.m_right + 2.f, bbox.m_top - 3.f + padding[ e_padding_direction::padding_direction_right ] ), text,
 						ImColor( 40 / 255.f, 153 / 255.f, 252 / 255.f, this->m_fading_alpha[ index ] ),
 						ImColor( 0.f, 0.f, 0.f, this->m_fading_alpha[ index ] ), e_text_render_flags::text_render_flag_dropshadow ) );
