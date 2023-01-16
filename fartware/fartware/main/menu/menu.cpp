@@ -219,7 +219,7 @@ void menu_t::on_end_scene( )
 
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) ) {
 					ImGui::SliderInt( "edge bug predicted ticks", &GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ), 0, 32 );
-					ImGui::Checkbox( "advanced detection(wip)", &GET_CONFIG_BOOL( variables.m_movement.m_advanced_detection ) );
+					ImGui::Checkbox( "advanced detection", &GET_CONFIG_BOOL( variables.m_movement.m_advanced_detection ) );
 					ImGui::SliderFloat( "mouse lock scale", &GET_CONFIG_FLOAT( variables.m_movement.m_edge_bug_lock_amt ), 0.f, 1.f );
 				}
 

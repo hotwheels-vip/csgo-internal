@@ -385,7 +385,9 @@ void movement_t::on_create_move_post( )
 			return;
 		}
 
-		const float yaw_delta = std::clamp( globals.m_cmd->m_view_point.m_y - globals.m_last_tick_yaw, -( 180.f / 32 ), 180.f / 32 );
+		const float yaw_delta = std::clamp( globals.m_cmd->m_view_point.m_y - globals.m_last_tick_yaw,
+		                                    -( 180.f / GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ) ),
+		                                    180.f / GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ) );
 
 		const float original_forward_move = globals.m_cmd->m_forward_move;
 		const float original_side_move    = globals.m_cmd->m_side_move;
@@ -396,7 +398,7 @@ void movement_t::on_create_move_post( )
 
 			movement.m_edgebug_data.m_starting_yaw = original_view_point.m_y;
 
-			for ( int i = 0; i <= 32; i++ ) {
+			for ( int i = 0; i <= GET_CONFIG_INT( variables.m_movement.m_edge_bug_ticks ); i++ ) {
 				c_user_cmd* simulated_cmd = new c_user_cmd( *globals.m_cmd );
 
 				if ( ducked ) {
