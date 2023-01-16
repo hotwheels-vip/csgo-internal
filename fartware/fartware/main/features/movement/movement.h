@@ -10,9 +10,7 @@
 
 enum edgebug_type_t : int {
 	eb_standing = 0,
-	eb_ducking,
-	eb_strafing,
-	eb_strafing_ducking
+	eb_ducking
 };
 
 struct movement_t {
@@ -21,9 +19,13 @@ struct movement_t {
 
 		bool m_will_edgebug{ };
 		bool m_will_fail{ };
+		bool m_strafing{ };
 
 		float m_yaw_delta{ };
 		float m_starting_yaw{ };
+
+		float m_side_move{ };
+		float m_forward_move{ };
 
 		float m_saved_mousedx{ };
 		int m_ticks_to_stop{ };
@@ -46,12 +48,9 @@ struct movement_t {
 
 	void handle_edgebug_view_point( );
 
-	void handle_move_data( );
-
 	void rotate_movement( c_angle& angle );
 
 private:
-
 	const float direction_yaw( );
 
 	void detect_edgebug( c_user_cmd* cmd );

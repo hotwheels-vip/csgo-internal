@@ -380,35 +380,22 @@ void movement_t::on_create_move_post( )
 
 	// edgebug
 	[ & ]( bool can_edgebug ) {
-		if ( !can_edgebug ) {
+		if ( !can_edgebug || movement.m_pixelsurf_data.m_in_pixel_surf ) {
 			m_edgebug_data.reset( );
 			return;
 		}
-		// c_user_cmd* saved_cmd       = globals.backup.m_backup_cmd;
-		// c_base_entity* saved_local  = globals.backup.m_backup_local;
-		// const int32_t saved_buttons = globals.m_cmd->m_buttons;
 
-		// const auto saved_flags = globals.m_local->flags( );
+		const float yaw_delta = std::clamp( globals.m_cmd->m_view_point.m_y - globals.m_last_tick_yaw, -( 180.f / 32 ), 180.f / 32 );
 
-		const auto loop_through_ticks = [ & ]( const bool ducked ) {
-			// prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
-			//
-			// globals.m_cmd->m_buttons &= ~e_buttons::in_moveleft;
-			// globals.m_cmd->m_buttons &= ~e_buttons::in_moveright;
-			// globals.m_cmd->m_buttons &= ~e_buttons::in_forward;
-			// globals.m_cmd->m_buttons &= ~e_buttons::in_back;
-			//
-			// if ( ducked ) {
-			//	globals.m_cmd->m_buttons |= e_buttons::in_duck;
-			//	globals.m_local->flags( ) |= e_flags::fl_ducking;
-			// } else {
-			//	globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
-			//	globals.m_local->flags( ) &= ~e_flags::fl_ducking;
-			// }
+		const float original_forward_move = globals.m_cmd->m_forward_move;
+		const float original_side_move    = globals.m_cmd->m_side_move;
+		const auto original_view_point    = globals.m_cmd->m_view_point;
 
-			// memcpy( saved_local, globals.m_local, 0x3870 );
-			// memcpy( saved_cmd, globals.m_cmd, sizeof( c_user_cmd ) );
+		const auto loop_through_ticks = [ & ]( const bool ducked, const bool strafe = false ) {
 			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+			movement.m_edgebug_data.m_starting_yaw = original_view_point.m_y;
+
 			for ( int i = 0; i <= 32; i++ ) {
 				c_user_cmd* simulated_cmd = new c_user_cmd( *globals.m_cmd );
 
@@ -420,13 +407,26 @@ void movement_t::on_create_move_post( )
 					globals.m_local->flags( ) &= ~e_flags::fl_ducking;
 				}
 
-				simulated_cmd->m_buttons &= ~e_buttons::in_moveleft;
-				simulated_cmd->m_buttons &= ~e_buttons::in_moveright;
-				simulated_cmd->m_buttons &= ~e_buttons::in_forward;
-				simulated_cmd->m_buttons &= ~e_buttons::in_back;
+				if ( !strafe ) {
+					m_edgebug_data.m_strafing = false;
 
-				simulated_cmd->m_forward_move = 0;
-				simulated_cmd->m_side_move    = 0;
+					simulated_cmd->m_forward_move = 0;
+					simulated_cmd->m_side_move    = 0;
+
+					// p sure these are not needed, but just making sure
+					simulated_cmd->m_buttons &= ~e_buttons::in_moveleft;
+					simulated_cmd->m_buttons &= ~e_buttons::in_moveright;
+					simulated_cmd->m_buttons &= ~e_buttons::in_forward;
+					simulated_cmd->m_buttons &= ~e_buttons::in_back;
+				} else // strafed
+				{
+					m_edgebug_data.m_strafing = true;
+
+					simulated_cmd->m_forward_move = original_forward_move;
+					simulated_cmd->m_side_move    = original_side_move;
+
+					simulated_cmd->m_view_point.m_y = mathematics.normalize_yaw( original_view_point.m_y + ( yaw_delta * i ) );
+				}
 
 				prediction.begin( simulated_cmd );
 				prediction.end( );
@@ -449,6 +449,15 @@ void movement_t::on_create_move_post( )
 						m_edgebug_data.m_edgebug_method = edgebug_type_t::eb_ducking;
 					else
 						m_edgebug_data.m_edgebug_method = edgebug_type_t::eb_standing;
+
+					if ( strafe ) {
+						m_edgebug_data.m_yaw_delta = yaw_delta;
+
+						m_edgebug_data.m_forward_move = original_forward_move;
+						m_edgebug_data.m_side_move    = original_side_move;
+					} else {
+						m_edgebug_data.m_forward_move = m_edgebug_data.m_side_move = 0;
+					}
 					break;
 				}
 
@@ -464,30 +473,44 @@ void movement_t::on_create_move_post( )
 			prediction.end( );
 
 			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
-
-			// std::memmove( globals.m_cmd, saved_cmd, sizeof( c_user_cmd ) );
-			// std::memmove( globals.m_local, saved_local, 0x3870 );
 		};
 
+		// non strafed edgebugs
 		if ( !m_edgebug_data.m_will_edgebug )
-			loop_through_ticks( false );
+			loop_through_ticks( edgebug_type_t::eb_standing );
 		if ( !m_edgebug_data.m_will_edgebug )
-			loop_through_ticks( true );
+			loop_through_ticks( edgebug_type_t::eb_ducking );
 
-		// globals.m_local->flags( ) = saved_flags;
-
-		// globals.m_cmd->m_buttons = saved_buttons;
+		// strafed edgebugs
+		if ( GET_CONFIG_BOOL( variables.m_movement.m_advanced_detection ) && yaw_delta < 0.1f ) {
+			if ( !m_edgebug_data.m_will_edgebug )
+				loop_through_ticks( edgebug_type_t::eb_standing, true );
+			if ( !m_edgebug_data.m_will_edgebug )
+				loop_through_ticks( edgebug_type_t::eb_ducking, true );
+		}
 
 		if ( m_edgebug_data.m_will_edgebug ) {
 			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
-			if ( memory.m_globals->m_tick_count < m_edgebug_data.m_ticks_to_stop + m_edgebug_data.m_last_tick ) {
-				globals.m_cmd->m_side_move    = 0.f;
-				globals.m_cmd->m_forward_move = 0.f;
-				globals.m_cmd->m_buttons &= ~e_buttons::in_moveleft;
-				globals.m_cmd->m_buttons &= ~e_buttons::in_moveright;
-				globals.m_cmd->m_buttons &= ~e_buttons::in_forward;
-				globals.m_cmd->m_buttons &= ~e_buttons::in_back;
 
+			if ( memory.m_globals->m_tick_count < m_edgebug_data.m_ticks_to_stop + m_edgebug_data.m_last_tick ) {
+				if ( m_edgebug_data.m_strafing ) {
+					globals.m_cmd->m_side_move    = m_edgebug_data.m_side_move;
+					globals.m_cmd->m_forward_move = m_edgebug_data.m_forward_move;
+
+					const float final_yaw =
+						mathematics.normalize_yaw( m_edgebug_data.m_starting_yaw +
+					                               ( m_edgebug_data.m_yaw_delta * ( memory.m_globals->m_tick_count - m_edgebug_data.m_last_tick ) ) );
+
+					globals.m_cmd->m_view_point.m_y = final_yaw;
+
+				} else {
+					globals.m_cmd->m_side_move    = 0.f;
+					globals.m_cmd->m_forward_move = 0.f;
+					globals.m_cmd->m_buttons &= ~e_buttons::in_moveleft;
+					globals.m_cmd->m_buttons &= ~e_buttons::in_moveright;
+					globals.m_cmd->m_buttons &= ~e_buttons::in_forward;
+					globals.m_cmd->m_buttons &= ~e_buttons::in_back;
+				}
 				if ( m_edgebug_data.m_edgebug_method == edgebug_type_t::eb_ducking ) {
 					globals.m_cmd->m_buttons |= in_duck;
 				} else
@@ -502,28 +525,23 @@ void movement_t::on_create_move_post( )
 // called on frame_stage_notify frame_start
 void movement_t::handle_edgebug_view_point( )
 {
-	// temp
+	if ( !movement.m_edgebug_data.m_will_edgebug || !movement.m_edgebug_data.m_strafing )
+		return;
 
-	// if ( !movement.m_edgebug_data.m_will_edgebug || !movement.m_edgebug_data.m_should_strafe )
-	// 	return;
-	//
-	// c_angle wish_angles = { };
-	// float hit_time_delta{ };
-	// float cur_time_delta{ };
-	//
-	// float final_yaw{ };
-	//
-	// wish_angles = { globals.m_old_view_point.m_x, movement.m_edgebug_data.m_starting_yaw, globals.m_old_view_point.m_z };
-	//
-	// hit_time_delta = mathematics.ticks_to_time( movement.m_edgebug_data.m_ticks_to_stop + 1 );
-	// cur_time_delta = memory.m_globals->m_current_time - mathematics.ticks_to_time( movement.m_edgebug_data.m_last_tick );
-	//
-	// final_yaw = mathematics.normalize_yaw( movement.m_edgebug_data.m_yaw_delta *
-	//                                        ( movement.m_edgebug_data.m_last_tick * ( cur_time_delta / hit_time_delta ) ) );
-	//
-	// wish_angles.m_y += final_yaw;
-	//
-	// interfaces.m_engine->set_view_angles( wish_angles );
+	float final_yaw{ };
+
+	c_angle wish_angles = { globals.m_old_view_point.m_x, movement.m_edgebug_data.m_starting_yaw, globals.m_old_view_point.m_z };
+
+	float hit_time_delta = mathematics.ticks_to_time( movement.m_edgebug_data.m_ticks_to_stop );
+
+	float cur_time_delta = memory.m_globals->m_current_time - mathematics.ticks_to_time( movement.m_edgebug_data.m_last_tick );
+
+	final_yaw = mathematics.normalize_yaw( movement.m_edgebug_data.m_yaw_delta *
+	                                       ( movement.m_edgebug_data.m_ticks_to_stop * ( cur_time_delta / hit_time_delta ) ) );
+
+	wish_angles.m_y += final_yaw;
+
+	interfaces.m_engine->set_view_angles( wish_angles );
 }
 
 void movement_t::detect_edgebug( c_user_cmd* cmd )
@@ -562,15 +580,6 @@ void movement_t::detect_edgebug( c_user_cmd* cmd )
 				m_edgebug_data.m_will_fail    = true;
 			}
 		}
-	}
-}
-
-void movement_t::handle_move_data( )
-{
-	// cancels out movement if player holding eb
-	if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) ) {
-		// prediction.m_move_data.m_forward_move = 0;
-		// prediction.m_move_data.m_side_move    = 0;
 	}
 }
 
