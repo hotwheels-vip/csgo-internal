@@ -384,31 +384,51 @@ void movement_t::on_create_move_post( )
 			m_edgebug_data.reset( );
 			return;
 		}
-		c_user_cmd* saved_cmd       = globals.backup.m_backup_cmd;
-		c_base_entity* saved_local  = globals.backup.m_backup_local;
-		const int32_t saved_buttons = globals.m_cmd->m_buttons;
+		// c_user_cmd* saved_cmd       = globals.backup.m_backup_cmd;
+		// c_base_entity* saved_local  = globals.backup.m_backup_local;
+		// const int32_t saved_buttons = globals.m_cmd->m_buttons;
+
+		// const auto saved_flags = globals.m_local->flags( );
 
 		const auto loop_through_ticks = [ & ]( const bool ducked ) {
+			// prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+			//
+			// globals.m_cmd->m_buttons &= ~e_buttons::in_moveleft;
+			// globals.m_cmd->m_buttons &= ~e_buttons::in_moveright;
+			// globals.m_cmd->m_buttons &= ~e_buttons::in_forward;
+			// globals.m_cmd->m_buttons &= ~e_buttons::in_back;
+			//
+			// if ( ducked ) {
+			//	globals.m_cmd->m_buttons |= e_buttons::in_duck;
+			//	globals.m_local->flags( ) |= e_flags::fl_ducking;
+			// } else {
+			//	globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
+			//	globals.m_local->flags( ) &= ~e_flags::fl_ducking;
+			// }
+
+			// memcpy( saved_local, globals.m_local, 0x3870 );
+			// memcpy( saved_cmd, globals.m_cmd, sizeof( c_user_cmd ) );
 			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
-
-			globals.m_cmd->m_buttons &= ~e_buttons::in_moveleft;
-			globals.m_cmd->m_buttons &= ~e_buttons::in_moveright;
-			globals.m_cmd->m_buttons &= ~e_buttons::in_forward;
-			globals.m_cmd->m_buttons &= ~e_buttons::in_back;
-
-			if ( ducked ) {
-				globals.m_cmd->m_buttons |= e_buttons::in_duck;
-				globals.m_local->flags( ) |= e_flags::fl_ducking;
-			} else {
-				globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
-				globals.m_local->flags( ) &= ~e_flags::fl_ducking;
-			}
-
-			memcpy( saved_local, globals.m_local, 0x3870 );
-			memcpy( saved_cmd, globals.m_cmd, sizeof( c_user_cmd ) );
-
 			for ( int i = 0; i <= 32; i++ ) {
-				prediction.begin( globals.m_cmd );
+				c_user_cmd* simulated_cmd = new c_user_cmd( *globals.m_cmd );
+
+				if ( ducked ) {
+					simulated_cmd->m_buttons |= e_buttons::in_duck;
+					globals.m_local->flags( ) |= e_flags::fl_ducking;
+				} else {
+					simulated_cmd->m_buttons &= ~e_buttons::in_duck;
+					globals.m_local->flags( ) &= ~e_flags::fl_ducking;
+				}
+
+				simulated_cmd->m_buttons &= ~e_buttons::in_moveleft;
+				simulated_cmd->m_buttons &= ~e_buttons::in_moveright;
+				simulated_cmd->m_buttons &= ~e_buttons::in_forward;
+				simulated_cmd->m_buttons &= ~e_buttons::in_back;
+
+				simulated_cmd->m_forward_move = 0;
+				simulated_cmd->m_side_move    = 0;
+
+				prediction.begin( simulated_cmd );
 				prediction.end( );
 
 				if ( prediction.m_data.m_flags & e_flags::fl_onground || round( prediction.m_data.m_velocity.m_z ) >= 0 ||
@@ -418,10 +438,10 @@ void movement_t::on_create_move_post( )
 				}
 
 				if ( !m_edgebug_data.m_will_edgebug )
-					this->detect_edgebug( globals.m_cmd );
+					this->detect_edgebug( simulated_cmd );
 
 				if ( m_edgebug_data.m_will_edgebug ) {
-					m_edgebug_data.m_saved_mousedx = abs( globals.m_cmd->m_mouse_delta_x );
+					m_edgebug_data.m_saved_mousedx = abs( simulated_cmd->m_mouse_delta_x );
 					m_edgebug_data.m_ticks_to_stop = i + 1;
 					m_edgebug_data.m_last_tick     = memory.m_globals->m_tick_count;
 
@@ -429,7 +449,6 @@ void movement_t::on_create_move_post( )
 						m_edgebug_data.m_edgebug_method = edgebug_type_t::eb_ducking;
 					else
 						m_edgebug_data.m_edgebug_method = edgebug_type_t::eb_standing;
-
 					break;
 				}
 
@@ -437,10 +456,17 @@ void movement_t::on_create_move_post( )
 					m_edgebug_data.m_will_fail = false;
 					break;
 				}
+
+				delete simulated_cmd;
 			}
 
-			std::memmove( globals.m_cmd, saved_cmd, sizeof( c_user_cmd ) );
-			std::memmove( globals.m_local, saved_local, 0x3870 );
+			prediction.begin( globals.m_cmd );
+			prediction.end( );
+
+			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+			// std::memmove( globals.m_cmd, saved_cmd, sizeof( c_user_cmd ) );
+			// std::memmove( globals.m_local, saved_local, 0x3870 );
 		};
 
 		if ( !m_edgebug_data.m_will_edgebug )
@@ -448,9 +474,12 @@ void movement_t::on_create_move_post( )
 		if ( !m_edgebug_data.m_will_edgebug )
 			loop_through_ticks( true );
 
-		globals.m_cmd->m_buttons = saved_buttons;
+		// globals.m_local->flags( ) = saved_flags;
+
+		// globals.m_cmd->m_buttons = saved_buttons;
 
 		if ( m_edgebug_data.m_will_edgebug ) {
+			prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
 			if ( memory.m_globals->m_tick_count < m_edgebug_data.m_ticks_to_stop + m_edgebug_data.m_last_tick ) {
 				globals.m_cmd->m_side_move    = 0.f;
 				globals.m_cmd->m_forward_move = 0.f;
@@ -466,8 +495,6 @@ void movement_t::on_create_move_post( )
 			} else
 				m_edgebug_data.reset( );
 		}
-
-		prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
 	}( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) );
 }
 
@@ -542,8 +569,8 @@ void movement_t::handle_move_data( )
 {
 	// cancels out movement if player holding eb
 	if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_edge_bug_key ) ) ) {
-		prediction.m_move_data.m_forward_move = 0;
-		prediction.m_move_data.m_side_move    = 0;
+		// prediction.m_move_data.m_forward_move = 0;
+		// prediction.m_move_data.m_side_move    = 0;
 	}
 }
 

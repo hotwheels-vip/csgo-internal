@@ -74,9 +74,9 @@ bool hooks_t::on_attach( )
 			memory.m_client_state->m_delta_tick = -1;
 		}
 
-		globals.backup.m_backup_cmd = reinterpret_cast< c_user_cmd* >( std::malloc( sizeof( c_user_cmd ) ) );
-
-		globals.backup.m_backup_local = reinterpret_cast< c_base_entity* >( std::malloc( 0x3880 ) );
+		// globals.backup.m_backup_cmd = reinterpret_cast< c_user_cmd* >( std::malloc( sizeof( c_user_cmd ) ) );
+		//
+		// globals.backup.m_backup_local = reinterpret_cast< c_base_entity* >( std::malloc( 0x3880 ) );
 
 		return true;
 	} catch ( const std::exception& ex ) {
