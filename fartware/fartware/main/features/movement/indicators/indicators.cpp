@@ -177,7 +177,8 @@ void indicators_t::on_paint_traverse( )
 					c_vector_2d( ( globals.m_display_size.x - text_size.x ) / 2.f,
 			                     globals.m_display_size.y - offset - GET_CONFIG_INT( variables.m_movement.m_indicators.m_sub_indicators_position ) ),
 					indicator_name, color.get_u32( indicator_animation.AnimationData->second ),
-					ImColor( 0.f, 0.f, 0.f, indicator_animation.AnimationData->second ), e_text_render_flags::text_render_flag_dropshadow ) );
+					ImColor( 0.f, 0.f, 0.f, color.base< e_color_type::color_type_a >( ) * indicator_animation.AnimationData->second ),
+					e_text_render_flags::text_render_flag_dropshadow ) );
 
 			offset -= ( text_size.y + 2 ) * indicator_animation.AnimationData->second;
 		};
