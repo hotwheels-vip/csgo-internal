@@ -44,6 +44,7 @@ private:
 		_set_sequence            = 219,
 		_pre_think               = 318,
 		_is_player               = 158,
+		_get_eye_position        = 169,
 		_studio_frame_advance    = 220,
 		_select_item             = 330,
 		_update_collision_bounds = 340
@@ -122,6 +123,16 @@ public:
 	void post_think( );
 	void set_next_think( int think );
 	void set_abs_origin( const c_vector& origin );
+
+	[[nodiscord]] c_vector get_eye_position( )
+	{
+		c_vector position = { };
+
+		using fn = void( __thiscall* )( c_base_entity*, c_vector );
+		( *( fn** )this )[ this->e_indexes::_get_eye_position ]( this, std::ref( position ) );
+
+		return position;
+	}
 
 	add_variable( int, health, "CBasePlayer->m_iHealth" );
 	add_variable( int, life_state, "CBasePlayer->m_lifeState" );
