@@ -1,8 +1,10 @@
 ﻿#include "../hooks.h"
 
 #include "../../features/entities/entities.h"
+#include "../../features/misc/misc.h"
 #include "../../features/movement/indicators/indicators.h"
 #include "../../features/visuals/players/players.h"
+#include "../../logging/logging.h"
 
 void __fastcall n_detoured_functions::paint_traverse( c_surface* thisptr, int edx, unsigned int panel, bool force_repaint, bool force )
 {
@@ -13,30 +15,6 @@ void __fastcall n_detoured_functions::paint_traverse( c_surface* thisptr, int ed
 	static bool print_to_console = []( ) {
 		interfaces.m_engine->client_cmd_unrestricted( "clear" );
 		interfaces.m_engine->client_cmd_unrestricted( "echo injection succesfull.\n" );
-
-		const char8_t* hook[] = {
-			( u8"\n" ),
-			( u8"\n" ),
-			( u8"⣿⣿⣿⣿⣿⣿⣿⡿⠟⠛⠉⠉⠉⠉⠋⠉⠉⠙⠛⠛⠻⠿⢿⣿⣿⣿⣿⣿⣿⣿\n" ),
-			( u8"⣿⣿⣿⣿⠿⠋⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⠉⠻⣿⣿⣿⣿⣿\n" ),
-			( u8"⣿⣿⡟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠙⢻⣿⣿⣿\n" ),
-			( u8"⣿⠏⠄⠄⠄⠄⠄⠄⠄⠄⢀⣔⢤⣄⡀⠄⡄⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⢻⣿⣿\n" ),
-			( u8"⠏⠄⠄⠄⠄⠄⠄⠄⢀⣀⣨⣵⣿⣿⣿⣿⣧⣦⣤⣀⣿⣷⡐⠄⠄⠄⠄⠄⢿⣿\n" ),
-			( u8"⠄⠄⠄⠄⠄⠄⠐⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠄⠄⠄⢚⣿\n" ),
-			( u8"⣆⠄⠄⠄⠄⠄⠄⢻⣿⣿⣿⣿⡿⠛⠛⠛⠛⣿⢿⣿⣿⣿⡿⢟⣻⣄⣤⣮⡝⣿\n" ),
-			( u8"⣿⠆⠄⠄⠄⠄⠄⠄⠄⠄⠉⠘⣿⡗⡕⣋⢉⣩⣽⣬⣭⣶⣿⣿⣿⣿⣝⣻⣷⣿\n" ),
-			( u8"⣿⣦⡀⠄⠄⠠⢀⠄⠄⠁⠄⠄⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿\n" ),
-			( u8"⣿⣿⣿⡆⠄⠄⠰⣶⡗⠄⠄⠄⣿⣿⣿⣿⣦⣌⠙⠿⣿⣿⣿⣿⣿⣿⣿⡛⠱⢿\n" ),
-			( u8"⣿⣿⣿⣿⡀⠄⠄⠿⣿⠄⠄⠄⠨⡿⠿⠿⣿⣟⣿⣯⣹⣿⣿⣿⣿⣿⣿⣿⣦⡀\n" ),
-			( u8"⣿⣿⣿⣿⣷⠄⠄⠄⢷⣦⠄⠄⠐⢶⢾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇\n" ),
-			( u8"⣿⣿⣿⣿⣿⣧⡄⠄⠄⠉⠄⠄⠄⢉⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠄\n" ),
-			( u8"⣿⣿⣿⣿⣿⠟⠋⠄⠄⠄⠄⠄⠄⠈⠛⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠄⠄\n" ),
-			( u8"⣿⠿⠛⠉⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠘⠿⢿⣿⣿⣿⣿⣿⠿⠋⠄⠄⠄⠄\n" ),
-			( u8"\n" ),
-		};
-
-		for ( auto& i : hook )
-			interfaces.m_convar->console_printf( ( "echo %s" ), i );
 
 		return true;
 	}( );
@@ -55,6 +33,8 @@ void __fastcall n_detoured_functions::paint_traverse( c_surface* thisptr, int ed
 
 		players.on_paint_traverse( );
 		indicators.on_paint_traverse( );
+		misc.practice.render( );
+		g_log.think( );
 
 		render.swap_draw_data( );
 	}

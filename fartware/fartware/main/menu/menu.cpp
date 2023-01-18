@@ -197,6 +197,10 @@ void menu_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+				ImGui::Checkbox( "player glow", &GET_CONFIG_BOOL( variables.m_visuals.m_glow_enable ) );
+				ImGui::ColorEdit4( "player glow visible color", &GET_CONFIG_COLOR( variables.m_visuals.m_glow_vis ), color_picker_alpha_flags );
+				ImGui::ColorEdit4( "player glow invisible color", &GET_CONFIG_COLOR( variables.m_visuals.m_glow_invis ), color_picker_alpha_flags );
+				ImGui::Combo( "player glow style", &GET_CONFIG_INT( variables.m_visuals.m_glow_style ), "default\0rim\0edge\0edge pulse" );
 				ImGui::EndChild( );
 			}
 
@@ -354,6 +358,14 @@ void menu_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "game" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+				ImGui::Checkbox( "spectator list", &GET_CONFIG_BOOL( variables.m_visuals.m_spectator_list ) );
+				ImGui::Checkbox( "practice window", &GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) );
+				if ( GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) ) {
+					ImGui::Text( "checkpoint key" );
+					ImGui::Keybind( "checkpoint-key", &GET_CONFIG_BIND( variables.m_misc.m_practice_cp_key ) );
+					ImGui::Text( "teleport key" );
+					ImGui::Keybind( "teleport-key", &GET_CONFIG_BIND( variables.m_misc.m_practice_cp_key ) );
+				}
 				ImGui::EndChild( );
 			}
 

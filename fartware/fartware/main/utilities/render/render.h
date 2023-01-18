@@ -92,7 +92,7 @@ enum e_font_names {
 	font_name_verdana_11 = 0,
 	font_name_verdana_bd_11,
 	font_name_smallest_pixel_10,
-	font_name_icon_11,
+	font_name_icon_12,
 	font_name_indicator_29,
 	font_name_max
 };

@@ -82,8 +82,8 @@ void render_t::on_end_scene( const std::function< void( ) >& function, IDirect3D
 			                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
 			constexpr ImWchar icon_ranges[] = { 0xE000, 0xF8FF, 0 };
 
-			m_fonts[ e_font_names::font_name_icon_11 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
-				weapon_icons_compressed_data, weapon_icons_compressed_size, 10.f, &icon_font_config, icon_ranges );
+			m_fonts[ e_font_names::font_name_icon_12 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
+				weapon_icons_compressed_data, weapon_icons_compressed_size, 12.f, &icon_font_config, icon_ranges );
 
 			m_fonts[ e_font_names::font_name_indicator_29 ] =
 				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 29.f );

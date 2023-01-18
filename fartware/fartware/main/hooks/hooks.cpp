@@ -37,6 +37,8 @@ bool hooks_t::on_attach( )
 
 		const auto modify_eye_pos_address = reinterpret_cast< void* >(
 			memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14" ) ) );
+		const auto glow_effect_spectator_address = reinterpret_cast< void* >(
+			memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 EC 14 53 8B 5D 0C 56 57 85 DB 74" ) ) );
 
 		if ( MH_Initialize( ) != MH_OK ) {
 			throw std::runtime_error( ( "failed initialize minhook" ) );
@@ -61,22 +63,18 @@ bool hooks_t::on_attach( )
 		initialise_hook( hooks.lock_cursor, lock_cursor_address, &n_detoured_functions::lock_cursor, ( "ISurface::LockCursor()" ) );
 		initialise_hook( hooks.reset, reset_address, &n_detoured_functions::reset, ( "IDirect3DDevice9::Reset()" ) );
 		initialise_hook( hooks.end_scene, end_scene_address, &n_detoured_functions::end_scene, ( "IDirect3DDevice9::EndScene()" ) );
-		// initialise_hook( hooks.vsnprintf, vsnprint_address, &n_detoured_functions::vsnprintf, ( "vsnprintf" ) );
-		// initialise_hook( hooks.draw_print_text, draw_print_text_address, &n_detoured_functions::draw_print_text, ( "ISurface::DrawPrintText()" ) );
 		initialise_hook( hooks.emit_sound, emit_sound_address, &n_detoured_functions::emit_sound, ( "IEngineSound::EmitSound()" ) );
 		initialise_hook( hooks.override_mouse_input, override_mouse_input_address, &n_detoured_functions::override_mouse_input,
 		                 ( "IClientModeShared::OverrideMouseInput()" ) );
 		initialise_hook( hooks.modify_eye_position, modify_eye_pos_address, &n_detoured_functions::modify_eye_position,
 		                 ( "CBaseAnimating::ModifyEyePos()" ) );
+		initialise_hook( hooks.glow_effect_spectator, glow_effect_spectator_address, &n_detoured_functions::glow_effect_spectator,
+		                 ( "GlowEffectSpectator()" ) );
 
 		if ( interfaces.m_engine->is_in_game( ) ) {
 			console.print( "force updated entity cache" );
 			memory.m_client_state->m_delta_tick = -1;
 		}
-
-		// globals.backup.m_backup_cmd = reinterpret_cast< c_user_cmd* >( std::malloc( sizeof( c_user_cmd ) ) );
-		//
-		// globals.backup.m_backup_local = reinterpret_cast< c_base_entity* >( std::malloc( 0x3880 ) );
 
 		return true;
 	} catch ( const std::exception& ex ) {

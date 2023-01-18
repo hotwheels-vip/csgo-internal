@@ -1,4 +1,5 @@
 #include "../../convars/convars.h"
+#include "../../features/misc/misc.h"
 #include "../../features/movement/movement.h"
 #include "../../features/prediction/prediction.h"
 #include "../hooks.h"
@@ -123,6 +124,8 @@ static void __stdcall create_move( int sequence_number, float input_sample_frame
 			movement.m_edgebug_data.reset( );
 			return;
 		}
+
+		misc.practice.think( );
 
 		movement.on_create_move_pre( );
 

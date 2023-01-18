@@ -132,6 +132,7 @@
     <ClInclude Include="main\hashing\other\crc32.h" />
     <ClInclude Include="main\hooks\hooks.h" />
     <ClInclude Include="main\includes.h" />
+    <ClInclude Include="main\logging\logging.h" />
     <ClInclude Include="main\memory\memory.h" />
     <ClInclude Include="main\hashing\imports\lazy_importer.h" />
     <ClInclude Include="main\hashing\strings\fnv1a.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="main\hooks\functions\emit_sound.cpp" />
     <ClCompile Include="main\hooks\functions\end_scene.cpp" />
     <ClCompile Include="main\hooks\functions\frame_stage_notify.cpp" />
+    <ClCompile Include="main\hooks\functions\glow_effect_spectator.cpp" />
     <ClCompile Include="main\hooks\functions\level_init_pre_entity.cpp" />
     <ClCompile Include="main\hooks\functions\level_shutdown.cpp" />
     <ClCompile Include="main\hooks\functions\lock_cursor.cpp" />

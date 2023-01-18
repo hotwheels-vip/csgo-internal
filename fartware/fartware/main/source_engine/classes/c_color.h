@@ -128,6 +128,11 @@ public:
 		return this->m_colors[ N ] / 255.f;
 	}
 
+	std::array< std::uint8_t, 4U >& get_colors( )
+	{
+		return m_colors;
+	}
+
 private:
 	std::array< std::uint8_t, 4U > m_colors = { };
 };

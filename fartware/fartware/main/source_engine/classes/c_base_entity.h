@@ -10,12 +10,37 @@
 
 constexpr float max_health = 100.f;
 
+class c_model;
+
+enum e_glow_style : int {
+	glow_style_default = 0,
+	glow_style_rim_3d,
+	glow_style_edge_highlight,
+	glow_style_edge_highlight_pulse,
+	glow_style_count
+};
+
+class c_client_renderable
+{
+private:
+	enum e_indexes {
+		_get_model = 8,
+	};
+
+public:
+	c_model* get_model( )
+	{
+		using fn = c_model*( __thiscall* )( c_client_renderable* );
+		return ( *( fn** )this )[ this->e_indexes::_get_model ]( this );
+	}
+};
+
 class c_collideable
 {
 private:
 	enum e_indexes {
 		_obb_mins = 1,
-		_obb_ma   = 2,
+		_obb_max  = 2,
 	};
 
 public:
@@ -25,10 +50,10 @@ public:
 		return ( *( fn** )this )[ this->e_indexes::_obb_mins ]( this );
 	}
 
-	const c_vector& obb_ma( )
+	const c_vector& obb_max( )
 	{
 		using fn = const c_vector&( __thiscall* )( c_collideable* );
-		return ( *( fn** )this )[ this->e_indexes::_obb_ma ]( this );
+		return ( *( fn** )this )[ this->e_indexes::_obb_max ]( this );
 	}
 };
 
@@ -124,7 +149,7 @@ public:
 	void set_next_think( int think );
 	void set_abs_origin( const c_vector& origin );
 
-	[[nodiscord]] c_vector get_eye_position( )
+	[[nodiscard]] c_vector get_eye_position( )
 	{
 		c_vector position = { };
 
@@ -160,6 +185,10 @@ public:
 
 	void get_bone_position( const int bone, c_vector& origin );
 
+	c_vector get_hitbox_position( const int hitbox, const matrix3x4a_t* matrix = nullptr );
+
+	bool can_see_player_hitbox( c_base_entity* target, const int hitbox );
+
 	/* CCSPlayer */
 	add_variable( int, money, "CCSPlayer->m_iAccount" );
 	add_variable( int, armor, "CCSPlayer->m_ArmorValue" );
@@ -172,6 +201,7 @@ public:
 	/* CBaseCombatCharacter */
 	add_variable( unsigned int, active_weapon_handle, "CBaseCombatCharacter->m_hActiveWeapon" );
 	add_pvariable( unsigned int, weapons_handle, "CBaseCombatCharacter->m_hMyWeapons" );
+	add_variable( unsigned int, get_observer_target_handle, "CBasePlayer->m_hObserverTarget" );
 
 	/* CBaseCombatWeapon */
 	add_variable( float, next_primary_attack, "CBaseCombatWeapon->m_flNextPrimaryAttack" );

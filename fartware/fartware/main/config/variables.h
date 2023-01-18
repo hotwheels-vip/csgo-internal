@@ -50,7 +50,21 @@ struct variables_t {
 		ADD_VARIABLE( c_color, m_out_of_fov_arrows_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( float, m_out_of_fov_arrows_size, 20.f );
 		ADD_VARIABLE( int, m_out_of_fov_arrows_distance, 200 );
+
+		ADD_VARIABLE( bool, m_glow_enable, false );
+		ADD_VARIABLE( c_color, m_glow_vis, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( c_color, m_glow_invis, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( int, m_glow_style, 200 );
+
+		ADD_VARIABLE( bool, m_spectator_list, false );
+
 	} m_visuals;
+
+	struct misc_t {
+		ADD_VARIABLE( bool, m_practice_window, false );
+		ADD_VARIABLE( key_bind_t, m_practice_cp_key, key_bind_t( 0, 1 ) );
+		ADD_VARIABLE( key_bind_t, m_practice_tp_key, key_bind_t( 0, 1 ) );
+	} m_misc;
 
 	struct movement_t {
 		ADD_VARIABLE( bool, m_bunny_hop, false );

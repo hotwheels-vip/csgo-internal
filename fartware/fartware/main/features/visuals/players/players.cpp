@@ -14,7 +14,7 @@ void players_t::on_paint_traverse( )
 	if ( !globals.m_local )
 		return;
 
-	const float delta_time = ( 1.f / 0.8f ) * memory.m_globals->m_frame_time;
+	const float delta_time = ( 1.f / 0.5f ) * memory.m_globals->m_frame_time;
 
 	/* TODO ~ float ~ store this shart globally */
 	c_angle view_angles = { };
@@ -45,7 +45,7 @@ void players_t::on_paint_traverse( )
 		}
 
 		const bool in_view_frustrum =
-			!interfaces.m_engine->cull_box( collideable->obb_mins( ) + entity->origin( ), collideable->obb_ma( ) + entity->origin( ) );
+			!interfaces.m_engine->cull_box( collideable->obb_mins( ) + entity->origin( ), collideable->obb_max( ) + entity->origin( ) );
 
 		auto out_of_fov_arrows = [ & ]( ) {
 			if ( !GET_CONFIG_BOOL( variables.m_visuals.m_out_of_fov_arrows ) || in_view_frustrum )
@@ -220,13 +220,13 @@ void players_t::on_paint_traverse( )
 						        item_definition_index == e_item_definition_index::weapon_breachcharge ||
 						        item_definition_index == e_item_definition_index::weapon_bumpmine ) ) {
 							const auto text      = reinterpret_cast< const char* >( utilities.get_weapon_icon( item_definition_index ) );
-							const auto text_size = render.m_fonts[ e_font_names::font_name_icon_11 ]->CalcTextSizeA(
-								render.m_fonts[ e_font_names::font_name_icon_11 ]->FontSize, FLT_MAX, 0.f, text );
+							const auto text_size = render.m_fonts[ e_font_names::font_name_icon_12 ]->CalcTextSizeA(
+								render.m_fonts[ e_font_names::font_name_icon_12 ]->FontSize, FLT_MAX, 0.f, text );
 
 							render.m_draw_data.emplace_back(
 								e_draw_type::draw_type_text,
 								std::make_any< text_draw_object_t >(
-									render.m_fonts[ e_font_names::font_name_icon_11 ],
+									render.m_fonts[ e_font_names::font_name_icon_12 ],
 									c_vector_2d( bbox.m_left + ( bbox.m_width - text_size.x ) / 2,
 							                     bbox.m_bottom + 2 + padding[ e_padding_direction::padding_direction_bottom ] ),
 									text, GET_CONFIG_COLOR( variables.m_visuals.m_active_weapon_icon_color ).get_u32( this->m_fading_alpha[ index ] ),
@@ -282,8 +282,8 @@ void players_t::on_paint_traverse( )
 					std::make_any< text_draw_object_t >(
 						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
 						c_vector_2d( bbox.m_right + 2.f, bbox.m_top - 3.f + padding[ e_padding_direction::padding_direction_right ] ), text,
-						ImColor( 64 / 255.f, 245 / 255.f, 70 / 255.f, this->m_fading_alpha[ index ] ),
-						ImColor( 0.f, 0.f, 0.f, this->m_fading_alpha[ index ] ), e_text_render_flags::text_render_flag_dropshadow ) );
+						ImColor( 1.f, 1.f, 1.f, this->m_fading_alpha[ index ] ), ImColor( 0.f, 0.f, 0.f, this->m_fading_alpha[ index ] ),
+						e_text_render_flags::text_render_flag_dropshadow ) );
 
 				padding[ e_padding_direction::padding_direction_right ] += text_size.y;
 			}
@@ -302,8 +302,8 @@ void players_t::on_paint_traverse( )
 					std::make_any< text_draw_object_t >(
 						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
 						c_vector_2d( bbox.m_right + 2.f, bbox.m_top - 3.f + padding[ e_padding_direction::padding_direction_right ] ), text,
-						ImColor( 40 / 255.f, 153 / 255.f, 252 / 255.f, this->m_fading_alpha[ index ] ),
-						ImColor( 0.f, 0.f, 0.f, this->m_fading_alpha[ index ] ), e_text_render_flags::text_render_flag_dropshadow ) );
+						ImColor( 1.f, 1.f, 1.f, this->m_fading_alpha[ index ] ), ImColor( 0.f, 0.f, 0.f, this->m_fading_alpha[ index ] ),
+						e_text_render_flags::text_render_flag_dropshadow ) );
 
 				padding[ e_padding_direction::padding_direction_right ] += text_size.y;
 			}
@@ -341,4 +341,100 @@ void players_t::on_paint_traverse( )
 		};
 		player_avatar( );
 	} );
+}
+
+void players_t::spectator_list( )
+{
+	if ( !render.m_initialised || !globals.m_local || !interfaces.m_engine->is_in_game( ) )
+		return;
+
+	if ( !GET_CONFIG_BOOL( variables.m_visuals.m_spectator_list ) )
+		return;
+
+	struct spectator_info {
+		spectator_info( const char* name, c_color color, IDirect3DTexture9* avatar )
+		{
+			m_name   = name;
+			m_color  = color;
+			m_avatar = avatar;
+		};
+		const char* m_name{ };
+		c_color m_color{ };
+		IDirect3DTexture9* m_avatar{ };
+	};
+
+	std::vector< spectator_info > m_spectators;
+
+	const c_color accent = c_color( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] );
+	const c_color white  = c_color( 0.9f, 0.9f, 0.9f, 1.f );
+
+	entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
+		if ( !entity || globals.m_local == entity || entity->is_alive( ) || entity->is_dormant( ) )
+			return;
+		auto spectated = reinterpret_cast< c_base_entity* >(
+			interfaces.m_client_entity_list->get_client_entity_from_handle( entity->get_observer_target_handle( ) ) );
+
+		if ( !spectated || spectated->is_alive( ) )
+			return;
+
+		player_info_t observer{ }, target{ };
+		interfaces.m_engine->get_player_info( entity->index( ), &observer );
+		interfaces.m_engine->get_player_info( spectated->index( ), &target );
+
+		if ( observer.m_is_hltv )
+			return;
+
+		auto obs_name    = std::string( observer.m_name );
+		auto target_name = std::string( target.m_name );
+
+		if ( obs_name.length( ) > 15 ) {
+			obs_name.resize( 15 );
+			obs_name.append( "..." );
+		}
+
+		if ( target_name.length( ) > 15 ) {
+			target_name.resize( 15 );
+			target_name.append( "..." );
+		}
+
+		std::string final_text{ };
+
+		// fuck you
+		final_text.append( obs_name ).append( " -> " ).append( target_name );
+
+		IDirect3DTexture9* avatar{ };
+		avatar = observer.m_fake_player ? entity->team( ) == 2   ? render.m_terrorist_avatar
+		                                  : entity->team( ) == 3 ? render.m_counter_terrorist_avatar
+		                                                         : nullptr
+		                                : avatar_cache.find( entity->index( ) );
+
+		m_spectators.push_back( spectator_info( final_text.c_str( ), spectated == globals.m_local ? accent : white, avatar ) );
+	} );
+
+	if ( !m_spectators.empty( ) ) {
+		ImGui::Begin( "hotwheels-spectator-window", nullptr,
+		              ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
+		                  ImGuiWindowFlags_AlwaysAutoResize );
+
+		ImDrawList* pWindowDrawList = ImGui::GetWindowDrawList( );
+
+		ImGui::SetCursorPos( ImVec2( ImGui::GetWindowSize( ).x / 2 - ImGui::CalcTextSize( "spectators" ).x / 2, 20 / 2 - 5 ) );
+		ImGui::TextColored( ImVec4( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], 1.f ), "spectators" );
+
+		for ( auto spec : m_spectators ) {
+			constexpr auto avatar_size = 14.f;
+
+			auto pos = ImGui::GetCursorPos( );
+
+			render.m_draw_data.emplace_back(
+				e_draw_type::draw_type_texture,
+				std::make_any< texture_draw_object_t >( c_vector_2d( pos.x - avatar_size, pos.y ), c_vector_2d( avatar_size, avatar_size ),
+			                                            ImColor( 1.f, 1.f, 1.f, 1.f ), spec.m_avatar, 0.f, ImDrawFlags_::ImDrawFlags_None ) );
+
+			ImGui::TextColored( ImVec4( spec.m_color.base< e_color_type::color_type_r >( ), spec.m_color.base< e_color_type::color_type_g >( ),
+			                            spec.m_color.base< e_color_type::color_type_b >( ), spec.m_color.base< e_color_type::color_type_a >( ) ),
+			                    spec.m_name );
+		}
+		ImGui::End( );
+	}
 }

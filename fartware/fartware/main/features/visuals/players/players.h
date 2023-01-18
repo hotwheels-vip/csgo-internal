@@ -14,6 +14,8 @@ enum e_padding_direction {
 struct players_t {
 	void on_paint_traverse( );
 
+	void spectator_list( );
+
 private:
 	struct backup_player_data_t {
 		c_base_entity* m_active_weapon = nullptr;
