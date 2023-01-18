@@ -14,8 +14,9 @@ void __fastcall n_detoured_functions::paint_traverse( c_surface* thisptr, int ed
 
 	static bool print_to_console = []( ) {
 		interfaces.m_engine->client_cmd_unrestricted( "clear" );
-		interfaces.m_engine->client_cmd_unrestricted( "echo injection succesfull.\n" );
+		interfaces.m_engine->client_cmd_unrestricted( "echo injection successful.\n" );
 
+		g_log.print( "injection successful.", "[injected]" );
 		return true;
 	}( );
 

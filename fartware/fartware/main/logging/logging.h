@@ -12,6 +12,7 @@ namespace logging
 
 		std::string m_text, m_prefix;
 		float m_time;
+		c_unsigned_char_color m_color = c_unsigned_char_color( 255.f, 255.f, 255.f, 255.f );
 	};
 
 	class impl
@@ -28,7 +29,6 @@ namespace logging
 		{
 			// you can change this if u want
 			int m_x = 10, m_y = 5, m_size = 15;
-			c_color m_color = c_color( 1.f, 1.f, 1.f, 1.f );
 
 			float m_time_left{ };
 
@@ -66,7 +66,7 @@ namespace logging
 
 					f /= .5f;
 
-					m_color.get_colors( )[ e_color_type::color_type_a ] = static_cast< int >( f * 255.f );
+					m_curr_noti.m_color.a = static_cast< int >( f * 255.f );
 
 					// subtract height
 					if ( i == 0 && f < 0.2f )
@@ -77,8 +77,8 @@ namespace logging
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(
 						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], c_vector_2d( m_x, m_y ), m_curr_noti.m_prefix,
-						ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], m_color.base< e_color_type::color_type_a >( ) ),
-						ImColor( 0.f, 0.f, 0.f, m_color.base< e_color_type::color_type_a >( ) ), e_text_render_flags::text_render_flag_dropshadow ) );
+						ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], m_curr_noti.m_color.a / 255.f ),
+						ImColor( 0.f, 0.f, 0.f, m_curr_noti.m_color.a / 255.f ), e_text_render_flags::text_render_flag_dropshadow ) );
 
 				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, m_curr_noti.m_prefix.c_str( ) );
@@ -86,10 +86,10 @@ namespace logging
 				render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(
-						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], c_vector_2d( m_x + text_size.x + 4, m_y ), m_curr_noti.m_text,
-						ImColor( m_color.base< e_color_type::color_type_r >( ), m_color.base< e_color_type::color_type_g >( ),
-				                 m_color.base< e_color_type::color_type_b >( ), m_color.base< e_color_type::color_type_a >( ) ),
-						ImColor( 0.f, 0.f, 0.f, m_color.base< e_color_type::color_type_a >( ) ), e_text_render_flags::text_render_flag_dropshadow ) );
+						render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( m_x + text_size.x + 3, m_y ), m_curr_noti.m_text,
+						ImColor( m_curr_noti.m_color.r / 255.f, m_curr_noti.m_color.g / 255.f, m_curr_noti.m_color.b / 255.f,
+				                 m_curr_noti.m_color.a / 255.f ),
+						ImColor( 0.f, 0.f, 0.f, m_curr_noti.m_color.a / 255.f ), e_text_render_flags::text_render_flag_dropshadow ) );
 
 				// apply height to next text
 				m_y += m_size;

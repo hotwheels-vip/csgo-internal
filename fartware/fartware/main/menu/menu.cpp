@@ -2,6 +2,8 @@
 
 #include "../includes.h"
 
+#include "../logging/logging.h"
+
 constexpr int color_picker_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreviewHalf |
                                          ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_NoInputs |
                                          ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoDragDrop | ImGuiColorEditFlags_PickerHueBar |
@@ -251,6 +253,9 @@ void menu_t::on_end_scene( )
 				ImGui::Checkbox( "no crouch cooldown", &GET_CONFIG_BOOL( variables.m_movement.m_fast_duck ) );
 
 				ImGui::Checkbox( "auto align", &GET_CONFIG_BOOL( variables.m_movement.m_auto_align ) );
+
+				if ( ImGui::Button( "log test" ) )
+					g_log.print( "button pressed" );
 
 				ImGui::EndChild( );
 			}
