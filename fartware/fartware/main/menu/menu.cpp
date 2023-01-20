@@ -369,7 +369,7 @@ void menu_t::on_end_scene( )
 					ImGui::Text( "checkpoint key" );
 					ImGui::Keybind( "checkpoint-key", &GET_CONFIG_BIND( variables.m_misc.m_practice_cp_key ) );
 					ImGui::Text( "teleport key" );
-					ImGui::Keybind( "teleport-key", &GET_CONFIG_BIND( variables.m_misc.m_practice_cp_key ) );
+					ImGui::Keybind( "teleport-key", &GET_CONFIG_BIND( variables.m_misc.m_practice_tp_key ) );
 				}
 				ImGui::EndChild( );
 			}

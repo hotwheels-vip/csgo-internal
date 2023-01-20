@@ -357,11 +357,12 @@ void movement_t::on_create_move_post( )
 				if ( movement.m_pixelsurf_data.m_prediction_ticks < globals.m_cmd->m_tick_count )
 					movement.m_pixelsurf_data.m_predicted_succesful = true;
 
-				globals.m_cmd->m_buttons      = movement.m_pixelsurf_data.m_simulated_cmd->m_buttons;
-				globals.m_cmd->m_view_point   = movement.m_pixelsurf_data.m_simulated_cmd->m_view_point;
+				globals.m_cmd->m_buttons = movement.m_pixelsurf_data.m_simulated_cmd->m_buttons;
+				// globals.m_cmd->m_view_point   = movement.m_pixelsurf_data.m_simulated_cmd->m_view_point;
 				globals.m_cmd->m_side_move    = movement.m_pixelsurf_data.m_simulated_cmd->m_side_move;
 				globals.m_cmd->m_forward_move = movement.m_pixelsurf_data.m_simulated_cmd->m_forward_move;
-				globals.m_cmd->m_up_move      = movement.m_pixelsurf_data.m_simulated_cmd->m_up_move;
+
+				movement.rotate_movement( movement.m_pixelsurf_data.m_simulated_cmd->m_view_point );
 			}
 
 			if ( movement.m_pixelsurf_data.m_should_duck )

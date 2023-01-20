@@ -99,7 +99,7 @@
 //	return false;
 // }
 
-static void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
+void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
 {
 	static auto original = hooks.create_move_proxy.get_original< decltype( &n_detoured_functions::create_move_proxy ) >( );
 
@@ -108,7 +108,7 @@ static void __stdcall create_move( int sequence_number, float input_sample_frame
 	c_user_cmd* cmd                   = memory.m_input->get_user_cmd( sequence_number );
 	c_verified_user_cmd* verified_cmd = memory.m_input->get_verified_cmd( sequence_number );
 
-	if ( !cmd || !verified_cmd || !is_active )
+	if ( !cmd || !verified_cmd )
 		return;
 
 	globals.m_cmd = cmd;
