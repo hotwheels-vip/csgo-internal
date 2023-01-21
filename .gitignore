@@ -33,7 +33,7 @@
 *.app
 
 # Dependencies
-*fartware/.vs
+*.vs
 *release
 *intermediate
 *debug

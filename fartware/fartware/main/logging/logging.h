@@ -25,7 +25,7 @@ namespace logging
 			m_text.push_back( logging::text_t( text, prefix, time ) );
 		};
 
-		void think( )
+		void on_paint_traverse( )
 		{
 			// you can change this if u want
 			int m_x = 10, m_y = 5, m_size = 15;
@@ -102,4 +102,4 @@ namespace logging
 
 } // namespace logging
 
-inline logging::impl g_log;
+inline logging::impl g_log = { };

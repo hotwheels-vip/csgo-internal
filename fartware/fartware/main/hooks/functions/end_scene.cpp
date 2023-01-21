@@ -27,7 +27,7 @@ long __stdcall n_detoured_functions::end_scene( IDirect3DDevice9* device )
 	render.on_end_scene(
 		[ & ]( ) {
 			menu.on_end_scene( );
-			players.spectator_list( );
+			players.on_end_scene( );
 			// misc.practice.render( );
 		},
 		device );

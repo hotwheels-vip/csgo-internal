@@ -1,4 +1,5 @@
 #include "players.h"
+#include "../../../hooks/hooks.h"
 #include "../../../includes.h"
 #include "../../../source_engine/enumerations/e_item_definition_index.h"
 #include "../../../source_engine/enumerations/e_weapon_type.h"
@@ -343,7 +344,37 @@ void players_t::on_paint_traverse( )
 	} );
 }
 
-void players_t::spectator_list( )
+void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info, matrix3x4_t* bone_to_world )
+{
+	static auto original = hooks.draw_model_execute.get_original< decltype( &n_detoured_functions::draw_model_execute ) >( );
+
+	const auto entity = reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity( info->m_entity_index ) );
+
+	if ( !entity || !entity->is_player( ) || !entity->is_alive( ) || entity == globals.m_local || entity->team( ) == globals.m_local->team( ) )
+		return;
+
+	constexpr auto override_material = [ & ]( c_material* material, const c_color& color, bool ignorez = false, bool wireframe = false,
+	                                          bool is_overlay = false ) {
+		material->color_modulate( color.base< e_color_type::color_type_r >( ), color.base< e_color_type::color_type_g >( ),
+		                          color.base< e_color_type::color_type_b >( ) );
+		material->alpha_modulate( color.base< e_color_type::color_type_a >( ) );
+
+		if ( ignorez )
+			material->set_material_var_flag( e_material_var_flags::material_var_flag_ignorez, true );
+
+		if ( wireframe )
+			material->set_material_var_flag( e_material_var_flags::material_var_flag_wireframe, wireframe );
+
+		interfaces.m_model_render->forced_material_override( material );
+	};
+
+	const auto material = interfaces.m_material_system->find_material( "debug/debugdrawflat" );
+
+	override_material( material, c_color( 1.f, 0.f, 0.f ) );
+	original( ecx, edx, context, state, info, bone_to_world );
+}
+
+void players_t::on_end_scene( )
 {
 	if ( !render.m_initialised || !globals.m_local || !interfaces.m_engine->is_in_game( ) )
 		return;
@@ -363,7 +394,7 @@ void players_t::spectator_list( )
 		IDirect3DTexture9* m_avatar{ };
 	};
 
-	std::vector< spectator_info > m_spectators;
+	std::vector< spectator_info > m_spectators = { };
 
 	const c_color accent = c_color( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] );
 	const c_color white  = c_color( 0.9f, 0.9f, 0.9f, 1.f );
@@ -411,12 +442,12 @@ void players_t::spectator_list( )
 		m_spectators.push_back( spectator_info( final_text.c_str( ), spectated == globals.m_local ? accent : white, avatar ) );
 	} );
 
+	/* TODO ~ fade in / out depending if no one is spectating */
+
 	if ( !m_spectators.empty( ) ) {
 		ImGui::Begin( "hotwheels-spectator-window", nullptr,
 		              ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
 		                  ImGuiWindowFlags_AlwaysAutoResize );
-
-		ImDrawList* pWindowDrawList = ImGui::GetWindowDrawList( );
 
 		ImGui::SetCursorPos( ImVec2( ImGui::GetWindowSize( ).x / 2 - ImGui::CalcTextSize( "spectators" ).x / 2, 20 / 2 - 5 ) );
 		ImGui::TextColored( ImVec4( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], 1.f ), "spectators" );
@@ -431,10 +462,19 @@ void players_t::spectator_list( )
 				std::make_any< texture_draw_object_t >( c_vector_2d( pos.x - avatar_size, pos.y ), c_vector_2d( avatar_size, avatar_size ),
 			                                            ImColor( 1.f, 1.f, 1.f, 1.f ), spec.m_avatar, 0.f, ImDrawFlags_::ImDrawFlags_None ) );
 
+			/* TODO ~ clean this up, you do not need to use the threadsafe renderer as this function is called on endscene, you can just call
+			 * ImGui::Image or draw_list->AddImage. */
+
 			ImGui::TextColored( ImVec4( spec.m_color.base< e_color_type::color_type_r >( ), spec.m_color.base< e_color_type::color_type_g >( ),
 			                            spec.m_color.base< e_color_type::color_type_b >( ), spec.m_color.base< e_color_type::color_type_a >( ) ),
 			                    spec.m_name );
 		}
 		ImGui::End( );
 	}
+}
+
+bool players_t::on_attach( )
+{
+	/* TODO ~ initialise materials here (use array of materials) */
+	return true;
 }

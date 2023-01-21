@@ -82,6 +82,10 @@ bool interfaces_t::on_attach( )
 	           this->find< c_model_render >( memory.m_modules[ e_module_names::engine ].m_value, ( "VEngineModel" ) ) ) == nullptr )
 		return false;
 
+	if ( ( this->m_material_system =
+	           this->find< c_material_system >( memory.m_modules[ e_module_names::materialsystem ].m_value, ( "VMaterialSystem" ) ) ) == nullptr )
+		return false;
+
 	/* TODO ~ float ~ snake_caseify this */
 	SteamClient = this->m_engine->steam_api_context( )->m_steam_client;
 	if ( !SteamClient )

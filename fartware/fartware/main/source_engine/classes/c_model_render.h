@@ -222,6 +222,7 @@ public:
 	virtual bool set_temp_excluded( bool b_set, int n_excluded_dimension_limit )                       = 0;
 	virtual int get_reference_count( ) const                                                           = 0;
 };
+
 enum e_material_override_type : int {
 	material_override_type_normal = 0,
 	material_override_type_build_shadows,

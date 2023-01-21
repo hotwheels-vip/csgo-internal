@@ -2,6 +2,8 @@
 
 class c_base_entity;
 class c_weapon_data;
+struct model_render_info_t;
+struct matrix3x4_t;
 
 enum e_padding_direction {
 	padding_direction_left = 0,
@@ -13,8 +15,10 @@ enum e_padding_direction {
 
 struct players_t {
 	void on_paint_traverse( );
+	void on_draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info, matrix3x4_t* bone_to_world );
+	bool on_attach( );
 
-	void spectator_list( );
+	void on_end_scene( );
 
 private:
 	struct backup_player_data_t {
