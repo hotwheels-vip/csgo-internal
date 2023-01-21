@@ -77,9 +77,7 @@ void indicators_t::on_paint_traverse( )
 		                                  ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_show_pre_speed ) );
 
 		const std::string text =
-			globals.m_local->move_type( ) & e_move_types::move_type_noclip
-				? "noclip"
-				: std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
+			 std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
 
 		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
 			render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );

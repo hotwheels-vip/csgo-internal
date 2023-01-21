@@ -19,8 +19,33 @@ enum e_keybind_indicators {
 	key_max
 };
 
+enum e_chams_layers {
+	cham_layer_one = 0,
+	cham_layer_two,
+	cham_layer_three,
+	cham_layer_four,
+	cham_layer_max
+};
+
+class c_chams_settings
+{
+public:
+	bool m_enable_visible   = false;
+	c_color m_visible_color = { };
+
+	bool m_enable_invisible   = false;
+	c_color m_invisible_color = { };
+
+	bool m_render_original_model = false;
+
+	/* TODO ~ do overlay shit here too */
+};
+
 struct variables_t {
 	struct visuals_t {
+		/* TODO ~ sort this into struct esp_t, and chams_t */
+
+		/* esp settings */
 		ADD_VARIABLE( bool, m_bounding_box, false );
 		ADD_VARIABLE( c_color, m_bounding_box_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_bounding_box_outline, false );
@@ -50,6 +75,16 @@ struct variables_t {
 		ADD_VARIABLE( c_color, m_out_of_fov_arrows_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( float, m_out_of_fov_arrows_size, 20.f );
 		ADD_VARIABLE( int, m_out_of_fov_arrows_distance, 200 );
+
+		/* chams settings */
+		ADD_VARIABLE( c_chams_settings, m_chams_layer_one,
+		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), false, c_color( 255, 255, 255, 255 ), false ) );
+		ADD_VARIABLE( c_chams_settings, m_chams_layer_two,
+		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), false, c_color( 255, 255, 255, 255 ), false ) );
+		ADD_VARIABLE( c_chams_settings, m_chams_layer_three,
+		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), false, c_color( 255, 255, 255, 255 ), false ) );
+		ADD_VARIABLE( c_chams_settings, m_chams_layer_four,
+		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), false, c_color( 255, 255, 255, 255 ), false ) );
 
 		ADD_VARIABLE( bool, m_spectator_list, false );
 

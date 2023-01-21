@@ -74,6 +74,7 @@ inline config_t config = { };
 #define GET_CONFIG_FLOAT( var ) config.get< float >( var )
 #define GET_CONFIG_COLOR( var ) config.get< c_color >( var )
 #define GET_CONFIG_BIND( var )  config.get< key_bind_t >( var )
+#define GET_CONFIG_CHAMS( var ) config.get< c_chams_settings >( var )
 
 #define TO_STRING( func ) #func
 #define ADD_VARIABLE( variable_type, variable_name, default_value )                                                                                  \

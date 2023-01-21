@@ -354,24 +354,50 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 		return;
 
 	constexpr auto override_material = [ & ]( c_material* material, const c_color& color, bool ignorez = false, bool wireframe = false,
-	                                          bool is_overlay = false ) {
+	                                          bool is_overlay = false ) -> void {
 		material->color_modulate( color.base< e_color_type::color_type_r >( ), color.base< e_color_type::color_type_g >( ),
 		                          color.base< e_color_type::color_type_b >( ) );
 		material->alpha_modulate( color.base< e_color_type::color_type_a >( ) );
 
-		if ( ignorez )
-			material->set_material_var_flag( e_material_var_flags::material_var_flag_ignorez, true );
-
-		if ( wireframe )
-			material->set_material_var_flag( e_material_var_flags::material_var_flag_wireframe, wireframe );
+		material->set_material_var_flag( e_material_var_flags::material_var_flag_ignorez, ignorez );
+		material->set_material_var_flag( e_material_var_flags::material_var_flag_wireframe, wireframe );
 
 		interfaces.m_model_render->forced_material_override( material );
 	};
 
-	const auto material = interfaces.m_material_system->find_material( "debug/debugdrawflat" );
+	const auto render_chams_layer = [ & ]( const c_chams_settings& chams_settings, c_material* material ) -> void {
+		if ( chams_settings.m_render_original_model )
+			original( ecx, edx, context, state, info, bone_to_world );
 
-	override_material( material, c_color( 1.f, 0.f, 0.f ) );
-	original( ecx, edx, context, state, info, bone_to_world );
+		if ( chams_settings.m_enable_invisible ) {
+			override_material( material, chams_settings.m_invisible_color, true );
+			original( ecx, edx, context, state, info, bone_to_world );
+
+			if ( !chams_settings.m_enable_visible ) {
+				interfaces.m_model_render->forced_material_override( nullptr );
+				original( ecx, edx, context, state, info, bone_to_world );
+			}
+		}
+
+		if ( chams_settings.m_enable_visible ) {
+			override_material( material, chams_settings.m_visible_color );
+			original( ecx, edx, context, state, info, bone_to_world );
+		}
+	};
+
+	static const auto material_flat = interfaces.m_material_system->find_material( "debug/debugdrawflat" );
+
+	/* first chams layer */
+	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ), material_flat ); }( );
+
+	/* second chams layer */
+	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ), material_flat ); }( );
+
+	/* third chams layer */
+	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ), material_flat ); }( );
+
+	/* fourth chams layer */
+	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ), material_flat ); }( );
 }
 
 void players_t::on_end_scene( )

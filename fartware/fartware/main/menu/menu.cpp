@@ -205,6 +205,66 @@ void menu_t::on_end_scene( )
 			if ( ImGui::BeginChild( ( "chams" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
+				static int selected_chams_layer = 0;
+				ImGui::Combo( "chams layer selection", &selected_chams_layer, "layer one\0layer two\0layer three\0layer four\0\0" );
+
+				switch ( selected_chams_layer ) {
+				case 0: /* first layer */ {
+					ImGui::Checkbox( "enable visible##first layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_visible );
+					ImGui::ColorEdit4( "##visible first layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_visible_color,
+					                   color_picker_alpha_flags );
+
+					ImGui::Checkbox( "enable invisible##first layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_invisible );
+					ImGui::ColorEdit4( "##invisible first layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_invisible_color,
+					                   color_picker_alpha_flags );
+
+					ImGui::Checkbox( "render og model##first layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_render_original_model );
+					break;
+				}
+				case 1: /* second layer */ {
+					ImGui::Checkbox( "enable visible##second layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_visible );
+					ImGui::ColorEdit4( "##visible second layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_visible_color,
+					                   color_picker_alpha_flags );
+
+					ImGui::Checkbox( "enable invisible##second layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_invisible );
+					ImGui::ColorEdit4( "##invisible second layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_invisible_color,
+					                   color_picker_alpha_flags );
+
+					ImGui::Checkbox( "render og model##second layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_render_original_model );
+					break;
+				}
+				case 2: /* third layer */ {
+					ImGui::Checkbox( "enable visible##third layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible );
+					ImGui::ColorEdit4( "##visible third layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_color,
+					                   color_picker_alpha_flags );
+
+					ImGui::Checkbox( "enable invisible##third layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible );
+					ImGui::ColorEdit4( "##invisible third layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_color,
+					                   color_picker_alpha_flags );
+
+					ImGui::Checkbox( "render og model##third layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_render_original_model );
+					break;
+				}
+				case 3: /* fourth layer */ {
+					ImGui::Checkbox( "enable visible##fourth layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_visible );
+					ImGui::ColorEdit4( "##visible fourth layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_visible_color,
+					                   color_picker_alpha_flags );
+
+					ImGui::Checkbox( "enable invisible##fourth layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_invisible );
+					ImGui::ColorEdit4( "##invisible fourth layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_invisible_color, color_picker_alpha_flags );
+
+					ImGui::Checkbox( "render og model##fourth layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_render_original_model );
+					break;
+				}
+				}
+
 				ImGui::EndChild( );
 			}
 			break;
@@ -251,7 +311,7 @@ void menu_t::on_end_scene( )
 				ImGui::Checkbox( "auto align", &GET_CONFIG_BOOL( variables.m_movement.m_auto_align ) );
 
 				/*if ( ImGui::Button( "log test" ) )
-					g_log.print( "button pressed" );*/
+				    g_log.print( "button pressed" );*/
 
 				ImGui::EndChild( );
 			}

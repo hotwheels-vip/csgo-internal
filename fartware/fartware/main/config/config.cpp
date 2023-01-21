@@ -77,6 +77,26 @@ bool config_t::save( std::string_view file_name )
 				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
+			case fnv1a::hash_const( "c_chams_settings" ): {
+				const auto& chams_settings = variable.get< c_chams_settings >( );
+
+				nlohmann::json sub = { };
+
+				sub.push_back( chams_settings.m_enable_visible );
+				sub.push_back( chams_settings.m_visible_color.get< e_color_type::color_type_r >( ) );
+				sub.push_back( chams_settings.m_visible_color.get< e_color_type::color_type_g >( ) );
+				sub.push_back( chams_settings.m_visible_color.get< e_color_type::color_type_b >( ) );
+				sub.push_back( chams_settings.m_visible_color.get< e_color_type::color_type_a >( ) );
+				sub.push_back( chams_settings.m_enable_invisible );
+				sub.push_back( chams_settings.m_invisible_color.get< e_color_type::color_type_r >( ) );
+				sub.push_back( chams_settings.m_invisible_color.get< e_color_type::color_type_g >( ) );
+				sub.push_back( chams_settings.m_invisible_color.get< e_color_type::color_type_b >( ) );
+				sub.push_back( chams_settings.m_invisible_color.get< e_color_type::color_type_a >( ) );
+				sub.push_back( chams_settings.m_render_original_model );
+
+				entry[ ( "value" ) ] = sub.dump( );
+				break;
+			}
 			case fnv1a::hash_const( "std::vector<bool>" ): {
 				const auto& booleans = variable.get< std::vector< bool > >( );
 
@@ -208,6 +228,21 @@ bool config_t::load( std::string_view file_name )
 
 				entry.set< key_bind_t >( key_bind_t( vector[ 0 ].get< int >( ), vector[ 1 ].get< int >( ) ) );
 
+				break;
+			}
+
+			case fnv1a::hash_const( "c_chams_settings" ): {
+				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
+
+				entry.set< c_chams_settings >(
+					c_chams_settings( vector[ 0 ].get< bool >( ),
+				                      c_color( vector[ 1 ].get< std::uint8_t >( ), vector[ 2 ].get< std::uint8_t >( ),
+				                               vector[ 3 ].get< std::uint8_t >( ), vector[ 4 ].get< std::uint8_t >( ) ),
+				                      vector[ 5 ].get< bool >( ),
+				                      c_color( vector[ 6 ].get< std::uint8_t >( ), vector[ 7 ].get< std::uint8_t >( ),
+				                               vector[ 8 ].get< std::uint8_t >( ), vector[ 9 ].get< std::uint8_t >( ) ) ) );
+
+				break;
 				break;
 			}
 			case fnv1a::hash_const( "std::vector<bool>" ): {
