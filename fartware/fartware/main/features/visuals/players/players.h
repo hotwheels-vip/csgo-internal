@@ -1,4 +1,5 @@
 #pragma once
+#include "../../../source_engine/classes/c_model_render.h"
 
 class c_base_entity;
 class c_weapon_data;
@@ -11,6 +12,12 @@ enum e_padding_direction {
 	padding_direction_right,
 	padding_direction_bottom,
 	padding_direction_max
+};
+
+enum e_material_name {
+	material_name_flat = 0,
+	material_name_textured,
+	material_name_max
 };
 
 struct players_t {
@@ -29,6 +36,8 @@ private:
 	} m_backup_player_data[ 64 ];
 
 	float m_fading_alpha[ 64 ] = { };
+
+	c_material* m_base_materials[ e_material_name::material_name_max ] = { };
 };
 
 inline players_t players = { };

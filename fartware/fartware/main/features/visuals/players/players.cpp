@@ -353,6 +353,7 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 	if ( !entity || !entity->is_player( ) || !entity->is_alive( ) || entity == globals.m_local || entity->team( ) == globals.m_local->team( ) )
 		return;
 
+
 	constexpr auto override_material = [ & ]( c_material* material, const c_color& color, bool ignorez = false, bool wireframe = false,
 	                                          bool is_overlay = false ) -> void {
 		material->color_modulate( color.base< e_color_type::color_type_r >( ), color.base< e_color_type::color_type_g >( ),
