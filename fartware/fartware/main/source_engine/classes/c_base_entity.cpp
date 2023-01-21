@@ -83,6 +83,22 @@ void c_base_entity::set_abs_origin( const c_vector& origin )
 	original_set_abs_origin( this, origin );
 }
 
+/* TODO ~ use fnv hashing */
+// KIND RETARDs .
+/* int CBaseEntity::GetBoneByHash( const FNV1A_t uBoneHash ) const
+{
+    if ( const auto pModel = this->GetModel( ); pModel != nullptr ) {
+        if ( const auto pStudioHdr = I::ModelInfo->GetStudioModel( pModel ); pStudioHdr != nullptr ) {
+            for ( int i = 0; i < pStudioHdr->nBones; i++ ) {
+                if ( const auto pBone = pStudioHdr->GetBone( i ); pBone != nullptr && FNV1A::Hash( pBone->GetName( ) ) == uBoneHash )
+                    return i;
+            }
+        }
+    }
+
+    return BONE_INVALID;
+} */
+
 int c_base_entity::lookup_bone( const char* bone )
 {
 	static auto lookup_bone_fn = reinterpret_cast< int( __thiscall* )( void*, const char* ) >(
@@ -96,7 +112,7 @@ void c_base_entity::get_bone_position( const int bone, c_vector& origin )
 	static auto get_bone_position_fn = reinterpret_cast< void( __thiscall* )( void*, int, c_vector* ) >(
 		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 83 E4 F8 56 8B F1 57 83" ) );
 
-	c_vector return_value[ 4 ];
+	c_vector return_value[ 4 ]{ };
 	get_bone_position_fn( this, bone, return_value );
 	origin = { return_value[ 1 ][ 0 ], return_value[ 2 ][ 1 ], return_value[ 3 ][ 2 ] };
 }

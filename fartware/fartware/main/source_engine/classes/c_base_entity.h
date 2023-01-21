@@ -227,6 +227,8 @@ public:
 	/* offsets */
 	add_offset( unsigned int, index, 0x64 );
 	add_offset( bool, is_dormant, 0xED );
+	add_offset( bool, should_use_new_animation_state, 0x9B14 );
+
 	add_variable_offset( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
 	add_variable_offset( int, button_disabled, "CBasePlayer->m_hViewEntity", -0xC );
 	add_variable_offset( int, button_forced, "CBasePlayer->m_hViewEntity", -0x8 );

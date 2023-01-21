@@ -98,8 +98,8 @@ struct hooks_t {
 	c_detour_hook emit_sound            = { };
 	c_detour_hook override_mouse_input  = { };
 	c_detour_hook modify_eye_position   = { };
+	c_detour_hook calculate_view        = { };
 	c_detour_hook draw_set_color        = { };
-	c_detour_hook glow_effect_spectator = { };
 };
 
 inline hooks_t hooks = { };
@@ -127,6 +127,4 @@ namespace n_detoured_functions
 	void __fastcall modify_eye_position( c_anim_state* anim_state, void* edx, c_vector& input_eye_pos );
 	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );
 	void __stdcall draw_set_color( int r, int g, int b, int a );
-	bool __cdecl glow_effect_spectator( c_base_entity* player, c_base_entity* local, e_glow_style style, c_vector& glow_color, float& alpha_start,
-	                                    float& alpha, float& time_start, float& time_target, bool& animate );
 } // namespace n_detoured_functions

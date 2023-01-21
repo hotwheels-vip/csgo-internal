@@ -63,6 +63,8 @@ private:
 		_world_to_screen_matrix  = 37,
 		_get_level_name          = 52,
 		_get_level_name_short    = 53,
+		_is_hltv                 = 93,
+		_is_playing_demo         = 82,
 		_steam_api_context       = 185,
 		_client_cmd_unrestricted = 114,
 	};
@@ -73,6 +75,18 @@ public:
 	{
 		using fn = bool( __thiscall* )( c_engine* );
 		return ( *( fn** )this )[ this->e_indexes::_is_in_game ]( this );
+	}
+
+	bool is_playing_demo( )
+	{
+		using fn = bool( __thiscall* )( c_engine* );
+		return ( *( fn** )this )[ this->e_indexes::_is_playing_demo ]( this );
+	}
+
+	bool is_hltv( )
+	{
+		using fn = bool( __thiscall* )( c_engine* );
+		return ( *( fn** )this )[ this->e_indexes::_is_hltv ]( this );
 	}
 
 	void get_view_angles( c_angle& view_angle )
