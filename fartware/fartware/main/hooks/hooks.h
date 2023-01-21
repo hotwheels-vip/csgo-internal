@@ -98,8 +98,8 @@ struct hooks_t {
 	c_detour_hook emit_sound            = { };
 	c_detour_hook override_mouse_input  = { };
 	c_detour_hook modify_eye_position   = { };
-	c_detour_hook calculate_view        = { };
 	c_detour_hook draw_set_color        = { };
+	c_detour_hook draw_model_execute    = { };
 };
 
 inline hooks_t hooks = { };
@@ -125,6 +125,8 @@ namespace n_detoured_functions
 	int __cdecl vsnprintf( char* dest, int text_length, const char* fmt, ... );
 	void __fastcall override_mouse_input( void* thisptr, int edx, float* x, float* y );
 	void __fastcall modify_eye_position( c_anim_state* anim_state, void* edx, c_vector& input_eye_pos );
-	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );
 	void __stdcall draw_set_color( int r, int g, int b, int a );
+	void __fastcall draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info, matrix3x4_t* bone_to_world );
+
+	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );
 } // namespace n_detoured_functions

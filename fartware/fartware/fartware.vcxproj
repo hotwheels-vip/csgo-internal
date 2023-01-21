@@ -153,6 +153,7 @@
     <ClInclude Include="main\source_engine\classes\c_key_values_system.h" />
     <ClInclude Include="main\source_engine\classes\c_localize.h" />
     <ClInclude Include="main\source_engine\classes\c_mdl_cache.h" />
+    <ClInclude Include="main\source_engine\classes\c_model_render.h" />
     <ClInclude Include="main\source_engine\classes\c_panel.h" />
     <ClInclude Include="main\source_engine\classes\c_prediction.h" />
     <ClInclude Include="main\source_engine\classes\c_surface.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="main\hashing\other\crc32.cpp" />
     <ClCompile Include="main\hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="main\hooks\functions\create_move.cpp" />
+    <ClCompile Include="main\hooks\functions\draw_model_execute.cpp" />
     <ClCompile Include="main\hooks\functions\draw_print_text.cpp" />
     <ClCompile Include="main\hooks\functions\draw_set_color.cpp" />
     <ClCompile Include="main\hooks\functions\emit_sound.cpp" />

@@ -13,6 +13,7 @@
 #include "../classes/c_panel.h"
 #include "../classes/c_prediction.h"
 #include "../classes/c_surface.h"
+#include "../classes/c_model_render.h"
 
 #include <string_view>
 
@@ -45,6 +46,7 @@ struct interfaces_t {
 	void* m_engine_sound                       = nullptr;
 	c_mdl_cache* m_mdl_cache                   = nullptr;
 	c_engine_trace_client* m_engine_trace      = nullptr;
+	c_model_render* m_model_render             = nullptr;
 };
 
 inline interfaces_t interfaces = { };

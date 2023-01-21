@@ -78,6 +78,10 @@ bool interfaces_t::on_attach( )
 	           this->find< c_engine_trace_client >( memory.m_modules[ e_module_names::engine ].m_value, ( "EngineTraceClient" ) ) ) == nullptr )
 		return false;
 
+	if ( ( this->m_model_render =
+	           this->find< c_model_render >( memory.m_modules[ e_module_names::engine ].m_value, ( "VEngineModel" ) ) ) == nullptr )
+		return false;
+
 	/* TODO ~ float ~ snake_caseify this */
 	SteamClient = this->m_engine->steam_api_context( )->m_steam_client;
 	if ( !SteamClient )
@@ -95,9 +99,9 @@ bool interfaces_t::on_attach( )
 	if ( !SteamUtils )
 		return false;
 
-	const HSteamUser steam_user = reinterpret_cast< std::add_pointer_t< HSteamUser( ) > >(
+	const int steam_user = reinterpret_cast< std::add_pointer_t< int( ) > >(
 		utilities.get_export_address( memory.m_modules[ e_module_names::steam_api ].m_value, ( "SteamAPI_GetHSteamUser" ) ) )( );
-	const HSteamPipe steam_pipe = reinterpret_cast< std::add_pointer_t< HSteamPipe( ) > >(
+	const int steam_pipe = reinterpret_cast< std::add_pointer_t< int( ) > >(
 		utilities.get_export_address( memory.m_modules[ e_module_names::steam_api ].m_value, ( "SteamAPI_GetHSteamPipe" ) ) )( );
 
 	SteamGameCoordinator =
