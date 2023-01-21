@@ -1,4 +1,4 @@
-#include "key_values.h"
+#include "c_key_values.h"
 #include "../../memory/memory.h"
 #include "../interfaces/interfaces.h"
 
@@ -157,7 +157,7 @@ void c_key_values::set_int( const char* key_name, const int value )
 	if ( sub_key == nullptr )
 		return;
 
-	sub_key->m_i_value    = value;
+	sub_key->m_i_value   = value;
 	sub_key->m_data_type = this->e_key_type::type_int;
 }
 
@@ -175,5 +175,5 @@ void c_key_values::set_uint64( const char* key_name, const int low_value, const 
 
 	sub_key->m_sz_value                                        = new char[ sizeof( std::uint64_t ) ];
 	*reinterpret_cast< std::uint64_t* >( sub_key->m_sz_value ) = static_cast< std::uint64_t >( high_value ) << 32ULL | low_value;
-	sub_key->m_data_type                                      = this->e_key_type::type_uint64;
+	sub_key->m_data_type                                       = this->e_key_type::type_uint64;
 }

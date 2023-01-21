@@ -83,15 +83,34 @@ bool config_t::save( std::string_view file_name )
 				nlohmann::json sub = { };
 
 				sub.push_back( chams_settings.m_enable_visible );
+
 				sub.push_back( chams_settings.m_visible_color.get< e_color_type::color_type_r >( ) );
 				sub.push_back( chams_settings.m_visible_color.get< e_color_type::color_type_g >( ) );
 				sub.push_back( chams_settings.m_visible_color.get< e_color_type::color_type_b >( ) );
 				sub.push_back( chams_settings.m_visible_color.get< e_color_type::color_type_a >( ) );
+				sub.push_back( chams_settings.m_visible_material );
+
 				sub.push_back( chams_settings.m_enable_invisible );
 				sub.push_back( chams_settings.m_invisible_color.get< e_color_type::color_type_r >( ) );
 				sub.push_back( chams_settings.m_invisible_color.get< e_color_type::color_type_g >( ) );
 				sub.push_back( chams_settings.m_invisible_color.get< e_color_type::color_type_b >( ) );
 				sub.push_back( chams_settings.m_invisible_color.get< e_color_type::color_type_a >( ) );
+				sub.push_back( chams_settings.m_invisible_material );
+
+				sub.push_back( chams_settings.m_enable_visible_overlay );
+				sub.push_back( chams_settings.m_visible_overlay_color.get< e_color_type::color_type_r >( ) );
+				sub.push_back( chams_settings.m_visible_overlay_color.get< e_color_type::color_type_g >( ) );
+				sub.push_back( chams_settings.m_visible_overlay_color.get< e_color_type::color_type_b >( ) );
+				sub.push_back( chams_settings.m_visible_overlay_color.get< e_color_type::color_type_a >( ) );
+				sub.push_back( chams_settings.m_visible_overlay_material );
+
+				sub.push_back( chams_settings.m_enable_invisible_overlay );
+				sub.push_back( chams_settings.m_invisible_overlay_color.get< e_color_type::color_type_r >( ) );
+				sub.push_back( chams_settings.m_invisible_overlay_color.get< e_color_type::color_type_g >( ) );
+				sub.push_back( chams_settings.m_invisible_overlay_color.get< e_color_type::color_type_b >( ) );
+				sub.push_back( chams_settings.m_invisible_overlay_color.get< e_color_type::color_type_a >( ) );
+				sub.push_back( chams_settings.m_invisible_overlay_material );
+
 				sub.push_back( chams_settings.m_render_original_model );
 
 				entry[ ( "value" ) ] = sub.dump( );
@@ -230,17 +249,31 @@ bool config_t::load( std::string_view file_name )
 
 				break;
 			}
-
 			case fnv1a::hash_const( "c_chams_settings" ): {
 				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 
-				entry.set< c_chams_settings >(
-					c_chams_settings( vector[ 0 ].get< bool >( ),
-				                      c_color( vector[ 1 ].get< std::uint8_t >( ), vector[ 2 ].get< std::uint8_t >( ),
-				                               vector[ 3 ].get< std::uint8_t >( ), vector[ 4 ].get< std::uint8_t >( ) ),
-				                      vector[ 5 ].get< bool >( ),
-				                      c_color( vector[ 6 ].get< std::uint8_t >( ), vector[ 7 ].get< std::uint8_t >( ),
-				                               vector[ 8 ].get< std::uint8_t >( ), vector[ 9 ].get< std::uint8_t >( ) ) ) );
+				entry.set< c_chams_settings >( c_chams_settings(
+					vector[ 0 ].get< bool >( ) /* enable visible */,
+					c_color( vector[ 1 ].get< std::uint8_t >( ), vector[ 2 ].get< std::uint8_t >( ), vector[ 3 ].get< std::uint8_t >( ),
+				             vector[ 4 ].get< std::uint8_t >( ) ) /* visible color */,
+					vector[ 5 ].get< int >( ) /* visible material */,
+
+					vector[ 6 ].get< bool >( ) /* enable invisible */,
+					c_color( vector[ 7 ].get< std::uint8_t >( ), vector[ 8 ].get< std::uint8_t >( ), vector[ 9 ].get< std::uint8_t >( ),
+				             vector[ 10 ].get< std::uint8_t >( ) ) /* invisible color */,
+					vector[ 11 ].get< int >( ) /* invisible material */,
+
+					vector[ 12 ].get< bool >( ) /* enable visible overlay */,
+					c_color( vector[ 13 ].get< std::uint8_t >( ), vector[ 14 ].get< std::uint8_t >( ), vector[ 15 ].get< std::uint8_t >( ),
+				             vector[ 16 ].get< std::uint8_t >( ) ) /* visible overlay color */,
+					vector[ 17 ].get< int >( ) /* visible overlay material */,
+
+					vector[ 18 ].get< bool >( ) /* enable invisible overlay */,
+					c_color( vector[ 19 ].get< std::uint8_t >( ), vector[ 20 ].get< std::uint8_t >( ), vector[ 21 ].get< std::uint8_t >( ),
+				             vector[ 22 ].get< std::uint8_t >( ) ) /* invisible overlay color */,
+					vector[ 23 ].get< int >( ) /* invisible overlay material */,
+
+					vector[ 24 ].get< bool >( ) /* render original model */ ) );
 
 				break;
 				break;

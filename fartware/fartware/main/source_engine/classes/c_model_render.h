@@ -148,7 +148,21 @@ enum e_image_format {
 	num_image_formats
 };
 
-class c_material_var;
+class c_material_var
+{
+private:
+	enum e_indexes {
+		_set_vector = 11
+	};
+
+public:
+	void set_vector( float x, float y, float z )
+	{
+		using fn = void( __thiscall* )( c_material_var*, float, float, float );
+		return ( *( fn** )this )[ this->e_indexes::_set_vector ]( this, x, y, z );
+	}
+};
+
 class c_material
 {
 public:

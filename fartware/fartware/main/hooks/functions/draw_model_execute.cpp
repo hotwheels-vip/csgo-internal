@@ -2,6 +2,7 @@
 #include "../../source_engine/interfaces/interfaces.h"
 #include "../hooks.h"
 
+/* TODO ~ use IStudioRender::DrawModel() */
 void __fastcall n_detoured_functions::draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info,
                                                           matrix3x4_t* bone_to_world )
 {

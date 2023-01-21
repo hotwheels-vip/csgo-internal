@@ -210,54 +210,174 @@ void menu_t::on_end_scene( )
 
 				switch ( selected_chams_layer ) {
 				case 0: /* first layer */ {
-					ImGui::Checkbox( "enable visible##first layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_visible );
+					ImGui::Checkbox( "visible##first layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_visible );
 					ImGui::ColorEdit4( "##visible first layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_visible_color,
 					                   color_picker_alpha_flags );
 
-					ImGui::Checkbox( "enable invisible##first layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_invisible );
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_visible )
+						ImGui::Combo( "material##visible first layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_visible_material,
+						              base_material_names, IM_ARRAYSIZE( base_material_names ) );
+
+					ImGui::Checkbox( "invisible##first layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_invisible );
 					ImGui::ColorEdit4( "##invisible first layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_invisible_color,
 					                   color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_invisible )
+						ImGui::Combo( "material##invisible first layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_invisible_material, base_material_names,
+						              IM_ARRAYSIZE( base_material_names ) );
+
+					ImGui::Checkbox( "visible overlay##first layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_visible_overlay );
+					ImGui::ColorEdit4( "##visible overlay first layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_visible_overlay_color, color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_visible_overlay )
+						ImGui::Combo( "material##visible overlay first layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_visible_overlay_material, overlay_material_names,
+						              IM_ARRAYSIZE( overlay_material_names ) );
+
+					ImGui::Checkbox( "invisible overlay##first layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_invisible_overlay );
+					ImGui::ColorEdit4( "##invisible overlay first layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_invisible_overlay_color,
+					                   color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_enable_invisible_overlay )
+						ImGui::Combo( "material##invisible overlay first layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_invisible_overlay_material, overlay_material_names,
+						              IM_ARRAYSIZE( overlay_material_names ) );
 
 					ImGui::Checkbox( "render og model##first layer",
 					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ).m_render_original_model );
 					break;
 				}
 				case 1: /* second layer */ {
-					ImGui::Checkbox( "enable visible##second layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_visible );
+					ImGui::Checkbox( "visible##second layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_visible );
 					ImGui::ColorEdit4( "##visible second layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_visible_color,
 					                   color_picker_alpha_flags );
 
-					ImGui::Checkbox( "enable invisible##second layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_invisible );
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_visible )
+						ImGui::Combo( "material##visible second layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_visible_material,
+						              base_material_names, IM_ARRAYSIZE( base_material_names ) );
+
+					ImGui::Checkbox( "invisible##second layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_invisible );
 					ImGui::ColorEdit4( "##invisible second layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_invisible_color,
 					                   color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_invisible )
+						ImGui::Combo( "material##invisible second layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_invisible_material, base_material_names,
+						              IM_ARRAYSIZE( base_material_names ) );
+
+					ImGui::Checkbox( "visible overlay##second layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_visible_overlay );
+					ImGui::ColorEdit4( "##visible overlay second layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_visible_overlay_color, color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_visible_overlay )
+						ImGui::Combo( "material##visible overlay second layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_visible_overlay_material, overlay_material_names,
+						              IM_ARRAYSIZE( overlay_material_names ) );
+
+					ImGui::Checkbox( "invisible overlay##second layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_invisible_overlay );
+					ImGui::ColorEdit4( "##invisible overlay second layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_invisible_overlay_color,
+					                   color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_enable_invisible_overlay )
+						ImGui::Combo( "material##invisible overlay second layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_invisible_overlay_material, overlay_material_names,
+						              IM_ARRAYSIZE( overlay_material_names ) );
 
 					ImGui::Checkbox( "render og model##second layer",
 					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ).m_render_original_model );
 					break;
 				}
 				case 2: /* third layer */ {
-					ImGui::Checkbox( "enable visible##third layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible );
+					ImGui::Checkbox( "visible##third layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible );
 					ImGui::ColorEdit4( "##visible third layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_color,
 					                   color_picker_alpha_flags );
 
-					ImGui::Checkbox( "enable invisible##third layer",
-					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible );
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible )
+						ImGui::Combo( "material##visible third layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_material,
+						              base_material_names, IM_ARRAYSIZE( base_material_names ) );
+
+					ImGui::Checkbox( "invisible##third layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible );
 					ImGui::ColorEdit4( "##invisible third layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_color,
 					                   color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible )
+						ImGui::Combo( "material##invisible third layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_material, base_material_names,
+						              IM_ARRAYSIZE( base_material_names ) );
+
+					ImGui::Checkbox( "visible overlay##third layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible_overlay );
+					ImGui::ColorEdit4( "##visible overlay third layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_overlay_color, color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible_overlay )
+						ImGui::Combo( "material##visible overlay third layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_overlay_material, overlay_material_names,
+						              IM_ARRAYSIZE( overlay_material_names ) );
+
+					ImGui::Checkbox( "invisible overlay##third layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible_overlay );
+					ImGui::ColorEdit4( "##invisible overlay third layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_overlay_color,
+					                   color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible_overlay )
+						ImGui::Combo( "material##invisible overlay third layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_overlay_material, overlay_material_names,
+						              IM_ARRAYSIZE( overlay_material_names ) );
 
 					ImGui::Checkbox( "render og model##third layer",
 					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_render_original_model );
 					break;
 				}
 				case 3: /* fourth layer */ {
-					ImGui::Checkbox( "enable visible##fourth layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_visible );
+					ImGui::Checkbox( "visible##fourth layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_visible );
 					ImGui::ColorEdit4( "##visible fourth layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_visible_color,
 					                   color_picker_alpha_flags );
 
-					ImGui::Checkbox( "enable invisible##fourth layer",
-					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_invisible );
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_visible )
+						ImGui::Combo( "material##visible fourth layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_visible_material, base_material_names,
+						              IM_ARRAYSIZE( base_material_names ) );
+
+					ImGui::Checkbox( "invisible##fourth layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_invisible );
 					ImGui::ColorEdit4( "##invisible fourth layer color",
 					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_invisible_color, color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_invisible )
+						ImGui::Combo( "material##invisible fourth layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_invisible_material, base_material_names,
+						              IM_ARRAYSIZE( base_material_names ) );
+
+					ImGui::Checkbox( "visible overlay##fourth layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_visible_overlay );
+					ImGui::ColorEdit4( "##visible overlay fourth layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_visible_overlay_color,
+					                   color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_visible_overlay )
+						ImGui::Combo( "material##visible overlay fourth layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_visible_overlay_material, overlay_material_names,
+						              IM_ARRAYSIZE( overlay_material_names ) );
+
+					ImGui::Checkbox( "invisible overlay##fourth layer",
+					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_invisible_overlay );
+					ImGui::ColorEdit4( "##invisible overlay fourth layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_invisible_overlay_color,
+					                   color_picker_alpha_flags );
+
+					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_enable_invisible_overlay )
+						ImGui::Combo( "material##invisible overlay fourth layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_invisible_overlay_material,
+						              overlay_material_names, IM_ARRAYSIZE( overlay_material_names ) );
 
 					ImGui::Checkbox( "render og model##fourth layer",
 					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ).m_render_original_model );

@@ -344,6 +344,16 @@ void players_t::on_paint_traverse( )
 	} );
 }
 
+/*
+        * @note: materials info:
+        1	shaders: https://developer.valvesoftware.com/wiki/Category:Shaders
+        -		parameters: https://developer.valvesoftware.com/wiki/Category:List_of_Shader_Parameters
+        2	proxies: https://developer.valvesoftware.com/wiki/Material_proxies
+        -		list: https://developer.valvesoftware.com/wiki/List_Of_Material_Proxies
+        *
+        * use "mat_texture_list 1" command to see full materials list
+*/
+
 void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info, matrix3x4_t* bone_to_world )
 {
 	static auto original = hooks.draw_model_execute.get_original< decltype( &n_detoured_functions::draw_model_execute ) >( );
@@ -354,6 +364,15 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 
 	constexpr auto override_material = [ & ]( c_material* material, const c_color& color, bool ignorez = false, bool wireframe = false,
 	                                          bool is_overlay = false ) -> void {
+		if ( is_overlay ) {
+			bool found              = false;
+			const auto material_var = material->find_var( "$envmaptint", &found );
+			if ( found ) {
+				material_var->set_vector( color.base< e_color_type::color_type_r >( ), color.base< e_color_type::color_type_g >( ),
+				                          color.base< e_color_type::color_type_b >( ) );
+			}
+		}
+
 		material->color_modulate( color.base< e_color_type::color_type_r >( ), color.base< e_color_type::color_type_g >( ),
 		                          color.base< e_color_type::color_type_b >( ) );
 		material->alpha_modulate( color.base< e_color_type::color_type_a >( ) );
@@ -364,12 +383,12 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 		interfaces.m_model_render->forced_material_override( material );
 	};
 
-	const auto render_chams_layer = [ & ]( const c_chams_settings& chams_settings, c_material* material ) -> void {
+	const auto render_chams_layer = [ & ]( const c_chams_settings& chams_settings ) -> void {
 		if ( chams_settings.m_render_original_model )
 			original( ecx, edx, context, state, info, bone_to_world );
 
 		if ( chams_settings.m_enable_invisible ) {
-			override_material( material, chams_settings.m_invisible_color, true );
+			override_material( this->m_base_materials[ chams_settings.m_invisible_material ], chams_settings.m_invisible_color, true );
 			original( ecx, edx, context, state, info, bone_to_world );
 
 			if ( !chams_settings.m_enable_visible ) {
@@ -378,8 +397,24 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 			}
 		}
 
+		if ( chams_settings.m_enable_invisible_overlay ) {
+			override_material( this->m_overlay_materials[ chams_settings.m_invisible_overlay_material ], chams_settings.m_invisible_overlay_color,
+			                   true );
+			original( ecx, edx, context, state, info, bone_to_world );
+
+			if ( !chams_settings.m_enable_visible_overlay ) {
+				interfaces.m_model_render->forced_material_override( nullptr );
+				original( ecx, edx, context, state, info, bone_to_world );
+			}
+		}
+
 		if ( chams_settings.m_enable_visible ) {
-			override_material( material, chams_settings.m_visible_color );
+			override_material( this->m_base_materials[ chams_settings.m_visible_material ], chams_settings.m_visible_color );
+			original( ecx, edx, context, state, info, bone_to_world );
+		}
+
+		if ( chams_settings.m_enable_visible_overlay ) {
+			override_material( this->m_overlay_materials[ chams_settings.m_visible_overlay_material ], chams_settings.m_visible_overlay_color );
 			original( ecx, edx, context, state, info, bone_to_world );
 		}
 	};
@@ -397,17 +432,13 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 		}
 	};
 
-	/* first chams layer */
-	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ), get_base_material( 1 ) ); }( );
+	render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ) );
 
-	/* second chams layer */
-	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ), get_base_material( 1 ) ); }( );
+	render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ) );
 
-	/* third chams layer */
-	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ), get_base_material( 1 ) ); }( );
+	render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ) );
 
-	/* fourth chams layer */
-	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ), get_base_material( 1 ) ); }( );
+	render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ) );
 }
 
 void players_t::on_end_scene( )
@@ -511,13 +542,50 @@ void players_t::on_end_scene( )
 
 bool players_t::on_attach( )
 {
+	constexpr auto create_material = [ & ]( const char* material_name, const char* shader, const char* material ) {
+		c_key_values* key_values = new c_key_values( shader );
+		key_values->load_from_buffer( material_name, material );
+		return interfaces.m_material_system->create_material( material_name, key_values );
+	};
+
 	if ( ( this->m_base_materials[ e_base_material_name::base_material_name_flat ] =
 	           interfaces.m_material_system->find_material( "debug/debugdrawflat" ) ) == nullptr )
 		return false;
 
+	if ( !( this->m_base_materials[ e_base_material_name::base_material_name_flat ]->is_error_material( ) ) )
+		this->m_base_materials[ e_base_material_name::base_material_name_flat ]->increment_reference_count( );
+
 	if ( ( this->m_base_materials[ e_base_material_name::base_material_name_textured ] =
 	           interfaces.m_material_system->find_material( "debug/debugambientcube" ) ) == nullptr )
 		return false;
+
+	if ( !( this->m_base_materials[ e_base_material_name::base_material_name_textured ]->is_error_material( ) ) )
+		this->m_base_materials[ e_base_material_name::base_material_name_textured ]->increment_reference_count( );
+
+	if ( ( this->m_overlay_materials[ e_overlay_material_name::overlay_material_name_snow ] =
+	           create_material( "snow-material", "VertexLitGeneric", R"("VertexLitGeneric" {
+"$basetexture"                "dev/snowfield"
+                "$additive"                    "1"
+                "$envmap"                    "editor/cube_vertigo"
+                "$envmaptint"                "[0 0.5 0.55]"
+                "$envmapfresnel"            "1"
+                "$envmapfresnelminmaxexp"   "[0.00005 0.6 6]"
+                "$alpha"                    "1"
+ 
+                Proxies
+                {
+                    TextureScroll
+                    {
+                        "texturescrollvar"            "$baseTextureTransform"
+                        "texturescrollrate"            "0.15"
+                        "texturescrollangle"        "270"
+                    }
+                }
+			})" ) ) == nullptr )
+		return false;
+
+	if ( !( this->m_overlay_materials[ e_overlay_material_name::overlay_material_name_snow ]->is_error_material( ) ) )
+		this->m_overlay_materials[ e_overlay_material_name::overlay_material_name_snow ]->increment_reference_count( );
 
 	return true;
 }

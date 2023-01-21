@@ -32,9 +32,19 @@ class c_chams_settings
 public:
 	bool m_enable_visible   = false;
 	c_color m_visible_color = { };
+	int m_visible_material  = 0;
 
 	bool m_enable_invisible   = false;
 	c_color m_invisible_color = { };
+	int m_invisible_material  = 0;
+
+	bool m_enable_visible_overlay   = false;
+	c_color m_visible_overlay_color = { };
+	int m_visible_overlay_material  = 0;
+
+	bool m_enable_invisible_overlay   = false;
+	c_color m_invisible_overlay_color = { };
+	int m_invisible_overlay_material  = 0;
 
 	bool m_render_original_model = false;
 
@@ -78,13 +88,17 @@ struct variables_t {
 
 		/* chams settings */
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_one,
-		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), false, c_color( 255, 255, 255, 255 ), false ) );
+		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false,
+		                                c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false ) );
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_two,
-		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), false, c_color( 255, 255, 255, 255 ), false ) );
+		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false,
+		                                c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false ) );
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_three,
-		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), false, c_color( 255, 255, 255, 255 ), false ) );
+		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false,
+		                                c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false ) );
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_four,
-		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), false, c_color( 255, 255, 255, 255 ), false ) );
+		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false,
+		                                c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false ) );
 
 		ADD_VARIABLE( bool, m_spectator_list, false );
 

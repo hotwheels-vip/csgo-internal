@@ -20,6 +20,11 @@ enum e_base_material_name {
 	base_material_name_max
 };
 
+enum e_overlay_material_name {
+	overlay_material_name_snow = 0,
+	overlay_material_name_max
+};
+
 struct players_t {
 	void on_paint_traverse( );
 	void on_draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info, matrix3x4_t* bone_to_world );
@@ -38,6 +43,7 @@ private:
 	float m_fading_alpha[ 64 ] = { };
 
 	c_material* m_base_materials[ e_base_material_name::base_material_name_max ] = { };
+	c_material* m_overlay_materials[ e_overlay_material_name::overlay_material_name_max ] = { };
 };
 
 inline players_t players = { };
