@@ -6,6 +6,7 @@
 #include "source_engine/netvars/netvars.h"
 
 #include "features/misc/misc.h"
+#include "features/visuals/players/players.h"
 
 #include <chrono>
 #include <thread>
@@ -57,6 +58,12 @@ static DWORD WINAPI on_attach( void* instance )
 			console.print( ( "failed to initialise convars" ) );
 		else
 			console.print( ( "initialised convars" ) );
+
+		console.print( ( "initialising chams materials" ) );
+		if ( !players.on_attach( ) )
+			console.print( ( "failed to chams materials" ) );
+		else
+			console.print( ( "initialised chams materials" ) );
 
 		console.print( ( "initialising input" ) );
 		if ( !input.on_attach( ) )

@@ -349,10 +349,8 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 	static auto original = hooks.draw_model_execute.get_original< decltype( &n_detoured_functions::draw_model_execute ) >( );
 
 	const auto entity = reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity( info->m_entity_index ) );
-
 	if ( !entity || !entity->is_player( ) || !entity->is_alive( ) || entity == globals.m_local || entity->team( ) == globals.m_local->team( ) )
 		return;
-
 
 	constexpr auto override_material = [ & ]( c_material* material, const c_color& color, bool ignorez = false, bool wireframe = false,
 	                                          bool is_overlay = false ) -> void {
@@ -386,19 +384,30 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 		}
 	};
 
-	static const auto material_flat = interfaces.m_material_system->find_material( "debug/debugdrawflat" );
+	const auto get_base_material = [ & ]( int material_index ) -> c_material* {
+		switch ( material_index ) {
+		case 0: {
+			return this->m_base_materials[ e_base_material_name::base_material_name_flat ];
+			break;
+		}
+		case 1: {
+			return this->m_base_materials[ e_base_material_name::base_material_name_textured ];
+			break;
+		}
+		}
+	};
 
 	/* first chams layer */
-	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ), material_flat ); }( );
+	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_one ), get_base_material( 1 ) ); }( );
 
 	/* second chams layer */
-	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ), material_flat ); }( );
+	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_two ), get_base_material( 1 ) ); }( );
 
 	/* third chams layer */
-	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ), material_flat ); }( );
+	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ), get_base_material( 1 ) ); }( );
 
 	/* fourth chams layer */
-	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ), material_flat ); }( );
+	[ & ]( ) { render_chams_layer( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_four ), get_base_material( 1 ) ); }( );
 }
 
 void players_t::on_end_scene( )
@@ -502,6 +511,13 @@ void players_t::on_end_scene( )
 
 bool players_t::on_attach( )
 {
-	/* TODO ~ initialise materials here (use array of materials) */
+	if ( ( this->m_base_materials[ e_base_material_name::base_material_name_flat ] =
+	           interfaces.m_material_system->find_material( "debug/debugdrawflat" ) ) == nullptr )
+		return false;
+
+	if ( ( this->m_base_materials[ e_base_material_name::base_material_name_textured ] =
+	           interfaces.m_material_system->find_material( "debug/debugambientcube" ) ) == nullptr )
+		return false;
+
 	return true;
 }

@@ -14,10 +14,10 @@ enum e_padding_direction {
 	padding_direction_max
 };
 
-enum e_material_name {
-	material_name_flat = 0,
-	material_name_textured,
-	material_name_max
+enum e_base_material_name {
+	base_material_name_flat = 0,
+	base_material_name_textured,
+	base_material_name_max
 };
 
 struct players_t {
@@ -37,7 +37,7 @@ private:
 
 	float m_fading_alpha[ 64 ] = { };
 
-	c_material* m_base_materials[ e_material_name::material_name_max ] = { };
+	c_material* m_base_materials[ e_base_material_name::base_material_name_max ] = { };
 };
 
 inline players_t players = { };
