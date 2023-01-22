@@ -506,17 +506,8 @@ void players_t::on_end_scene( )
 		if ( spectating_info.m_is_hltv )
 			return;
 
-		std::string spectating_name = spectating_info.m_name;
-		if ( spectating_name.length( ) > 24U )
-			spectating_name = spectating_name.substr( 0U, 24U ).append( "..." );
-
-		std::string spectated_name = spectating_info.m_name;
-		if ( spectated_name.length( ) > 24U )
-			spectated_name = spectated_name.substr( 0U, 24U ).append( "..." );
-
-		spectator_data.push_back(
-			{ std::format( ( "{} -> {}" ), spectating_name,
-		                                         spectated_name),
+		spectator_data.push_back( { std::format( ( "{} -> {}" ), std::string( spectating_info.m_name ).substr( 0, 24 ),
+		                                         std::string( spectated_info.m_name ).substr( 0, 24 ) ),
 
 		                            spectating_info.m_fake_player ? entity_team == 2 /* terrorist */           ? render.m_terrorist_avatar
 		                                                            : entity_team == 3 /* counter terrorist */ ? render.m_counter_terrorist_avatar
