@@ -189,6 +189,7 @@ void menu_t::on_end_scene( )
 					ImGui::SliderFloat( "arrows size", &GET_CONFIG_FLOAT( variables.m_visuals.m_out_of_fov_arrows_size ), 0.1f, 50.f, "%.1f px" );
 					ImGui::SliderInt( "arrows distance", &GET_CONFIG_INT( variables.m_visuals.m_out_of_fov_arrows_distance ), 10, 500, "%d px" );
 				}
+				ImGui::Checkbox( "spectator list", &GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) );
 
 				ImGui::EndChild( );
 			}
@@ -197,14 +198,8 @@ void menu_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			if ( ImGui::BeginChild(
-					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
+					 ( "chams" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
-				ImGui::EndChild( );
-			}
-
-			if ( ImGui::BeginChild( ( "chams" ),
-			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
-			                        true, 0, true ) ) {
 				static int selected_chams_layer = 0;
 				ImGui::Combo( "chams layer selection", &selected_chams_layer, "layer one\0layer two\0layer three\0layer four\0\0" );
 
@@ -301,12 +296,13 @@ void menu_t::on_end_scene( )
 					                   color_picker_alpha_flags );
 
 					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible )
-						ImGui::Combo( "material##visible third layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_material,
-						              base_material_names, IM_ARRAYSIZE( base_material_names ) );
+						ImGui::Combo( "material##visible third layer",
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_material, base_material_names,
+						              IM_ARRAYSIZE( base_material_names ) );
 
 					ImGui::Checkbox( "invisible##third layer", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible );
-					ImGui::ColorEdit4( "##invisible third layer color", &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_color,
-					                   color_picker_alpha_flags );
+					ImGui::ColorEdit4( "##invisible third layer color",
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_color, color_picker_alpha_flags );
 
 					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible )
 						ImGui::Combo( "material##invisible third layer",
@@ -316,7 +312,8 @@ void menu_t::on_end_scene( )
 					ImGui::Checkbox( "visible overlay##third layer",
 					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible_overlay );
 					ImGui::ColorEdit4( "##visible overlay third layer color",
-					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_overlay_color, color_picker_alpha_flags );
+					                   &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_visible_overlay_color,
+					                   color_picker_alpha_flags );
 
 					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_visible_overlay )
 						ImGui::Combo( "material##visible overlay third layer",
@@ -331,8 +328,8 @@ void menu_t::on_end_scene( )
 
 					if ( GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_enable_invisible_overlay )
 						ImGui::Combo( "material##invisible overlay third layer",
-						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_overlay_material, overlay_material_names,
-						              IM_ARRAYSIZE( overlay_material_names ) );
+						              &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_invisible_overlay_material,
+						              overlay_material_names, IM_ARRAYSIZE( overlay_material_names ) );
 
 					ImGui::Checkbox( "render og model##third layer",
 					                 &GET_CONFIG_CHAMS( variables.m_visuals.m_chams_layer_three ).m_render_original_model );
@@ -385,6 +382,21 @@ void menu_t::on_end_scene( )
 				}
 				}
 
+				ImGui::EndChild( );
+			}
+
+			if ( ImGui::BeginChild(
+					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+					 true, 0, true ) ) {
+				ImGui::EndChild( );
+			}
+
+			ImGui::SameLine( );
+			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
+
+			if ( ImGui::BeginChild( ( "world" ),
+			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+			                        true, 0, true ) ) {
 				ImGui::EndChild( );
 			}
 			break;
@@ -539,7 +551,6 @@ void menu_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "game" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
-				ImGui::Checkbox( "spectator list", &GET_CONFIG_BOOL( variables.m_visuals.m_spectator_list ) );
 				ImGui::Checkbox( "practice window", &GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) );
 				if ( GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) ) {
 					ImGui::Text( "checkpoint key" );

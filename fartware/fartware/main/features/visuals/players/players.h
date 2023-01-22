@@ -1,10 +1,13 @@
 #pragma once
 #include "../../../source_engine/classes/c_model_render.h"
 
+#include <string>
+
 class c_base_entity;
 class c_weapon_data;
 struct model_render_info_t;
 struct matrix3x4_t;
+struct IDirect3DTexture9;
 
 enum e_padding_direction {
 	padding_direction_left = 0,
@@ -40,9 +43,14 @@ private:
 		float m_ammo                   = 1.f;
 	} m_backup_player_data[ 64 ];
 
+	struct spectator_data_t {
+		std::string m_text          = { };
+		IDirect3DTexture9* m_avatar = { };
+	};
+
 	float m_fading_alpha[ 64 ] = { };
 
-	c_material* m_base_materials[ e_base_material_name::base_material_name_max ] = { };
+	c_material* m_base_materials[ e_base_material_name::base_material_name_max ]          = { };
 	c_material* m_overlay_materials[ e_overlay_material_name::overlay_material_name_max ] = { };
 };
 

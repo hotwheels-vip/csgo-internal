@@ -5,8 +5,10 @@
 
 bool c_event_listener::on_attach( const std::deque< const char* >& events )
 {
-	if ( events.empty( ) )
+	if ( events.empty( ) ) {
+		console.print( "event listener array returned empty()" );
 		return false;
+	}
 
 	for ( const auto& event_name : events ) {
 		interfaces.m_game_event->add_listener( this, event_name, false );
@@ -34,7 +36,7 @@ void c_event_listener::fire_game_event( c_game_event* game_event )
 
 	/* what ever small example, self explanatory */
 	/*if ( hashed_event_name == fnv1a::hash_const( "player_death" ) ) {
-		const auto attacker =
-			interfaces.m_client_entity_list->get_client_entity( interfaces.m_engine->get_player_for_userid( game_event->get_int( "attacker" ) ) );
+	    const auto attacker =
+	        interfaces.m_client_entity_list->get_client_entity( interfaces.m_engine->get_player_for_userid( game_event->get_int( "attacker" ) ) );
 	}*/
 }

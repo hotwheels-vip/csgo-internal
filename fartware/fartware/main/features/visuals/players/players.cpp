@@ -443,101 +443,45 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 
 void players_t::on_end_scene( )
 {
-	if ( !render.m_initialised || !globals.m_local || !interfaces.m_engine->is_in_game( ) )
+	std::vector< spectator_data_t > spectator_data{ };
+
+	if ( !globals.m_local || !globals.m_local->is_alive( ) || !GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) ) {
+		if ( !spectator_data.empty( ) )
+			spectator_data.clear( );
+
 		return;
-
-	if ( !GET_CONFIG_BOOL( variables.m_visuals.m_spectator_list ) )
-		return;
-
-	struct spectator_info {
-		spectator_info( const char* name, c_color color, IDirect3DTexture9* avatar )
-		{
-			m_name   = name;
-			m_color  = color;
-			m_avatar = avatar;
-		};
-		const char* m_name{ };
-		c_color m_color{ };
-		IDirect3DTexture9* m_avatar{ };
-	};
-
-	std::vector< spectator_info > m_spectators = { };
-
-	const c_color accent = c_color( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] );
-	const c_color white  = c_color( 0.9f, 0.9f, 0.9f, 1.f );
+	}
 
 	entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
-		if ( !entity || globals.m_local == entity || entity->is_alive( ) || entity->is_dormant( ) )
+		if ( !entity || entity->is_dormant( ) || entity->is_alive( ) )
 			return;
-		auto spectated = reinterpret_cast< c_base_entity* >(
+
+		const auto observer_target = reinterpret_cast< c_base_entity* >(
 			interfaces.m_client_entity_list->get_client_entity_from_handle( entity->get_observer_target_handle( ) ) );
-
-		if ( !spectated || spectated->is_alive( ) )
+		if ( observer_target != globals.m_local )
 			return;
 
-		player_info_t observer{ }, target{ };
-		interfaces.m_engine->get_player_info( entity->index( ), &observer );
-		interfaces.m_engine->get_player_info( spectated->index( ), &target );
+		const auto team  = entity->team( );
+		const auto index = entity->index( );
 
-		if ( observer.m_is_hltv )
+		player_info_t player_info = { };
+		if ( !interfaces.m_engine->get_player_info( index, &player_info ) )
 			return;
 
-		auto obs_name    = std::string( observer.m_name );
-		auto target_name = std::string( target.m_name );
+		if ( player_info.m_is_hltv )
+			return;
 
-		if ( obs_name.length( ) > 15 ) {
-			obs_name.resize( 15 );
-			obs_name.append( "..." );
-		}
+		std::string converted_name = player_info.m_name;
+		if ( converted_name.length( ) > 24U )
+			converted_name = converted_name.substr( 0U, 24U ).append( ( "..." ) );
 
-		if ( target_name.length( ) > 15 ) {
-			target_name.resize( 15 );
-			target_name.append( "..." );
-		}
+		spectator_data.push_back( { converted_name,
 
-		std::string final_text{ };
-
-		// fuck you
-		final_text.append( obs_name ).append( " -> " ).append( target_name );
-
-		IDirect3DTexture9* avatar{ };
-		avatar = observer.m_fake_player ? entity->team( ) == 2   ? render.m_terrorist_avatar
-		                                  : entity->team( ) == 3 ? render.m_counter_terrorist_avatar
-		                                                         : nullptr
-		                                : avatar_cache.find( entity->index( ) );
-
-		m_spectators.push_back( spectator_info( final_text.c_str( ), spectated == globals.m_local ? accent : white, avatar ) );
+		                            player_info.m_fake_player ? team == 2 /* terrorist */           ? render.m_terrorist_avatar
+		                                                        : team == 3 /* counter terrorist */ ? render.m_counter_terrorist_avatar
+		                                                                                            : nullptr
+		                                                      : avatar_cache.find( index ) } );
 	} );
-
-	/* TODO ~ fade in / out depending if no one is spectating */
-
-	if ( !m_spectators.empty( ) ) {
-		ImGui::Begin( "hotwheels-spectator-window", nullptr,
-		              ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
-		                  ImGuiWindowFlags_AlwaysAutoResize );
-
-		ImGui::SetCursorPos( ImVec2( ImGui::GetWindowSize( ).x / 2 - ImGui::CalcTextSize( "spectators" ).x / 2, 20 / 2 - 5 ) );
-		ImGui::TextColored( ImVec4( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], 1.f ), "spectators" );
-
-		for ( auto spec : m_spectators ) {
-			constexpr auto avatar_size = 14.f;
-
-			auto pos = ImGui::GetCursorPos( );
-
-			render.m_draw_data.emplace_back(
-				e_draw_type::draw_type_texture,
-				std::make_any< texture_draw_object_t >( c_vector_2d( pos.x - avatar_size, pos.y ), c_vector_2d( avatar_size, avatar_size ),
-			                                            ImColor( 1.f, 1.f, 1.f, 1.f ), spec.m_avatar, 0.f, ImDrawFlags_::ImDrawFlags_None ) );
-
-			/* TODO ~ clean this up, you do not need to use the threadsafe renderer as this function is called on endscene, you can just call
-			 * ImGui::Image or draw_list->AddImage. */
-
-			ImGui::TextColored( ImVec4( spec.m_color.base< e_color_type::color_type_r >( ), spec.m_color.base< e_color_type::color_type_g >( ),
-			                            spec.m_color.base< e_color_type::color_type_b >( ), spec.m_color.base< e_color_type::color_type_a >( ) ),
-			                    spec.m_name );
-		}
-		ImGui::End( );
-	}
 }
 
 bool players_t::on_attach( )

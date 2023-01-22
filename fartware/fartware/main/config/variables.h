@@ -86,6 +86,8 @@ struct variables_t {
 		ADD_VARIABLE( float, m_out_of_fov_arrows_size, 20.f );
 		ADD_VARIABLE( int, m_out_of_fov_arrows_distance, 200 );
 
+		ADD_VARIABLE( bool, m_spectators_list, false );
+
 		/* chams settings */
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_one,
 		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false,
@@ -99,9 +101,6 @@ struct variables_t {
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_four,
 		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false,
 		                                c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false ) );
-
-		ADD_VARIABLE( bool, m_spectator_list, false );
-
 	} m_visuals;
 
 	struct misc_t {
