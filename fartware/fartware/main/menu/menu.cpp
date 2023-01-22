@@ -15,6 +15,8 @@ constexpr int color_picker_no_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiC
 
 void menu_t::on_end_scene( )
 {
+	ImGui::GetStyle( ).Colors[ ImGuiCol_::ImGuiCol_Accent ] = GET_CONFIG_COLOR( variables.m_menu.m_accent ).get_vec4( );
+
 	if ( !this->m_opened )
 		return;
 
@@ -43,9 +45,14 @@ void menu_t::on_end_scene( )
 			                          ImDrawFlags_RoundCornersTop );
 			ImGui::PopClipRect( );
 
+			ImGui::PushClipRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + size.y ), false );
+			draw_list->AddRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + size.y ), ImColor( 50, 50, 50, 255 ),
+			                    ImGui::GetStyle( ).WindowRounding );
+			ImGui::PopClipRect( );
+
 			/* render gradient */
 			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + background_height - 1.f ), ImVec2( size.x, 1.f ),
-			                         ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
+			                         ImGui::GetColorU32(ImGuiCol_::ImGuiCol_Accent) );
 
 			const auto title_text      = ( "hotwheels" );
 			const auto title_text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
@@ -65,7 +72,7 @@ void menu_t::on_end_scene( )
 			                    render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
 			                    ImVec2( position.x + ( ( size.x + title_text_size.x - vip_title_text_size.x ) / 2.f ),
 			                            position.y + ( ( background_height - title_text_size.y ) / 2.f ) ),
-			                    ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ), vip_title_text );
+			                    ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ), vip_title_text );
 		}( );
 
 		[ & ]( ) {
@@ -79,7 +86,7 @@ void menu_t::on_end_scene( )
 
 			/* render gradient */
 			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + size.y - background_height ), ImVec2( size.x, 1.f ),
-			                         ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
+			                         ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ) );
 
 			std::vector< const char* > tab_names = { ( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" ) };
 
@@ -116,7 +123,7 @@ void menu_t::on_end_scene( )
 				                    render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
 				                    ImVec2( position.x + text_position.x, position.y + text_position.y ),
 				                    ImColor::Blend( ImColor( 1.f, 1.f, 1.f, hovered_text_animation.AnimationData->second ),
-				                                    ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ), selected_animation.AnimationData->second ),
+				                                    ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ), selected_animation.AnimationData->second ),
 				                    tab_name );
 
 				if ( hovered && ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
@@ -189,7 +196,17 @@ void menu_t::on_end_scene( )
 					ImGui::SliderFloat( "arrows size", &GET_CONFIG_FLOAT( variables.m_visuals.m_out_of_fov_arrows_size ), 0.1f, 50.f, "%.1f px" );
 					ImGui::SliderInt( "arrows distance", &GET_CONFIG_INT( variables.m_visuals.m_out_of_fov_arrows_distance ), 10, 500, "%d px" );
 				}
+
 				ImGui::Checkbox( "spectator list", &GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) );
+				if ( GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) ) {
+					ImGui::ColorEdit4( ( "##spectator list text color one" ), &GET_CONFIG_COLOR( variables.m_visuals.m_spectators_list_text_color_one ),
+					                   color_picker_alpha_flags );
+
+					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+					ImGui::ColorEdit4( ( "##spectator list text color two" ), &GET_CONFIG_COLOR( variables.m_visuals.m_spectators_list_text_color_two ),
+					                   color_picker_alpha_flags );
+				}
 
 				ImGui::EndChild( );
 			}
@@ -551,13 +568,7 @@ void menu_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "game" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
-				ImGui::Checkbox( "practice window", &GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) );
-				if ( GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) ) {
-					ImGui::Text( "checkpoint key" );
-					ImGui::Keybind( "checkpoint-key", &GET_CONFIG_BIND( variables.m_misc.m_practice_cp_key ) );
-					ImGui::Text( "teleport key" );
-					ImGui::Keybind( "teleport-key", &GET_CONFIG_BIND( variables.m_misc.m_practice_tp_key ) );
-				}
+
 				ImGui::EndChild( );
 			}
 
@@ -615,6 +626,12 @@ void menu_t::on_end_scene( )
 
 				if ( ImGui::Button( ( "refresh" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
 					config.refresh( );
+
+				 ImGui::SetCursorPosX( ImGui::GetCursorPos().x + 17.f);
+				ImGui::Text( "accent color" );
+
+				ImGui::ColorEdit4( ( "##accent color" ), &GET_CONFIG_COLOR( variables.m_menu.m_accent ),
+				                   color_picker_no_alpha_flags );
 
 				ImGui::EndChild( );
 			}

@@ -125,8 +125,6 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			return;
 		}
 
-		misc.practice.think( );
-
 		movement.on_create_move_pre( );
 
 		prediction.begin( globals.m_cmd );

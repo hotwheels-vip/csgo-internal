@@ -116,7 +116,7 @@ void players_t::on_paint_traverse( )
 			if ( GET_CONFIG_BOOL( variables.m_visuals.m_player_name ) ) {
 				std::string converted_name = player_info.m_name;
 				if ( converted_name.length( ) > 24U )
-					converted_name = converted_name.substr( 0U, 24U ).append( ( "..." ) );
+					converted_name = converted_name.substr( 0U, 24U ).append( "..." );
 
 				if ( player_info.m_fake_player )
 					converted_name.insert( 0, ( "[bot] " ) );
@@ -443,45 +443,144 @@ void players_t::on_draw_model_execute( int ecx, int edx, void* context, void* st
 
 void players_t::on_end_scene( )
 {
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	std::vector< spectator_data_t > spectator_data{ };
 
-	if ( !globals.m_local || !globals.m_local->is_alive( ) || !GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) ) {
+	if ( !globals.m_local || !GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) ) {
 		if ( !spectator_data.empty( ) )
 			spectator_data.clear( );
 
 		return;
 	}
 
+	// entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
+	//	if ( !entity || entity->is_dormant( ) || entity->is_alive( ) )
+	//		return;
+
+	//	const auto observer_target = reinterpret_cast< c_base_entity* >(
+	//		interfaces.m_client_entity_list->get_client_entity_from_handle( entity->get_observer_target_handle( ) ) );
+	//	if ( observer_target != globals.m_local )
+	//		return;
+
+	//	const auto team  = entity->team( );
+	//	const auto index = entity->index( );
+
+	//	player_info_t player_info = { };
+	//	if ( !interfaces.m_engine->get_player_info( index, &player_info ) )
+	//		return;
+
+	//	if ( player_info.m_is_hltv )
+	//		return;
+
+	//	std::string converted_name = player_info.m_name;
+	//	if ( converted_name.length( ) > 24U )
+	//		converted_name = converted_name.substr( 0U, 24U ).append( ( "..." ) );
+
+	//	spectator_data.push_back( { converted_name,
+
+	//	                            player_info.m_fake_player ? team == 2 /* terrorist */           ? render.m_terrorist_avatar
+	//	                                                        : team == 3 /* counter terrorist */ ? render.m_counter_terrorist_avatar
+	//	                                                                                            : nullptr
+	//	                                                      : avatar_cache.find( index ) } );
+	//} );
+
 	entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
-		if ( !entity || entity->is_dormant( ) || entity->is_alive( ) )
+		if ( !entity || entity->is_alive( ) || entity->is_dormant( ) )
 			return;
 
-		const auto observer_target = reinterpret_cast< c_base_entity* >(
+		const auto entity_index = entity->index( );
+		const auto entity_team  = entity->team( );
+
+		const auto spectated_player = reinterpret_cast< c_base_entity* >(
 			interfaces.m_client_entity_list->get_client_entity_from_handle( entity->get_observer_target_handle( ) ) );
-		if ( observer_target != globals.m_local )
+		if ( !spectated_player || !spectated_player->is_alive( ) )
 			return;
 
-		const auto team  = entity->team( );
-		const auto index = entity->index( );
+		const int spectated_player_index = spectated_player->index( );
 
-		player_info_t player_info = { };
-		if ( !interfaces.m_engine->get_player_info( index, &player_info ) )
+		player_info_t spectating_info{ }, spectated_info{ };
+		interfaces.m_engine->get_player_info( entity_index, &spectating_info );
+		interfaces.m_engine->get_player_info( spectated_player_index, &spectated_info );
+
+		if ( spectating_info.m_is_hltv )
 			return;
 
-		if ( player_info.m_is_hltv )
-			return;
+		std::string spectating_name = spectating_info.m_name;
+		if ( spectating_name.length( ) > 24U )
+			spectating_name = spectating_name.substr( 0U, 24U ).append( "..." );
 
-		std::string converted_name = player_info.m_name;
-		if ( converted_name.length( ) > 24U )
-			converted_name = converted_name.substr( 0U, 24U ).append( ( "..." ) );
+		std::string spectated_name = spectating_info.m_name;
+		if ( spectated_name.length( ) > 24U )
+			spectated_name = spectated_name.substr( 0U, 24U ).append( "..." );
 
-		spectator_data.push_back( { converted_name,
+		spectator_data.push_back(
+			{ std::format( ( "{} -> {}" ), spectating_name,
+		                                         spectated_name),
 
-		                            player_info.m_fake_player ? team == 2 /* terrorist */           ? render.m_terrorist_avatar
-		                                                        : team == 3 /* counter terrorist */ ? render.m_counter_terrorist_avatar
-		                                                                                            : nullptr
-		                                                      : avatar_cache.find( index ) } );
+		                            spectating_info.m_fake_player ? entity_team == 2 /* terrorist */           ? render.m_terrorist_avatar
+		                                                            : entity_team == 3 /* counter terrorist */ ? render.m_counter_terrorist_avatar
+		                                                                                                       : nullptr
+		                                                          : avatar_cache.find( entity_index ),
+		                            spectated_player == globals.m_local
+		                                ? GET_CONFIG_COLOR( variables.m_visuals.m_spectators_list_text_color_one )
+		                                : GET_CONFIG_COLOR( variables.m_visuals.m_spectators_list_text_color_two ) } );
 	} );
+
+	constexpr auto background_height = 25.f;
+
+	constexpr auto title_text  = "spectators";
+	const auto title_text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+		render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
+
+	if ( spectator_data.empty( ) )
+		return;
+
+	ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 20.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
+	ImGui::Begin( ( "hotwheels-spectators-list-ui" ), 0,
+	              ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar |
+	                  ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize );
+	{
+		const auto window = ImGui::GetCurrentWindow( );
+
+		const auto draw_list = window->DrawList;
+
+		const auto size     = window->Size;
+		const auto position = window->Pos;
+
+		[ & ]( ) {
+			/* render background */
+			ImGui::PushClipRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + background_height ), false );
+			draw_list->AddRectFilled( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + background_height ),
+			                          ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f, 1.f ), ImGui::GetStyle( ).WindowRounding,
+			                          ImDrawFlags_RoundCornersTop );
+			ImGui::PopClipRect( );
+
+			/* render gradient */
+			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + background_height - 1.f ), ImVec2( size.x, 1.f ),
+			                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
+
+			draw_list->AddText(
+				render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
+				ImVec2( position.x + ( ( size.x - title_text_size.x ) / 2.f ), position.y + ( ( background_height - title_text_size.y ) / 2.f ) ),
+				ImColor( 1.f, 1.f, 1.f ), title_text );
+
+			/* render outline */
+			ImGui::PushClipRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + size.y ), false );
+			draw_list->AddRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + size.y ), ImColor( 50, 50, 50, 255 ),
+			                    ImGui::GetStyle( ).WindowRounding );
+			ImGui::PopClipRect( );
+		}( );
+
+		ImGui::SetCursorPosY( 30.f );
+
+		for ( const auto& data : spectator_data ) {
+			ImGui::Image( data.m_avatar, ImVec2( 13, 13 ), ImVec2( 0, 0 ), ImVec2( 1, 1 ) );
+			ImGui::SameLine( );
+			ImGui::TextColored( data.m_color.get_vec4( ), data.m_text.c_str( ) );
+		}
+	}
+	ImGui::End( );
 }
 
 bool players_t::on_attach( )

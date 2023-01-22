@@ -1,5 +1,6 @@
 #pragma once
 #include "../../../source_engine/classes/c_model_render.h"
+#include "../../../source_engine/classes/c_color.h"
 
 #include <string>
 
@@ -46,6 +47,7 @@ private:
 	struct spectator_data_t {
 		std::string m_text          = { };
 		IDirect3DTexture9* m_avatar = { };
+		c_color m_color             = { };
 	};
 
 	float m_fading_alpha[ 64 ] = { };

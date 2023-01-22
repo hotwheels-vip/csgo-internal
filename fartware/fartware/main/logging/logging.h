@@ -73,11 +73,13 @@ namespace logging
 						m_y -= m_size * ( 1.f - f / 0.2f );
 				}
 
+				const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 				render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(
 						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], c_vector_2d( m_x, m_y ), m_curr_noti.m_prefix,
-						ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], m_curr_noti.m_color.a / 255.f ),
+						ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z, m_curr_noti.m_color.a / 255.f ),
 						ImColor( 0.f, 0.f, 0.f, m_curr_noti.m_color.a / 255.f ), e_text_render_flags::text_render_flag_dropshadow ) );
 
 				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(

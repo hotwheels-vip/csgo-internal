@@ -87,6 +87,8 @@ struct variables_t {
 		ADD_VARIABLE( int, m_out_of_fov_arrows_distance, 200 );
 
 		ADD_VARIABLE( bool, m_spectators_list, false );
+		ADD_VARIABLE( c_color, m_spectators_list_text_color_one, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( c_color, m_spectators_list_text_color_two, c_color( 255, 255, 255, 255 ) );
 
 		/* chams settings */
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_one,
@@ -175,6 +177,10 @@ struct variables_t {
 
 		} m_indicators;
 	} m_movement;
+
+	struct menu_t {
+		ADD_VARIABLE( c_color, m_accent, c_color( 129, 99, 251, 255 ) );
+	} m_menu;
 };
 
 inline variables_t variables = { };

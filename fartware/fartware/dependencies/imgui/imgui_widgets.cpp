@@ -728,10 +728,13 @@ bool ImGui::ButtonEx( const char* label, const ImVec2& size_arg, ImGuiButtonFlag
 	auto frame_animation = ImAnimationHelper( id + ImHashStr( "frame-animation" ), ImGui::GetIO( ).DeltaTime );
 	frame_animation.Update( pressed || held ? 4.f : -4.f, 1.f, 0.f, 1.f );
 
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	RenderFrame( bb.Min - ImVec2( 2.f, 2.f ), bb.Max + ImVec2( 2.f, 2.f ), ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f ), true,
 	             g.Style.FrameRounding );
 	RenderFrame( bb.Min - ImVec2( 2.f, 2.f ), bb.Max + ImVec2( 2.f, 2.f ),
-	             ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], 1.f * frame_animation.AnimationData->second ), true, g.Style.FrameRounding );
+	             ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.w, 1.f * frame_animation.AnimationData->second ), true,
+	             g.Style.FrameRounding );
 	window->DrawList->AddRect( bb.Min - ImVec2( 2.f, 2.f ), bb.Max + ImVec2( 2.f, 2.f ), ImColor( 50, 50, 50, 100 ), g.Style.FrameRounding );
 
 	if ( g.LogEnabled )
@@ -1042,6 +1045,8 @@ bool ImGui::ScrollbarEx( const ImRect& bb_frame, ImGuiID id, ImGuiAxis axis, ImS
 	ImAnimationHelper scrollbar_animation = ImAnimationHelper( ImHashStr( window->Name ), ImGui::GetIO( ).DeltaTime );
 	scrollbar_animation.Update( 3.5f, held ? 3.f : -3.f );
 
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	ImRect grab_rect;
 	if ( axis == ImGuiAxis_X )
 		grab_rect =
@@ -1051,7 +1056,8 @@ bool ImGui::ScrollbarEx( const ImRect& bb_frame, ImGuiID id, ImGuiAxis axis, ImS
 			ImRect( bb.Min.x, ImLerp( bb.Min.y, bb.Max.y, grab_v_norm ), bb.Max.x, ImLerp( bb.Min.y, bb.Max.y, grab_v_norm ) + grab_h_pixels );
 	window->DrawList->AddRectFilled( grab_rect.Min, grab_rect.Max,
 	                                 ImColor::Blend( ImColor( 51 / 255.f, 51 / 255.f, 51 / 255.f, 1.f ),
-	                                                 ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ), scrollbar_animation.AnimationData->second ),
+	                                                 ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ),
+	                                                 scrollbar_animation.AnimationData->second ),
 	                                 style.ScrollbarRounding );
 
 	return held;
@@ -1073,10 +1079,10 @@ void ImGui::Image( ImTextureID user_texture_id, const ImVec2& size, const ImVec2
 
 	if ( border_col.w > 0.0f ) {
 		window->DrawList->AddRect( bb.Min, bb.Max, GetColorU32( border_col ), 0.0f );
-		window->DrawList->AddImage( user_texture_id, bb.Min + ImVec2( 1, 1 ), bb.Max - ImVec2( 1, 1 ), uv0, uv1, GetColorU32( tint_col ) );
-	} else {
-		window->DrawList->AddImage( user_texture_id, bb.Min, bb.Max, uv0, uv1, GetColorU32( tint_col ) );
-	}
+		window->DrawList->AddImageRounded( user_texture_id, bb.Min + ImVec2( 1, 1 ), bb.Max - ImVec2( 1, 1 ), uv0, uv1, GetColorU32( tint_col ),
+		                                   3.f );
+	} else
+		window->DrawList->AddImageRounded( user_texture_id, bb.Min, bb.Max, uv0, uv1, GetColorU32( tint_col ), 3.f );
 }
 
 // ImageButton() is flawed as 'id' is always derived from 'texture_id' (see #2464 #1390)
@@ -1189,7 +1195,10 @@ bool ImGui::Checkbox( const char* label, bool* v )
 	if ( render_decorations )
 		RenderFrame( check_bb.Min, check_bb.Max, ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f ), true, style.FrameRounding );
 
-	RenderFrame( check_bb.Min, check_bb.Max, ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], 1.f * frame_animation.AnimationData->second ), true,
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
+	RenderFrame( check_bb.Min, check_bb.Max,
+	             ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z, 1.f * frame_animation.AnimationData->second ), true,
 	             style.FrameRounding );
 
 	window->DrawList->AddRect( check_bb.Min, check_bb.Max, ImColor( 50, 50, 50, 100 ), style.FrameRounding );
@@ -1715,7 +1724,9 @@ bool ImGui::BeginCombo( const char* label, const char* preview_value, ImGuiCombo
 
 		const ImVec2 arrow_draw_position = ImVec2( value_x2 + style.FramePadding.y - 20.f, frame_bb.Min.y + style.FramePadding.y );
 
-		RenderArrow( arrow_draw_position, ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
+		const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
+		RenderArrow( arrow_draw_position, ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
 	}
 
 	auto text_animation = ImAnimationHelper( id + ImHashStr( "text-animation" ), ImGui::GetIO( ).DeltaTime );
@@ -2006,9 +2017,12 @@ bool ImGui::Keybind( const char* label, key_bind_t* key_data, bool has_style )
 	auto text_animation = ImAnimationHelper( id + ImHashStr( "text-animation" ), ImGui::GetIO( ).DeltaTime );
 	text_animation.Update( 2.f, g.ActiveId == id ? 2.f : -2.f );
 
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	window->DrawList->AddText( frame_bb.Min,
 	                           ImColor::Blend( ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * 0.5f ),
-	                                           ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ), text_animation.AnimationData->second ),
+	                                           ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ),
+	                                           text_animation.AnimationData->second ),
 	                           buf_display );
 
 	return value_changed;
@@ -2115,6 +2129,8 @@ bool ImGui::CurveEditor( const char* label, Points_t* points, ImVec2 data[], int
 	points->PointB.x = ImClamp( points->PointB.x, 0.0f, 1.0f );
 	points->PointB.y = ImClamp( points->PointB.y, 0.0f, 1.0f );
 
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	// Draw the curve
 	for ( int i = 0; i < members; i++ ) {
 		const auto time = i / ( float )( members - 1 );
@@ -2133,7 +2149,8 @@ bool ImGui::CurveEditor( const char* label, Points_t* points, ImVec2 data[], int
 			const auto prev_point_position = ImVec2( frame_bb.Min.x + ( frame_bb.Max.x - frame_bb.Min.x ) * prev_pos.x,
 			                                         frame_bb.Min.y + ( frame_bb.Max.y - frame_bb.Min.y ) * ( 1.f + -prev_pos.y ) );
 
-			window->DrawList->AddLine( prev_point_position, point_position, ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ), 2.f );
+			window->DrawList->AddLine( prev_point_position, point_position,
+			                           ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ), 2.f );
 		}
 	}
 
@@ -3542,6 +3559,8 @@ bool ImGui::SliderScalar( const char* label, ImGuiDataType data_type, void* p_da
 	if ( value_changed )
 		MarkItemEdited( id );
 
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	static std::map< ImGuiID, float > old_value    = { };
 	static std::map< ImGuiID, float > active_value = { };
 
@@ -3572,7 +3591,7 @@ bool ImGui::SliderScalar( const char* label, ImGuiDataType data_type, void* p_da
 	// Render grab
 	if ( grab_bb.Max.x > grab_bb.Min.x )
 		window->DrawList->AddRectFilled( frame_bb.Min, ImVec2( frame_bb.Min.x + old_value_data->second, frame_bb.Max.y ),
-		                                 ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], 1.f ),
+		                                 ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z, 1.f ),
 		                                 old_value_data->second > 1.f ? g.Style.FrameRounding : 0.f );
 
 	char value_buf[ 64 ]      = { };
@@ -6988,9 +7007,11 @@ bool ImGui::Selectable( const char* label, bool selected, ImGuiSelectableFlags f
 
 	const ImColor text_color = GetColorU32( ImGuiCol_Text );
 
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	const ImVec4 blended_color = ImColor::Blend(
 		ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * hovered_text_animation.AnimationData->second ),
-		ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ), selected_text_animation.AnimationData->second );
+		ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ), selected_text_animation.AnimationData->second );
 
 	PushStyleColor( ImGuiCol_Text, blended_color );
 

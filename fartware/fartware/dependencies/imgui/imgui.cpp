@@ -3397,6 +3397,8 @@ const char* ImGui::GetStyleColorName( ImGuiCol idx )
 		return "NavWindowingDimBg";
 	case ImGuiCol_ModalWindowDimBg:
 		return "ModalWindowDimBg";
+	case ImGuiCol_Accent:
+		return "Accent";
 	}
 	IM_ASSERT( 0 );
 	return "Unknown";
@@ -5797,6 +5799,8 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 
 	const auto draw_position = child_window->Pos - ImVec2( 0.f, 20.f );
 
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	if ( show_text ) {
 		parent_window->DrawList->AddRectFilled(
 			draw_position, draw_position + ImVec2( child_window->Size.x, 20.f ), ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f ),
@@ -5825,7 +5829,7 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 			ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * text_animation.AnimationData->second ), name );
 
 		RenderFadedGradientLine( parent_window->DrawList, draw_position + ImVec2( 0.f, 20.f ), ImVec2( child_window->Size.x, 1.f ),
-		                         ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
+		                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
 	}
 
 	if ( border ) {
@@ -7329,7 +7333,7 @@ void ImGui::End( )
 
 	// Error checking: verify that user doesn't directly call End() on a child window.
 	/*if ( window->Flags & ImGuiWindowFlags_ChildWindow )
-		IM_ASSERT_USER_ERROR( g.WithinEndChild, "Must call EndChild() and not End()!" );*/
+	    IM_ASSERT_USER_ERROR( g.WithinEndChild, "Must call EndChild() and not End()!" );*/
 
 	// Close anything that is open
 	if ( window->DC.CurrentColumns )
@@ -14076,8 +14080,7 @@ void ImGui::DebugNodeDrawCmdShowMeshAndBoundingBox( ImDrawList* out_draw_list, c
 	if ( show_aabb ) {
 		out_draw_list->AddRect( ImFloor( clip_rect.Min ), ImFloor( clip_rect.Max ),
 		                        IM_COL32( 255, 0, 255, 255 ) ); // In pink: clipping rectangle submitted to GPU
-		out_draw_list->AddRect( ImFloor( vt_rect.Min ), ImFloor( vt_rect.Max ),
-		                        IM_COL32( 0, 255, 255, 255 ) ); // In cyan: bounding box of triangles
+		out_draw_list->AddRect( ImFloor( vt_rect.Min ), ImFloor( vt_rect.Max ), IM_COL32( 0, 255, 255, 255 ) ); // In cyan: bounding box of triangles
 	}
 	out_draw_list->Flags = backup_flags;
 }
