@@ -45,7 +45,7 @@ struct interfaces_t {
 	c_game_movement* m_game_movement           = nullptr;
 	void* m_engine_sound                       = nullptr;
 	c_mdl_cache* m_mdl_cache                   = nullptr;
-	c_engine_trace_client* m_engine_trace      = nullptr;
+	c_engine_trace* m_engine_trace             = nullptr;
 	c_model_render* m_model_render             = nullptr;
 	c_material_system* m_material_system       = nullptr;
 };

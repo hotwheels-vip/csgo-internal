@@ -124,8 +124,7 @@ void movement_t::on_create_move_post( )
 		if ( !can_jump_bug )
 			return;
 
-		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
-		{
+		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) ) {
 			static bool ducked = false;
 
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -136,9 +135,7 @@ void movement_t::on_create_move_post( )
 
 			if ( prediction.m_data.m_flags & e_flags::fl_onground && ducked )
 				ducked = false;
-		}
-		else
-		{
+		} else {
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
 
@@ -187,9 +184,7 @@ void movement_t::on_create_move_post( )
 		     movement.m_edgebug_data.m_will_edgebug || !( has_to_align( origin ) ) )
 			return;
 
-		c_game_trace trace, second_trace;
-		ray_t ray, second_ray;
-		c_trace_filter filter, second_filter;
+		c_game_trace trace{ }, second_trace{ };
 
 		struct {
 			c_vector start_pos;
@@ -209,24 +204,25 @@ void movement_t::on_create_move_post( )
 		align_info.start_pos = globals.m_local->abs_origin( );
 		align_info.end_pos   = align_info.start_pos + wish_direction;
 
-		ray.init( align_info.start_pos, align_info.end_pos );
+		ray_t ray( align_info.start_pos, align_info.end_pos );
 
-		filter.skip = globals.m_local;
+		c_trace_filter filter( globals.m_local );
 
 		// our wish direction trace
-		interfaces.m_engine_trace->trace_ray( ray, masks::MASK_PLAYERSOLID, &filter, &trace );
+		interfaces.m_engine_trace->trace_ray( ray, e_mask::mask_playersolid, &filter, &trace );
 
 		// if trace hit anything
-		if ( trace.fraction < 1.f && trace.plane.normal.m_z == 0.f ) {
+		if ( trace.m_fraction < 1.f && trace.m_plane.m_normal.m_z == 0.f ) {
 			// wall angles
-			c_vector angles = { trace.plane.normal.m_x * -16.005f, trace.plane.normal.m_y * -16.005f, 0.f };
+			c_vector angles = { trace.m_plane.m_normal.m_x * -16.005f, trace.m_plane.m_normal.m_y * -16.005f, 0.f };
 
 			// initialize our second trace
 			align_info.second_end_pos = align_info.start_pos + angles;
-			second_ray.init( align_info.start_pos, align_info.second_end_pos );
-			interfaces.m_engine_trace->trace_ray( second_ray, masks::MASK_PLAYERSOLID, &filter, &second_trace );
+			ray_t second_ray( align_info.start_pos, align_info.second_end_pos );
+			interfaces.m_engine_trace->trace_ray( second_ray, e_mask::mask_playersolid, &filter, &second_trace );
 
-			if ( trace.plane != second_trace.plane ) {
+			if ( trace.m_plane.m_normal.m_x != second_trace.m_plane.m_normal.m_x || trace.m_plane.m_normal.m_y != second_trace.m_plane.m_normal.m_y ||
+			     trace.m_plane.m_normal.m_z != second_trace.m_plane.m_normal.m_z ) {
 				c_vector angle_to_wall = mathematics.to_angle( angles );
 
 				align_info.velocity = std::hypotf( globals.m_local->velocity( ).m_x, globals.m_local->velocity( ).m_y );

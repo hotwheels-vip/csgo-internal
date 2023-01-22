@@ -74,8 +74,8 @@ bool interfaces_t::on_attach( )
 	if ( ( this->m_mdl_cache = this->find< c_mdl_cache >( memory.m_modules[ e_module_names::datacache ].m_value, ( "MDLCache" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_engine_trace =
-	           this->find< c_engine_trace_client >( memory.m_modules[ e_module_names::engine ].m_value, ( "EngineTraceClient" ) ) ) == nullptr )
+	if ( ( this->m_engine_trace = this->find< c_engine_trace >( memory.m_modules[ e_module_names::engine ].m_value, ( "EngineTraceClient" ) ) ) ==
+	     nullptr )
 		return false;
 
 	if ( ( this->m_model_render =

@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 
 #include "../../convars/convars.h"
 #include "../../includes.h"
