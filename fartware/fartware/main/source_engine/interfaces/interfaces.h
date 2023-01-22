@@ -7,6 +7,7 @@
 #include "../classes/c_convar.h"
 #include "../classes/c_engine.h"
 #include "../classes/c_engine_trace.h"
+#include "../classes/c_game_event_manager.h"
 #include "../classes/c_input_system.h"
 #include "../classes/c_localize.h"
 #include "../classes/c_material_system.h"
@@ -48,6 +49,7 @@ struct interfaces_t {
 	c_engine_trace* m_engine_trace             = nullptr;
 	c_model_render* m_model_render             = nullptr;
 	c_material_system* m_material_system       = nullptr;
+	c_game_event_manager2* m_game_event        = nullptr;
 };
 
 inline interfaces_t interfaces = { };

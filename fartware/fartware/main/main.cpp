@@ -7,6 +7,7 @@
 
 #include "features/misc/misc.h"
 #include "features/visuals/players/players.h"
+#include "utilities/event_listener/event_listener.h"
 
 #include <chrono>
 #include <thread>
@@ -71,6 +72,12 @@ static DWORD WINAPI on_attach( void* instance )
 		else
 			console.print( ( "initialised input" ) );
 
+		console.print( ( "initialising event listener" ) );
+		if ( !event_listener.on_attach( { "player_hurt", "player_death" } ) )
+			console.print( ( "failed to initialise event listener" ) );
+		else
+			console.print( ( "initialised input" ) );
+
 		console.print( ( "initialising hooks" ) );
 		if ( !hooks.on_attach( ) )
 			console.print( ( "failed to initialise hooks" ) );
@@ -101,12 +108,10 @@ static DWORD WINAPI on_attach( void* instance )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
 	[ & ]( ) {
+		event_listener.on_release( );
 		hooks.on_release( );
-
 		input.on_release( );
-
 		render.on_release( );
-
 		console.on_release( );
 	}( );
 

@@ -78,12 +78,17 @@ bool interfaces_t::on_attach( )
 	     nullptr )
 		return false;
 
-	if ( ( this->m_model_render =
-	           this->find< c_model_render >( memory.m_modules[ e_module_names::engine ].m_value, ( "VEngineModel" ) ) ) == nullptr )
+	if ( ( this->m_model_render = this->find< c_model_render >( memory.m_modules[ e_module_names::engine ].m_value, ( "VEngineModel" ) ) ) ==
+	     nullptr )
 		return false;
 
 	if ( ( this->m_material_system =
 	           this->find< c_material_system >( memory.m_modules[ e_module_names::materialsystem ].m_value, ( "VMaterialSystem" ) ) ) == nullptr )
+		return false;
+
+	if ( ( this->m_game_event =
+	           this->find< c_game_event_manager2 >( memory.m_modules[ e_module_names::engine ].m_value,
+	                                                                              ( "GAMEEVENTSMANAGER002" ) ) ) == nullptr )
 		return false;
 
 	/* TODO ~ float ~ snake_caseify this */
