@@ -32,6 +32,9 @@ void c_event_listener::fire_game_event( c_game_event* game_event )
 
 	const unsigned int hashed_event_name = fnv1a::hash( game_event->get_name( ) );
 
-	if ( hashed_event_name == fnv1a::hash_const( "player_death" ) )
-		console.print( "fart" );
+	/* what ever small example, self explanatory */
+	/*if ( hashed_event_name == fnv1a::hash_const( "player_death" ) ) {
+		const auto attacker =
+			interfaces.m_client_entity_list->get_client_entity( interfaces.m_engine->get_player_for_userid( game_event->get_int( "attacker" ) ) );
+	}*/
 }

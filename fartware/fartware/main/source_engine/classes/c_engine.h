@@ -55,6 +55,7 @@ class c_engine
 private:
 	enum e_indexes {
 		_get_player_info         = 8,
+		_get_player_for_userid   = 9,
 		_get_local_player        = 12,
 		_get_view_angles         = 18,
 		_set_view_angles         = 19,
@@ -75,6 +76,12 @@ public:
 	{
 		using fn = bool( __thiscall* )( c_engine* );
 		return ( *( fn** )this )[ this->e_indexes::_is_in_game ]( this );
+	}
+
+	int get_player_for_userid( int user_id )
+	{
+		using fn = int( __thiscall* )( c_engine*, int );
+		return ( *( fn** )this )[ this->e_indexes::_get_player_for_userid ]( this, user_id );
 	}
 
 	bool is_playing_demo( )
