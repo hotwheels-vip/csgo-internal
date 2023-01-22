@@ -309,6 +309,58 @@ void movement_t::on_create_move_post( )
 		}
 	}( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) );
 
+	// auto duck
+	[ & ]( ) {
+		/*bool did_land_ducking{ false }, did_land_standing{ false };
+		float ducking_vertical{ 0.f }, standing_vertical{ 0.f };
+		c_user_cmd* old_cmd = globals.m_cmd;
+
+		for ( int i = 0; i < 4; i++ ) {
+			if ( globals.m_local->flags( ) & e_flags::fl_onground )
+				break;
+
+			globals.m_cmd->m_buttons |= in_duck;
+
+			prediction.begin( globals.m_cmd );
+			prediction.end( );
+
+			if ( globals.m_local->flags( ) & e_flags::fl_onground ) {
+				did_land_ducking = true;
+				ducking_vertical = globals.m_local->origin( ).m_z;
+				break;
+			}
+		}
+
+		if ( !did_land_ducking )
+			return;
+
+		globals.m_cmd = old_cmd;
+
+		for ( int i = 0; i < 4; i++ ) {
+			if ( globals.m_local->flags( ) & e_flags::fl_onground )
+				break;
+
+			globals.m_cmd->m_buttons &= ~in_duck;
+
+			prediction.begin( globals.m_cmd );
+			prediction.end( );
+
+			if ( globals.m_local->flags( ) & e_flags::fl_onground ) {
+				did_land_standing = true;
+				standing_vertical = globals.m_local->origin( ).m_z;
+				break;
+			}
+		}
+
+		if ( did_land_ducking && did_land_standing )
+			if ( ducking_vertical > standing_vertical )
+				globals.m_cmd->m_buttons |= e_buttons::in_duck;
+			else if ( !did_land_ducking || did_land_standing )
+				globals.m_cmd = old_cmd;
+			else
+				globals.m_cmd->m_buttons |= e_buttons::in_duck;*/
+	}( );
+
 	// movement correction
 	[ & ]( ) {
 		c_vector forward = { }, right = { }, up = { };
