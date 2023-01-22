@@ -12,7 +12,6 @@ constexpr float max_health = 100.f;
 
 class c_model;
 
-
 class c_client_renderable
 {
 private:
@@ -62,7 +61,6 @@ private:
 		_set_sequence            = 219,
 		_pre_think               = 318,
 		_is_player               = 158,
-		_get_eye_position        = 169,
 		_studio_frame_advance    = 220,
 		_select_item             = 330,
 		_update_collision_bounds = 340
@@ -142,14 +140,9 @@ public:
 	void set_next_think( int think );
 	void set_abs_origin( const c_vector& origin );
 
-	[[nodiscard]] c_vector get_eye_position( )
+	c_vector eye_position( )
 	{
-		c_vector position = { };
-
-		using fn = void( __thiscall* )( c_base_entity*, c_vector );
-		( *( fn** )this )[ this->e_indexes::_get_eye_position ]( this, std::ref( position ) );
-
-		return position;
+		return origin( ) + view_offset( );
 	}
 
 	add_variable( int, health, "CBasePlayer->m_iHealth" );
@@ -160,7 +153,7 @@ public:
 	add_variable( bool, ducked, "CBasePlayer->m_bDucked" );
 	add_variable( c_vector, velocity, "CBasePlayer->m_vecVelocity[0]" );
 	add_variable( c_vector, view_offset, "CBasePlayer->m_vecViewOffset[0]" );
-	add_variable( c_vector, aim_punch_angle, "CBasePlayer->m_aimPunchAngle[0]" );
+	add_variable( c_angle, aim_punch_angle, "CBasePlayer->m_aimPunchAngle" );
 	add_pvariable( float, fall_velocity, "CBasePlayer->m_flFallVelocity" );
 	add_pvariable( int, next_think_tick, "CBasePlayer->m_nNextThinkTick" );
 
@@ -177,10 +170,6 @@ public:
 	int lookup_bone( const char* bone );
 
 	void get_bone_position( const int bone, c_vector& origin );
-
-	c_vector get_hitbox_position( const int hitbox, const matrix3x4a_t* matrix = nullptr );
-
-	bool can_see_player_hitbox( c_base_entity* target, const int hitbox );
 
 	/* CCSPlayer */
 	add_variable( int, money, "CCSPlayer->m_iAccount" );

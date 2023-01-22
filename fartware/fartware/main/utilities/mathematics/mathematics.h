@@ -9,11 +9,16 @@ struct mathematics_t {
 
 	c_vector vector_angle( const c_vector vector );
 
+	void vector_angles( const c_vector vector, c_angle& view );
+
 	c_vector to_angle( const c_vector& in );
+
+	c_angle calculate_angle( const c_vector& start, const c_vector& end );
 
 	void angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right = nullptr, c_vector* up = nullptr );
 
 	float normalize_yaw( float yaw );
+	float calculate_fov( const c_angle& view_point, const c_angle& aim_angle );
 
 	std::int32_t time_to_ticks( float time );
 

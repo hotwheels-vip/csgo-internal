@@ -1,5 +1,6 @@
 #include "../../convars/convars.h"
 #include "../../features/misc/misc.h"
+#include "../../features/aimbot/aimbot.h"
 #include "../../features/movement/movement.h"
 #include "../../features/prediction/prediction.h"
 #include "../hooks.h"
@@ -131,6 +132,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		prediction.end( );
 
 		movement.on_create_move_post( );
+		aimbot.on_create_move_post( );
 	}( );
 
 	globals.m_cmd->m_view_point.normalize( );
