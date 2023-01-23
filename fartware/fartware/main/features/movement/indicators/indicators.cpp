@@ -39,7 +39,7 @@ void indicators_t::on_paint_traverse( )
 		last_on_ground_stamina = false;
 	};
 
-	if ( !globals.m_local || !globals.m_local->is_alive( ) || !interfaces.m_engine->is_in_game( ) ) {
+	if ( !globals.m_local || !interfaces.m_engine->is_in_game( ) ) {
 		reset_data( );
 		return;
 	}

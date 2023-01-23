@@ -67,6 +67,16 @@ private:
 	};
 
 public:
+	enum obs_mode_t : int {
+		obs_mode_none = 0,
+		obs_mode_deathcam,
+		obs_mode_freezecam,
+		obs_mode_fixed,
+		obs_mode_in_eye,
+		obs_mode_chase,
+		obs_mode_roaming
+	};
+
 	data_map_t* data_desc_map( )
 	{
 		using fn = data_map_t*( __thiscall* )( c_base_entity* );
@@ -184,7 +194,7 @@ public:
 	add_variable( unsigned int, active_weapon_handle, "CBaseCombatCharacter->m_hActiveWeapon" );
 	add_pvariable( unsigned int, weapons_handle, "CBaseCombatCharacter->m_hMyWeapons" );
 	add_variable( unsigned int, get_observer_target_handle, "CBasePlayer->m_hObserverTarget" );
-
+	add_variable( int, get_observer_mode, "CBasePlayer->m_iObserverMode" );
 	/* CBaseCombatWeapon */
 	add_variable( float, next_primary_attack, "CBaseCombatWeapon->m_flNextPrimaryAttack" );
 	add_variable( float, next_secondary_attack, "CBaseCombatWeapon->m_flNextSecondaryAttack" );
