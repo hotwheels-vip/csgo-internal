@@ -446,6 +446,8 @@ void menu_t::on_end_scene( )
 
 				ImGui::Checkbox( "no crouch cooldown", &GET_CONFIG_BOOL( variables.m_movement.m_fast_duck ) );
 
+				ImGui::Checkbox( "auto duck", &GET_CONFIG_BOOL( variables.m_movement.m_autoduck ) );
+
 				ImGui::Checkbox( "auto align", &GET_CONFIG_BOOL( variables.m_movement.m_auto_align ) );
 
 				/*if ( ImGui::Button( "log test" ) )

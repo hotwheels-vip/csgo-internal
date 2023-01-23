@@ -143,6 +143,8 @@ struct variables_t {
 
 		ADD_VARIABLE( bool, m_fast_duck, false );
 
+		ADD_VARIABLE( bool, m_autoduck, false );
+
 		ADD_VARIABLE( bool, m_auto_align, false );
 
 		struct indicators_t {

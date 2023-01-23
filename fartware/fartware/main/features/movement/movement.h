@@ -39,8 +39,19 @@ struct movement_t {
 		bool m_predicted_succesful = false, m_in_pixel_surf = false, m_should_duck = false;
 		int m_prediction_ticks      = 0;
 		c_user_cmd* m_simulated_cmd = { };
+
 		void reset( );
 	} m_pixelsurf_data;
+
+	struct autoduck_data_t {
+		bool m_did_land_ducking  = false;
+		bool m_did_land_standing = false;
+
+		float m_ducking_vert  = 0.f;
+		float m_standing_vert = 0.f;
+
+		void reset( );
+	} m_autoduck_data;
 
 	void on_create_move_pre( );
 

@@ -9,5 +9,7 @@ void __fastcall n_detoured_functions::level_shutdown( void* thisptr )
 	entity_cache.on_level_shutdown( );
 	avatar_cache.on_level_shutdown( );
 
+	globals.m_local = nullptr;
+
 	hooks.level_shutdown.get_original< decltype( &n_detoured_functions::level_shutdown ) >( )( thisptr );
 }

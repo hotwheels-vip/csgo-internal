@@ -12,6 +12,7 @@ struct prediction_t {
 	struct prediction_data_t {
 		int m_flags         = { };
 		c_vector m_velocity = { };
+		c_vector m_origin   = { };
 	} m_data;
 
 	c_user_cmd* m_last_cmd  = nullptr;

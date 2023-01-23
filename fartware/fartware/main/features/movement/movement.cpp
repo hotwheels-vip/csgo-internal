@@ -4,6 +4,7 @@ void movement_t::on_create_move_pre( )
 {
 	prediction.m_data.m_flags    = globals.m_local->flags( );
 	prediction.m_data.m_velocity = globals.m_local->velocity( );
+	prediction.m_data.m_origin   = globals.m_local->abs_origin( );
 
 	// no crouch cooldown
 	[]( ) {
@@ -124,7 +125,8 @@ void movement_t::on_create_move_post( )
 		if ( !can_jump_bug )
 			return;
 
-		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) ) {
+		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
+		{
 			static bool ducked = false;
 
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -135,7 +137,9 @@ void movement_t::on_create_move_post( )
 
 			if ( prediction.m_data.m_flags & e_flags::fl_onground && ducked )
 				ducked = false;
-		} else {
+		}
+		else
+		{
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
 
@@ -310,56 +314,77 @@ void movement_t::on_create_move_post( )
 	}( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) );
 
 	// auto duck
-	[ & ]( ) {
-		/*bool did_land_ducking{ false }, did_land_standing{ false };
-		float ducking_vertical{ 0.f }, standing_vertical{ 0.f };
-		c_user_cmd* old_cmd = globals.m_cmd;
+	[ & ]( const bool can_auto_duck ) {
+		// i know this is a mess but its preventing it from ducking in useless ways.
 
-		for ( int i = 0; i < 4; i++ ) {
+		if ( !can_auto_duck || prediction.m_data.m_flags & e_flags::fl_onground || movement.m_edgebug_data.m_will_edgebug ||
+		     movement.m_pixelsurf_data.m_in_pixel_surf ||
+		     ( GET_CONFIG_BOOL( variables.m_movement.m_jump_bug ) &&
+		       input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) ) ) {
+			movement.m_autoduck_data.reset( );
+
+			return;
+		}
+
+		prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+		for ( int i = 0; i < 2; i++ ) {
 			if ( globals.m_local->flags( ) & e_flags::fl_onground )
 				break;
 
-			globals.m_cmd->m_buttons |= in_duck;
+			c_user_cmd* simulated_cmd = new c_user_cmd( *globals.m_cmd );
 
-			prediction.begin( globals.m_cmd );
+			simulated_cmd->m_buttons |= e_buttons::in_duck;
+
+			prediction.begin( simulated_cmd );
 			prediction.end( );
 
 			if ( globals.m_local->flags( ) & e_flags::fl_onground ) {
-				did_land_ducking = true;
-				ducking_vertical = globals.m_local->origin( ).m_z;
+				movement.m_autoduck_data.m_did_land_ducking = true;
+				movement.m_autoduck_data.m_ducking_vert     = globals.m_local->origin( ).m_z;
 				break;
 			}
+			delete simulated_cmd;
 		}
 
-		if ( !did_land_ducking )
+		prediction.begin( globals.m_cmd );
+		prediction.end( );
+
+		prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+		if ( !movement.m_autoduck_data.m_did_land_ducking )
 			return;
 
-		globals.m_cmd = old_cmd;
-
-		for ( int i = 0; i < 4; i++ ) {
+		for ( int i = 0; i < 2; i++ ) {
 			if ( globals.m_local->flags( ) & e_flags::fl_onground )
 				break;
 
-			globals.m_cmd->m_buttons &= ~in_duck;
+			c_user_cmd* simulated_cmd = new c_user_cmd( *globals.m_cmd );
 
-			prediction.begin( globals.m_cmd );
+			simulated_cmd->m_buttons &= ~e_buttons::in_duck;
+
+			prediction.begin( simulated_cmd );
 			prediction.end( );
 
 			if ( globals.m_local->flags( ) & e_flags::fl_onground ) {
-				did_land_standing = true;
-				standing_vertical = globals.m_local->origin( ).m_z;
+				movement.m_autoduck_data.m_did_land_standing = true;
+				movement.m_autoduck_data.m_standing_vert     = globals.m_local->origin( ).m_z;
 				break;
 			}
+			delete simulated_cmd;
 		}
 
-		if ( did_land_ducking && did_land_standing )
-			if ( ducking_vertical > standing_vertical )
+		prediction.begin( globals.m_cmd );
+		prediction.end( );
+
+		prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+		if ( movement.m_autoduck_data.m_did_land_ducking && movement.m_autoduck_data.m_did_land_standing ) {
+			if ( movement.m_autoduck_data.m_ducking_vert > movement.m_autoduck_data.m_standing_vert )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
-			else if ( !did_land_ducking || did_land_standing )
-				globals.m_cmd = old_cmd;
-			else
-				globals.m_cmd->m_buttons |= e_buttons::in_duck;*/
-	}( );
+		} else if ( movement.m_autoduck_data.m_did_land_ducking && !movement.m_autoduck_data.m_did_land_standing )
+			globals.m_cmd->m_buttons |= e_buttons::in_duck;
+	}( GET_CONFIG_BOOL( variables.m_movement.m_autoduck ) );
 
 	// movement correction
 	[ & ]( ) {
@@ -608,7 +633,8 @@ void movement_t::detect_edgebug( c_user_cmd* cmd )
 		m_edgebug_data.m_will_edgebug = false;
 		m_edgebug_data.m_will_fail    = true;
 	} else if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
-	            globals.m_local->velocity( ).m_z < -6.f && !( globals.m_local->flags( ) & fl_onground ) ) {
+	            globals.m_local->velocity( ).m_z < -6.f && !( globals.m_local->flags( ) & fl_onground ) &&
+	            prediction.m_data.m_origin.m_z > globals.m_local->abs_origin( ).m_z ) {
 		const float before_detection_pred = globals.m_local->velocity( ).m_z;
 		const auto gravity                = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
 
@@ -636,11 +662,19 @@ void movement_t::detect_edgebug( c_user_cmd* cmd )
 
 void movement_t::edgebug_data_t::reset( )
 {
-	this->m_edgebug_method = edgebug_type_t::eb_standing;
-	this->m_last_tick      = 0;
-	this->m_ticks_to_stop  = 0;
-	this->m_will_edgebug   = false;
-	this->m_will_fail      = false;
+	movement.m_edgebug_data.m_edgebug_method = edgebug_type_t::eb_standing;
+	movement.m_edgebug_data.m_last_tick      = 0;
+	movement.m_edgebug_data.m_ticks_to_stop  = 0;
+	movement.m_edgebug_data.m_will_edgebug   = false;
+	movement.m_edgebug_data.m_will_fail      = false;
+}
+
+void movement_t::autoduck_data_t::reset( )
+{
+	movement.m_autoduck_data.m_did_land_ducking  = false;
+	movement.m_autoduck_data.m_did_land_standing = false;
+	movement.m_autoduck_data.m_ducking_vert      = 0.f;
+	movement.m_autoduck_data.m_standing_vert     = 0.f;
 }
 
 void movement_t::pixelsurf_data_t::reset( )
