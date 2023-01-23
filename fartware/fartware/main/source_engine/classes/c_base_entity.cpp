@@ -5,6 +5,7 @@
 
 #include "../../memory/memory.h"
 #include "../enumerations/e_flags.h"
+#include "../enumerations/e_item_definition_index.h"
 
 #include <array>
 
@@ -54,6 +55,29 @@ bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
 	return true;
 }
 
+bool c_base_entity::can_shoot( )
+{
+	const float server_time = static_cast< int >( 0.5f + static_cast< float >( this->tick_base( ) ) / memory.m_globals->m_interval_per_tick );
+	if ( this->ammo( ) <= 0 )
+		return false;
+
+	if ( this->get_next_attack( ) > server_time )
+		return false;
+
+	const short definition_index = this->item_definition_index( );
+	if ( ( definition_index == e_item_definition_index::weapon_famas || definition_index == e_item_definition_index::weapon_glock ) &&
+	     this->is_burst_mode( ) && this->burst_shots_remaining( ) > 0 )
+		return true;
+
+	if ( this->next_primary_attack( ) > server_time )
+		return false;
+
+	if ( definition_index == e_item_definition_index::weapon_revolver && this->fire_ready_time( ) > server_time )
+		return false;
+
+	return true;
+}
+
 c_user_cmd& c_base_entity::last_command( )
 {
 	static const std::uintptr_t last_command_offset =
@@ -66,6 +90,22 @@ bool c_base_entity::physics_run_think( int think_method )
 	static auto original_physics_run_think = reinterpret_cast< bool( __thiscall* )( void*, int ) >(
 		memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87" ) ) );
 	return original_physics_run_think( this, think_method );
+}
+
+bool c_base_entity::is_visible( c_base_entity* entity, const c_vector& end_position )
+{
+	const c_vector start_position = this->eye_position( );
+
+	const ray_t ray( start_position, end_position );
+	c_trace_filter filter( this );
+
+	trace_t trace = { };
+	interfaces.m_engine_trace->trace_ray( ray, e_mask::mask_shot, &filter, &trace );
+
+	if ( ( trace.is_visible( ) || trace.m_hit_entity == entity ) )
+		return true;
+
+	return false;
 }
 
 void c_base_entity::set_next_think( int think )

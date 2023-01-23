@@ -143,8 +143,9 @@ public:
 	}
 
 	bool physics_run_think( int think_method );
-
+	bool is_visible( c_base_entity* entity, const c_vector& end_position );
 	bool get_bounding_box( bounding_box_t* bbox );
+	bool can_shoot( );
 	c_user_cmd& last_command( );
 	void post_think( );
 	void set_next_think( int think );
@@ -195,6 +196,15 @@ public:
 	add_pvariable( unsigned int, weapons_handle, "CBaseCombatCharacter->m_hMyWeapons" );
 	add_variable( unsigned int, get_observer_target_handle, "CBasePlayer->m_hObserverTarget" );
 	add_variable( int, get_observer_mode, "CBasePlayer->m_iObserverMode" );
+	add_variable( float, get_next_attack, "CBaseCombatCharacter->m_flNextAttack" );
+
+	/* CWeaponCSBase */
+	add_variable( bool, is_burst_mode, "CWeaponCSBase->m_bBurstMode" );
+	add_variable( float, fire_ready_time, "CWeaponCSBase->m_flPostponeFireReadyTime" );
+
+	/* CWeaponCSBaseGun */
+	add_variable( int, burst_shots_remaining, "CWeaponCSBaseGun->m_iBurstShotsRemaining" );
+
 	/* CBaseCombatWeapon */
 	add_variable( float, next_primary_attack, "CBaseCombatWeapon->m_flNextPrimaryAttack" );
 	add_variable( float, next_secondary_attack, "CBaseCombatWeapon->m_flNextSecondaryAttack" );
