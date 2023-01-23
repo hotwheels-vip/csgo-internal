@@ -55,28 +55,28 @@ bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
 	return true;
 }
 
-bool c_base_entity::can_shoot( )
-{
-	const float server_time = static_cast< int >( 0.5f + static_cast< float >( this->tick_base( ) ) / memory.m_globals->m_interval_per_tick );
-	if ( this->ammo( ) <= 0 )
-		return false;
-
-	if ( this->get_next_attack( ) > server_time )
-		return false;
-
-	const short definition_index = this->item_definition_index( );
-	if ( ( definition_index == e_item_definition_index::weapon_famas || definition_index == e_item_definition_index::weapon_glock ) &&
-	     this->is_burst_mode( ) && this->burst_shots_remaining( ) > 0 )
-		return true;
-
-	if ( this->next_primary_attack( ) > server_time )
-		return false;
-
-	if ( definition_index == e_item_definition_index::weapon_revolver && this->fire_ready_time( ) > server_time )
-		return false;
-
-	return true;
-}
+//bool c_base_entity::can_shoot( )
+//{
+//	const float server_time = static_cast< int >( 0.5f + static_cast< float >( this->tick_base( ) ) / memory.m_globals->m_interval_per_tick );
+//	if ( this->ammo( ) <= 0 )
+//		return false;
+//
+//	if ( this->get_next_attack( ) > server_time )
+//		return false;
+//
+//	const short definition_index = this->item_definition_index( );
+//	if ( ( definition_index == e_item_definition_index::weapon_famas || definition_index == e_item_definition_index::weapon_glock ) &&
+//	     this->is_burst_mode( ) && this->burst_shots_remaining( ) > 0 )
+//		return true;
+//
+//	if ( this->next_primary_attack( ) > server_time )
+//		return false;
+//
+//	if ( definition_index == e_item_definition_index::weapon_revolver && this->fire_ready_time( ) > server_time )
+//		return false;
+//
+//	return true;
+//}
 
 c_user_cmd& c_base_entity::last_command( )
 {

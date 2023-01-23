@@ -145,7 +145,7 @@ public:
 	bool physics_run_think( int think_method );
 	bool is_visible( c_base_entity* entity, const c_vector& end_position );
 	bool get_bounding_box( bounding_box_t* bbox );
-	bool can_shoot( );
+	/*bool can_shoot( );*/
 	c_user_cmd& last_command( );
 	void post_think( );
 	void set_next_think( int think );

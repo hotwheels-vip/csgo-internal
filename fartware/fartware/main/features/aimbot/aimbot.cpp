@@ -11,10 +11,8 @@ void aimbot_t::on_create_move_post( )
 	if ( !( globals.m_cmd->m_buttons & e_buttons::in_attack ) )
 		return;
 
-	float field_of_view      = 180.f;
-	const auto eye_position  = globals.m_local->eye_position( );
-	const auto active_weapon = reinterpret_cast< c_base_entity* >(
-		interfaces.m_client_entity_list->get_client_entity_from_handle( globals.m_local->active_weapon_handle( ) ) );
+	float field_of_view     = 180.f;
+	const auto eye_position = globals.m_local->eye_position( );
 
 	constexpr auto get_bone_index = [ & ]( c_base_entity* entity, const char* bone_name ) { return entity->lookup_bone( bone_name ); };
 
@@ -49,18 +47,23 @@ void aimbot_t::on_create_move_post( )
 	if ( !best_entity )
 		return;
 
-	if ( int head_bone_number = get_bone_index( best_entity, "head_0" ); head_bone_number != -1 && active_weapon && active_weapon->can_shoot( ) ) {
-		c_vector head_position{ };
-		best_entity->get_bone_position( head_bone_number, head_position );
+	if ( int head_bone_number = get_bone_index( best_entity, "head_0" ); head_bone_number != -1 ) {
+		/*if ( auto active_weapon = reinterpret_cast< c_base_entity* >(
+				 interfaces.m_client_entity_list->get_client_entity_from_handle( globals.m_local->active_weapon_handle( ) ) );
+		     active_weapon && active_weapon->can_shoot( ) ) {*/
 
-		c_angle delta = mathematics.calculate_angle( eye_position, head_position ) - globals.m_cmd->m_view_point;
+			c_vector head_position{ };
+			best_entity->get_bone_position( head_bone_number, head_position );
 
-		delta -= ( globals.m_local->aim_punch_angle( ) *
-		           convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) )->get_float( ) ); /* account for recoil */
+			c_angle delta = mathematics.calculate_angle( eye_position, head_position ) - globals.m_cmd->m_view_point;
 
-		delta.normalize( );
+			delta -= ( globals.m_local->aim_punch_angle( ) *
+			           convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) )->get_float( ) ); /* account for recoil */
 
-		globals.m_cmd->m_view_point += delta;
-		interfaces.m_engine->set_view_angles( globals.m_cmd->m_view_point );
+			delta.normalize( );
+
+			globals.m_cmd->m_view_point += delta;
+			interfaces.m_engine->set_view_angles( globals.m_cmd->m_view_point );
+		/*}*/
 	}
 }
