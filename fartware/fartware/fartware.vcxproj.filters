@@ -221,6 +221,7 @@
     <ClInclude Include="main\source_engine\classes\c_material_system.h" />
     <ClInclude Include="main\source_engine\classes\c_game_event_manager.h" />
     <ClInclude Include="main\utilities\event_listener\event_listener.h" />
+    <ClInclude Include="main\features\lagcomp\lagcomp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />
@@ -281,6 +282,7 @@
     <ClCompile Include="main\source_engine\classes\c_key_values.cpp" />
     <ClCompile Include="main\features\aimbot\aimbot.cpp" />
     <ClCompile Include="main\utilities\event_listener\event_listener.cpp" />
+    <ClCompile Include="main\features\lagcomp\lagcomp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />

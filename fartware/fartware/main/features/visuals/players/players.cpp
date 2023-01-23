@@ -447,43 +447,12 @@ void players_t::on_end_scene( )
 
 	std::vector< spectator_data_t > spectator_data{ };
 
-	if ( !globals.m_local || !GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) ) {
+	if ( !globals.m_local || !interfaces.m_engine->is_in_game( ) || !GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) ) {
 		if ( !spectator_data.empty( ) )
 			spectator_data.clear( );
 
 		return;
 	}
-
-	// entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
-	//	if ( !entity || entity->is_dormant( ) || entity->is_alive( ) )
-	//		return;
-
-	//	const auto observer_target = reinterpret_cast< c_base_entity* >(
-	//		interfaces.m_client_entity_list->get_client_entity_from_handle( entity->get_observer_target_handle( ) ) );
-	//	if ( observer_target != globals.m_local )
-	//		return;
-
-	//	const auto team  = entity->team( );
-	//	const auto index = entity->index( );
-
-	//	player_info_t player_info = { };
-	//	if ( !interfaces.m_engine->get_player_info( index, &player_info ) )
-	//		return;
-
-	//	if ( player_info.m_is_hltv )
-	//		return;
-
-	//	std::string converted_name = player_info.m_name;
-	//	if ( converted_name.length( ) > 24U )
-	//		converted_name = converted_name.substr( 0U, 24U ).append( ( "..." ) );
-
-	//	spectator_data.push_back( { converted_name,
-
-	//	                            player_info.m_fake_player ? team == 2 /* terrorist */           ? render.m_terrorist_avatar
-	//	                                                        : team == 3 /* counter terrorist */ ? render.m_counter_terrorist_avatar
-	//	                                                                                            : nullptr
-	//	                                                      : avatar_cache.find( index ) } );
-	//} );
 
 	entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
 		if ( !entity || entity->is_alive( ) || entity->is_dormant( ) )
@@ -523,6 +492,10 @@ void players_t::on_end_scene( )
 	constexpr auto title_text  = "spectators";
 	const auto title_text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 		render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
+
+	// TODO @ float :
+	//  add spectator list fade in/out when spectator_data isnt empty anymore,
+	//  i would do it but im scared to touch this code . sorry
 
 	if ( spectator_data.empty( ) )
 		return;

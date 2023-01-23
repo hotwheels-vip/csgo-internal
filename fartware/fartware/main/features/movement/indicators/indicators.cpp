@@ -39,7 +39,7 @@ void indicators_t::on_paint_traverse( )
 		last_on_ground_stamina = false;
 	};
 
-	if ( !globals.m_local || !globals.m_local->is_alive( ) ) {
+	if ( !globals.m_local || !globals.m_local->is_alive( ) || !interfaces.m_engine->is_in_game( ) ) {
 		reset_data( );
 		return;
 	}
@@ -76,8 +76,7 @@ void indicators_t::on_paint_traverse( )
 		const bool should_draw_take_off = ( !on_ground || ( take_off_time_velocity > memory.m_globals->m_current_time ) ) &&
 		                                  ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator_show_pre_speed ) );
 
-		const std::string text =
-			 std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
+		const std::string text = std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, take_off_velocity ) );
 
 		const auto text_size = render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
 			render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );

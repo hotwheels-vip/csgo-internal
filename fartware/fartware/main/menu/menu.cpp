@@ -52,7 +52,7 @@ void menu_t::on_end_scene( )
 
 			/* render gradient */
 			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + background_height - 1.f ), ImVec2( size.x, 1.f ),
-			                         ImGui::GetColorU32(ImGuiCol_::ImGuiCol_Accent) );
+			                         ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ) );
 
 			const auto title_text      = ( "hotwheels" );
 			const auto title_text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
@@ -195,17 +195,6 @@ void menu_t::on_end_scene( )
 					                   color_picker_alpha_flags );
 					ImGui::SliderFloat( "arrows size", &GET_CONFIG_FLOAT( variables.m_visuals.m_out_of_fov_arrows_size ), 0.1f, 50.f, "%.1f px" );
 					ImGui::SliderInt( "arrows distance", &GET_CONFIG_INT( variables.m_visuals.m_out_of_fov_arrows_distance ), 10, 500, "%d px" );
-				}
-
-				ImGui::Checkbox( "spectator list", &GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) );
-				if ( GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) ) {
-					ImGui::ColorEdit4( ( "##spectator list text color one" ), &GET_CONFIG_COLOR( variables.m_visuals.m_spectators_list_text_color_one ),
-					                   color_picker_alpha_flags );
-
-					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
-
-					ImGui::ColorEdit4( ( "##spectator list text color two" ), &GET_CONFIG_COLOR( variables.m_visuals.m_spectators_list_text_color_two ),
-					                   color_picker_alpha_flags );
 				}
 
 				ImGui::EndChild( );
@@ -568,7 +557,26 @@ void menu_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "game" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+				// SPECTATOR LIST SHOULD BE HERE. FUCK YOU FLOAT
 
+				ImGui::Checkbox( "spectator list", &GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) );
+				if ( GET_CONFIG_BOOL( variables.m_visuals.m_spectators_list ) ) {
+					ImGui::ColorEdit4( ( "##spectator list text color one" ),
+					                   &GET_CONFIG_COLOR( variables.m_visuals.m_spectators_list_text_color_one ), color_picker_alpha_flags );
+
+					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+					ImGui::ColorEdit4( ( "##spectator list text color two" ),
+					                   &GET_CONFIG_COLOR( variables.m_visuals.m_spectators_list_text_color_two ), color_picker_alpha_flags );
+				}
+
+				ImGui::Checkbox( "practice window", &GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) );
+				if ( GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) ) {
+					ImGui::Text( "practice checkpoint key" );
+					ImGui::Keybind( "practice checkpoint key", &GET_CONFIG_BIND( variables.m_misc.m_practice_cp_key ) );
+					ImGui::Text( "practice teleport key" );
+					ImGui::Keybind( "practice teleport key", &GET_CONFIG_BIND( variables.m_misc.m_practice_tp_key ) );
+				}
 				ImGui::EndChild( );
 			}
 
@@ -627,11 +635,10 @@ void menu_t::on_end_scene( )
 				if ( ImGui::Button( ( "refresh" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
 					config.refresh( );
 
-				 ImGui::SetCursorPosX( ImGui::GetCursorPos().x + 17.f);
+				ImGui::SetCursorPosX( ImGui::GetCursorPos( ).x + 17.f );
 				ImGui::Text( "accent color" );
 
-				ImGui::ColorEdit4( ( "##accent color" ), &GET_CONFIG_COLOR( variables.m_menu.m_accent ),
-				                   color_picker_no_alpha_flags );
+				ImGui::ColorEdit4( ( "##accent color" ), &GET_CONFIG_COLOR( variables.m_menu.m_accent ), color_picker_no_alpha_flags );
 
 				ImGui::EndChild( );
 			}

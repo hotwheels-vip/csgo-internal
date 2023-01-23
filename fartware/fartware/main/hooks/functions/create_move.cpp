@@ -1,6 +1,6 @@
 #include "../../convars/convars.h"
-#include "../../features/misc/misc.h"
 #include "../../features/aimbot/aimbot.h"
+#include "../../features/misc/misc.h"
 #include "../../features/movement/movement.h"
 #include "../../features/prediction/prediction.h"
 #include "../hooks.h"
@@ -126,6 +126,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			return;
 		}
 
+		misc.on_create_move_pre( );
 		movement.on_create_move_pre( );
 
 		prediction.begin( globals.m_cmd );

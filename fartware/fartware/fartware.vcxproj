@@ -123,6 +123,7 @@
     <ClInclude Include="main\features\aimbot\aimbot.h" />
     <ClInclude Include="main\features\entities\avatars.h" />
     <ClInclude Include="main\features\entities\entities.h" />
+    <ClInclude Include="main\features\lagcomp\lagcomp.h" />
     <ClInclude Include="main\features\misc\misc.h" />
     <ClInclude Include="main\features\movement\indicators\indicators.h" />
     <ClInclude Include="main\features\movement\movement.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="main\features\aimbot\aimbot.cpp" />
     <ClCompile Include="main\features\entities\avatars.cpp" />
     <ClCompile Include="main\features\entities\entities.cpp" />
+    <ClCompile Include="main\features\lagcomp\lagcomp.cpp" />
     <ClCompile Include="main\features\misc\misc.cpp" />
     <ClCompile Include="main\features\movement\indicators\indicators.cpp" />
     <ClCompile Include="main\features\movement\movement.cpp" />
