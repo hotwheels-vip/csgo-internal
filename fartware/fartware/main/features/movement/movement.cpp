@@ -254,7 +254,7 @@ void movement_t::on_create_move_post( )
 	}( );
 
 	// pixelsurf (logic)
-	const float target_ps_velocity = gravity * 0.5f * memory.m_globals->m_interval_per_tick; /* NOTE ~ should work for edge bug too. */
+	const float target_ps_velocity = gravity * 0.5f * memory.m_globals->m_interval_per_tick;
 	[ & ]( bool can_pixelsurf ) {
 		if ( can_pixelsurf ) {
 			if ( movement.m_pixelsurf_data.m_in_pixel_surf || globals.m_local->flags( ) & e_flags::fl_onground ||
@@ -307,10 +307,8 @@ void movement_t::on_create_move_post( )
 				}
 			}
 
-		} else {
+		} else
 			movement.m_pixelsurf_data.reset( );
-			return;
-		}
 	}( GET_CONFIG_BOOL( variables.m_movement.m_pixel_surf ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_pixel_surf_key ) ) );
 
 	// auto duck

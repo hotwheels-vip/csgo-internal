@@ -124,6 +124,8 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		if ( !globals.m_local || !globals.m_local->is_alive( ) || !globals.m_cmd ||
 		     globals.m_local->get_observer_mode( ) == c_base_entity::obs_mode_t::obs_mode_deathcam ) {
 			movement.m_edgebug_data.reset( );
+			movement.m_pixelsurf_data.reset( );
+			movement.m_autoduck_data.reset( );
 			return;
 		}
 
