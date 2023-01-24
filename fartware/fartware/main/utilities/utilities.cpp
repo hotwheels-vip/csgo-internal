@@ -62,6 +62,14 @@ void* utilities_t::get_export_address( const void* module_handle, const std::str
 	return nullptr;
 }
 
+const int utilities_t::get_fps( )
+{
+	static auto float_fps = 1.0f;
+	float_fps             = 0.9f * float_fps + 0.1f * memory.m_globals->m_abs_frame_time;
+
+	return float_fps != 0.0f ? static_cast< int >( 1 / float_fps ) : 0;
+}
+
 const char8_t* utilities_t::get_weapon_icon( short item_definition_index )
 {
 	switch ( item_definition_index ) {

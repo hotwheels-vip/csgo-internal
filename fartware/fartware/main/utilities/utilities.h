@@ -29,6 +29,8 @@ struct utilities_t {
 	}
 
 	const char8_t* get_weapon_icon( short item_definition_index );
+
+	const int get_fps( );
 };
 
 inline utilities_t utilities = { };

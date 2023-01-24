@@ -4,6 +4,7 @@
 
 void misc_t::on_end_scene( )
 {
+	// practice window
 	[ & ]( const bool can_draw_practice_window ) {
 		// TODO: add a is in valve server check(aka in mm game check) and dont even display anything
 
@@ -16,7 +17,7 @@ void misc_t::on_end_scene( )
 		const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
 		constexpr auto background_height = 25.f;
-		constexpr auto title_text        = " practice ";
+		constexpr auto title_text        = "practice";
 		const auto title_text_size       = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 				  render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
 
@@ -78,9 +79,6 @@ void misc_t::on_create_move_pre( )
 {
 	[ & ]( const bool can_run_practice_window ) {
 		if ( !can_run_practice_window )
-			return;
-
-		if ( !globals.m_local || !globals.m_local->is_alive( ) || !interfaces.m_engine->is_in_game( ) )
 			return;
 
 		if ( !convars.find( fnv1a::hash_const( "sv_cheats" ) )->get_bool( ) )
