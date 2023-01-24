@@ -82,24 +82,24 @@ struct hooks_t {
 	}
 
 	c_detour_hook alloc_key_values_memory = { };
-	// c_detour_hook create_move             = { };
-	c_detour_hook create_move_proxy     = { };
-	c_detour_hook frame_stage_notify    = { };
-	c_detour_hook on_add_entity         = { };
-	c_detour_hook on_remove_entity      = { };
-	c_detour_hook level_init_pre_entity = { };
-	c_detour_hook level_shutdown        = { };
-	c_detour_hook paint_traverse        = { };
-	c_detour_hook lock_cursor           = { };
-	c_detour_hook reset                 = { };
-	c_detour_hook end_scene             = { };
-	c_detour_hook draw_print_text       = { };
-	c_detour_hook vsnprintf             = { };
-	c_detour_hook emit_sound            = { };
-	c_detour_hook override_mouse_input  = { };
-	c_detour_hook modify_eye_position   = { };
-	c_detour_hook draw_set_color        = { };
-	c_detour_hook draw_model_execute    = { };
+	c_detour_hook create_move_proxy       = { };
+	c_detour_hook frame_stage_notify      = { };
+	c_detour_hook on_add_entity           = { };
+	c_detour_hook on_remove_entity        = { };
+	c_detour_hook level_init_pre_entity   = { };
+	c_detour_hook level_shutdown          = { };
+	c_detour_hook paint_traverse          = { };
+	c_detour_hook lock_cursor             = { };
+	c_detour_hook reset                   = { };
+	c_detour_hook end_scene               = { };
+	c_detour_hook draw_print_text         = { };
+	c_detour_hook vsnprintf               = { };
+	c_detour_hook emit_sound              = { };
+	c_detour_hook override_mouse_input    = { };
+	c_detour_hook modify_eye_position     = { };
+	c_detour_hook draw_set_color          = { };
+	c_detour_hook draw_model_execute      = { };
+	c_detour_hook glow_effect_spectator   = { };
 };
 
 inline hooks_t hooks = { };
@@ -127,6 +127,7 @@ namespace n_detoured_functions
 	void __fastcall modify_eye_position( c_anim_state* anim_state, void* edx, c_vector& input_eye_pos );
 	void __stdcall draw_set_color( int r, int g, int b, int a );
 	void __fastcall draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info, matrix3x4_t* bone_to_world );
-
+	bool __cdecl glow_effect_spectator( c_base_entity* player, c_base_entity* local, glow_style_t& style, c_vector& glow_color, float& alpha_start,
+	                                    float& alpha, float& time_start, float& time_target, bool& animate );
 	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );
 } // namespace n_detoured_functions

@@ -11,7 +11,7 @@ void aimbot_t::on_create_move_post( )
 	if ( !( globals.m_cmd->m_buttons & e_buttons::in_attack ) )
 		return;
 
-	float field_of_view     = 180.f;
+	float field_of_view     = 20.f;
 	const auto eye_position = globals.m_local->eye_position( );
 
 	constexpr auto get_bone_index = [ & ]( c_base_entity* entity, const char* bone_name ) { return entity->lookup_bone( bone_name ); };

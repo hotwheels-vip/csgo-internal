@@ -394,6 +394,9 @@ void menu_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+				// TODO add vis and invis colors
+				ImGui::Checkbox( "player glow", &GET_CONFIG_BOOL( variables.m_visuals.m_glow_enable ) );
+				ImGui::ColorEdit4( "##player glow color", &GET_CONFIG_COLOR( variables.m_visuals.m_glow_color ), color_picker_alpha_flags );
 				ImGui::EndChild( );
 			}
 

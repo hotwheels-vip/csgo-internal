@@ -12,6 +12,14 @@ constexpr float max_health = 100.f;
 
 class c_model;
 
+enum glow_style_t : std::int32_t {
+	glow_style_default = 0,
+	glow_style_rim_3d,
+	glow_style_edge_highlight,
+	glow_style_edge_highlight_pulse,
+	glow_style_count
+};
+
 class c_client_renderable
 {
 private:

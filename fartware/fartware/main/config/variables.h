@@ -90,6 +90,8 @@ struct variables_t {
 		ADD_VARIABLE( c_color, m_spectators_list_text_color_one, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_spectators_list_text_color_two, c_color( 255, 255, 255, 255 ) );
 
+		ADD_VARIABLE( bool, m_glow_enable, false );
+		ADD_VARIABLE( c_color, m_glow_color, c_color( 255, 255, 255, 180 ) );
 		/* chams settings */
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_one,
 		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false,

@@ -283,6 +283,7 @@
     <ClCompile Include="main\features\aimbot\aimbot.cpp" />
     <ClCompile Include="main\utilities\event_listener\event_listener.cpp" />
     <ClCompile Include="main\features\lagcomp\lagcomp.cpp" />
+    <ClCompile Include="main\hooks\functions\glow_effect_spectator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />
