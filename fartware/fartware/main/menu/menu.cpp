@@ -649,7 +649,7 @@ void menu_t::on_end_scene( )
 				ImGui::Text( "accent color" );
 
 				ImGui::ColorEdit4( ( "##accent color" ), &GET_CONFIG_COLOR( variables.m_menu.m_accent ), color_picker_no_alpha_flags );
-
+				ImGui::Checkbox( "watermark", &GET_CONFIG_BOOL( variables.m_menu.m_watermark ) );
 				ImGui::EndChild( );
 			}
 			break;

@@ -3,6 +3,61 @@
 #include "../../source_engine/enumerations/e_flags.h"
 #include "../../source_engine/enumerations/e_item_definition_index.h"
 
+void misc_t::on_paint_traverse( )
+{
+	if ( !render.m_initialised )
+		return;
+	// watermark
+	[ & ]( const bool can_draw_watermark ) {
+		if ( !can_draw_watermark )
+			return;
+
+		// variable spam yippie (TODO: clean this)
+
+		const ImColor white        = ImColor( 1.f, 1.f, 1.f, 1.f );
+		const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+		const ImColor grey         = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_TextDisabled );
+		const ImColor black        = ImColor( 0.f, 0.f, 0.f, 1.f );
+
+		const auto font = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ];
+
+		constexpr auto render_text = [ & ]( const c_vector_2d& pos, const std::string text, ImColor color ) {
+			render.m_draw_data.emplace_back(
+				e_draw_type::draw_type_text,
+				std::make_any< text_draw_object_t >( font, pos, text, color, black, e_text_render_flags::text_render_flag_dropshadow ) );
+		};
+
+		const int fps_text_size = font->CalcTextSizeA( font->FontSize, FLT_MAX, 0.f, "fps" ).x + 5;
+
+		static float frame_rate_f       = 1.0f;
+		frame_rate_f                    = ( 0.9f * frame_rate_f ) + ( 0.1f * memory.m_globals->m_abs_frame_time );
+		const std::string fps_number    = std::to_string( frame_rate_f != 0.0f ? static_cast< int >( 1 / frame_rate_f ) : 0 );
+		const auto fps_number_text_size = font->CalcTextSizeA( font->FontSize, FLT_MAX, 0.f, fps_number.c_str( ) );
+
+		const auto vip_text_size       = font->CalcTextSizeA( font->FontSize, FLT_MAX, 0.f, ".vip" );
+		const auto hotwheels_text_size = font->CalcTextSizeA( font->FontSize, FLT_MAX, 0.f, "hotwheels" );
+
+		render.m_draw_data.emplace_back(
+			e_draw_type::draw_type_rect,
+			std::make_any< rect_draw_object_t >(
+				c_vector_2d( globals.m_display_size.x - fps_text_size - 61 - vip_text_size.x - hotwheels_text_size.x, 10 ),
+				c_vector_2d( globals.m_display_size.x - fps_text_size + 5, 33 ), ImColor( .09f, .09f, .09f, 1.f ), ImColor( 0.f, 0.f, 0.f, 1.f ),
+				true, 2.f ) );
+
+		render_text( c_vector_2d( globals.m_display_size.x - fps_text_size - 15, 15 ), "fps", grey );
+
+		render_text( c_vector_2d( globals.m_display_size.x - fps_text_size - 38, 15 ), fps_number, white );
+
+		render.m_draw_data.emplace_back( e_draw_type::draw_type_line,
+		                                 std::make_any< line_object_t >( ImVec2( globals.m_display_size.x - fps_text_size - 42, 12 ),
+		                                                                 ImVec2( globals.m_display_size.x - fps_text_size - 42, 28 ),
+		                                                                 ImColor( 1.f, 1.f, 1.f, 0.1f ), 1.f ) );
+		render_text( c_vector_2d( globals.m_display_size.x - fps_text_size - 50 - vip_text_size.x, 15 ), ".vip", accent_color );
+
+		render_text( c_vector_2d( globals.m_display_size.x - fps_text_size - 51 - vip_text_size.x - hotwheels_text_size.x, 15 ), "hotwheels", white );
+	}( GET_CONFIG_BOOL( variables.m_menu.m_watermark ) );
+}
+
 void misc_t::on_end_scene( )
 {
 	// functions that require player to be ingame

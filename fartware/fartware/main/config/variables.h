@@ -190,6 +190,7 @@ struct variables_t {
 
 	struct menu_t {
 		ADD_VARIABLE( c_color, m_accent, c_color( 129, 99, 251, 255 ) );
+		ADD_VARIABLE( bool, m_watermark, true );
 	} m_menu;
 };
 

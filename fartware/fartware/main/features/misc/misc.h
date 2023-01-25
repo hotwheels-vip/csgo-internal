@@ -10,6 +10,8 @@ struct misc_t {
 		c_vector saved_position;
 	} practice;
 
+	void on_paint_traverse( );
+
 	void on_end_scene( );
 	void on_create_move_pre( );
 };

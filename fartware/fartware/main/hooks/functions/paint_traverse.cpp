@@ -33,8 +33,12 @@ void __fastcall n_detoured_functions::paint_traverse( c_surface* thisptr, int ed
 		render.clear_draw_data( );
 
 		players.on_paint_traverse( );
+
 		indicators.on_paint_traverse( );
+
 		g_log.on_paint_traverse( );
+
+		misc.on_paint_traverse( );
 
 		render.swap_draw_data( );
 	}
