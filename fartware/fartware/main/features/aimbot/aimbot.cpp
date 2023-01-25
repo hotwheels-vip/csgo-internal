@@ -1,14 +1,44 @@
 #include "aimbot.h"
+
 #include "../../convars/convars.h"
+
 #include "../../globals.h"
+
+#include "../../source_engine/enumerations/e_item_definition_index.h"
 #include "../../source_engine/interfaces/interfaces.h"
+
 #include "../../utilities/mathematics/mathematics.h"
+#include "../../utilities/utilities.h"
+
 #include "../entities/entities.h"
+
+bool aimbot_t::is_weapon_valid( )
+{
+	auto weapon_handle = globals.m_local->active_weapon_handle( );
+	if ( !weapon_handle )
+		return false;
+
+	const auto active_weapon = reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity_from_handle( weapon_handle ) );
+
+	if ( !active_weapon )
+		return false;
+
+	auto definition_index = active_weapon->item_definition_index( );
+
+	// fuck you im not checking these manually
+
+	const bool misc = definition_index >= 41 && definition_index <= 59;
+
+	return definition_index > 0 && !misc && !( definition_index >= 68 );
+}
 
 /* AM VERY SORRY */
 void aimbot_t::on_create_move_post( )
 {
 	if ( !( globals.m_cmd->m_buttons & e_buttons::in_attack ) )
+		return;
+
+	if ( !is_weapon_valid( ) )
 		return;
 
 	float field_of_view     = 20.f;
@@ -49,21 +79,24 @@ void aimbot_t::on_create_move_post( )
 
 	if ( int head_bone_number = get_bone_index( best_entity, "head_0" ); head_bone_number != -1 ) {
 		/*if ( auto active_weapon = reinterpret_cast< c_base_entity* >(
-				 interfaces.m_client_entity_list->get_client_entity_from_handle( globals.m_local->active_weapon_handle( ) ) );
+		         interfaces.m_client_entity_list->get_client_entity_from_handle( globals.m_local->active_weapon_handle( ) ) );
 		     active_weapon && active_weapon->can_shoot( ) ) {*/
 
-			c_vector head_position{ };
-			best_entity->get_bone_position( head_bone_number, head_position );
+		c_vector head_position{ };
+		best_entity->get_bone_position( head_bone_number, head_position );
 
-			c_angle delta = mathematics.calculate_angle( eye_position, head_position ) - globals.m_cmd->m_view_point;
+		if ( !globals.m_local->is_visible( best_entity, head_position ) )
+			return;
 
-			delta -= ( globals.m_local->aim_punch_angle( ) *
-			           convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) )->get_float( ) ); /* account for recoil */
+		c_angle delta = mathematics.calculate_angle( eye_position, head_position ) - globals.m_cmd->m_view_point;
 
-			delta.normalize( );
+		delta -= ( globals.m_local->aim_punch_angle( ) *
+		           convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) )->get_float( ) ); /* account for recoil */
 
-			globals.m_cmd->m_view_point += delta;
-			interfaces.m_engine->set_view_angles( globals.m_cmd->m_view_point );
+		delta.normalize( );
+
+		globals.m_cmd->m_view_point += delta;
+		interfaces.m_engine->set_view_angles( globals.m_cmd->m_view_point );
 		/*}*/
 	}
 }
