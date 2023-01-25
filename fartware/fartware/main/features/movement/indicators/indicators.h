@@ -9,8 +9,8 @@ struct indicators_t {
 	};
 	struct detection_data {
 		void reset( );
-		static bool m_jumpbugged;
-		static bool m_edgebugged;
+		bool m_jumpbugged{ };
+		bool m_edgebugged{ };
 	} detection;
 
 	void on_paint_traverse( );
