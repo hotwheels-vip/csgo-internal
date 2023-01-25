@@ -397,7 +397,7 @@ void indicators_t::on_paint_traverse( )
 				e_draw_type::draw_type_rect,
 				std::make_any< rect_draw_object_t >( c_vector_2d( globals.m_display_size.x / 2 - 1, globals.m_display_size.y / 2 - 1 ),
 			                                         c_vector_2d( globals.m_display_size.x / 2 + 1, globals.m_display_size.y / 2 + 1 ),
-			                                         ImColor( 1.f, 1.f, 1.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 0.f ) ) );
+			                                         ImColor( 1.f, 1.f, 1.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 0.f ), true, 0.f, 0, 2.f ) );
 		}
 	}( GET_CONFIG_BOOL( variables.m_visuals.m_sniper_crosshair ) );
 }
