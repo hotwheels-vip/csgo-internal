@@ -2,7 +2,9 @@
 #include "../../../../dependencies/imgui/imgui.h"
 #include "../../../convars/convars.h"
 #include "../../../includes.h"
+#include "../../../logging/logging.h"
 #include "../../../source_engine/enumerations/e_flags.h"
+#include "../../../source_engine/enumerations/e_item_definition_index.h"
 #include "../../../source_engine/enumerations/e_move_types.h"
 #include "../../prediction/prediction.h"
 #include "../movement.h"
@@ -63,8 +65,8 @@ void indicators_t::on_create_move_post( )
 					prediction.begin( globals.m_cmd );
 					prediction.end( );
 
-					float own_prediction   = round( ( -gravity * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
-					float rounded_velocity = round( globals.m_local->velocity( ).m_z );
+					float own_prediction   = roundf( ( -gravity * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
+					float rounded_velocity = roundf( globals.m_local->velocity( ).m_z );
 
 					if ( own_prediction == rounded_velocity ) {
 						indicators.detection.m_edgebugged = true;
@@ -77,7 +79,8 @@ void indicators_t::on_create_move_post( )
 					prediction.begin( globals.m_cmd );
 					prediction.end( );
 				}
-			}
+			} else
+				indicators.detection.m_edgebugged = false;
 		}( );
 
 		[]( ) {
@@ -181,13 +184,13 @@ void indicators_t::on_paint_traverse( )
 				if ( jumpbugged )
 					render.m_draw_data.emplace_back(
 						e_draw_type::draw_type_text,
-						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 25 ),
+						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 5 ),
 					                                         "jb", cur_color, cur_color_outline, e_text_render_flags::text_render_flag_dropshadow ) );
 
 				if ( edgebugged )
 					render.m_draw_data.emplace_back(
 						e_draw_type::draw_type_text,
-						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 25 ),
+						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 5 ),
 					                                         "eb", cur_color, cur_color_outline, e_text_render_flags::text_render_flag_dropshadow ) );
 			}
 		}
@@ -367,6 +370,36 @@ void indicators_t::on_paint_traverse( )
 			render_indicator( "jb", GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) );
 	}( );
+
+	// sniper crosshair
+	[ & ]( const bool can_draw_sniper_xhair ) {
+		if ( !can_draw_sniper_xhair )
+			return;
+
+		if ( !globals.m_local->is_alive( ) )
+			return;
+
+		auto weapon_handle = globals.m_local->active_weapon_handle( );
+		if ( !weapon_handle )
+			return;
+
+		const auto active_weapon =
+			reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity_from_handle( weapon_handle ) );
+
+		if ( !active_weapon )
+			return;
+
+		auto definition_index = active_weapon->item_definition_index( );
+
+		if ( utilities.is_in< short >( definition_index, { e_item_definition_index::weapon_awp, e_item_definition_index::weapon_ssg08,
+		                                                   e_item_definition_index::weapon_scar20, e_item_definition_index::weapon_g3sg1 } ) ) {
+			render.m_draw_data.emplace_back(
+				e_draw_type::draw_type_rect,
+				std::make_any< rect_draw_object_t >( c_vector_2d( globals.m_display_size.x / 2 - 1, globals.m_display_size.y / 2 - 1 ),
+			                                         c_vector_2d( globals.m_display_size.x / 2 + 1, globals.m_display_size.y / 2 + 1 ),
+			                                         ImColor( 1.f, 1.f, 1.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 0.f ) ) );
+		}
+	}( GET_CONFIG_BOOL( variables.m_visuals.m_sniper_crosshair ) );
 }
 
 void indicators_t::detection_data::reset( )
