@@ -90,6 +90,8 @@ struct variables_t {
 		ADD_VARIABLE( c_color, m_spectators_list_text_color_one, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_spectators_list_text_color_two, c_color( 255, 255, 255, 255 ) );
 
+		ADD_VARIABLE( bool, m_sniper_crosshair, false );
+
 		ADD_VARIABLE( bool, m_glow_enable, false );
 		ADD_VARIABLE( c_color, m_glow_color, c_color( 255, 255, 255, 180 ) );
 		/* chams settings */
@@ -151,6 +153,7 @@ struct variables_t {
 
 		struct indicators_t {
 			ADD_VARIABLE( bool, m_velocity_indicator, false );
+			ADD_VARIABLE( bool, m_velocity_graph, false );
 			ADD_VARIABLE( bool, m_velocity_indicator_show_pre_speed, false );
 			/* custom colors */
 			ADD_VARIABLE( c_color, m_velocity_indicator_color1, c_color( 255, 255, 255, 255 ) );

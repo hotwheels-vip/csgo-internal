@@ -453,9 +453,6 @@ void menu_t::on_end_scene( )
 
 				ImGui::Checkbox( "auto align", &GET_CONFIG_BOOL( variables.m_movement.m_auto_align ) );
 
-				/*if ( ImGui::Button( "log test" ) )
-				    g_log.print( "button pressed" );*/
-
 				ImGui::EndChild( );
 			}
 
@@ -511,6 +508,7 @@ void menu_t::on_end_scene( )
 					                  &GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_indicator_position ), 30,
 					                  globals.m_display_size.y );
 				}
+				ImGui::Checkbox( "velocity graph", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_graph ) );
 
 				ImGui::Checkbox( "stamina indicator", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator ) );
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator ) ) {
@@ -582,6 +580,9 @@ void menu_t::on_end_scene( )
 					ImGui::Text( "practice teleport key" );
 					ImGui::Keybind( "practice teleport key", &GET_CONFIG_BIND( variables.m_misc.m_practice_tp_key ) );
 				}
+
+				//TODO: combobox between force crosshair and just draw a white dot
+				ImGui::Checkbox( "sniper crosshair", &GET_CONFIG_BOOL( variables.m_visuals.m_sniper_crosshair ) );
 				ImGui::EndChild( );
 			}
 

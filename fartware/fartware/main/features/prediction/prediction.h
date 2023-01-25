@@ -11,6 +11,7 @@ struct prediction_t {
 
 	struct prediction_data_t {
 		int m_flags         = { };
+		int m_movetype      = { };
 		c_vector m_velocity = { };
 		c_vector m_origin   = { };
 	} m_data;

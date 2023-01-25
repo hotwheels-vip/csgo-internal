@@ -5,6 +5,7 @@ void movement_t::on_create_move_pre( )
 	prediction.m_data.m_flags    = globals.m_local->flags( );
 	prediction.m_data.m_velocity = globals.m_local->velocity( );
 	prediction.m_data.m_origin   = globals.m_local->abs_origin( );
+	prediction.m_data.m_movetype = globals.m_local->move_type( );
 
 	// no crouch cooldown
 	[]( ) {
@@ -15,7 +16,7 @@ void movement_t::on_create_move_pre( )
 	}( );
 
 	const auto move_type = globals.m_local->move_type( );
-	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_observer )
+	if ( utilities.is_in< int >( move_type, invalid_move_types ) )
 		return;
 
 	// bhop
@@ -29,9 +30,6 @@ void movement_t::on_create_move_pre( )
 
 		// dont run bhop while delayhopping
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) )
-			return;
-
-		if ( convars.find( fnv1a::hash_const( "sv_autobunnyhopping" ) )->get_int( ) )
 			return;
 
 		if ( !( globals.m_local->flags( ) & e_flags::fl_onground ) )

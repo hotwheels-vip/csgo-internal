@@ -1,9 +1,15 @@
 #include "misc.h"
 #include "../../logging/logging.h"
 #include "../../source_engine/enumerations/e_flags.h"
+#include "../../source_engine/enumerations/e_item_definition_index.h"
 
 void misc_t::on_end_scene( )
 {
+	// functions that require player to be ingame
+	if ( !globals.m_local || !interfaces.m_engine->is_in_game( ) ||
+	     globals.m_local->get_observer_mode( ) == c_base_entity::obs_mode_t::obs_mode_deathcam )
+		return;
+
 	// practice window
 	[ & ]( const bool can_draw_practice_window ) {
 		// TODO: add a is in valve server check(aka in mm game check) and dont even display anything
@@ -11,7 +17,7 @@ void misc_t::on_end_scene( )
 		if ( !can_draw_practice_window )
 			return;
 
-		if ( !globals.m_local || !globals.m_local->is_alive( ) || !interfaces.m_engine->is_in_game( ) )
+		if ( !globals.m_local->is_alive( ) )
 			return;
 
 		const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
@@ -73,6 +79,36 @@ void misc_t::on_end_scene( )
 		}
 		ImGui::End( );
 	}( GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) );
+
+	// sniper crosshair
+	[ & ]( const bool can_draw_sniper_xhair ) {
+		if ( !can_draw_sniper_xhair )
+			return;
+
+		if ( !globals.m_local->is_alive( ) )
+			return;
+
+		auto weapon_handle = globals.m_local->active_weapon_handle( );
+		if ( !weapon_handle )
+			return;
+
+		const auto active_weapon =
+			reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity_from_handle( weapon_handle ) );
+
+		if ( !active_weapon )
+			return;
+
+		auto definition_index = active_weapon->item_definition_index( );
+
+		if ( utilities.is_in< short >( definition_index, { e_item_definition_index::weapon_awp, e_item_definition_index::weapon_ssg08,
+		                                                   e_item_definition_index::weapon_scar20, e_item_definition_index::weapon_g3sg1 } ) ) {
+			render.m_draw_data.emplace_back(
+				e_draw_type::draw_type_rect,
+				std::make_any< rect_draw_object_t >( c_vector_2d( globals.m_display_size.x / 2 - 1, globals.m_display_size.y / 2 - 1 ),
+			                                         c_vector_2d( globals.m_display_size.x / 2, globals.m_display_size.y / 2 ),
+			                                         ImColor( 1.f, 1.f, 1.f, 1.f ) ) );
+		}
+	}( GET_CONFIG_BOOL( variables.m_visuals.m_sniper_crosshair ) );
 }
 
 void misc_t::on_create_move_pre( )

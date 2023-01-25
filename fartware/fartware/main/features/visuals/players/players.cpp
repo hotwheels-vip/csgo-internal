@@ -293,7 +293,7 @@ void players_t::on_paint_traverse( )
 				if ( !( entity->armor( ) > 0 ) )
 					return;
 
-				const auto text = entity->helmet( ) ? ( "HK" ) : ( "K" );
+				const auto text = entity->helmet( ) ? ( "hk" ) : ( "k" );
 
 				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, text );

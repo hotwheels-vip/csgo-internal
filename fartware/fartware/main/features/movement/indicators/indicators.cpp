@@ -7,6 +7,90 @@
 #include "../../prediction/prediction.h"
 #include "../movement.h"
 
+void indicators_t::on_create_move_pre( )
+{
+	// we only check these cause we run before our sanity checks in create move.
+	// we also run this function while player isnt alive.
+
+	if ( !globals.m_local || !globals.m_cmd || !interfaces.m_engine->is_in_game( ) ||
+	     globals.m_local->get_observer_mode( ) == c_base_entity::obs_mode_t::obs_mode_deathcam ) {
+		if ( !velocity_history.empty( ) )
+			velocity_history.clear( );
+		return;
+	}
+
+	const int speed = static_cast< int >( std::clamp( std::roundf( globals.m_local->velocity( ).length_2d( ) ), 0.f, 450.f ) );
+
+	velocity_data m_data{ };
+
+	m_data.m_velocity   = speed;
+	m_data.m_jumpbugged = indicators.detection.m_jumpbugged;
+	m_data.m_edgebugged = indicators.detection.m_edgebugged;
+
+	velocity_history.push_back( m_data );
+	while ( velocity_history.size( ) > 300u )
+		velocity_history.erase( velocity_history.begin( ) );
+}
+
+void indicators_t::on_create_move_post( )
+{
+	// detections
+	[ & ]( ) {
+		if ( utilities.is_in< int >( globals.m_local->move_type( ), invalid_move_types ) ||
+		     utilities.is_in< int >( prediction.m_data.m_movetype, invalid_move_types ) || globals.m_local->flags( ) & fl_onground ||
+		     prediction.m_data.m_flags & fl_onground ) {
+			indicators.detection.reset( );
+			return;
+		}
+
+		// edgebug detection
+		[]( ) {
+			if ( prediction.m_data.m_velocity.m_z > 0 || static_cast< int >( roundf( globals.m_local->velocity( ).m_z ) ) > 0.f ||
+			     round( globals.m_local->velocity( ).m_z ) == 0 ) {
+				indicators.detection.m_edgebugged = false;
+				return;
+			}
+
+			if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
+			     globals.m_local->velocity( ).m_z < -6.f && prediction.m_data.m_origin.m_z > globals.m_local->abs_origin( ).m_z ) {
+				const float before_detection_pred = globals.m_local->velocity( ).m_z;
+				const auto gravity                = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
+
+				if ( std::floor( prediction.m_data.m_velocity.m_z ) < -7 && std::floor( before_detection_pred ) == -7 &&
+				     globals.m_local->velocity( ).length_2d( ) >= prediction.m_data.m_velocity.length_2d( ) ) {
+					indicators.detection.m_edgebugged = true;
+				} else {
+					prediction.begin( globals.m_cmd );
+					prediction.end( );
+
+					float own_prediction   = round( ( -gravity * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
+					float rounded_velocity = round( globals.m_local->velocity( ).m_z );
+
+					if ( own_prediction == rounded_velocity ) {
+						indicators.detection.m_edgebugged = true;
+					} else {
+						indicators.detection.m_edgebugged = false;
+					}
+
+					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+					prediction.begin( globals.m_cmd );
+					prediction.end( );
+				}
+			}
+		}( );
+
+		[]( ) {
+			// jumpbug detection
+			if ( globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z && !indicators.detection.m_edgebugged &&
+			     !movement.m_pixelsurf_data.m_in_pixel_surf ) {
+				indicators.detection.m_jumpbugged = true;
+			} else
+				indicators.detection.m_jumpbugged = false;
+		}( );
+	}( );
+}
+
 void indicators_t::on_paint_traverse( )
 {
 	if ( !render.m_initialised )
@@ -45,7 +129,69 @@ void indicators_t::on_paint_traverse( )
 	}
 
 	const bool on_ground = ( globals.m_local->flags( ) & e_flags::fl_onground );
+	// velocity graph
+	[ & ]( ) {
+		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_graph ) )
+			return;
 
+		// dont draw graph if not enough history
+		if ( velocity_history.size( ) < 5 )
+			return;
+
+		// temporary, please dont make it SUPER customizable, no need for 6 different sliders.
+		const int graph_width  = globals.m_display_size.x / 5.5;
+		const int graph_height = 70;
+		const int graph_center = graph_width / 2;
+		const int graph_x      = globals.m_display_size.x / 2;
+		const int graph_ratio  = globals.m_display_size.y / 1.4;
+
+		for ( std::size_t data{ 0u }; data != velocity_history.size( ) - 1; data++ ) {
+			if ( ( data + 1 ) > velocity_history.size( ) )
+				continue;
+
+			const auto current = velocity_history[ data ], next = velocity_history[ data + 1 ];
+
+			const bool edgebugged = current.m_edgebugged, jumpbugged = current.m_jumpbugged;
+
+			const int cur_x  = ( data / 300.f ) * graph_width + graph_x - graph_center,
+					  last_x = ( ( data - 1 ) / 300.f ) * graph_width + graph_x - graph_center,
+					  cur_y  = std::sqrt( ( ( ( next.m_velocity / 400.f ) * graph_height ) - graph_ratio ) *
+			                              ( ( ( next.m_velocity / 400.f ) * graph_height ) - graph_ratio ) ),
+					  last_y = std::sqrt( ( ( ( current.m_velocity / 400.f ) * graph_height ) - graph_ratio ) *
+			                              ( ( ( current.m_velocity / 400.f ) * graph_height ) - graph_ratio ) );
+
+			c_unsigned_char_color graph_color = c_unsigned_char_color( 255.f, 255.f, 255.f, 255.f );
+
+			for ( int i = 0; i < 45; i++ ) {
+				if ( data == i )
+					graph_color.a = 5 * i;
+				if ( data == ( velocity_history.size( ) - i ) )
+					graph_color.a = 5 * i;
+			}
+
+			if ( data != 0 ) {
+				// render main line
+
+				ImColor cur_color         = ImColor( 1.f, 1.f, 1.f, std::clamp( ( float )graph_color.a, 0.f, 255.f ) / 255.f );
+				ImColor cur_color_outline = ImColor( 0.f, 0.f, 0.f, std::clamp( ( float )graph_color.a, 0.f, 255.f ) / 255.f );
+
+				render.m_draw_data.emplace_back( e_draw_type::draw_type_line,
+				                                 std::make_any< line_object_t >( ImVec2( last_x, last_y ), ImVec2( cur_x, cur_y ), cur_color, 1.f ) );
+
+				if ( jumpbugged )
+					render.m_draw_data.emplace_back(
+						e_draw_type::draw_type_text,
+						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 25 ),
+					                                         "jb", cur_color, cur_color_outline, e_text_render_flags::text_render_flag_dropshadow ) );
+
+				if ( edgebugged )
+					render.m_draw_data.emplace_back(
+						e_draw_type::draw_type_text,
+						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 25 ),
+					                                         "eb", cur_color, cur_color_outline, e_text_render_flags::text_render_flag_dropshadow ) );
+			}
+		}
+	}( );
 	// velocity indicator
 	[ & ]( ) {
 		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator ) )
@@ -180,8 +326,6 @@ void indicators_t::on_paint_traverse( )
 			offset -= ( text_size.y + 2 ) * indicator_animation.AnimationData->second;
 		};
 
-		/* TODO ~ change indicator colors when predicted or what ever u get it like blarity. . , .. . . . LOL XD dxdxdx :3 Sussuy Among Su */
-
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_edge_bug ) &&
 		     config.get< std::vector< bool > >( variables.m_movement.m_indicators.m_sub_indicators )[ e_keybind_indicators::key_eb ] )
 			render_indicator( "eb",
@@ -223,4 +367,10 @@ void indicators_t::on_paint_traverse( )
 			render_indicator( "jb", GET_CONFIG_COLOR( variables.m_movement.m_indicators.m_keybind_color ),
 			                  input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_jump_bug_key ) ) );
 	}( );
+}
+
+void indicators_t::detection_data::reset( )
+{
+	indicators.detection.m_edgebugged = false;
+	indicators.detection.m_jumpbugged = false;
 }

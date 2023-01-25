@@ -38,7 +38,8 @@ enum e_draw_type {
 	draw_type_text,
 	draw_type_rect,
 	draw_type_triangle,
-	draw_type_texture
+	draw_type_texture,
+	draw_type_line
 };
 
 struct draw_object_t {
@@ -55,6 +56,13 @@ struct text_draw_object_t {
 	ImU32 m_color                    = { };
 	ImU32 m_outline_color            = { };
 	e_text_render_flags m_draw_flags = { };
+};
+
+struct line_object_t {
+	ImVec2 m_start    = { };
+	ImVec2 m_end      = { };
+	ImU32 m_col_line  = 0x0;
+	float m_thickness = 0.f;
 };
 
 struct rect_draw_object_t {

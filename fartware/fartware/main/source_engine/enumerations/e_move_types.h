@@ -16,3 +16,6 @@ enum e_move_types : int {
 	move_type_last     = move_type_custom,
 	move_type_max_bits = 4
 };
+
+// oh yea
+inline constexpr static std::initializer_list< int > invalid_move_types = { move_type_noclip, move_type_ladder, move_type_fly, move_type_flygravity };

@@ -245,6 +245,11 @@ void render_t::render_cached_draw_data( )
 				continue;
 
 			switch ( data.m_type ) {
+			case e_draw_type::draw_type_line: {
+				const auto& obj = std::any_cast< line_object_t >( data.m_obj );
+				draw_list->AddLine( obj.m_start, obj.m_end, obj.m_col_line, obj.m_thickness );
+				break;
+			}
 			case e_draw_type::draw_type_text: {
 				const auto& obj = std::any_cast< text_draw_object_t >( data.m_obj );
 				this->text( draw_list, obj.m_font, obj.m_position, obj.m_text, obj.m_color, obj.m_outline_color, obj.m_draw_flags );
