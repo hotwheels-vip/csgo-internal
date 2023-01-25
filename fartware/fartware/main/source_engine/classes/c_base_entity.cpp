@@ -55,7 +55,7 @@ bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
 	return true;
 }
 
-//bool c_base_entity::can_shoot( )
+// bool c_base_entity::can_shoot( )
 //{
 //	const float server_time = static_cast< int >( 0.5f + static_cast< float >( this->tick_base( ) ) / memory.m_globals->m_interval_per_tick );
 //	if ( this->ammo( ) <= 0 )
@@ -76,7 +76,7 @@ bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
 //		return false;
 //
 //	return true;
-//}
+// }
 
 c_user_cmd& c_base_entity::last_command( )
 {
@@ -90,6 +90,70 @@ bool c_base_entity::physics_run_think( int think_method )
 	static auto original_physics_run_think = reinterpret_cast< bool( __thiscall* )( void*, int ) >(
 		memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87" ) ) );
 	return original_physics_run_think( this, think_method );
+}
+
+bool c_base_entity::has_bomb( )
+{
+	static auto has_bomb =
+		reinterpret_cast< bool( __thiscall* )( void* ) >( memory.m_modules[ e_module_names::client ].find_pattern( ( "56 8B F1 85 F6 74 31" ) ) );
+
+	return has_bomb( this );
+}
+
+player_anim_layer* c_base_entity::get_anim_layers( )
+{
+	return *( player_anim_layer** )( ( DWORD )this + 0x2990 );
+}
+
+player_anim_layer* c_base_entity::get_anim_layer( const int i )
+{
+	if ( i < 15 )
+		return &get_anim_layers( )[ i ];
+	return nullptr;
+}
+
+void c_base_entity::get_animation_layers( player_anim_layer* layers )
+{
+	std::memcpy( layers, get_anim_layers( ), sizeof( player_anim_layer ) * 13 );
+}
+
+void c_base_entity::set_animation_layers( player_anim_layer* layers )
+{
+	std::memcpy( get_anim_layers( ), layers, sizeof( player_anim_layer ) * 13 );
+}
+
+int c_base_entity::get_sequence_activity( int sequence )
+{
+	// WE NEED STUDIO MODEL FUNCTIONS ALREADY HOLY FUCK
+
+	// auto hdr = interfaces.mdl_info->get_studio_model( this->get_model( ) );
+	//
+	// if ( !hdr )
+	//	return -1;
+	//
+	// static auto get_sequence_activity = utilities::find_signature( xorstr_( "client.dll" ), xorstr_( "55 8B EC 53 8B 5D 08 56 8B F1 83" ) )
+	//                                         .cast< int( __fastcall* )( void*, studiohdr_t*, int ) >( );
+	//
+	// return get_sequence_activity( this, hdr, sequence );
+
+	return 0;
+}
+
+bool c_base_entity::reloading( )
+{
+	player_anim_layer* layer = this->get_anim_layer( 1 );
+	if ( !layer )
+		return false;
+
+	if ( !layer->owner )
+		return false;
+
+	auto activity = this->get_sequence_activity( layer->sequence );
+
+	if ( activity == 967 && layer->weight != 0.f )
+		return true;
+	else
+		return false;
 }
 
 bool c_base_entity::is_visible( c_base_entity* entity, const c_vector& end_position )

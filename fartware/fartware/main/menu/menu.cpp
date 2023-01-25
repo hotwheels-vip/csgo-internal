@@ -162,8 +162,9 @@ void menu_t::on_end_scene( )
 						                   color_picker_alpha_flags );
 				}
 
-				ImGui::MultiCombo( ( "player flags" ), config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ),
-				                   { ( "money" ), ( "armor" ) }, config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ).size( ) );
+				ImGui::MultiCombo( "player flags", config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ),
+				                   { "money", "armor", "reload", "bomb" },
+				                   config.get< std::vector< bool > >( variables.m_visuals.m_player_flags ).size( ) );
 
 				ImGui::Checkbox( ( "active weapon name" ), &GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_name ) );
 				if ( GET_CONFIG_BOOL( variables.m_visuals.m_active_weapon_name ) ) {
@@ -509,6 +510,9 @@ void menu_t::on_end_scene( )
 					                  globals.m_display_size.y );
 				}
 				ImGui::Checkbox( "velocity graph", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_graph ) );
+				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_graph ) )
+					ImGui::SliderInt( "position##velocity graph", &GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_graph_position ), 30,
+					                  globals.m_display_size.y );
 
 				ImGui::Checkbox( "stamina indicator", &GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator ) );
 				if ( GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_stamina_indicator ) ) {
@@ -581,7 +585,7 @@ void menu_t::on_end_scene( )
 					ImGui::Keybind( "practice teleport key", &GET_CONFIG_BIND( variables.m_misc.m_practice_tp_key ) );
 				}
 
-				//TODO: combobox between force crosshair and just draw a white dot
+				// TODO: combobox between force crosshair and just draw a white dot
 				ImGui::Checkbox( "sniper crosshair", &GET_CONFIG_BOOL( variables.m_visuals.m_sniper_crosshair ) );
 				ImGui::EndChild( );
 			}

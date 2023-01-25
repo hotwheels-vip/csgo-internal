@@ -5,6 +5,8 @@
 enum e_player_flags {
 	player_flag_money = 0,
 	player_flag_armor,
+	player_flag_reloading,
+	player_flag_bomb,
 	player_flags_max
 };
 
@@ -154,6 +156,7 @@ struct variables_t {
 		struct indicators_t {
 			ADD_VARIABLE( bool, m_velocity_indicator, false );
 			ADD_VARIABLE( bool, m_velocity_graph, false );
+			ADD_VARIABLE( int, m_velocity_graph_position, 60 );
 			ADD_VARIABLE( bool, m_velocity_indicator_show_pre_speed, false );
 			/* custom colors */
 			ADD_VARIABLE( c_color, m_velocity_indicator_color1, c_color( 255, 255, 255, 255 ) );

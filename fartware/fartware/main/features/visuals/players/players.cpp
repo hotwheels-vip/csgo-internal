@@ -15,7 +15,7 @@ void players_t::on_paint_traverse( )
 	if ( !globals.m_local )
 		return;
 
-	const float delta_time = ( 1.f / 0.5f ) * memory.m_globals->m_frame_time;
+	const float delta_time = ( 1.f / 0.4f ) * memory.m_globals->m_frame_time;
 
 	/* TODO ~ float ~ store this shart globally */
 	c_angle view_angles = { };
@@ -298,6 +298,46 @@ void players_t::on_paint_traverse( )
 				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, text );
 
+				render.m_draw_data.emplace_back(
+					e_draw_type::draw_type_text,
+					std::make_any< text_draw_object_t >(
+						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
+						c_vector_2d( bbox.m_right + 2.f, bbox.m_top - 3.f + padding[ e_padding_direction::padding_direction_right ] ), text,
+						ImColor( 1.f, 1.f, 1.f, this->m_fading_alpha[ index ] ), ImColor( 0.f, 0.f, 0.f, this->m_fading_alpha[ index ] ),
+						e_text_render_flags::text_render_flag_dropshadow ) );
+
+				padding[ e_padding_direction::padding_direction_right ] += text_size.y;
+			}
+			if ( config.get< std::vector< bool > >( variables.m_visuals.m_player_flags )[ e_player_flags::player_flag_reloading ] ) {
+				// if (!entity->reloading nigga)
+				return;
+
+				const auto text = "reloading";
+
+				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, text );
+
+				// red text
+				render.m_draw_data.emplace_back(
+					e_draw_type::draw_type_text,
+					std::make_any< text_draw_object_t >(
+						render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
+						c_vector_2d( bbox.m_right + 2.f, bbox.m_top - 3.f + padding[ e_padding_direction::padding_direction_right ] ), text,
+						ImColor( 1.f, 0.f, 0.f, this->m_fading_alpha[ index ] ), ImColor( 0.f, 0.f, 0.f, this->m_fading_alpha[ index ] ),
+						e_text_render_flags::text_render_flag_dropshadow ) );
+
+				padding[ e_padding_direction::padding_direction_right ] += text_size.y;
+			}
+			if ( config.get< std::vector< bool > >( variables.m_visuals.m_player_flags )[ e_player_flags::player_flag_bomb ] ) {
+				if ( !entity->has_bomb( ) )
+					return;
+
+				const auto text = "bomb";
+
+				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, text );
+
+				// red text
 				render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(

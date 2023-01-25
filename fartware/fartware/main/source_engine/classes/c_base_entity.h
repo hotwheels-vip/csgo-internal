@@ -8,6 +8,25 @@
 #include "../structs/bounding_box_t.h"
 #include "../structs/matrix_t.h"
 
+class player_anim_layer
+{
+public:
+	bool client_bleed;
+	float blend_in;
+	void* studio_hdr;
+	int dispatch_sequence;
+	int dispatch_sequence2;
+	int order;
+	int sequence;
+	float prev_cycle;
+	float weight;
+	float weight_delta_rate;
+	float playback_rate;
+	float cycle;
+	void* owner;
+	PAD( 4 );
+};
+
 constexpr float max_health = 100.f;
 
 class c_model;
@@ -18,21 +37,6 @@ enum glow_style_t : std::int32_t {
 	glow_style_edge_highlight,
 	glow_style_edge_highlight_pulse,
 	glow_style_count
-};
-
-class c_client_renderable
-{
-private:
-	enum e_indexes {
-		_get_model = 8,
-	};
-
-public:
-	c_model* get_model( )
-	{
-		using fn = c_model*( __thiscall* )( c_client_renderable* );
-		return ( *( fn** )this )[ this->e_indexes::_get_model ]( this );
-	}
 };
 
 class c_collideable
@@ -189,6 +193,20 @@ public:
 	int lookup_bone( const char* bone );
 
 	void get_bone_position( const int bone, c_vector& origin );
+
+	player_anim_layer* get_anim_layers( );
+
+	player_anim_layer* get_anim_layer( const int i );
+
+	void get_animation_layers( player_anim_layer* layers );
+
+	void set_animation_layers( player_anim_layer* layers );
+
+	bool has_bomb( );
+
+	int get_sequence_activity( int sequence );
+
+	bool reloading( );
 
 	/* CCSPlayer */
 	add_variable( int, money, "CCSPlayer->m_iAccount" );
