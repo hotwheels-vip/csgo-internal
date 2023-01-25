@@ -146,7 +146,7 @@ void indicators_t::on_paint_traverse( )
 		const int graph_height = 70;
 		const int graph_center = graph_width / 2;
 		const int graph_x      = globals.m_display_size.x / 2;
-		const int graph_ratio  = globals.m_display_size.y / 1.4;
+		const int graph_ratio  = globals.m_display_size.y / 1.2;
 
 		for ( std::size_t data{ 0u }; data != velocity_history.size( ) - 1; data++ ) {
 			if ( ( data + 1 ) > velocity_history.size( ) )
@@ -184,13 +184,13 @@ void indicators_t::on_paint_traverse( )
 				if ( jumpbugged )
 					render.m_draw_data.emplace_back(
 						e_draw_type::draw_type_text,
-						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 5 ),
+						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 4 ),
 					                                         "jb", cur_color, cur_color_outline, e_text_render_flags::text_render_flag_dropshadow ) );
 
 				if ( edgebugged )
 					render.m_draw_data.emplace_back(
 						e_draw_type::draw_type_text,
-						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 5 ),
+						std::make_any< text_draw_object_t >( render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( last_x, last_y + 4 ),
 					                                         "eb", cur_color, cur_color_outline, e_text_render_flags::text_render_flag_dropshadow ) );
 			}
 		}
