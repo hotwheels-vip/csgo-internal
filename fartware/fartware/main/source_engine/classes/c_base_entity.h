@@ -266,6 +266,11 @@ public:
 class c_fog_controller : public c_base_entity
 {
 public:
+	add_variable( int, enable, "CFogController->m_fog.enable" );
+	add_variable( float, start, "CFogController->m_fog.start" );
+	add_variable( float, end, "CFogController->m_fog.end" );
+	add_variable( float, density, "CFogController->m_fog.maxdensity" );
+	add_variable( int, color, "CFogController->m_fog.colorPrimary" );
 };
 
 class c_precipitation : public c_base_entity

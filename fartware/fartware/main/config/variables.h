@@ -111,6 +111,14 @@ struct variables_t {
 		                                c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false ) );
 	} m_visuals;
 
+	struct {
+		ADD_VARIABLE( bool, m_fog_enable, false );
+		ADD_VARIABLE( float, m_fog_start, 0.f );
+		ADD_VARIABLE( float, m_fog_end, 0.f );
+		ADD_VARIABLE( float, m_fog_density, 0.f );
+		ADD_VARIABLE( c_color, m_fog_color, c_color( 255, 255, 255, 180 ) );
+	} m_world;
+
 	struct misc_t {
 		ADD_VARIABLE( bool, m_practice_window, false );
 		ADD_VARIABLE( key_bind_t, m_practice_cp_key, key_bind_t( 0, 1 ) );

@@ -222,6 +222,7 @@
     <ClInclude Include="main\source_engine\classes\c_game_event_manager.h" />
     <ClInclude Include="main\utilities\event_listener\event_listener.h" />
     <ClInclude Include="main\features\lagcomp\lagcomp.h" />
+    <ClInclude Include="main\features\visuals\world\world.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />
@@ -284,6 +285,7 @@
     <ClCompile Include="main\utilities\event_listener\event_listener.cpp" />
     <ClCompile Include="main\features\lagcomp\lagcomp.cpp" />
     <ClCompile Include="main\hooks\functions\glow_effect_spectator.cpp" />
+    <ClCompile Include="main\features\visuals\world\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />

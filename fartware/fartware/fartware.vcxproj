@@ -130,6 +130,7 @@
     <ClInclude Include="main\features\prediction\prediction.h" />
     <ClInclude Include="main\features\visuals\edicts\edicts.h" />
     <ClInclude Include="main\features\visuals\players\players.h" />
+    <ClInclude Include="main\features\visuals\world\world.h" />
     <ClInclude Include="main\globals.h" />
     <ClInclude Include="main\hashing\other\crc32.h" />
     <ClInclude Include="main\hooks\hooks.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="main\features\prediction\prediction.cpp" />
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />
     <ClCompile Include="main\features\visuals\players\players.cpp" />
+    <ClCompile Include="main\features\visuals\world\world.cpp" />
     <ClCompile Include="main\hashing\other\crc32.cpp" />
     <ClCompile Include="main\hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="main\hooks\functions\create_move.cpp" />

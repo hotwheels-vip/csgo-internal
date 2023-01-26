@@ -146,7 +146,7 @@ void indicators_t::on_paint_traverse( )
 		const int graph_height = 70;
 		const int graph_center = graph_width / 2;
 		const int graph_x      = globals.m_display_size.x / 2;
-		const int graph_ratio  = globals.m_display_size.y / 1.2;
+		const int graph_ratio  = GET_CONFIG_INT( variables.m_movement.m_indicators.m_velocity_graph_position );
 
 		for ( std::size_t data{ 0u }; data != velocity_history.size( ) - 1; data++ ) {
 			if ( ( data + 1 ) > velocity_history.size( ) )

@@ -18,4 +18,4 @@ enum e_move_types : int {
 };
 
 // oh yea
-inline constexpr static std::initializer_list< int > invalid_move_types = { move_type_noclip, move_type_ladder, move_type_fly, move_type_flygravity };
+inline constexpr static std::initializer_list< int > invalid_move_types = { move_type_noclip, move_type_ladder, move_type_observer };
