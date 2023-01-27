@@ -127,7 +127,7 @@ namespace n_detoured_functions
 	void __fastcall modify_eye_position( c_anim_state* anim_state, void* edx, c_vector& input_eye_pos );
 	void __stdcall draw_set_color( int r, int g, int b, int a );
 	void __fastcall draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info, matrix3x4_t* bone_to_world );
-	bool __cdecl glow_effect_spectator( c_base_entity* player, c_base_entity* local, glow_style_t& style, c_vector& glow_color, float& alpha_start,
+	bool __cdecl glow_effect_spectator( c_base_entity* player, c_base_entity* local, e_glow_style& style, c_vector& glow_color, float& alpha_start,
 	                                    float& alpha, float& time_start, float& time_target, bool& animate );
 	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );
 } // namespace n_detoured_functions

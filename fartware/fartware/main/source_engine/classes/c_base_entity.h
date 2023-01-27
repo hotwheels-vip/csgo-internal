@@ -8,7 +8,30 @@
 #include "../structs/bounding_box_t.h"
 #include "../structs/matrix_t.h"
 
-class player_anim_layer
+/* TODO ~ move to another file (enumerations folder) */
+enum e_obs_mode : int {
+	obs_mode_none = 0,
+	obs_mode_deathcam,
+	obs_mode_freezecam,
+	obs_mode_fixed,
+	obs_mode_in_eye,
+	obs_mode_chase,
+	obs_mode_roaming
+};
+
+enum e_precipitation_type : int {
+	precipitation_type_rain = 0,
+	precipitation_type_snow,
+	precipitation_type_ash,
+	precipitation_type_snowfall,
+	precipitation_type_particlerain,
+	precipitation_type_particleash,
+	precipitation_type_particlerainstorm,
+	precipitation_type_particlesnow,
+	num_precipitation_types
+};
+
+class c_player_animation_layer
 {
 public:
 	bool client_bleed;
@@ -27,11 +50,12 @@ public:
 	PAD( 4 );
 };
 
-constexpr float max_health = 100.f;
+constexpr float max_health = 100.f /* todo ~ dont hard codenz (there is a netvar) */;
 
 class c_model;
+class c_base_client;
 
-enum glow_style_t : std::int32_t {
+enum e_glow_style : int {
 	glow_style_default = 0,
 	glow_style_rim_3d,
 	glow_style_edge_highlight,
@@ -66,6 +90,7 @@ class c_base_entity
 private:
 	enum e_indexes {
 		_collideable             = 3,
+		_client_class            = 2,
 		_abs_origin              = 10,
 		_data_desc_map           = 15,
 		_prediction_desc_map     = 17,
@@ -79,15 +104,10 @@ private:
 	};
 
 public:
-	enum obs_mode_t : int {
-		obs_mode_none = 0,
-		obs_mode_deathcam,
-		obs_mode_freezecam,
-		obs_mode_fixed,
-		obs_mode_in_eye,
-		obs_mode_chase,
-		obs_mode_roaming
-	};
+	void* networkable( )
+	{
+		return reinterpret_cast< void* >( uintptr_t( this ) + 0x8 );
+	}
 
 	data_map_t* data_desc_map( )
 	{
@@ -105,6 +125,13 @@ public:
 	{
 		using fn = c_collideable*( __thiscall* )( c_base_entity* );
 		return ( *( fn** )this )[ this->e_indexes::_collideable ]( this );
+	}
+
+	/* NOTE ~ don't think this works. Sorry Sirss */
+	c_base_client* client_class( )
+	{
+		using fn = c_base_client*( __thiscall* )( void* );
+		return ( *( fn** )networkable( ) )[ this->e_indexes::_client_class ]( networkable( ) );
 	}
 
 	bool is_player( )
@@ -194,13 +221,13 @@ public:
 
 	void get_bone_position( const int bone, c_vector& origin );
 
-	player_anim_layer* get_anim_layers( );
+	c_player_animation_layer* get_anim_layers( );
 
-	player_anim_layer* get_anim_layer( const int i );
+	c_player_animation_layer* get_anim_layer( const int i );
 
-	void get_animation_layers( player_anim_layer* layers );
+	void get_animation_layers( c_player_animation_layer* layers );
 
-	void set_animation_layers( player_anim_layer* layers );
+	void set_animation_layers( c_player_animation_layer* layers );
 
 	bool has_bomb( );
 
@@ -271,9 +298,11 @@ public:
 	add_variable( float, end, "CFogController->m_fog.end" );
 	add_variable( float, density, "CFogController->m_fog.maxdensity" );
 	add_variable( int, color, "CFogController->m_fog.colorPrimary" );
+	add_variable( int, color_secondary, "CFogController->m_fog.colorSecondary" );
 };
 
 class c_precipitation : public c_base_entity
 {
 public:
+	add_variable( e_precipitation_type, precipitation_type, "CPrecipitation->m_nPrecipType" );
 };

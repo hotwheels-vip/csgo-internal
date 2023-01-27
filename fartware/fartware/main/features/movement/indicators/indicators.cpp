@@ -15,7 +15,7 @@ void indicators_t::on_create_move_pre( )
 	// we also run this function while player isnt alive.
 
 	if ( !globals.m_local || !globals.m_cmd || !interfaces.m_engine->is_in_game( ) ||
-	     globals.m_local->get_observer_mode( ) == c_base_entity::obs_mode_t::obs_mode_deathcam ) {
+	     globals.m_local->get_observer_mode( ) == e_obs_mode::obs_mode_deathcam ) {
 		if ( !velocity_history.empty( ) )
 			velocity_history.clear( );
 		return;
@@ -195,6 +195,7 @@ void indicators_t::on_paint_traverse( )
 			}
 		}
 	}( );
+
 	// velocity indicator
 	[ & ]( ) {
 		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_velocity_indicator ) )

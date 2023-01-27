@@ -1,5 +1,6 @@
 #include "../../features/entities/avatars.h"
 #include "../../features/movement/movement.h"
+#include "../../features/visuals/world/world.h"
 #include "../hooks.h"
 
 void __fastcall n_detoured_functions::frame_stage_notify( void* thisptr, int edx, e_client_frame_stage stage )
@@ -24,6 +25,8 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* thisptr, int edx
 		movement.handle_edgebug_view_point( );
 		break;
 	}
+
+	world.on_frame_stage_notify( stage );
 
 	original( thisptr, edx, stage );
 }

@@ -100,26 +100,26 @@ bool c_base_entity::has_bomb( )
 	return has_bomb( this );
 }
 
-player_anim_layer* c_base_entity::get_anim_layers( )
+c_player_animation_layer* c_base_entity::get_anim_layers( )
 {
-	return *( player_anim_layer** )( ( DWORD )this + 0x2990 );
+	return *( c_player_animation_layer** )( ( DWORD )this + 0x2990 );
 }
 
-player_anim_layer* c_base_entity::get_anim_layer( const int i )
+c_player_animation_layer* c_base_entity::get_anim_layer( const int i )
 {
 	if ( i < 15 )
 		return &get_anim_layers( )[ i ];
 	return nullptr;
 }
 
-void c_base_entity::get_animation_layers( player_anim_layer* layers )
+void c_base_entity::get_animation_layers( c_player_animation_layer* layers )
 {
-	std::memcpy( layers, get_anim_layers( ), sizeof( player_anim_layer ) * 13 );
+	std::memcpy( layers, get_anim_layers( ), sizeof( c_player_animation_layer ) * 13 );
 }
 
-void c_base_entity::set_animation_layers( player_anim_layer* layers )
+void c_base_entity::set_animation_layers( c_player_animation_layer* layers )
 {
-	std::memcpy( get_anim_layers( ), layers, sizeof( player_anim_layer ) * 13 );
+	std::memcpy( get_anim_layers( ), layers, sizeof( c_player_animation_layer ) * 13 );
 }
 
 int c_base_entity::get_sequence_activity( int sequence )
@@ -141,7 +141,7 @@ int c_base_entity::get_sequence_activity( int sequence )
 
 bool c_base_entity::reloading( )
 {
-	player_anim_layer* layer = this->get_anim_layer( 1 );
+	c_player_animation_layer* layer = this->get_anim_layer( 1 );
 	if ( !layer )
 		return false;
 

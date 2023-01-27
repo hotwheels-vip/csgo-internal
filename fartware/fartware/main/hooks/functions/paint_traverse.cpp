@@ -20,7 +20,7 @@ void __fastcall n_detoured_functions::paint_traverse( c_surface* thisptr, int ed
 		return true;
 	}( );
 
-	if ( panel_hash == fnv1a::hash( "GameConsole" ) || panel_hash == fnv1a::hash( "CompletionList" ) ) {
+	if ( panel_hash == fnv1a::hash_const( "GameConsole" ) || panel_hash == fnv1a::hash_const( "CompletionList" ) ) {
 		globals.m_console_being_drawn = true;
 		original( thisptr, edx, panel, force_repaint, force );
 		globals.m_console_being_drawn = false;

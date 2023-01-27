@@ -19,8 +19,8 @@ void __fastcall n_detoured_functions::override_mouse_input( void* thisptr, int e
 		if ( !std::isnan( factor ) )
 			*x *= factor;
 
-		// if ( *y != 0 )
-		//	*y *= 1.f - ( 0.1f * ( variables.m_movement.m_edge_bug_lock_amt * 10.f ) );
+		/* if ( *y != 0 )
+			*y *= 1.f - ( 0.1f * ( variables.m_movement.m_edge_bug_lock_amt * 10.f ) );*/
 	}
 
 	original( thisptr, edx, x, y );

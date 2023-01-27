@@ -62,7 +62,7 @@ void misc_t::on_end_scene( )
 {
 	// functions that require player to be ingame
 	if ( !globals.m_local || !interfaces.m_engine->is_in_game( ) ||
-	     globals.m_local->get_observer_mode( ) == c_base_entity::obs_mode_t::obs_mode_deathcam )
+	     globals.m_local->get_observer_mode( ) == e_obs_mode::obs_mode_deathcam )
 		return;
 
 	// practice window

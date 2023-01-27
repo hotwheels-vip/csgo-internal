@@ -409,10 +409,10 @@ void menu_t::on_end_scene( )
 			                        true, 0, true ) ) {
 				ImGui::Checkbox( "enable world fog", &GET_CONFIG_BOOL( variables.m_world.m_fog_enable ) );
 				if ( GET_CONFIG_BOOL( variables.m_world.m_fog_enable ) ) {
+					ImGui::ColorEdit4( "##fog color", &GET_CONFIG_COLOR( variables.m_world.m_fog_color ), color_picker_no_alpha_flags );
 					ImGui::SliderFloat( "fog start", &GET_CONFIG_FLOAT( variables.m_world.m_fog_start ), 0.f, 5000.f, "%.1f" );
 					ImGui::SliderFloat( "fog end", &GET_CONFIG_FLOAT( variables.m_world.m_fog_end ), 0.f, 5000.f, "%.1f" );
 					ImGui::SliderFloat( "fog density", &GET_CONFIG_FLOAT( variables.m_world.m_fog_density ), 0.f, 1.f, "%.2f" );
-					ImGui::ColorEdit4( "##fog color", &GET_CONFIG_COLOR( variables.m_world.m_fog_color ), color_picker_alpha_flags );
 				};
 				ImGui::EndChild( );
 			}
