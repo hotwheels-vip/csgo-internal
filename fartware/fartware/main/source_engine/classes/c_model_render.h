@@ -1,18 +1,6 @@
 #pragma once
 #include "../../utilities/mathematics/mathematics.h"
-
-struct model_t {
-	unsigned char pad0[ 0x4 ];  // 0x0000
-	char m_name[ 260 ];         // 0x0004
-	int m_load_flags;           // 0x0108
-	int m_server_count;         // 0x010C
-	int m_type;                 // 0x0110
-	int m_flags;                // 0x0114
-	c_vector m_mins;            // 0x0118
-	c_vector m_maxs;            // 0x0124
-	float m_dius;               // 0x0130
-	unsigned char pad1[ 0x1C ]; // 0x0134
-};
+#include "c_model_info.h"
 
 struct model_render_info_t {
 	c_vector m_origin;

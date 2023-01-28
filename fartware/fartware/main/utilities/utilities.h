@@ -27,6 +27,7 @@ struct utilities_t {
 	{
 		return relative_address + 0x4 + *reinterpret_cast< std::int32_t* >( relative_address );
 	}
+
 	template< typename T >
 	// is V inside lst, example of usage:
 	// if (utils::is_in(num, {1, 2, 3})) { function }

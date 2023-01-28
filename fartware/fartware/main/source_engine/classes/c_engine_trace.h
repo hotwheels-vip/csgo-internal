@@ -1,6 +1,7 @@
 #pragma once
 #include "../../utilities/macros.h"
 #include "../structs/matrix_t.h"
+#include "c_utl_vector.h"
 #include "c_vector.h"
 #include <functional>
 
@@ -178,7 +179,7 @@ struct ray_t {
 		this->m_delta = end_position - start_position;
 
 		this->m_world_axis_transform = nullptr;
-		this->m_is_swept              = ( this->m_delta.length_squared( ) != 0.f );
+		this->m_is_swept             = ( this->m_delta.length_squared( ) != 0.f );
 
 		this->m_extents = maxs - mins;
 		this->m_extents *= 0.5f;
@@ -203,7 +204,7 @@ class i_trace_filter
 {
 public:
 	virtual bool should_hit_entity( c_base_entity* entity, int contents_mask ) = 0;
-	virtual e_trace_type get_trace_type( ) const                                  = 0;
+	virtual e_trace_type get_trace_type( ) const                               = 0;
 };
 
 class c_trace_filter : public i_trace_filter
@@ -235,17 +236,17 @@ public:
 	}
 
 private:
-	const c_base_entity* m_skip     = nullptr;
+	const c_base_entity* m_skip               = nullptr;
 	filter_callback_function m_check_callback = nullptr;
-	e_trace_type m_trace_type          = e_trace_type::trace_type_everything;
+	e_trace_type m_trace_type                 = e_trace_type::trace_type_everything;
 };
 
 class i_trace_list_data
 {
 public:
 	virtual ~i_trace_list_data( ) { }
-	virtual void reset( )                        = 0;
-	virtual bool is_empty( )                      = 0;
+	virtual void reset( )                          = 0;
+	virtual bool is_empty( )                       = 0;
 	virtual bool can_trace_ray( const ray_t& ray ) = 0;
 };
 
@@ -263,38 +264,39 @@ class c_brush_query;
 class c_engine_trace
 {
 public:
-	virtual int get_point_contents( const c_vector& vec_abs_position, int f_contents_mask = e_mask::mask_all, c_base_entity** pp_entity = nullptr )     = 0;
-	virtual int get_point_contents_world_only( const c_vector& vec_abs_position, int f_contents_mask = e_mask::mask_all )                       = 0;
-	virtual int get_point_contents_collideable( c_collideable* p_collide, const c_vector& vec_abs_position )                                  = 0;
-	virtual void clip_ray_to_entity( const ray_t& ray, unsigned int f_mask, c_base_entity* p_entity, trace_t* p_trace )                   = 0;
-	virtual void clip_ray_to_collideable( const ray_t& ray, unsigned int f_mask, c_collideable* p_collide, trace_t* p_trace )               = 0;
-	virtual void trace_ray( const ray_t& ray, unsigned int f_mask, i_trace_filter* p_trace_filter, trace_t* p_trace )                       = 0;
-	virtual void setup_leaf_and_entity_list_ray( const ray_t& ray, i_trace_list_data* p_trace_data )                                        = 0;
-	virtual void setup_leaf_and_entity_list_box( const c_vector& vec_box_min, const c_vector& vec_box_max, i_trace_list_data* p_trace_data )    = 0;
+	virtual int get_point_contents( const c_vector& vec_abs_position, int f_contents_mask = e_mask::mask_all,
+	                                c_base_entity** pp_entity = nullptr )                                                                    = 0;
+	virtual int get_point_contents_world_only( const c_vector& vec_abs_position, int f_contents_mask = e_mask::mask_all )                    = 0;
+	virtual int get_point_contents_collideable( c_collideable* p_collide, const c_vector& vec_abs_position )                                 = 0;
+	virtual void clip_ray_to_entity( const ray_t& ray, unsigned int f_mask, c_base_entity* p_entity, trace_t* p_trace )                      = 0;
+	virtual void clip_ray_to_collideable( const ray_t& ray, unsigned int f_mask, c_collideable* p_collide, trace_t* p_trace )                = 0;
+	virtual void trace_ray( const ray_t& ray, unsigned int f_mask, i_trace_filter* p_trace_filter, trace_t* p_trace )                        = 0;
+	virtual void setup_leaf_and_entity_list_ray( const ray_t& ray, i_trace_list_data* p_trace_data )                                         = 0;
+	virtual void setup_leaf_and_entity_list_box( const c_vector& vec_box_min, const c_vector& vec_box_max, i_trace_list_data* p_trace_data ) = 0;
 	virtual void trace_ray_against_leaf_and_entity_list( const ray_t& ray, i_trace_list_data* p_trace_data, unsigned int f_mask,
-	                                                     i_trace_filter* p_trace_filter, trace_t* p_trace )                                 = 0;
+	                                                     i_trace_filter* p_trace_filter, trace_t* p_trace )                                  = 0;
 	virtual void sweep_collideable( c_collideable* p_collide, const c_vector& vec_abs_start, const c_vector& vec_abs_end, const c_vector& vec_angles,
-	                                unsigned int f_mask, i_trace_filter* p_trace_filter, trace_t* p_trace )                                 = 0;
-	virtual void enumerate_entities( const ray_t& ray, bool b_triggers, i_entity_enumerator* p_enumerator )                                 = 0;
-	virtual void enumerate_entities( const c_vector& vec_abs_mins, const c_vector& vec_abs_maxs, i_entity_enumerator* p_enumerator )            = 0;
-	virtual c_collideable* get_collideable( c_base_entity* p_entity )                                                                     = 0;
-	virtual int get_stat_by_index( int n_index, bool b_clear )                                                                              = 0;
+	                                unsigned int f_mask, i_trace_filter* p_trace_filter, trace_t* p_trace )                                  = 0;
+	virtual void enumerate_entities( const ray_t& ray, bool b_triggers, i_entity_enumerator* p_enumerator )                                  = 0;
+	virtual void enumerate_entities( const c_vector& vec_abs_mins, const c_vector& vec_abs_maxs, i_entity_enumerator* p_enumerator )         = 0;
+	virtual c_collideable* get_collideable( c_base_entity* p_entity )                                                                        = 0;
+	virtual int get_stat_by_index( int n_index, bool b_clear )                                                                               = 0;
 	virtual void get_brushes_in_aabb( const c_vector& vec_mins, const c_vector& vec_maxs, c_utl_vector< int >* p_output,
-	                                  int f_contents_mask = mask_all )                                                                      = 0;
-	virtual c_phys_collide* get_collidable_from_displacements_in_aabb( const c_vector& vec_mins, const c_vector& vec_maxs )                     = 0;
-	virtual int get_num_displacements( )                                                                                                    = 0;
-	virtual void get_displacement_mesh( int n_index, virtualmeshlist_t* p_mesh_tri_list )                                                   = 0;
-	virtual bool get_brush_info( int i_brush, c_utl_vector< brush_side_info_t >* p_brush_side_info_out, int* p_contents_out )               = 0;
-	virtual bool point_outside_world( const c_vector& vec_point )                                                                             = 0;
-	virtual int get_leaf_containing_point( const c_vector& vec_point )                                                                        = 0;
-	virtual i_trace_list_data* alloc_trace_list_data( )                                                                                     = 0;
-	virtual void free_trace_list_data( i_trace_list_data* p_list_data )                                                                     = 0;
-	virtual int get_set_debug_trace_counter( int i_value, e_debug_trace_counter_behavior behavior )                                         = 0;
+	                                  int f_contents_mask = mask_all )                                                                       = 0;
+	virtual c_phys_collide* get_collidable_from_displacements_in_aabb( const c_vector& vec_mins, const c_vector& vec_maxs )                  = 0;
+	virtual int get_num_displacements( )                                                                                                     = 0;
+	virtual void get_displacement_mesh( int n_index, virtualmeshlist_t* p_mesh_tri_list )                                                    = 0;
+	virtual bool get_brush_info( int i_brush, c_utl_vector< brush_side_info_t >* p_brush_side_info_out, int* p_contents_out )                = 0;
+	virtual bool point_outside_world( const c_vector& vec_point )                                                                            = 0;
+	virtual int get_leaf_containing_point( const c_vector& vec_point )                                                                       = 0;
+	virtual i_trace_list_data* alloc_trace_list_data( )                                                                                      = 0;
+	virtual void free_trace_list_data( i_trace_list_data* p_list_data )                                                                      = 0;
+	virtual int get_set_debug_trace_counter( int i_value, e_debug_trace_counter_behavior behavior )                                          = 0;
 	virtual int get_meshes_from_displacements_in_aabb( const c_vector& vec_mins, const c_vector& vec_maxs, virtualmeshlist_t* p_output_meshes,
-	                                                   int n_max_output_meshes )                                                            = 0;
-	virtual void get_brushes_in_collideable( c_collideable* p_collideable, c_brush_query& brush_query )                                     = 0;
-	virtual bool is_fully_occluded( int n_occlusion_key, const aabb_t& aabb1, const aabb_t& aabb2, const c_vector& vec_shadow )               = 0;
-	virtual void suspend_occlusion_tests( )                                                                                                 = 0;
-	virtual void resume_occlusion_tests( )                                                                                                  = 0;
-	virtual void flush_occlusion_queries( )                                                                                                 = 0;
+	                                                   int n_max_output_meshes )                                                             = 0;
+	virtual void get_brushes_in_collideable( c_collideable* p_collideable, c_brush_query& brush_query )                                      = 0;
+	virtual bool is_fully_occluded( int n_occlusion_key, const aabb_t& aabb1, const aabb_t& aabb2, const c_vector& vec_shadow )              = 0;
+	virtual void suspend_occlusion_tests( )                                                                                                  = 0;
+	virtual void resume_occlusion_tests( )                                                                                                   = 0;
+	virtual void flush_occlusion_queries( )                                                                                                  = 0;
 };

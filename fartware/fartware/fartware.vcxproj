@@ -158,6 +158,7 @@
     <ClInclude Include="main\source_engine\classes\c_localize.h" />
     <ClInclude Include="main\source_engine\classes\c_material_system.h" />
     <ClInclude Include="main\source_engine\classes\c_mdl_cache.h" />
+    <ClInclude Include="main\source_engine\classes\c_model_info.h" />
     <ClInclude Include="main\source_engine\classes\c_model_render.h" />
     <ClInclude Include="main\source_engine\classes\c_panel.h" />
     <ClInclude Include="main\source_engine\classes\c_prediction.h" />

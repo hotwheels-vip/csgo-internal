@@ -87,8 +87,11 @@ bool interfaces_t::on_attach( )
 		return false;
 
 	if ( ( this->m_game_event =
-	           this->find< c_game_event_manager2 >( memory.m_modules[ e_module_names::engine ].m_value,
-	                                                                              ( "GAMEEVENTSMANAGER002" ) ) ) == nullptr )
+	           this->find< c_game_event_manager2 >( memory.m_modules[ e_module_names::engine ].m_value, ( "GAMEEVENTSMANAGER002" ) ) ) == nullptr )
+		return false;
+
+	if ( ( this->m_model_info = this->find< c_model_info >( memory.m_modules[ e_module_names::engine ].m_value, ( "VModelInfoClient" ) ) ) ==
+	     nullptr )
 		return false;
 
 	/* TODO ~ float ~ snake_caseify this */

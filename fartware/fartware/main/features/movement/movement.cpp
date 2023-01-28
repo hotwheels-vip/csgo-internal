@@ -16,7 +16,8 @@ void movement_t::on_create_move_pre( )
 	}( );
 
 	const auto move_type = globals.m_local->move_type( );
-	if ( utilities.is_in< int >( move_type, invalid_move_types ) )
+	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly ||
+	     move_type == e_move_types::move_type_observer )
 		return;
 
 	// bhop
@@ -30,9 +31,6 @@ void movement_t::on_create_move_pre( )
 
 		// dont run bhop while delayhopping
 		if ( GET_CONFIG_BOOL( variables.m_movement.m_delay_hop ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_delay_hop_key ) ) )
-			return;
-
-		if ( utilities.is_in< int >( globals.m_local->move_type( ), invalid_move_types ) )
 			return;
 
 		if ( !( globals.m_local->flags( ) & e_flags::fl_onground ) )

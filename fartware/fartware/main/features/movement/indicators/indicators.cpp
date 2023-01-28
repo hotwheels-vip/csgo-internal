@@ -26,8 +26,8 @@ void indicators_t::on_create_move_pre( )
 	velocity_data m_data{ };
 
 	m_data.m_velocity   = speed;
-	m_data.m_jumpbugged = indicators.detection.m_jumpbugged;
-	m_data.m_edgebugged = indicators.detection.m_edgebugged;
+	m_data.m_jumpbugged = indicators.m_detection.m_jumpbugged;
+	m_data.m_edgebugged = indicators.m_detection.m_edgebugged;
 
 	velocity_history.push_back( m_data );
 	while ( velocity_history.size( ) > 300u )
@@ -36,61 +36,61 @@ void indicators_t::on_create_move_pre( )
 
 void indicators_t::on_create_move_post( )
 {
-	// detections
+	const auto move_type = globals.m_local->move_type( );
+	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly ||
+	     move_type == e_move_types::move_type_observer || prediction.m_data.m_movetype == e_move_types::move_type_ladder ||
+	     prediction.m_data.m_movetype == e_move_types::move_type_noclip || prediction.m_data.m_movetype == e_move_types::move_type_fly ||
+	     prediction.m_data.m_movetype == e_move_types::move_type_observer || globals.m_local->flags( ) & fl_onground ||
+	     prediction.m_data.m_flags & fl_onground ) {
+		indicators.m_detection.reset( );
+		return;
+	}
+
+	// edgebug detection
 	[ & ]( ) {
-		if ( utilities.is_in< int >( globals.m_local->move_type( ), invalid_move_types ) ||
-		     utilities.is_in< int >( prediction.m_data.m_movetype, invalid_move_types ) || globals.m_local->flags( ) & fl_onground ||
-		     prediction.m_data.m_flags & fl_onground ) {
-			indicators.detection.reset( );
+		if ( prediction.m_data.m_velocity.m_z > 0 || static_cast< int >( roundf( globals.m_local->velocity( ).m_z ) ) > 0.f ||
+		     round( globals.m_local->velocity( ).m_z ) == 0 ) {
+			indicators.m_detection.m_edgebugged = false;
 			return;
 		}
 
-		// edgebug detection
-		[]( ) {
-			if ( prediction.m_data.m_velocity.m_z > 0 || static_cast< int >( roundf( globals.m_local->velocity( ).m_z ) ) > 0.f ||
-			     round( globals.m_local->velocity( ).m_z ) == 0 ) {
-				indicators.detection.m_edgebugged = false;
-				return;
-			}
+		if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
+		     globals.m_local->velocity( ).m_z < -6.f && prediction.m_data.m_origin.m_z > globals.m_local->abs_origin( ).m_z ) {
+			const float before_detection_pred = globals.m_local->velocity( ).m_z;
+			const auto gravity                = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
 
-			if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
-			     globals.m_local->velocity( ).m_z < -6.f && prediction.m_data.m_origin.m_z > globals.m_local->abs_origin( ).m_z ) {
-				const float before_detection_pred = globals.m_local->velocity( ).m_z;
-				const auto gravity                = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
+			if ( std::floor( prediction.m_data.m_velocity.m_z ) < -7 && std::floor( before_detection_pred ) == -7 &&
+			     globals.m_local->velocity( ).length_2d( ) >= prediction.m_data.m_velocity.length_2d( ) ) {
+				indicators.m_detection.m_edgebugged = true;
+			} else {
+				prediction.begin( globals.m_cmd );
+				prediction.end( );
 
-				if ( std::floor( prediction.m_data.m_velocity.m_z ) < -7 && std::floor( before_detection_pred ) == -7 &&
-				     globals.m_local->velocity( ).length_2d( ) >= prediction.m_data.m_velocity.length_2d( ) ) {
-					indicators.detection.m_edgebugged = true;
+				float own_prediction   = roundf( ( -gravity * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
+				float rounded_velocity = roundf( globals.m_local->velocity( ).m_z );
+
+				if ( own_prediction == rounded_velocity ) {
+					indicators.m_detection.m_edgebugged = true;
 				} else {
-					prediction.begin( globals.m_cmd );
-					prediction.end( );
-
-					float own_prediction   = roundf( ( -gravity * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
-					float rounded_velocity = roundf( globals.m_local->velocity( ).m_z );
-
-					if ( own_prediction == rounded_velocity ) {
-						indicators.detection.m_edgebugged = true;
-					} else {
-						indicators.detection.m_edgebugged = false;
-					}
-
-					prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
-
-					prediction.begin( globals.m_cmd );
-					prediction.end( );
+					indicators.m_detection.m_edgebugged = false;
 				}
-			} else
-				indicators.detection.m_edgebugged = false;
-		}( );
 
-		[]( ) {
-			// jumpbug detection
-			if ( globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z && !indicators.detection.m_edgebugged &&
-			     !movement.m_pixelsurf_data.m_in_pixel_surf ) {
-				indicators.detection.m_jumpbugged = true;
-			} else
-				indicators.detection.m_jumpbugged = false;
-		}( );
+				prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+
+				prediction.begin( globals.m_cmd );
+				prediction.end( );
+			}
+		} else
+			indicators.m_detection.m_edgebugged = false;
+	}( );
+
+	[&]( ) {
+		// jumpbug detection
+		if ( globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z && !indicators.m_detection.m_edgebugged &&
+		     !movement.m_pixelsurf_data.m_in_pixel_surf ) {
+			indicators.m_detection.m_jumpbugged = true;
+		} else
+			indicators.m_detection.m_jumpbugged = false;
 	}( );
 }
 
@@ -163,18 +163,18 @@ void indicators_t::on_paint_traverse( )
 					  last_y = std::sqrt( ( ( ( current.m_velocity / 400.f ) * graph_height ) - graph_ratio ) *
 			                              ( ( ( current.m_velocity / 400.f ) * graph_height ) - graph_ratio ) );
 
-			c_unsigned_char_color graph_color = c_unsigned_char_color( 255.f, 255.f, 255.f, 255.f );
+			c_unsigned_char_color graph_color =
+				c_unsigned_char_color( 255.f, 255.f, 255.f, 255.f ); /* NOTE ~ dream, you are a fucking spastic kys pls (brazillian brain) */
 
 			for ( int i = 0; i < 45; i++ ) {
 				if ( data == i )
 					graph_color.a = 5 * i;
+
 				if ( data == ( velocity_history.size( ) - i ) )
 					graph_color.a = 5 * i;
 			}
 
 			if ( data != 0 ) {
-				// render main line
-
 				ImColor cur_color         = ImColor( 1.f, 1.f, 1.f, std::clamp( ( float )graph_color.a, 0.f, 255.f ) / 255.f );
 				ImColor cur_color_outline = ImColor( 0.f, 0.f, 0.f, std::clamp( ( float )graph_color.a, 0.f, 255.f ) / 255.f );
 
@@ -307,7 +307,7 @@ void indicators_t::on_paint_traverse( )
 
 		float offset = 0.f;
 
-		const auto render_indicator = [ & ]( const char* indicator_name, const c_color& color, bool active ) {
+		constexpr auto render_indicator = [ & ]( const char* indicator_name, const c_color& color, bool active ) {
 			ImAnimationHelper indicator_animation = ImAnimationHelper( fnv1a::hash( indicator_name ), ImGui::GetIO( ).DeltaTime );
 			indicator_animation.Update( 2.f, active ? 2.f : -2.f );
 
@@ -405,6 +405,6 @@ void indicators_t::on_paint_traverse( )
 
 void indicators_t::detection_data::reset( )
 {
-	indicators.detection.m_edgebugged = false;
-	indicators.detection.m_jumpbugged = false;
+	indicators.m_detection.m_edgebugged = false;
+	indicators.m_detection.m_jumpbugged = false;
 }

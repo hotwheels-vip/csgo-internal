@@ -7,11 +7,13 @@ struct indicators_t {
 		bool m_edgebugged{ };
 		bool m_jumpbugged{ };
 	};
+
 	struct detection_data {
 		void reset( );
+
 		bool m_jumpbugged{ };
 		bool m_edgebugged{ };
-	} detection;
+	} m_detection;
 
 	void on_paint_traverse( );
 

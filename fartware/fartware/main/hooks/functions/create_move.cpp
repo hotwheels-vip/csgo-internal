@@ -35,7 +35,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			movement.m_edgebug_data.reset( );
 			movement.m_pixelsurf_data.reset( );
 			movement.m_autoduck_data.reset( );
-			indicators.detection.reset( );
+			indicators.m_detection.reset( );
 			return;
 		}
 

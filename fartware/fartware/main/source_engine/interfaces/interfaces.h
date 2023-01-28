@@ -12,6 +12,7 @@
 #include "../classes/c_localize.h"
 #include "../classes/c_material_system.h"
 #include "../classes/c_mdl_cache.h"
+#include "../classes/c_model_info.h"
 #include "../classes/c_panel.h"
 #include "../classes/c_prediction.h"
 #include "../classes/c_surface.h"
@@ -50,6 +51,7 @@ struct interfaces_t {
 	c_model_render* m_model_render             = nullptr;
 	c_material_system* m_material_system       = nullptr;
 	c_game_event_manager2* m_game_event        = nullptr;
+	c_model_info* m_model_info                 = nullptr;
 };
 
 inline interfaces_t interfaces = { };

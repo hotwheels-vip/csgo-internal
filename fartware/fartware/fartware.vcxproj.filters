@@ -223,6 +223,7 @@
     <ClInclude Include="main\utilities\event_listener\event_listener.h" />
     <ClInclude Include="main\features\lagcomp\lagcomp.h" />
     <ClInclude Include="main\features\visuals\world\world.h" />
+    <ClInclude Include="main\source_engine\classes\c_model_info.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />

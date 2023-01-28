@@ -17,7 +17,50 @@
  *  ~ lua (jit)
  */
 
-static DWORD WINAPI on_attach( void* instance )
+/* He's a big chungus
+He's a big chunky boi
+Such a big bun, yes
+We are so overjoyed
+To have a big chunky boi
+A big and wonderful chungus such as he
+Oh such as he
+He's a big chungus
+He's a big chunky boi
+Such a big bun, yes
+We are so overjoyed
+To have a big chunky boi
+A big and wonderful chungus such as he
+Oh, such as he
+Huh
+Buns come in all shapes and all sizes
+This one has so many surprises
+I've never seen a giant quite like him
+There's no one like him
+Nobody like chungus
+Huh
+Get the game for PS4
+For a limited time
+Huh
+Don't miss what it has in store
+You're running out of time
+Play the game of the year
+The game with that colossal boi
+He's a big chungus
+He's a big chunky boi
+Such a big bun, yes
+We are so overjoyed
+To have a big chunky boi
+A big and wonderful chungus such as he
+Oh, such as he
+Huh
+Buns come in all shapes and all sizes
+This one has so many surprises
+I've never seen a giant quite like him
+There's no one like him
+Nobody like chungus
+Huh */
+
+static unsigned long WINAPI on_attach( void* instance )
 {
 	[ & ]( ) {
 		while ( !utilities.get_module_handle( ( "serverbrowser.dll" ) ) )
@@ -115,7 +158,7 @@ static DWORD WINAPI on_attach( void* instance )
 		console.on_release( );
 	}( );
 
-	LI_FN( FreeLibraryAndExitThread )( static_cast< HMODULE >( instance ), 0 );
+	LI_FN( FreeLibrary )( static_cast< HMODULE >( instance ) );
 
 	return 0;
 }
@@ -125,8 +168,7 @@ int __stdcall DllMain( void* instance, unsigned long call_reason, void* reserved
 	if ( call_reason == DLL_PROCESS_ATTACH ) {
 		LI_FN( DisableThreadLibraryCalls )( reinterpret_cast< HMODULE >( instance ) );
 
-		if ( const auto thread = LI_FN( CreateThread )( nullptr, 0, on_attach, instance, 0, nullptr ); thread )
-			LI_FN( CloseHandle )( thread );
+		std::thread( on_attach, instance ).detach( );
 	}
 
 	return TRUE;
