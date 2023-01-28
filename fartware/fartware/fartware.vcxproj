@@ -182,6 +182,7 @@
     <ClInclude Include="main\source_engine\structs\bounding_box_t.h" />
     <ClInclude Include="main\source_engine\structs\key_bind_t.h" />
     <ClInclude Include="main\source_engine\structs\matrix_t.h" />
+    <ClInclude Include="main\source_engine\structs\studio.h" />
     <ClInclude Include="main\utilities\console\console.h" />
     <ClInclude Include="main\utilities\event_listener\event_listener.h" />
     <ClInclude Include="main\utilities\input\input.h" />
