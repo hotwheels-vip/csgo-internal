@@ -533,12 +533,10 @@ void players_t::on_end_scene( )
 	const auto title_text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 		render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
 
-	// TODO @ float :
-	//  add spectator list fade in/out when spectator_data isnt empty anymore,
-	//  i would do it but im scared to touch this code . sorry
+	ImAnimationHelper spectators_list_ui_animation = ImAnimationHelper( ImHashStr( "hotwheels-spectators-list-ui" ), ImGui::GetIO( ).DeltaTime );
+	spectators_list_ui_animation.Update( 2.f, !( spectator_data.empty( ) ) ? 2.f : -2.f );
 
-	if ( spectator_data.empty( ) )
-		return;
+	ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_Alpha, spectators_list_ui_animation.AnimationData->second );
 
 	ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 20.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
 	ImGui::Begin( ( "hotwheels-spectators-list-ui" ), 0,
@@ -556,7 +554,8 @@ void players_t::on_end_scene( )
 			/* render background */
 			ImGui::PushClipRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + background_height ), false );
 			draw_list->AddRectFilled( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + background_height ),
-			                          ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f, 1.f ), ImGui::GetStyle( ).WindowRounding,
+			                          ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f, spectators_list_ui_animation.AnimationData->second ),
+			                          ImGui::GetStyle( ).WindowRounding,
 			                          ImDrawFlags_RoundCornersTop );
 			ImGui::PopClipRect( );
 
@@ -567,11 +566,12 @@ void players_t::on_end_scene( )
 			draw_list->AddText(
 				render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
 				ImVec2( position.x + ( ( size.x - title_text_size.x ) / 2.f ), position.y + ( ( background_height - title_text_size.y ) / 2.f ) ),
-				ImColor( 1.f, 1.f, 1.f ), title_text );
+				ImColor( 1.f, 1.f, 1.f, spectators_list_ui_animation.AnimationData->second ), title_text );
 
 			/* render outline */
-			ImGui::PushClipRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + size.y ), false );
-			draw_list->AddRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + size.y ), ImColor( 50, 50, 50, 255 ),
+			ImGui::PushClipRect( ImVec2( position.x + 1.f, position.y + 1.f ), ImVec2( position.x + size.x - 1.f, position.y + size.y - 1.f ), false );
+			draw_list->AddRect( ImVec2( position.x  + 1.f, position.y + 1.f ), ImVec2( position.x + size.x  - 1.f, position.y + size.y - 1.f ),
+			                    ImColor( 50 / 255.f, 50 / 255.f, 50 / 255.f, spectators_list_ui_animation.AnimationData->second ),
 			                    ImGui::GetStyle( ).WindowRounding );
 			ImGui::PopClipRect( );
 		}( );
@@ -579,12 +579,14 @@ void players_t::on_end_scene( )
 		ImGui::SetCursorPosY( 30.f );
 
 		for ( const auto& data : spectator_data ) {
-			ImGui::Image( data.m_avatar, ImVec2( 13, 13 ), ImVec2( 0, 0 ), ImVec2( 1, 1 ) );
+			ImGui::Image( data.m_avatar, ImVec2( 14, 14 ), ImVec2( 0, 0 ), ImVec2( 1, 1 ) );
 			ImGui::SameLine( );
 			ImGui::TextColored( data.m_color.get_vec4( ), data.m_text.c_str( ) );
 		}
 	}
 	ImGui::End( );
+
+	ImGui::PopStyleVar( );
 }
 
 bool players_t::on_attach( )

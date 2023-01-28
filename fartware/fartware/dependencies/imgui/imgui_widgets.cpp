@@ -1080,9 +1080,9 @@ void ImGui::Image( ImTextureID user_texture_id, const ImVec2& size, const ImVec2
 	if ( border_col.w > 0.0f ) {
 		window->DrawList->AddRect( bb.Min, bb.Max, GetColorU32( border_col ), 0.0f );
 		window->DrawList->AddImageRounded( user_texture_id, bb.Min + ImVec2( 1, 1 ), bb.Max - ImVec2( 1, 1 ), uv0, uv1, GetColorU32( tint_col ),
-		                                   3.f );
+		                                   6.f );
 	} else
-		window->DrawList->AddImageRounded( user_texture_id, bb.Min, bb.Max, uv0, uv1, GetColorU32( tint_col ), 3.f );
+		window->DrawList->AddImageRounded( user_texture_id, bb.Min, bb.Max, uv0, uv1, GetColorU32( tint_col ), 6.f );
 }
 
 // ImageButton() is flawed as 'id' is always derived from 'texture_id' (see #2464 #1390)
