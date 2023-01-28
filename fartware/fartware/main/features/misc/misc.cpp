@@ -61,8 +61,7 @@ void misc_t::on_paint_traverse( )
 void misc_t::on_end_scene( )
 {
 	// functions that require player to be ingame
-	if ( !globals.m_local || !interfaces.m_engine->is_in_game( ) ||
-	     globals.m_local->get_observer_mode( ) == e_obs_mode::obs_mode_deathcam )
+	if ( !globals.m_local || !interfaces.m_engine->is_in_game( ) || globals.m_local->get_observer_mode( ) == e_obs_mode::obs_mode_deathcam )
 		return;
 
 	// practice window
@@ -80,7 +79,7 @@ void misc_t::on_end_scene( )
 		constexpr auto background_height = 25.f;
 		constexpr auto title_text        = "practice";
 		const auto title_text_size       = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-				  render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
+            render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
 
 		ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 25.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
 		ImGui::Begin( ( "hotwheels-practice-window-ui" ), 0,
@@ -112,8 +111,10 @@ void misc_t::on_end_scene( )
 					ImColor( 1.f, 1.f, 1.f ), title_text );
 
 				/* render outline */
-				ImGui::PushClipRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + size.y ), false );
-				draw_list->AddRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + size.y ), ImColor( 50, 50, 50, 255 ),
+				ImGui::PushClipRect( ImVec2( position.x + 1.f, position.y + 1.f ), ImVec2( position.x + size.x - 1.f, position.y + size.y - 1.f ),
+				                     false );
+				draw_list->AddRect( ImVec2( position.x + 1.f, position.y + 1.f ), ImVec2( position.x + size.x - 1.f, position.y + size.y - 1.f ),
+				                    ImColor( 50 / 255.f, 50 / 255.f, 50 / 255.f ),
 				                    ImGui::GetStyle( ).WindowRounding );
 				ImGui::PopClipRect( );
 			}( );
