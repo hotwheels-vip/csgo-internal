@@ -103,7 +103,7 @@ bool c_base_entity::has_bomb( )
 
 c_player_animation_layer* c_base_entity::get_anim_layers( )
 {
-	return *( c_player_animation_layer** )( ( DWORD )this + 0x2990 );
+	return *reinterpret_cast< c_player_animation_layer** >( reinterpret_cast< DWORD >( this ) + 0x2990 );
 }
 
 c_player_animation_layer* c_base_entity::get_anim_layer( const int i )
@@ -125,36 +125,34 @@ void c_base_entity::set_animation_layers( c_player_animation_layer* layers )
 
 int c_base_entity::get_sequence_activity( int sequence )
 {
-	// WE NEED STUDIO MODEL FUNCTIONS ALREADY HOLY FUCK
+	const auto model = this->client_renderable( )->model( );
+	if ( !model )
+		return -1;
 
-	// auto hdr = interfaces.mdl_info->get_studio_model( this->get_model( ) );
-	//
-	// if ( !hdr )
-	//	return -1;
-	//
-	// static auto get_sequence_activity = utilities::find_signature( xorstr_( "client.dll" ), xorstr_( "55 8B EC 53 8B 5D 08 56 8B F1 83" ) )
-	//                                         .cast< int( __fastcall* )( void*, studiohdr_t*, int ) >( );
-	//
-	// return get_sequence_activity( this, hdr, sequence );
+	const auto studio_hdr = interfaces.m_model_info->get_studio_model( model );
+	if ( !studio_hdr )
+		return -1;
 
-	return 0;
+	static auto get_sequence_activity = reinterpret_cast< int( __fastcall* )( void*, studiohdr_t*, int ) >(
+		memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 53 8B 5D 08 56 8B F1 83" ) ) );
+
+	return get_sequence_activity( this, studio_hdr, sequence );
 }
 
 bool c_base_entity::reloading( )
 {
 	c_player_animation_layer* layer = this->get_anim_layer( 1 );
+
 	if ( !layer )
 		return false;
 
 	if ( !layer->owner )
 		return false;
 
-	auto activity = this->get_sequence_activity( layer->sequence );
-
-	if ( activity == 967 && layer->weight != 0.f )
+	if ( const auto activity = this->get_sequence_activity( layer->sequence ); activity == 967 && layer->weight != 0.f )
 		return true;
-	else
-		return false;
+
+	return false;
 }
 
 bool c_base_entity::is_visible( c_base_entity* entity, const c_vector& end_position )

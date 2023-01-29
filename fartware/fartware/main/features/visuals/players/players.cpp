@@ -309,10 +309,10 @@ void players_t::on_paint_traverse( )
 				padding[ e_padding_direction::padding_direction_right ] += text_size.y;
 			}
 			if ( config.get< std::vector< bool > >( variables.m_visuals.m_player_flags )[ e_player_flags::player_flag_reloading ] ) {
-				// if (!entity->reloading nigga)
-				return;
+				if ( !entity->reloading( ) )
+					return;
 
-				const auto text = "reloading";
+				constexpr static auto text = "reloading";
 
 				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, text );
@@ -332,7 +332,7 @@ void players_t::on_paint_traverse( )
 				if ( !entity->has_bomb( ) )
 					return;
 
-				const auto text = "bomb";
+				constexpr static auto text = "bomb";
 
 				const auto text_size = render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, text );
@@ -536,6 +536,10 @@ void players_t::on_end_scene( )
 	ImAnimationHelper spectators_list_ui_animation = ImAnimationHelper( ImHashStr( "hotwheels-spectators-list-ui" ), ImGui::GetIO( ).DeltaTime );
 	spectators_list_ui_animation.Update( 2.f, !( spectator_data.empty( ) ) ? 2.f : -2.f );
 
+	// if alpha too low dont run rest of the code
+	if ( spectators_list_ui_animation.AnimationData->second < 0.02f )
+		return;
+
 	ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_Alpha, spectators_list_ui_animation.AnimationData->second );
 
 	ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 20.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
@@ -555,8 +559,7 @@ void players_t::on_end_scene( )
 			ImGui::PushClipRect( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + background_height ), false );
 			draw_list->AddRectFilled( ImVec2( position.x, position.y ), ImVec2( position.x + size.x, position.y + background_height ),
 			                          ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f, spectators_list_ui_animation.AnimationData->second ),
-			                          ImGui::GetStyle( ).WindowRounding,
-			                          ImDrawFlags_RoundCornersTop );
+			                          ImGui::GetStyle( ).WindowRounding, ImDrawFlags_RoundCornersTop );
 			ImGui::PopClipRect( );
 
 			/* render gradient */
@@ -569,8 +572,9 @@ void players_t::on_end_scene( )
 				ImColor( 1.f, 1.f, 1.f, spectators_list_ui_animation.AnimationData->second ), title_text );
 
 			/* render outline */
-			ImGui::PushClipRect( ImVec2( position.x + 1.f, position.y + 1.f ), ImVec2( position.x + size.x - 1.f, position.y + size.y - 1.f ), false );
-			draw_list->AddRect( ImVec2( position.x  + 1.f, position.y + 1.f ), ImVec2( position.x + size.x  - 1.f, position.y + size.y - 1.f ),
+			ImGui::PushClipRect( ImVec2( position.x + 1.f, position.y + 1.f ), ImVec2( position.x + size.x - 1.f, position.y + size.y - 1.f ),
+			                     false );
+			draw_list->AddRect( ImVec2( position.x + 1.f, position.y + 1.f ), ImVec2( position.x + size.x - 1.f, position.y + size.y - 1.f ),
 			                    ImColor( 50 / 255.f, 50 / 255.f, 50 / 255.f, spectators_list_ui_animation.AnimationData->second ),
 			                    ImGui::GetStyle( ).WindowRounding );
 			ImGui::PopClipRect( );

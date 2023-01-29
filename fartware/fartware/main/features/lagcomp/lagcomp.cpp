@@ -2,6 +2,21 @@
 #include "../../convars/convars.h"
 #include "../../includes.h"
 
+/*leaving as note*/
+
+/*
+ignore bones
+iirc these are like 2k18 offsets & sigs
+This should fix pred errors whilst lagging
+& help with packet send time
+
+https://pastebin.com/G3tHYtb0
+
+https://pastebin.com/uBmsSwdQ
+
+https://pastebin.com/u25RVqLw
+*/
+
 float lagcomp_t::lerp_time( )
 {
 	static auto *cl_updaterate              = convars.find( fnv1a::hash_const( "sv_maxupdaterate" ) ),
