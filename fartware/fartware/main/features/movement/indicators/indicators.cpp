@@ -46,49 +46,55 @@ void indicators_t::on_create_move_post( )
 		return;
 	}
 
+	static auto gravity = convars.find( fnv1a::hash_const( "sv_gravity" ) );
+
 	// edgebug detection
 	[ & ]( ) {
-		if ( prediction.m_data.m_velocity.m_z > 0 || static_cast< int >( roundf( globals.m_local->velocity( ).m_z ) ) > 0.f ||
-		     round( globals.m_local->velocity( ).m_z ) == 0 ) {
+		if ( prediction.m_data.m_velocity.m_z > 0 || globals.m_local->move_type( ) & move_type_noclip ||
+		     globals.m_local->move_type( ) & move_type_ladder ) {
 			indicators.m_detection.m_edgebugged = false;
 			return;
 		}
 
-		if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
-		     globals.m_local->velocity( ).m_z < -6.f && prediction.m_data.m_origin.m_z > globals.m_local->abs_origin( ).m_z ) {
-			const float before_detection_pred = globals.m_local->velocity( ).m_z;
-			const auto gravity                = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
+		if ( round( globals.m_local->velocity( ).m_z ) == 0 || prediction.m_data.m_flags & fl_onground ) {
+			indicators.m_detection.m_edgebugged = false;
 
-			if ( std::floor( prediction.m_data.m_velocity.m_z ) < -7 && std::floor( before_detection_pred ) == -7 &&
+		} else if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
+		            globals.m_local->velocity( ).m_z < -6.f && !( globals.m_local->flags( ) & fl_onground ) &&
+		            prediction.m_data.m_origin.m_z > globals.m_local->abs_origin( ).m_z ) {
+			if ( std::floor( prediction.m_data.m_velocity.m_z ) < -7 && std::floor( globals.m_local->velocity( ).m_z ) == -7 &&
 			     globals.m_local->velocity( ).length_2d( ) >= prediction.m_data.m_velocity.length_2d( ) ) {
 				indicators.m_detection.m_edgebugged = true;
+
 			} else {
-				prediction.begin( globals.m_cmd );
-				prediction.end( );
-
-				float own_prediction   = roundf( ( -gravity * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
-				float rounded_velocity = roundf( globals.m_local->velocity( ).m_z );
-
-				if ( own_prediction == rounded_velocity ) {
-					indicators.m_detection.m_edgebugged = true;
-				} else {
-					indicators.m_detection.m_edgebugged = false;
-				}
-
-				prediction.restore_entity_to_predicted_frame( interfaces.m_prediction->m_commands_predicted - 1 );
+				float previous_velocity = globals.m_local->velocity( ).m_z;
 
 				prediction.begin( globals.m_cmd );
 				prediction.end( );
+
+				float expected_vertical_velocity =
+					std::roundf( ( -gravity->get_float( ) ) * memory.m_globals->m_interval_per_tick + previous_velocity );
+
+				indicators.m_detection.m_edgebugged = expected_vertical_velocity == std::roundf( globals.m_local->velocity( ).m_z );
 			}
 		} else
 			indicators.m_detection.m_edgebugged = false;
 	}( );
 
-	[&]( ) {
+	[ & ]( ) {
 		// jumpbug detection
 		if ( globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z && !indicators.m_detection.m_edgebugged &&
-		     !movement.m_pixelsurf_data.m_in_pixel_surf ) {
-			indicators.m_detection.m_jumpbugged = true;
+		     !movement.m_pixelsurf_data.m_in_pixel_surf && !( prediction.m_data.m_flags & e_flags::fl_onground ) &&
+		     !( globals.m_local->flags( ) & e_flags::fl_onground ) && !( prediction.m_data.m_flags & e_flags::fl_partialground ) &&
+		     !( globals.m_local->flags( ) & e_flags::fl_partialground ) ) {
+			float previous_velocity = globals.m_local->velocity( ).m_z;
+
+			prediction.begin( globals.m_cmd );
+			prediction.end( );
+
+			float expected_vertical_velocity = std::roundf( ( -gravity->get_float( ) ) * memory.m_globals->m_interval_per_tick + previous_velocity );
+
+			indicators.m_detection.m_jumpbugged = expected_vertical_velocity == std::roundf( globals.m_local->velocity( ).m_z );
 		} else
 			indicators.m_detection.m_jumpbugged = false;
 	}( );

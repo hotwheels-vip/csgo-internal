@@ -124,8 +124,7 @@ void movement_t::on_create_move_post( )
 		if ( !can_jump_bug )
 			return;
 
-		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
-		{
+		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) ) {
 			static bool ducked = false;
 
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -136,9 +135,7 @@ void movement_t::on_create_move_post( )
 
 			if ( prediction.m_data.m_flags & e_flags::fl_onground && ducked )
 				ducked = false;
-		}
-		else
-		{
+		} else {
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
 
@@ -619,8 +616,8 @@ void movement_t::handle_edgebug_view_point( )
 
 void movement_t::detect_edgebug( c_user_cmd* cmd )
 {
-	if ( !globals.m_local || !globals.m_local->is_alive( ) || prediction.m_data.m_velocity.m_z > 0 ||
-	     globals.m_local->move_type( ) & move_type_noclip || globals.m_local->move_type( ) & move_type_ladder ) {
+	if ( prediction.m_data.m_velocity.m_z > 0 || globals.m_local->move_type( ) & move_type_noclip ||
+	     globals.m_local->move_type( ) & move_type_ladder ) {
 		m_edgebug_data.m_will_edgebug = false;
 		m_edgebug_data.m_will_fail    = true;
 		return;
@@ -632,27 +629,22 @@ void movement_t::detect_edgebug( c_user_cmd* cmd )
 	} else if ( prediction.m_data.m_velocity.m_z < -6.f && globals.m_local->velocity( ).m_z > prediction.m_data.m_velocity.m_z &&
 	            globals.m_local->velocity( ).m_z < -6.f && !( globals.m_local->flags( ) & fl_onground ) &&
 	            prediction.m_data.m_origin.m_z > globals.m_local->abs_origin( ).m_z ) {
-		const float before_detection_pred = globals.m_local->velocity( ).m_z;
-		const auto gravity                = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
+		const auto gravity = convars.find( fnv1a::hash_const( "sv_gravity" ) )->get_float( );
 
-		if ( std::floor( prediction.m_data.m_velocity.m_z ) < -7 && std::floor( before_detection_pred ) == -7 &&
+		if ( std::floor( prediction.m_data.m_velocity.m_z ) < -7 && std::floor( globals.m_local->velocity( ).m_z ) == -7 &&
 		     globals.m_local->velocity( ).length_2d( ) >= prediction.m_data.m_velocity.length_2d( ) ) {
 			m_edgebug_data.m_will_edgebug = true;
 			m_edgebug_data.m_will_fail    = false;
 		} else {
-			prediction.begin( cmd );
+			float previous_velocity = globals.m_local->velocity( ).m_z;
+
+			prediction.begin( globals.m_cmd );
 			prediction.end( );
 
-			float own_prediction   = round( ( -gravity * memory.m_globals->m_interval_per_tick ) + before_detection_pred );
-			float rounded_velocity = round( globals.m_local->velocity( ).m_z );
+			float expected_vertical_velocity = std::roundf( ( -gravity ) * memory.m_globals->m_interval_per_tick + previous_velocity );
 
-			if ( own_prediction == rounded_velocity ) {
-				m_edgebug_data.m_will_edgebug = true;
-				m_edgebug_data.m_will_fail    = false;
-			} else {
-				m_edgebug_data.m_will_edgebug = false;
-				m_edgebug_data.m_will_fail    = true;
-			}
+			m_edgebug_data.m_will_edgebug = expected_vertical_velocity == std::roundf( globals.m_local->velocity( ).m_z );
+			m_edgebug_data.m_will_fail    = !( expected_vertical_velocity == std::roundf( globals.m_local->velocity( ).m_z ) );
 		}
 	}
 }
