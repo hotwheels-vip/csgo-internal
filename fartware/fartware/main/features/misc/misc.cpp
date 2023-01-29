@@ -11,14 +11,15 @@ void misc_t::on_paint_traverse( )
 
 void misc_t::on_end_scene( )
 {
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
 	[ & ]( const bool can_draw_watermark ) {
 		if ( !can_draw_watermark )
 			return;
 
-		const ImColor white        = ImColor( 1.f, 1.f, 1.f, 1.f );
-		const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
-		const ImColor grey         = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_TextDisabled );
-		const ImColor black        = ImColor( 0.f, 0.f, 0.f, 1.f );
+		const ImColor white = ImColor( 1.f, 1.f, 1.f, 1.f );
+		const ImColor grey  = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_TextDisabled );
+		const ImColor black = ImColor( 0.f, 0.f, 0.f, 1.f );
 
 		static float frame_rate_f = 1.0f;
 		frame_rate_f              = ( 0.9f * frame_rate_f ) + ( 0.1f * memory.m_globals->m_abs_frame_time ); /* TODO ~ store this globally */
@@ -27,9 +28,10 @@ void misc_t::on_end_scene( )
 
 		ImGui::SetNextWindowSize( ImVec2( -1, 29.f ), ImGuiCond_::ImGuiCond_Always );
 		ImGui::SetNextWindowPos( ImVec2( globals.m_display_size.x - width - 5.f, 5.f ), ImGuiCond_::ImGuiCond_Always );
-		ImGui::Begin( ( "hotwheels-practice-window-ui" ), 0,
+		ImGui::Begin( ( "hotwheels-watermark-window-ui" ), 0,
 		              ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar |
-		                  ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize );
+		                  ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize |
+		                  ImGuiWindowFlags_::ImGuiWindowFlags_NoMove );
 		{
 			const auto window = ImGui::GetCurrentWindow( );
 
@@ -58,7 +60,7 @@ void misc_t::on_end_scene( )
 			ImGui::SameLine( );
 
 			ImGui::Text( std::to_string( frame_rate_f != 0.0f ? static_cast< int >( 1 / frame_rate_f ) : 0 ).c_str( ) );
-			
+
 			ImGui::SameLine( );
 
 			ImGui::TextColored( grey, "fps" );
@@ -83,8 +85,6 @@ void misc_t::on_end_scene( )
 
 		if ( !globals.m_local->is_alive( ) )
 			return;
-
-		const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
 		constexpr auto background_height = 25.f;
 		constexpr auto title_text        = "practice";
