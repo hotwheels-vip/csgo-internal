@@ -33,6 +33,9 @@ void avatar_cache_t::on_add_entity( c_base_entity* entity )
 
 	const int index = entity->index( );
 
+	if ( !( index >= 1 && index <= 64 ) )
+		return;
+
 	player_info_t player_info = { };
 	if ( !interfaces.m_engine->get_player_info( index, &player_info ) )
 		return;
@@ -47,6 +50,9 @@ void avatar_cache_t::on_remove_entity( c_base_entity* entity )
 		return;
 
 	const int index = entity->index( );
+
+		if ( !( index >= 1 && index <= 64 ) )
+		return;
 
 	player_info_t player_info = { };
 	if ( !interfaces.m_engine->get_player_info( index, &player_info ) )
