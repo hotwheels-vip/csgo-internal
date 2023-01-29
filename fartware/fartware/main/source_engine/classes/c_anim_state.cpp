@@ -7,17 +7,16 @@ void c_anim_state::modify_eye_position( c_vector& input_eye_pos )
 	if ( interfaces.m_engine->is_hltv( ) || interfaces.m_engine->is_playing_demo( ) )
 		return;
 
-	const auto entity = this->player;
-	if ( !entity )
+	if ( !this->player )
 		return;
 
-	const auto ground_entity = interfaces.m_client_entity_list->get_client_entity_from_handle( entity->ground_entity( ) );
+	const auto ground_entity = interfaces.m_client_entity_list->get_client_entity_from_handle( this->player->ground_entity( ) );
 	if ( !this->landing && this->anim_duck_amount == 0.f && ground_entity )
 		return;
 
-	if ( int head_bone_number = player->lookup_bone( "head_0" ); head_bone_number != -1 ) {
+	if ( int head_bone_number = this->player->get_bone_by_hash( fnv1a::hash_const("head_0") ); head_bone_number != -1 ) {
 		c_vector head_position{ };
-		player->get_bone_position( head_bone_number, head_position );
+		this->player->get_bone_position( head_bone_number, head_position );
 
 		head_position.m_z += 1.7f;
 

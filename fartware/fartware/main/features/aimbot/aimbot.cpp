@@ -44,8 +44,6 @@ void aimbot_t::on_create_move_post( )
 	float field_of_view     = 20.f;
 	const auto eye_position = globals.m_local->eye_position( );
 
-	constexpr auto get_bone_index = [ & ]( c_base_entity* entity, const char* bone_name ) { return entity->lookup_bone( bone_name ); };
-
 	const auto get_best_entity = [ & ]( ) {
 		c_base_entity* best_entity = nullptr;
 
@@ -54,7 +52,7 @@ void aimbot_t::on_create_move_post( )
 			     entity == globals.m_local ) /* TODO ~ add entity->is_valid() check with params (check for team, dormant etc) */
 				return;
 
-			if ( int head_bone_number = get_bone_index( entity, "head_0" ); head_bone_number != -1 ) {
+			if ( int head_bone_number = entity->get_bone_by_hash( fnv1a::hash_const( "head_0" ) ); head_bone_number != -1 ) {
 				c_vector head_position{ };
 				entity->get_bone_position( head_bone_number, head_position );
 
@@ -72,20 +70,17 @@ void aimbot_t::on_create_move_post( )
 		return best_entity;
 	};
 
-	const auto best_entity = get_best_entity( );
+	const auto entity = get_best_entity( );
 
-	if ( !best_entity )
+	if ( !entity )
 		return;
 
-	if ( int head_bone_number = get_bone_index( best_entity, "head_0" ); head_bone_number != -1 ) {
-		/*if ( auto active_weapon = reinterpret_cast< c_base_entity* >(
-		         interfaces.m_client_entity_list->get_client_entity_from_handle( globals.m_local->active_weapon_handle( ) ) );
-		     active_weapon && active_weapon->can_shoot( ) ) {*/
+	if ( int head_bone_number = entity->get_bone_by_hash( fnv1a::hash_const( "head_0" ) ); head_bone_number != -1 ) {
 
 		c_vector head_position{ };
-		best_entity->get_bone_position( head_bone_number, head_position );
+		entity->get_bone_position( head_bone_number, head_position );
 
-		if ( !globals.m_local->is_visible( best_entity, head_position ) )
+		if ( !globals.m_local->is_visible( entity, head_position ) )
 			return;
 
 		c_angle delta = mathematics.calculate_angle( eye_position, head_position ) - globals.m_cmd->m_view_point;
@@ -97,6 +92,5 @@ void aimbot_t::on_create_move_post( )
 
 		globals.m_cmd->m_view_point += delta;
 		interfaces.m_engine->set_view_angles( globals.m_cmd->m_view_point );
-		/*}*/
 	}
 }

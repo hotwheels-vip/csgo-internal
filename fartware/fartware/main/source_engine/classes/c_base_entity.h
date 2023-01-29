@@ -3,6 +3,7 @@
 
 #include "c_user_cmd.h"
 #include "c_vector.h"
+#include "c_model_info.h"
 
 #include "../classes/c_weapon_data.h"
 #include "../structs/bounding_box_t.h"
@@ -52,7 +53,6 @@ public:
 
 constexpr float max_health = 100.f /* todo ~ dont hard codenz (there is a netvar) */;
 
-class c_model;
 class c_base_client;
 
 enum e_glow_style : int {
@@ -85,11 +85,27 @@ public:
 	}
 };
 
+class c_client_renderable
+{
+private:
+	enum e_indexes {
+		_model   = 8,
+	};
+
+public:
+	model_t* model( )
+	{
+		using fn = model_t*( __thiscall* )( void* );
+		return ( *( fn** )this )[ this->e_indexes::_model ]( this );
+	}
+};
+
 class c_base_entity
 {
 private:
 	enum e_indexes {
 		_collideable             = 3,
+		_client_renderable             = 5,
 		_client_class            = 2,
 		_abs_origin              = 10,
 		_data_desc_map           = 15,
@@ -104,11 +120,6 @@ private:
 	};
 
 public:
-	void* networkable( )
-	{
-		return reinterpret_cast< void* >( uintptr_t( this ) + 0x8 );
-	}
-
 	data_map_t* data_desc_map( )
 	{
 		using fn = data_map_t*( __thiscall* )( c_base_entity* );
@@ -127,11 +138,10 @@ public:
 		return ( *( fn** )this )[ this->e_indexes::_collideable ]( this );
 	}
 
-	/* NOTE ~ don't think this works. Sorry Sirss */
-	c_base_client* client_class( )
+	c_client_renderable* client_renderable( )
 	{
-		using fn = c_base_client*( __thiscall* )( void* );
-		return ( *( fn** )networkable( ) )[ this->e_indexes::_client_class ]( networkable( ) );
+		using fn = c_client_renderable*( __thiscall* )( c_base_entity* );
+		return ( *( fn** )this )[ this->e_indexes::_client_renderable ]( this );
 	}
 
 	bool is_player( )
@@ -217,7 +227,7 @@ public:
 		return ( *( fn** )this )[ this->e_indexes::_abs_origin ]( this );
 	}
 
-	int lookup_bone( const char* bone );
+	int get_bone_by_hash( const unsigned int bone_hash );
 
 	void get_bone_position( const int bone, c_vector& origin );
 

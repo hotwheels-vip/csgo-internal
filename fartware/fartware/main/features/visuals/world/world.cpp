@@ -5,18 +5,7 @@
 
 void world_t::on_frame_stage_notify( e_client_frame_stage stage )
 {
-	// const int max_index = interfaces.m_client_entity_list->get_highest_entity_index( );
 
-	// if ( stage == e_client_frame_stage::start ) {
-	//	for ( int i = 0; i < max_index; i++ /* NOTE ~ i don't like this, i will add an edict cache as well as player cache. . this is sus.. sy. */ ) {
-	//		const auto entity = reinterpret_cast< c_fog_controller* >( interfaces.m_client_entity_list->get_client_entity( i ) );
-
-	//		if ( !entity || entity->is_player( ) || entity->is_dormant( ) || entity->client_class()->m_class_id != e_class_index::cfogcontroller )
-	//			continue;
-
-	//		/* TODO ~ check if Shutdown() is being called, if so, disable fog */
-	//	}
-	//}
 }
 
 bool world_t::on_draw_view_models( c_view_setup& setup )
@@ -33,10 +22,10 @@ bool world_t::on_draw_view_models( c_view_setup& setup )
 
 	bool blur_forward        = false; // should we blur forward | default: true
 	float rotation_intensity = 1.f;   // rotation intensity (flicking) | default: 1.f
-	float blur_strength      = 1.f;   // blur strength | default: 1.f
-	float falling_min        = 10.f;  // falling blur factor min | default: 10.f
-	float falling_max        = 20.f;  // falling blur factor max | default: 20.f
-	float falling_intensity  = 1.f;   // falling intensity (blur amount) | default: 1.f
+	float blur_strength      = 2.f;   // blur strength | default: 1.f
+	float falling_min        = 5.f;  // falling blur factor min | default: 10.f
+	float falling_max        = 10.f;  // falling blur factor max | default: 20.f
+	float falling_intensity  = 0.f;   // falling intensity (blur amount) | default: 1.f
 	float roll_intensity     = 0.3f;  // roll intensity (blur amount) | default: 0.3f
 
 	static motion_blur_history_t history;

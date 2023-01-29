@@ -6,6 +6,7 @@
 #include "../../memory/memory.h"
 #include "../enumerations/e_flags.h"
 #include "../enumerations/e_item_definition_index.h"
+#include "../structs/studio.h"
 
 #include <array>
 
@@ -187,28 +188,18 @@ void c_base_entity::set_abs_origin( const c_vector& origin )
 	original_set_abs_origin( this, origin );
 }
 
-/* TODO ~ use fnv hashing */
-// KIND RETARDs .
-/* int CBaseEntity::GetBoneByHash( const FNV1A_t uBoneHash ) const
+int c_base_entity::get_bone_by_hash( const unsigned int bone_hash )
 {
-    if ( const auto pModel = this->GetModel( ); pModel != nullptr ) {
-        if ( const auto pStudioHdr = I::ModelInfo->GetStudioModel( pModel ); pStudioHdr != nullptr ) {
-            for ( int i = 0; i < pStudioHdr->nBones; i++ ) {
-                if ( const auto pBone = pStudioHdr->GetBone( i ); pBone != nullptr && FNV1A::Hash( pBone->GetName( ) ) == uBoneHash )
-                    return i;
-            }
-        }
-    }
+	if ( const auto model = this->client_renderable( )->model( ); model != nullptr ) {
+		if ( const auto studio_hdr = interfaces.m_model_info->get_studio_model( model ); studio_hdr ) {
+			for ( int i = 0; i < studio_hdr->n_bones; i++ ) {
+				if ( const auto bone = studio_hdr->get_bone( i ); bone && fnv1a::hash( bone->get_name( ) ) == bone_hash )
+					return i;
+			}
+		}
+	}
 
-    return BONE_INVALID;
-} */
-
-int c_base_entity::lookup_bone( const char* bone )
-{
-	static auto lookup_bone_fn = reinterpret_cast< int( __thiscall* )( void*, const char* ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 53 56 8B F1 57 83 BE ? ? ? ? ? 75" ) );
-
-	return lookup_bone_fn( this, bone );
+	return -1;
 }
 
 void c_base_entity::get_bone_position( const int bone, c_vector& origin )
@@ -218,6 +209,7 @@ void c_base_entity::get_bone_position( const int bone, c_vector& origin )
 
 	c_vector return_value[ 4 ]{ };
 	get_bone_position_fn( this, bone, return_value );
+
 	origin = { return_value[ 1 ][ 0 ], return_value[ 2 ][ 1 ], return_value[ 3 ][ 2 ] };
 }
 
