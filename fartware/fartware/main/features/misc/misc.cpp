@@ -11,15 +11,9 @@ void misc_t::on_paint_traverse( )
 
 void misc_t::on_end_scene( )
 {
-	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
-
 	[ & ]( const bool can_draw_watermark ) {
 		if ( !can_draw_watermark )
 			return;
-
-		const ImColor white = ImColor( 1.f, 1.f, 1.f, 1.f );
-		const ImColor grey  = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_TextDisabled );
-		const ImColor black = ImColor( 0.f, 0.f, 0.f, 1.f );
 
 		static float frame_rate_f = 1.0f;
 		frame_rate_f              = ( 0.9f * frame_rate_f ) + ( 0.1f * memory.m_globals->m_abs_frame_time ); /* TODO ~ store this globally */
@@ -28,7 +22,7 @@ void misc_t::on_end_scene( )
 
 		ImGui::SetNextWindowSize( ImVec2( -1, 29.f ), ImGuiCond_::ImGuiCond_Always );
 		ImGui::SetNextWindowPos( ImVec2( globals.m_display_size.x - width - 5.f, 5.f ), ImGuiCond_::ImGuiCond_Always );
-		ImGui::Begin( ( "hotwheels-watermark-window-ui" ), 0,
+		ImGui::Begin( ( "hotwheels-watermark" ), 0,
 		              ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar |
 		                  ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize |
 		                  ImGuiWindowFlags_::ImGuiWindowFlags_NoMove );
@@ -51,7 +45,7 @@ void misc_t::on_end_scene( )
 
 			ImGui::Text( "hotwheels" );
 			ImGui::SameLine( 0.f, 0.f );
-			ImGui::TextColored( accent_color, ".vip" );
+			ImGui::TextColored( static_cast< ImColor >( ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ) ), ".vip" );
 
 			ImGui::SameLine( );
 
@@ -63,7 +57,7 @@ void misc_t::on_end_scene( )
 
 			ImGui::SameLine( );
 
-			ImGui::TextColored( grey, "fps" );
+			ImGui::TextColored( static_cast< ImColor >( ImGui::GetColorU32( ImGuiCol_::ImGuiCol_TextDisabled ) ), "fps" );
 
 			ImGui::PopFont( );
 
@@ -113,7 +107,7 @@ void misc_t::on_end_scene( )
 
 				/* render gradient */
 				RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + background_height - 1.f ), ImVec2( size.x, 1.f ),
-				                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
+				                         static_cast< ImColor >( ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ) ) );
 
 				draw_list->AddText(
 					render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
@@ -131,7 +125,7 @@ void misc_t::on_end_scene( )
 			ImGui::SetCursorPosY( 30.f );
 
 			if ( !convars.find( fnv1a::hash_const( "sv_cheats" ) )->get_bool( ) ) {
-				ImGui::Text( "sv_cheats 1 is not enabled" );
+				ImGui::Text( "sv_cheats is not enabled" );
 			} else {
 				const auto cp_key = GET_CONFIG_BIND( variables.m_misc.m_practice_cp_key ).m_key;
 
