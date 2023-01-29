@@ -3,6 +3,7 @@
 #include "../../dependencies/minhook/include/MinHook.h"
 
 #include "../includes.h"
+#include "../source_engine/classes/c_view_setup.h"
 
 class c_detour_hook
 {
@@ -100,6 +101,7 @@ struct hooks_t {
 	c_detour_hook draw_set_color          = { };
 	c_detour_hook draw_model_execute      = { };
 	c_detour_hook glow_effect_spectator   = { };
+	c_detour_hook draw_view_models        = { };
 };
 
 inline hooks_t hooks = { };
@@ -129,5 +131,7 @@ namespace n_detoured_functions
 	void __fastcall draw_model_execute( int ecx, int edx, void* context, void* state, model_render_info_t* info, matrix3x4_t* bone_to_world );
 	bool __cdecl glow_effect_spectator( c_base_entity* player, c_base_entity* local, e_glow_style& style, c_vector& glow_color, float& alpha_start,
 	                                    float& alpha, float& time_start, float& time_target, bool& animate );
+	void __fastcall draw_view_models( void* thisptr, void* edx, c_view_setup& setup, bool draw_view_model, bool draw_scope_lens_mask );
+
 	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );
 } // namespace n_detoured_functions

@@ -37,9 +37,14 @@ bool hooks_t::on_attach( )
 
 		const auto modify_eye_pos_address = reinterpret_cast< void* >(
 			memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14" ) ) );
-		const auto draw_model_execute_address    = utilities.get_virtual_function( interfaces.m_model_render, 21 );
+
+		const auto draw_model_execute_address = utilities.get_virtual_function( interfaces.m_model_render, 21 );
+
 		const auto glow_effect_spectator_address = reinterpret_cast< void* >(
 			memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 EC 14 53 8B 5D 0C 56 57 85 DB 74" ) ) );
+
+		const auto draw_view_models_address = reinterpret_cast< void* >( utilities.get_absolute_address( reinterpret_cast< unsigned int >(
+			memory.m_modules[ e_module_names::client ].find_pattern( ( "E8 ? ? ? ? 8B 43 10 8D 4D 04" ) ) + 0x1 ) ) );
 
 		if ( MH_Initialize( ) != MH_OK ) {
 			throw std::runtime_error( ( "failed initialize minhook" ) );
@@ -73,6 +78,8 @@ bool hooks_t::on_attach( )
 		                 ( "CModelRender::DrawModelExecute()" ) );
 		initialise_hook( hooks.glow_effect_spectator, glow_effect_spectator_address, &n_detoured_functions::glow_effect_spectator,
 		                 ( "GlowEffectSpectator()" ) );
+		initialise_hook( hooks.draw_view_models, draw_view_models_address, &n_detoured_functions::draw_view_models,
+		                 ( "CViewRender::DrawViewModels()" ) );
 
 		if ( interfaces.m_engine->is_in_game( ) ) {
 			console.print( "force updated entity cache" );

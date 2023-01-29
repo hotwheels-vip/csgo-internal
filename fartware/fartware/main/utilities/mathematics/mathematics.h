@@ -5,11 +5,15 @@
 #include <directxmath.h>
 
 struct mathematics_t {
+	void sin_cos( float radians, float* sine, float* cosine );
+
 	c_vector vector_transform( const c_vector& vector_to_transform, const matrix3x4_t& matrix );
 
 	c_vector vector_angle( const c_vector vector );
 
 	void vector_angles( const c_vector vector, c_angle& view );
+
+	void angle_matrix( const c_angle& angles, matrix3x4_t& matrix );
 
 	c_vector to_angle( const c_vector& in );
 

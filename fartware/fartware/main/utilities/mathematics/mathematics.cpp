@@ -1,6 +1,12 @@
 #include "mathematics.h"
 #include "../../memory/memory.h"
 
+void mathematics_t::sin_cos( float radians, float* sine, float* cosine )
+{
+	*sine   = sinf( radians );
+	*cosine = cosf( radians );
+}
+
 c_vector mathematics_t::vector_transform( const c_vector& vector_to_transform, const matrix3x4_t& matrix )
 {
 	return c_vector( vector_to_transform.dot_product( matrix[ 0 ] ) + matrix[ 0 ][ 3 ],
@@ -51,6 +57,29 @@ void mathematics_t::vector_angles( const c_vector vector, c_angle& view )
 	view.m_y = yaw;
 	view.m_z = 0.f;
 }
+
+void mathematics_t::angle_matrix( const c_angle& angles, matrix3x4_t& matrix ) {
+	float sr{ }, sp{ }, sy{ }, cr{ }, cp{ }, cy{ };
+
+	this->sin_cos( DEG2RAD( angles.m_y ), &sy, &cy );
+	this->sin_cos( DEG2RAD( angles.m_x ), &sp, &cp );
+	this->sin_cos( DEG2RAD( angles.m_z ), &sr, &cr );
+
+	matrix[ 0 ][ 0 ] = cp * cy;
+	matrix[ 1 ][ 0 ] = cp * sy;
+	matrix[ 2 ][ 0 ] = -sp;
+
+	matrix[ 0 ][ 1 ] = sr * sp * cy + cr * -sy;
+	matrix[ 1 ][ 1 ] = sr * sp * sy + cr * cy;
+	matrix[ 2 ][ 1 ] = sr * cp;
+	matrix[ 0 ][ 2 ] = ( cr * sp * cy + -sr * -sy );
+	matrix[ 1 ][ 2 ] = ( cr * sp * sy + -sr * cy );
+	matrix[ 2 ][ 2 ] = cr * cp;
+
+	matrix[ 0 ][ 3 ] = 0.0f;
+	matrix[ 1 ][ 3 ] = 0.0f;
+	matrix[ 2 ][ 3 ] = 0.0f;
+	}
 
 void mathematics_t::angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right, c_vector* up )
 {

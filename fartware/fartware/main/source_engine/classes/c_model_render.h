@@ -140,10 +140,17 @@ class c_material_var
 {
 private:
 	enum e_indexes {
-		_set_vector = 11
+		_set_vector    = 11, _set_vector_component = 26
+
 	};
 
 public:
+	void set_vector_component( float value, int component )
+	{
+		using fn = void( __thiscall* )( c_material_var*, float, int );
+		return ( *( fn** )this )[ this->e_indexes::_set_vector_component ]( this, value, component );
+	}
+
 	void set_vector( float x, float y, float z )
 	{
 		using fn = void( __thiscall* )( c_material_var*, float, float, float );

@@ -225,6 +225,8 @@
     <ClInclude Include="main\features\visuals\world\world.h" />
     <ClInclude Include="main\source_engine\classes\c_model_info.h" />
     <ClInclude Include="main\source_engine\structs\studio.h" />
+    <ClInclude Include="main\source_engine\classes\c_view_setup.h" />
+    <ClInclude Include="main\source_engine\structs\rect_t.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />
@@ -288,6 +290,7 @@
     <ClCompile Include="main\features\lagcomp\lagcomp.cpp" />
     <ClCompile Include="main\hooks\functions\glow_effect_spectator.cpp" />
     <ClCompile Include="main\features\visuals\world\world.cpp" />
+    <ClCompile Include="main\hooks\functions\draw_view_models.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />

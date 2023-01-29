@@ -150,9 +150,9 @@ struct model_t {
 };
 
 class c_phys_collide;
-class i_material;
 class c_utl_buffer;
 class c_client_renderable;
+class c_material;
 struct studiohdr_t;
 struct virtualmodel_t;
 
@@ -182,7 +182,7 @@ private:
 public:
 	virtual e_translucency_type compute_translucency_type( const model_t* p_model, int n_skin, int n_body )                            = 0;
 	virtual int get_model_material_count( const model_t* p_model ) const                                                               = 0;
-	virtual void get_model_materials( const model_t* p_model, int i_count, i_material** pp_materials )                                 = 0;
+	virtual void get_model_materials( const model_t* p_model, int i_count, c_material** pp_materials )                                 = 0;
 	virtual bool is_model_vertex_lit( const model_t* p_model ) const                                                                   = 0;
 	virtual const char* get_model_key_value_text( const model_t* p_model )                                                             = 0;
 	virtual bool get_model_key_value( const model_t* p_model, c_utl_buffer& buf )                                                      = 0;

@@ -121,6 +121,13 @@ void movement_t::on_create_move_post( )
 
 	// jumpbug
 	[ & ]( bool can_jump_bug ) {
+		// this function, jumpbug, performs a "jump bug", a movement mechanic, which is widely
+		// known, which allows the player to fall down, and not take fall damage, and also jump
+		// higher. this is useful, for "movement players", also known as "boppers". this function
+		// will automate the bug and allow said boppers to perform the jump bug automatically.
+		// it's when you crouch, then let go of crouch 4 units above the ground, then you keep
+		// your speed and get greater height. look up csgo jumpbug for more info. kind regards.
+
 		if ( !can_jump_bug )
 			return;
 
