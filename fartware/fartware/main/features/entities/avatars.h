@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-#include <vector>
 #include <array>
 
 #include "../../source_engine/classes/c_base_entity.h"
@@ -9,9 +8,11 @@
 struct IDirect3DTexture9;
 
 struct avatar_cache_t {
-	void on_frame_stage_notify( );
 	void on_level_init_pre_entity( );
 	void on_level_shutdown( );
+
+	void on_add_entity( c_base_entity* entity );
+	void on_remove_entity( c_base_entity* entity );
 
 	IDirect3DTexture9* find( const int index )
 	{

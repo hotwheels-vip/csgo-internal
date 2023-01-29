@@ -20,8 +20,6 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* thisptr, int edx
 	case e_client_frame_stage::start:
 		globals.m_view_matrix = interfaces.m_engine->world_to_screen_matrix( );
 
-		avatar_cache.on_frame_stage_notify( );
-
 		movement.handle_edgebug_view_point( );
 		break;
 	}
