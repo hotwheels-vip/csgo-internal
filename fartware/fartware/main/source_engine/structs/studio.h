@@ -50,8 +50,6 @@ using quaternion   = float[ 4 ];
 
 struct virtualmodel_t;
 struct vertexfileheader_t;
-struct vcollide_t;
-
 struct studiohdr_t;
 class c_studio_hdr
 {

@@ -3,18 +3,13 @@
 #include "../../../source_engine/enumerations/e_client_frame_stage.h"
 #include "../../../source_engine/structs/matrix_t.h"
 #include "../../../source_engine/structs/rect_t.h"
+#include "../../../source_engine/structs/vcollide_t.h"
+
+#include <optional>
 
 class c_view_setup;
 
-struct motion_blur_data_t {
-	float m_values[ 4 ]          = { 0.f, 0.f, 0.f, 0.f };
-	float m_viewport_values[ 4 ] = { 0.f, 0.f, 1.f, 1.f };
-};
-
-inline motion_blur_data_t motion_blur_data = { };
-
 struct world_t {
-	void on_frame_stage_notify( e_client_frame_stage );
 	bool on_draw_view_models( c_view_setup& setup );
 
 private:
@@ -39,5 +34,12 @@ struct motion_blur_history_t {
 	matrix3x4_t m_previous_frame_basis_vectors;
 	float m_no_rotational_motion_blur_until;
 };
+
+struct motion_blur_data_t {
+	float m_values[ 4 ]          = { 0.f, 0.f, 0.f, 0.f };
+	float m_viewport_values[ 4 ] = { 0.f, 0.f, 1.f, 1.f };
+};
+
+inline motion_blur_data_t motion_blur_data = { };
 
 inline world_t world = { };

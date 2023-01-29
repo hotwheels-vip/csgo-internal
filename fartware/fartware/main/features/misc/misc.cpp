@@ -49,9 +49,17 @@ void misc_t::on_end_scene( )
 
 			ImGui::SameLine( );
 
-			ImGui::TextColored( ImVec4( 1.f, 1.f, 1.f, 0.1f ), "|" ); /* SORRY BOUT dat.. */
+			const auto net_channel_info = interfaces.m_engine->get_net_channel_info( );
+			if ( net_channel_info ) {
+				ImGui::Text(
+					std::to_string( ( std::max )( static_cast< int >( net_channel_info->get_latency( FLOW_OUTGOING ) * 1000.0f ), 0 ) ).c_str( ) );
 
-			ImGui::SameLine( );
+				ImGui::SameLine( );
+
+				ImGui::TextColored( static_cast< ImColor >( ImGui::GetColorU32( ImGuiCol_::ImGuiCol_TextDisabled ) ), "ms" );
+
+				ImGui::SameLine( );
+			}
 
 			ImGui::Text( std::to_string( frame_rate_f != 0.0f ? static_cast< int >( 1 / frame_rate_f ) : 0 ).c_str( ) );
 

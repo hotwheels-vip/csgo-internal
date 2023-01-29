@@ -1,8 +1,6 @@
 #pragma once
 #include "c_angle.h"
 
-class c_net_channel;
-
 class c_client_state
 {
 public:

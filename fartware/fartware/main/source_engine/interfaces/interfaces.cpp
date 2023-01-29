@@ -94,6 +94,11 @@ bool interfaces_t::on_attach( )
 	     nullptr )
 		return false;
 
+	if ( ( this->m_physics_collisons =
+	           this->find< c_physics_collison >( memory.m_modules[ e_module_names::physics ].m_value, ( "VPhysicsCollision" ) ) ) ==
+	     nullptr )
+		return false;
+
 	/* TODO ~ float ~ snake_caseify this */
 	SteamClient = this->m_engine->steam_api_context( )->m_steam_client;
 	if ( !SteamClient )

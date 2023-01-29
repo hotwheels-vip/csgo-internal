@@ -1,13 +1,15 @@
 #pragma once
 #include "../netvars/netvars.h"
 
+#include "c_model_info.h"
 #include "c_user_cmd.h"
 #include "c_vector.h"
-#include "c_model_info.h"
 
 #include "../classes/c_weapon_data.h"
 #include "../structs/bounding_box_t.h"
 #include "../structs/matrix_t.h"
+
+class c_base_entity;
 
 /* TODO ~ move to another file (enumerations folder) */
 enum e_obs_mode : int {
@@ -85,11 +87,80 @@ public:
 	}
 };
 
+class c_client_unknown
+{
+	enum e_indexes {
+		_get_base_entity = 7,
+	};
+
+public:
+	c_base_entity* get_base_entity( )
+	{
+		using fn = c_base_entity*( __thiscall* )( void* );
+		return ( *( fn** )this )[ this->e_indexes::_get_base_entity ]( this );
+	}
+};
+
+class c_client_networkable
+{
+private:
+	enum e_indexes {
+		_get_client_unknown  = 0,
+		_release = 1,
+		_get_client_class = 2,
+		_on_pre_data_changed = 4,
+		_on_data_changed     = 5,
+		_pre_data_update = 6, _post_data_update = 7
+	};
+
+public:
+	c_client_unknown* get_client_unknown( )
+	{
+		using fn = c_client_unknown*( __thiscall* )( void* );
+		return ( *( fn** )this )[ this->e_indexes::_get_client_unknown ]( this );
+	}
+
+	void release() {
+		using fn = void( __thiscall* )( void* );
+		return ( *( fn** )this )[ this->e_indexes::_release ]( this );
+	}
+
+	c_base_client* get_client_class( )
+	{
+		using fn = c_base_client*( __thiscall* )( void* );
+		return ( *( fn** )this )[ this->e_indexes::_get_client_class ]( this );
+	}
+
+	void on_pre_data_changed( int update_type )
+	{
+		using fn = void( __thiscall* )( void*, int );
+		return ( *( fn** )this )[ this->e_indexes::_on_pre_data_changed ]( this, update_type );
+	}
+
+	void on_data_changed( int update_type )
+	{
+		using fn = void( __thiscall* )( void*, int );
+		return ( *( fn** )this )[ this->e_indexes::_on_data_changed ]( this, update_type );
+	}
+
+	void pre_data_update( int update_type )
+	{
+		using fn = void( __thiscall* )( void*, int );
+		return ( *( fn** )this )[ this->e_indexes::_pre_data_update ]( this, update_type );
+	}
+
+	void post_data_update( int update_type )
+	{
+		using fn = void( __thiscall* )( void*, int );
+		return ( *( fn** )this )[ this->e_indexes::_post_data_update ]( this, update_type );
+	}
+};
+
 class c_client_renderable
 {
 private:
 	enum e_indexes {
-		_model   = 8,
+		_model = 7,
 	};
 
 public:
@@ -105,7 +176,8 @@ class c_base_entity
 private:
 	enum e_indexes {
 		_collideable             = 3,
-		_client_renderable             = 5,
+		_client_networkable      = 4,
+		_client_renderable       = 5,
 		_client_class            = 2,
 		_abs_origin              = 10,
 		_data_desc_map           = 15,
@@ -136,6 +208,12 @@ public:
 	{
 		using fn = c_collideable*( __thiscall* )( c_base_entity* );
 		return ( *( fn** )this )[ this->e_indexes::_collideable ]( this );
+	}
+
+	c_client_networkable* client_networkable( )
+	{
+		using fn = c_client_networkable*( __thiscall* )( c_base_entity* );
+		return ( *( fn** )this )[ this->e_indexes::_client_networkable ]( this );
 	}
 
 	c_client_renderable* client_renderable( )
@@ -220,6 +298,7 @@ public:
 	/* CBaseEntity */
 	add_variable( int, team, "CBaseEntity->m_iTeamNum" );
 	add_variable( c_vector, origin, "CBaseEntity->m_vecOrigin" );
+	add_variable( unsigned short, model_index, "CBaseEntity->m_nModelIndex" );
 
 	c_vector& abs_origin( )
 	{
@@ -291,6 +370,8 @@ public:
 
 	/* offsets */
 	add_offset( unsigned int, index, 0x64 );
+	add_offset( unsigned short, other_index /* sorry */, 100 );
+
 	add_offset( bool, is_dormant, 0xED );
 	add_offset( bool, should_use_new_animation_state, 0x9B14 );
 

@@ -46,6 +46,11 @@ bool hooks_t::on_attach( )
 		const auto draw_view_models_address = reinterpret_cast< void* >( utilities.get_absolute_address( reinterpret_cast< unsigned int >(
 			memory.m_modules[ e_module_names::client ].find_pattern( ( "E8 ? ? ? ? 8B 43 10 8D 4D 04" ) ) + 0x1 ) ) );
 
+		const auto get_vcollide_address = utilities.get_virtual_function( interfaces.m_model_info, 6 );
+
+		const auto on_full_update_address = reinterpret_cast< void* >(
+			memory.m_modules[ e_module_names::engine ].find_pattern( ( "55 8B EC 56 8B F1 8B 8E ? ? ? ? 85 C9 74 0F E8" ) ) );
+
 		if ( MH_Initialize( ) != MH_OK ) {
 			throw std::runtime_error( ( "failed initialize minhook" ) );
 			return false;
@@ -80,6 +85,10 @@ bool hooks_t::on_attach( )
 		                 ( "GlowEffectSpectator()" ) );
 		initialise_hook( hooks.draw_view_models, draw_view_models_address, &n_detoured_functions::draw_view_models,
 		                 ( "CViewRender::DrawViewModels()" ) );
+		initialise_hook( hooks.get_vcollide, get_vcollide_address, &n_detoured_functions::get_vcollide,
+		                 ( "CModelInfo::GetVCollide()" ) );
+		initialise_hook( hooks.on_full_update, on_full_update_address, &n_detoured_functions::on_full_update,
+		                 ( "OnFullUpdate()" ) );
 
 		if ( interfaces.m_engine->is_in_game( ) ) {
 			console.print( "force updated entity cache" );

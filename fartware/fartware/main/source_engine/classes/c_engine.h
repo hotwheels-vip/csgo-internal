@@ -50,6 +50,64 @@ struct steam_api_context_t {
 	void* m_steam_input;
 };
 
+#define FLOW_OUTGOING 0
+#define FLOW_INCOMING 1
+#define MAX_FLOWS     2
+
+class c_net_channel_info
+{
+public:
+	enum {
+		generic = 0, 
+		localplayer, 
+		otherplayers,
+		entities,    
+		sounds,      
+		events,      
+		tempents,    
+		usermessages,
+		entmessages, 
+		voice,       
+		stringtable, 
+		move,        
+		stringcmd,   
+		signon,      
+		paintmap,    
+		encrypted,   
+		total,       
+	};
+
+	virtual const char* get_name( ) const     = 0; 
+	virtual const char* get_address( ) const  = 0; 
+	virtual float get_time( ) const           = 0; 
+	virtual float get_time_connected( ) const = 0; 
+	virtual int get_buffer_size( ) const      = 0; 
+	virtual int get_data_rate( ) const        = 0; 
+
+	virtual bool is_loopback( ) const                                                     = 0;
+	virtual bool is_timing_out( ) const                                                   = 0;
+	virtual bool is_playback( ) const                                                     = 0;
+	virtual float get_latency( int i_flow ) const                                         = 0;
+	virtual float get_avg_latency( int i_flow ) const                                     = 0;
+	virtual float get_avg_loss( int i_flow ) const                                        = 0;
+	virtual float get_avg_choke( int i_flow ) const                                       = 0;
+	virtual float get_avg_data( int i_flow ) const                                        = 0;
+	virtual float get_avg_packets( int i_flow ) const                                     = 0;
+	virtual int get_total_data( int i_flow ) const                                        = 0;
+	virtual int get_total_packets( int i_flow ) const                                     = 0;
+	virtual int get_sequence_nr( int i_flow ) const                                       = 0;
+	virtual bool is_valid_packet( int i_flow, int n_frame ) const                         = 0;
+	virtual float get_packet_time( int i_flow, int n_frame ) const                        = 0;
+	virtual int get_packet_bytes( int i_flow, int n_frame, int group ) const              = 0;
+	virtual bool get_stream_progress( int i_flow, int* pi_received, int* pi_total ) const = 0;
+	virtual float get_time_since_last_received( ) const                                   = 0;
+	virtual float get_command_interpolation_amount( int i_flow, int n_frame ) const       = 0;
+	virtual void get_packet_response_latency( int i_flow, int frame_number, int* pn_latency_msecs, int* pn_choke ) const = 0;
+	virtual void get_remote_framerate( float* pfl_frame_time, float* pfl_frame_time_std_deviation,
+	                                   float* pfl_frame_start_time_std_deviation ) const                                 = 0;
+	virtual float get_timeout_seconds( ) const                                                                           = 0;
+};
+
 class c_engine
 {
 private:
@@ -64,6 +122,7 @@ private:
 		_world_to_screen_matrix  = 37,
 		_get_level_name          = 52,
 		_get_level_name_short    = 53,
+		_get_net_channel_info    = 78,
 		_is_hltv                 = 93,
 		_is_playing_demo         = 82,
 		_steam_api_context       = 185,
@@ -113,11 +172,13 @@ public:
 		using fn = bool( __thiscall* )( c_engine*, int, player_info_t* );
 		return ( *( fn** )this )[ this->e_indexes::_get_player_info ]( this, index, player_info );
 	}
+
 	void client_cmd_unrestricted( const char* szCommand )
 	{
 		using fn = void( __thiscall* )( void*, const char*, bool );
 		return ( *( fn** )this )[ this->e_indexes::_client_cmd_unrestricted ]( this, szCommand, false );
 	}
+
 	int get_local_player( )
 	{
 		using fn = int( __thiscall* )( c_engine* );
@@ -152,5 +213,10 @@ public:
 	{
 		using fn = steam_api_context_t*( __thiscall* )( c_engine* );
 		return ( *( fn** )this )[ this->e_indexes::_steam_api_context ]( this );
+	}
+
+	c_net_channel_info* get_net_channel_info() {
+		using fn = c_net_channel_info*( __thiscall* )( c_engine* );
+		return ( *( fn** )this )[ this->e_indexes::_get_net_channel_info ]( this );
 	}
 };

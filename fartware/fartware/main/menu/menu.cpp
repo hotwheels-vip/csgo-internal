@@ -640,9 +640,12 @@ void menu_t::on_end_scene( )
 					if ( !config.save( selected_config_name ) )
 						console.print( "failed to save {:s}", selected_config_name );
 
-				if ( ImGui::Button( ( "load" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
+				if ( ImGui::Button( ( "load" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 					if ( !config.load( selected_config_name ) )
 						console.print( "failed to load {:s}", converted_file_name );
+
+					memory.m_client_state->m_delta_tick = -1;
+				}
 
 				if ( ImGui::Button( ( "remove" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 					config.remove( this->m_selected_config );

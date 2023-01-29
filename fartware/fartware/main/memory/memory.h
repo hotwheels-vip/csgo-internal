@@ -24,6 +24,7 @@ enum e_module_names : int {
 	inputsystem,
 	steam_api,
 	datacache,
+	physics,
 	max
 };
 

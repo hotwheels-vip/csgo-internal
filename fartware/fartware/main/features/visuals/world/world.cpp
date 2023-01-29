@@ -3,11 +3,6 @@
 #include "../../../includes.h"
 #include "../../../source_engine/classes/c_view_setup.h"
 
-void world_t::on_frame_stage_notify( e_client_frame_stage stage )
-{
-
-}
-
 bool world_t::on_draw_view_models( c_view_setup& setup )
 {
 	float x = static_cast< float >( setup.x );
@@ -23,12 +18,12 @@ bool world_t::on_draw_view_models( c_view_setup& setup )
 	bool blur_forward        = false; // should we blur forward | default: true
 	float rotation_intensity = 1.f;   // rotation intensity (flicking) | default: 1.f
 	float blur_strength      = 2.f;   // blur strength | default: 1.f
-	float falling_min        = 5.f;  // falling blur factor min | default: 10.f
+	float falling_min        = 5.f;   // falling blur factor min | default: 10.f
 	float falling_max        = 10.f;  // falling blur factor max | default: 20.f
 	float falling_intensity  = 0.f;   // falling intensity (blur amount) | default: 1.f
 	float roll_intensity     = 0.3f;  // roll intensity (blur amount) | default: 0.3f
 
-	static motion_blur_history_t history;
+	static motion_blur_history_t history = { };
 
 	matrix3x4_t current_basis_vectors;
 	mathematics.angle_matrix( setup.angles, current_basis_vectors );

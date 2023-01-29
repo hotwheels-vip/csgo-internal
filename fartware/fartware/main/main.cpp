@@ -71,7 +71,7 @@ static unsigned long WINAPI on_attach( void* instance )
 		const std::vector< const char* >& modules = { ( "client.dll" ),   ( "engine.dll" ),       ( "vgui2.dll" ),       ( "vguimatsurface.dll" ),
 			                                          ( "localize.dll" ), ( "server.dll" ),       ( "panorama.dll" ),    ( "materialsystem.dll" ),
 			                                          ( "vstdlib.dll" ),  ( "shaderapidx9.dll" ), ( "inputsystem.dll" ), ( "steam_api.dll" ),
-			                                          ( "datacache.dll" ) };
+			                                          ( "datacache.dll" ),   ( "vphysics.dll" ) };
 
 		console.print( ( "initialising module handles" ) );
 		if ( !memory.on_attach( modules ) )

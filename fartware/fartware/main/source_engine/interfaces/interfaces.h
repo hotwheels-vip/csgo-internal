@@ -16,6 +16,7 @@
 #include "../classes/c_panel.h"
 #include "../classes/c_prediction.h"
 #include "../classes/c_surface.h"
+#include "../classes/c_physics_collisions.h"
 
 #include <string_view>
 
@@ -52,6 +53,7 @@ struct interfaces_t {
 	c_material_system* m_material_system       = nullptr;
 	c_game_event_manager2* m_game_event        = nullptr;
 	c_model_info* m_model_info                 = nullptr;
+	c_physics_collison* m_physics_collisons     = nullptr;
 };
 
 inline interfaces_t interfaces = { };
