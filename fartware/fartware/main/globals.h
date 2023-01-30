@@ -18,6 +18,8 @@ struct globals_t {
 		c_user_cmd* m_backup_cmd      = nullptr;
 		c_base_entity* m_backup_local = nullptr;
 	} backup;
+
+	bool m_unloading = false;
 };
 
 inline globals_t globals = { };

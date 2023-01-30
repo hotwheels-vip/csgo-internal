@@ -10,7 +10,7 @@ bool convars_t::on_attach( )
 	if ( !iterator )
 		return false;
 
-	for ( auto c = iterator->m_next; c != nullptr; c = c->m_next ) {
+	for ( auto c = iterator->m_next; c; c = c->m_next ) {
 		const auto convar_name = c->m_name;
 		const auto hashed_convar_name = fnv1a::hash( convar_name );
 

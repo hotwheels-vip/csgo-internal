@@ -168,8 +168,6 @@ bool world_t::on_draw_view_models( c_view_setup& setup )
 	}
 
 	return performed_motion_blur;
-
-	return true;
 }
 
 void world_t::update_screen_effect_texture( int texture_index, int x, int y, int w, int h, bool dest_fullscreen, rect_t* actual_rect )

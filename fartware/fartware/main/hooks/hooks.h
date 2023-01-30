@@ -134,7 +134,7 @@ namespace n_detoured_functions
 	bool __cdecl glow_effect_spectator( c_base_entity* player, c_base_entity* local, e_glow_style& style, c_vector& glow_color, float& alpha_start,
 	                                    float& alpha, float& time_start, float& time_target, bool& animate );
 	void __fastcall draw_view_models( void* thisptr, void* edx, c_view_setup& setup, bool draw_view_model, bool draw_scope_lens_mask );
-	void* __fastcall get_vcollide( void* ecx, void* edx, unsigned int model );
+	void* __fastcall get_vcollide( void* ecx, void* edx, int model );
 	void __fastcall on_full_update( void* ecx, void* edx, const char* text );
 
 	long __stdcall wndproc( HWND window, UINT msg, WPARAM wide_param, LPARAM long_param );

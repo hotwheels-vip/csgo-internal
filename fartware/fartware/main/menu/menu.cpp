@@ -413,7 +413,11 @@ void menu_t::on_end_scene( )
 					ImGui::SliderFloat( "fog start", &GET_CONFIG_FLOAT( variables.m_world.m_fog_start ), 0.f, 5000.f, "%.1f" );
 					ImGui::SliderFloat( "fog end", &GET_CONFIG_FLOAT( variables.m_world.m_fog_end ), 0.f, 5000.f, "%.1f" );
 					ImGui::SliderFloat( "fog density", &GET_CONFIG_FLOAT( variables.m_world.m_fog_density ), 0.f, 1.f, "%.2f" );
-				};
+				}
+
+				ImGui::Combo( "weather type", &GET_CONFIG_INT( variables.m_world.m_weather_type ),
+				              "none\0particle rain\0particle ash\0particle rain storm\0particle snow" );
+
 				ImGui::EndChild( );
 			}
 			break;
@@ -644,7 +648,7 @@ void menu_t::on_end_scene( )
 					if ( !config.load( selected_config_name ) )
 						console.print( "failed to load {:s}", converted_file_name );
 
-					memory.m_client_state->m_delta_tick = -1;
+					// memory.m_client_state->m_delta_tick = -1;
 				}
 
 				if ( ImGui::Button( ( "remove" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {

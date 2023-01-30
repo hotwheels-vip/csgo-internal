@@ -70,20 +70,20 @@ class c_collideable
 private:
 	enum e_indexes {
 		_obb_mins = 1,
-		_obb_max  = 2,
+		_obb_maxs = 2,
 	};
 
 public:
-	const c_vector& obb_mins( )
+	c_vector& obb_mins( )
 	{
-		using fn = const c_vector&( __thiscall* )( c_collideable* );
+		using fn = c_vector&( __thiscall* )( c_collideable* );
 		return ( *( fn** )this )[ this->e_indexes::_obb_mins ]( this );
 	}
 
-	const c_vector& obb_max( )
+	c_vector& obb_maxs( )
 	{
-		using fn = const c_vector&( __thiscall* )( c_collideable* );
-		return ( *( fn** )this )[ this->e_indexes::_obb_max ]( this );
+		using fn = c_vector&( __thiscall* )( c_collideable* );
+		return ( *( fn** )this )[ this->e_indexes::_obb_maxs ]( this );
 	}
 };
 
@@ -105,22 +105,17 @@ class c_client_networkable
 {
 private:
 	enum e_indexes {
-		_get_client_unknown  = 0,
-		_release = 1,
-		_get_client_class = 2,
+		_release             = 1,
+		_get_client_class    = 2,
 		_on_pre_data_changed = 4,
 		_on_data_changed     = 5,
-		_pre_data_update = 6, _post_data_update = 7
+		_pre_data_update     = 6,
+		_post_data_update    = 7
 	};
 
 public:
-	c_client_unknown* get_client_unknown( )
+	void release( )
 	{
-		using fn = c_client_unknown*( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_get_client_unknown ]( this );
-	}
-
-	void release() {
 		using fn = void( __thiscall* )( void* );
 		return ( *( fn** )this )[ this->e_indexes::_release ]( this );
 	}
@@ -160,10 +155,17 @@ class c_client_renderable
 {
 private:
 	enum e_indexes {
-		_model = 7,
+		_get_client_unknown = 0,
+		_model              = 7,
 	};
 
 public:
+	c_client_unknown* get_client_unknown( )
+	{
+		using fn = c_client_unknown*( __thiscall* )( void* );
+		return ( *( fn** )this )[ this->e_indexes::_get_client_unknown ]( this );
+	}
+
 	model_t* model( )
 	{
 		using fn = model_t*( __thiscall* )( void* );
@@ -298,7 +300,7 @@ public:
 	/* CBaseEntity */
 	add_variable( int, team, "CBaseEntity->m_iTeamNum" );
 	add_variable( c_vector, origin, "CBaseEntity->m_vecOrigin" );
-	add_variable( unsigned short, model_index, "CBaseEntity->m_nModelIndex" );
+	add_variable( int, model_index, "CBaseEntity->m_nModelIndex" );
 
 	c_vector& abs_origin( )
 	{
@@ -370,7 +372,7 @@ public:
 
 	/* offsets */
 	add_offset( unsigned int, index, 0x64 );
-	add_offset( unsigned short, other_index /* sorry */, 100 );
+	add_offset( int, other_index /* sorry */, 100 );
 
 	add_offset( bool, is_dormant, 0xED );
 	add_offset( bool, should_use_new_animation_state, 0x9B14 );

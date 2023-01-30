@@ -46,7 +46,7 @@ void players_t::on_paint_traverse( )
 		}
 
 		const bool in_view_frustrum =
-			!interfaces.m_engine->cull_box( collideable->obb_mins( ) + entity->origin( ), collideable->obb_max( ) + entity->origin( ) );
+			!interfaces.m_engine->cull_box( collideable->obb_mins( ) + entity->origin( ), collideable->obb_maxs( ) + entity->origin( ) );
 
 		auto out_of_fov_arrows = [ & ]( ) {
 			if ( !GET_CONFIG_BOOL( variables.m_visuals.m_out_of_fov_arrows ) || in_view_frustrum )

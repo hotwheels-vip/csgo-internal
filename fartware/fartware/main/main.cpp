@@ -68,10 +68,10 @@ static unsigned long WINAPI on_attach( void* instance )
 
 		console.on_attach( ( "debug console" ) );
 
-		const std::vector< const char* >& modules = { ( "client.dll" ),   ( "engine.dll" ),       ( "vgui2.dll" ),       ( "vguimatsurface.dll" ),
-			                                          ( "localize.dll" ), ( "server.dll" ),       ( "panorama.dll" ),    ( "materialsystem.dll" ),
-			                                          ( "vstdlib.dll" ),  ( "shaderapidx9.dll" ), ( "inputsystem.dll" ), ( "steam_api.dll" ),
-			                                          ( "datacache.dll" ),   ( "vphysics.dll" ) };
+		const std::vector< const char* >& modules = { ( "client.dll" ),    ( "engine.dll" ),       ( "vgui2.dll" ),       ( "vguimatsurface.dll" ),
+			                                          ( "localize.dll" ),  ( "server.dll" ),       ( "panorama.dll" ),    ( "materialsystem.dll" ),
+			                                          ( "vstdlib.dll" ),   ( "shaderapidx9.dll" ), ( "inputsystem.dll" ), ( "steam_api.dll" ),
+			                                          ( "datacache.dll" ), ( "vphysics.dll" ) };
 
 		console.print( ( "initialising module handles" ) );
 		if ( !memory.on_attach( modules ) )
@@ -151,11 +151,19 @@ static unsigned long WINAPI on_attach( void* instance )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
 	[ & ]( ) {
+		globals.m_unloading = true;
+
 		event_listener.on_release( );
+
 		hooks.on_release( );
+
 		input.on_release( );
+
 		render.on_release( );
+
 		console.on_release( );
+
+		std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
 	}( );
 
 	LI_FN( FreeLibrary )( static_cast< HMODULE >( instance ) );
