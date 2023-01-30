@@ -1,4 +1,5 @@
 #include "../../features/entities/avatars.h"
+#include "../../features/entities/entities.h"
 #include "../../features/movement/movement.h"
 #include "../../features/visuals/weather/weather.h"
 #include "../hooks.h"
@@ -22,6 +23,18 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* thisptr, int edx
 
 		movement.handle_edgebug_view_point( );
 		break;
+	case e_client_frame_stage::net_update_postdataupdate_end: {
+		[ & ]( ) {
+			entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
+				if ( !entity || entity->is_dormant( ) || globals.m_local == entity || entity->team( ) == globals.m_local->team( ) )
+					return;
+
+				for ( unsigned int iterator = 0; iterator < 5; iterator++ )
+					entity->player_patch_econ_indices( )[ iterator ] = 0;
+			} ); /* rega r d s                                           */
+		}( );
+		break;
+	}
 	}
 
 	weather.on_frame_stage_notify( stage );

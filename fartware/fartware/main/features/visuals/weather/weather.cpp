@@ -65,7 +65,10 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 	if ( stage != e_client_frame_stage::render_start )
 		return;
 
-	if ( !( GET_CONFIG_INT( variables.m_world.m_weather_type ) ) || globals.m_unloading )
+	if ( globals.m_unloading )
+		reset( );
+
+	if ( !( GET_CONFIG_INT( variables.m_world.m_weather_type ) ) )
 		reset( );
 
 	static int weather_type = 0;
@@ -133,11 +136,11 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 
 		entity->client_networkable( )->pre_data_update( 0 );
 		entity->client_networkable( )->on_pre_data_changed( 0 );
-		entity->other_index( ) = -1;
+		entity->index( ) = -1;
 
-		static auto r_rainradius = convars.find( fnv1a::hash_const( "r_RainRadius" ) );
-		if ( r_rainradius->get_float( ) != 1000.F )
-			r_rainradius->set_value( 1000.F );
+		/*static auto r_rainradius = convars.find( fnv1a::hash_const( "r_RainRadius" ) );
+		if ( r_rainradius->get_float( ) != 1000.f )
+			r_rainradius->set_value( 1000.f );*/
 
 		*( int* )( ( uintptr_t )entity + 0xA00 ) = weather_type;
 

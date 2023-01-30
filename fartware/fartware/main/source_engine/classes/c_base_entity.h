@@ -53,7 +53,7 @@ public:
 	PAD( 4 );
 };
 
-constexpr float max_health = 100.f /* todo ~ dont hard codenz (there is a netvar) */;
+constexpr float max_health = 100.f /* todo ~ dont hard codenz check game type */;
 
 class c_base_client;
 
@@ -331,6 +331,7 @@ public:
 	add_variable( int, armor, "CCSPlayer->m_ArmorValue" );
 	add_variable( bool, helmet, "CCSPlayer->m_bHasHelmet" );
 	add_variable( float, velocity_modifier, "CCSPlayer->m_flVelocityModifier" );
+	add_variable( c_vector, player_patch_econ_indices, "CCSPlayer->m_vecPlayerPatchEconIndices" );
 
 	/* CBaseAnimating */
 	add_variable( int, sequence, "CBaseAnimating->m_nSequence" );
@@ -372,7 +373,6 @@ public:
 
 	/* offsets */
 	add_offset( unsigned int, index, 0x64 );
-	add_offset( int, other_index /* sorry */, 100 );
 
 	add_offset( bool, is_dormant, 0xED );
 	add_offset( bool, should_use_new_animation_state, 0x9B14 );
