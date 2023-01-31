@@ -311,8 +311,9 @@ void indicators_t::on_paint_traverse( )
 		if ( !GET_CONFIG_BOOL( variables.m_movement.m_indicators.m_sub_indicators_enable ) )
 			return;
 
-		constexpr auto render_indicator = []( const char* indicator_name, const c_color& color, bool active ) {
-			float offset                          = 0.f;
+		float offset = 0.f;
+
+		constexpr auto render_indicator = [&]( const char* indicator_name, const c_color& color, bool active ) {
 			ImAnimationHelper indicator_animation = ImAnimationHelper( fnv1a::hash( indicator_name ), ImGui::GetIO( ).DeltaTime );
 			indicator_animation.Update( 2.f, active ? 2.f : -2.f );
 

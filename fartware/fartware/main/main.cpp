@@ -155,17 +155,15 @@ static unsigned long WINAPI on_attach( void* instance )
 
 		event_listener.on_release( );
 
-		std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-
 		hooks.on_release( );
+
+		std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 
 		input.on_release( );
 
 		render.on_release( );
 
 		console.on_release( );
-
-		std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 	}( );
 
 	LI_FN( FreeLibrary )( static_cast< HMODULE >( instance ) );

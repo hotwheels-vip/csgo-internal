@@ -52,7 +52,7 @@ void aimbot_t::on_create_move_post( )
 			     entity == globals.m_local ) /* TODO ~ add entity->is_valid() check with params (check for team, dormant etc) */
 				return;
 
-			if ( int head_bone_number = entity->get_bone_by_hash( fnv1a::hash_const( "head_0" ) ); head_bone_number != -1 ) {
+			if ( int head_bone_number = entity->get_bone_by_hash( fnv1a::hash( "head_0" ) ); head_bone_number != -1 ) {
 				c_vector head_position{ };
 				entity->get_bone_position( head_bone_number, head_position );
 
