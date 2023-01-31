@@ -8,14 +8,19 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* thisptr, int edx
 {
 	static auto original = hooks.frame_stage_notify.get_original< decltype( &n_detoured_functions::frame_stage_notify ) >( );
 
-	if ( !interfaces.m_engine->is_in_game( ) )
+	if ( !interfaces.m_engine->is_in_game( ) ) {
+		weather.reset( );
 		return original( thisptr, edx, stage );
+	}
 
 	globals.m_local =
 		reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity( interfaces.m_engine->get_local_player( ) ) );
 
 	if ( !globals.m_local )
 		return original( thisptr, edx, stage );
+
+	if ( !globals.m_local->is_alive( ) )
+		weather.reset( );
 
 	switch ( stage ) {
 	case e_client_frame_stage::start:

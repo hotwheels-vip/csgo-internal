@@ -15,7 +15,6 @@ struct weather_t {
 	std::optional< int > m_last_type = std::nullopt;
 	int m_timer                      = -1;
 
-private:
 	void reset( );
 };
 
