@@ -34,24 +34,24 @@ float lagcomp_t::lerp_time( )
 
 bool lagcomp_t::is_valid( lagcomp_t::record rec )
 {
-	// TODO, to make this function work:
-	//  add get_net_channel_info and its class
 	//  make option in menu for backtrack(no need for customizable backtrack time range, useless just make it always max)
 
-	// auto net_channel = g_interfaces->engine_client->get_net_channel_info( );
-	//
-	// if ( !net_channel )
-	// 	return false;
-	//
-	// float correct = 0.f;
-	//
-	// correct += net_channel->get_latency( 0 );
-	// correct += lagcomp.lerp_time( );
-	//
-	// correct = std::clamp( correct, 0.f, convars.find( fnv1a::hash_const( "sv_maxunlag" ) )->get_float( ) );
-	//
-	// const float delta_correct = std::fabsf( correct - ( g_interfaces->globals->cur_time - rec.sim_time ) );
-	//
+	auto net_channel = interfaces.m_engine->get_net_channel_info( );
+
+	if ( !net_channel )
+		return false;
+
+	float correct = 0.f;
+
+	correct += net_channel->get_latency( 0 );
+	correct += lagcomp.lerp_time( );
+
+	correct = std::clamp( correct, 0.f, convars.find( fnv1a::hash_const( "sv_maxunlag" ) )->get_float( ) );
+
+	const float delta_correct = std::fabsf( correct - ( memory.m_globals->m_current_time - rec.sim_time ) );
+
+	// TODO
+
 	// return delta_correct <= static_cast< float >( *aimbot_lagcomp_time ) / 1000.f;
 
 	return true;

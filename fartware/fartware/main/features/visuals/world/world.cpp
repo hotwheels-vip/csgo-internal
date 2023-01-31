@@ -5,6 +5,9 @@
 
 bool world_t::on_draw_view_models( c_view_setup& setup )
 {
+	if ( !GET_CONFIG_BOOL( variables.m_world.m_motion_blur ) )
+		return false;
+
 	float x = static_cast< float >( setup.x );
 	float y = static_cast< float >( setup.y );
 	float w = static_cast< float >( setup.width );
@@ -17,7 +20,7 @@ bool world_t::on_draw_view_models( c_view_setup& setup )
 
 	bool blur_forward        = false; // should we blur forward | default: true
 	float rotation_intensity = 1.f;   // rotation intensity (flicking) | default: 1.f
-	float blur_strength      = 2.f;   // blur strength | default: 1.f
+	float blur_strength      = 1.f;   // blur strength | default: 1.f
 	float falling_min        = 5.f;   // falling blur factor min | default: 10.f
 	float falling_max        = 10.f;  // falling blur factor max | default: 20.f
 	float falling_intensity  = 0.f;   // falling intensity (blur amount) | default: 1.f

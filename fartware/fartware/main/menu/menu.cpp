@@ -418,6 +418,8 @@ void menu_t::on_end_scene( )
 				ImGui::Combo( "weather type", &GET_CONFIG_INT( variables.m_world.m_weather_type ),
 				              "none\0particle rain\0particle ash\0particle rain storm\0particle snow" );
 
+				ImGui::Checkbox( "motion blur", &GET_CONFIG_BOOL( variables.m_world.m_motion_blur ) );
+
 				ImGui::EndChild( );
 			}
 			break;

@@ -119,6 +119,8 @@ struct variables_t {
 		ADD_VARIABLE( c_color, m_fog_color, c_color( 255, 255, 255, 180 ) );
 
 		ADD_VARIABLE( int, m_weather_type, 0 );
+
+		ADD_VARIABLE( bool, m_motion_blur, false );
 	} m_world;
 
 	struct misc_t {
