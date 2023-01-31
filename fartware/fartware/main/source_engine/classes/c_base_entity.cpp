@@ -188,14 +188,23 @@ void c_base_entity::set_abs_origin( const c_vector& origin )
 
 int c_base_entity::get_bone_by_hash( const unsigned int bone_hash )
 {
-	if ( const auto model = this->client_renderable( )->model( ); model != nullptr ) {
-		if ( const auto studio_hdr = interfaces.m_model_info->get_studio_model( model ); studio_hdr ) {
-			for ( int i = 0; i < studio_hdr->n_bones; i++ ) {
-				if ( const auto bone = studio_hdr->get_bone( i ); bone && fnv1a::hash( bone->get_name( ) ) == bone_hash )
-					return i;
-			}
-		}
+	const auto model = this->client_renderable( )->model( );
+	if ( !model )
+		return -1;
+
+	const auto studio_hdr = interfaces.m_model_info->get_studio_model( model );
+	if ( !studio_hdr )
+		return -1;
+
+	for ( int i = 0; i < studio_hdr->n_bones; i++ ) {
+		const auto bone = studio_hdr->get_bone( i );
+		if ( !bone )
+			break;
+
+		if ( fnv1a::hash( bone->get_name( ) ) == bone_hash )
+			return i;
 	}
+
 	return -1;
 }
 

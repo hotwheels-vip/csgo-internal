@@ -16,6 +16,7 @@
 #include "source_engine/enumerations/e_move_types.h"
 #include "source_engine/interfaces/interfaces.h"
 #include "source_engine/structs/matrix_t.h"
+#include "source_engine/structs/var_mapping.h"
 
 #include "config/config.h"
 #include "config/variables.h"

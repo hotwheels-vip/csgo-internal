@@ -230,6 +230,7 @@
     <ClInclude Include="main\source_engine\classes\c_physics_collisions.h" />
     <ClInclude Include="main\source_engine\structs\vcollide_t.h" />
     <ClInclude Include="main\features\visuals\weather\weather.h" />
+    <ClInclude Include="main\source_engine\structs\var_mapping.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />

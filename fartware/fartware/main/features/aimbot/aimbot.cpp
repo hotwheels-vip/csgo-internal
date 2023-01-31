@@ -10,6 +10,7 @@
 #include "../../utilities/mathematics/mathematics.h"
 #include "../../utilities/utilities.h"
 
+#include "../../config/variables.h"
 #include "../entities/entities.h"
 
 bool aimbot_t::is_weapon_valid( )
@@ -41,7 +42,11 @@ void aimbot_t::on_create_move_post( )
 	if ( !is_weapon_valid( ) )
 		return;
 
-	float field_of_view     = 20.f;
+	struct {
+		const float max_fov = GET_CONFIG_FLOAT( variables.m_aimbot.m_fov );
+	} m_aimbot_info;
+
+	float field_of_view     = std::numeric_limits< float >::max( );
 	const auto eye_position = globals.m_local->eye_position( );
 
 	const auto get_best_entity = [ & ]( ) {
@@ -52,7 +57,7 @@ void aimbot_t::on_create_move_post( )
 			     entity == globals.m_local ) /* TODO ~ add entity->is_valid() check with params (check for team, dormant etc) */
 				return;
 
-			if ( int head_bone_number = entity->get_bone_by_hash( fnv1a::hash( "head_0" ) ); head_bone_number != -1 ) {
+			if ( int head_bone_number = entity->get_bone_by_hash( fnv1a::hash_const( "head_0" ) ); head_bone_number != -1 ) {
 				c_vector head_position{ };
 				entity->get_bone_position( head_bone_number, head_position );
 
@@ -60,7 +65,7 @@ void aimbot_t::on_create_move_post( )
 				delta -= ( globals.m_local->aim_punch_angle( ) *
 				           convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) )->get_float( ) ); /* account for recoil */
 
-				if ( const float fov = mathematics.calculate_fov( globals.m_cmd->m_view_point, delta ); fov < field_of_view ) {
+				if ( const float fov = mathematics.calculate_fov( globals.m_cmd->m_view_point, delta ); fov < m_aimbot_info.max_fov ) {
 					field_of_view = fov;
 					best_entity   = entity;
 				}
@@ -76,7 +81,6 @@ void aimbot_t::on_create_move_post( )
 		return;
 
 	if ( int head_bone_number = entity->get_bone_by_hash( fnv1a::hash_const( "head_0" ) ); head_bone_number != -1 ) {
-
 		c_vector head_position{ };
 		entity->get_bone_position( head_bone_number, head_position );
 

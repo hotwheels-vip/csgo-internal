@@ -6,7 +6,7 @@
 struct lagcomp_t {
 	struct record {
 		// For record validation purposes.
-		int player = -1;
+		int player_index = -1;
 
 		float sim_time{ };
 		int tick_count{ };

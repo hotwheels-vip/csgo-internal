@@ -121,17 +121,11 @@ void movement_t::on_create_move_post( )
 
 	// jumpbug
 	[ & ]( bool can_jump_bug ) {
-		// this function, jumpbug, performs a "jump bug", a movement mechanic, which is widely
-		// known, which allows the player to fall down, and not take fall damage, and also jump
-		// higher. this is useful, for "movement players", also known as "boppers". this function
-		// will automate the bug and allow said boppers to perform the jump bug automatically.
-		// it's when you crouch, then let go of crouch 4 units above the ground, then you keep
-		// your speed and get greater height. look up csgo jumpbug for more info. kind regards.
-
 		if ( !can_jump_bug )
 			return;
 
-		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) ) {
+		[[unlikely]] if ( !( globals.m_cmd->m_buttons & e_buttons::in_jump ) )
+		{
 			static bool ducked = false;
 
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -142,7 +136,9 @@ void movement_t::on_create_move_post( )
 
 			if ( prediction.m_data.m_flags & e_flags::fl_onground && ducked )
 				ducked = false;
-		} else {
+		}
+		else
+		{
 			if ( flags & e_flags::fl_onground && !( prediction.m_data.m_flags & e_flags::fl_onground ) )
 				globals.m_cmd->m_buttons |= e_buttons::in_duck;
 
@@ -172,89 +168,13 @@ void movement_t::on_create_move_post( )
 	}( GET_CONFIG_BOOL( variables.m_movement.m_autostrafe ) && input.check_input( &GET_CONFIG_BIND( variables.m_movement.m_autostrafe_key ) ) );
 
 	// auto align
-	[ & ]( ) {
-		constexpr static float distance_till_adjust = 0.03125f;
-
-		constexpr auto has_to_align = []( const c_vector& origin ) -> bool {
-			constexpr float distance_to_stop = 0.00200f;
-
-			const c_vector_2d remainder1 = c_vector_2d( 1.f - ( origin.m_x - floor( origin.m_x ) ), 1.f - ( origin.m_y - floor( origin.m_y ) ) );
-			const c_vector_2d remainder2 = c_vector_2d( ( origin.m_x - floor( origin.m_x ) ), ( origin.m_y - floor( origin.m_y ) ) );
-
-			return ( ( remainder1.m_x >= distance_to_stop && remainder1.m_x <= distance_till_adjust ) ||
-			         ( remainder1.m_y >= distance_to_stop && remainder1.m_y <= distance_till_adjust ) ) ||
-			       ( ( remainder2.m_x >= distance_to_stop && remainder2.m_x <= distance_till_adjust ) ||
-			         ( remainder2.m_y >= distance_to_stop && remainder2.m_y <= distance_till_adjust ) );
-		};
-
+	[ & ]( const bool can_auto_align ) {
 		if ( prediction.m_data.m_flags & e_flags::fl_onground || movement.m_pixelsurf_data.m_in_pixel_surf ||
-		     movement.m_edgebug_data.m_will_edgebug || !( has_to_align( origin ) ) )
+		     movement.m_edgebug_data.m_will_edgebug || !can_auto_align )
 			return;
 
-		c_game_trace trace{ }, second_trace{ };
-
-		struct {
-			c_vector start_pos;
-			c_vector end_pos, second_end_pos;
-			c_vector current_velocity;
-			float velocity    = 0.f;
-			float ideal_delta = 0.f;
-		} align_info;
-
-		const c_vector wish_direction{ std::cos( DEG2RAD( globals.m_cmd->m_view_point.m_y + movement_angle ) ) * 17.f,
-			                           std::sin( DEG2RAD( globals.m_cmd->m_view_point.m_y + movement_angle ) ) * 17.f, 0.f };
-
-		if ( wish_direction.is_zero( ) )
-			return;
-
-		// set our start and finish points for engine tracing
-		align_info.start_pos = globals.m_local->abs_origin( );
-		align_info.end_pos   = align_info.start_pos + wish_direction;
-
-		ray_t ray( align_info.start_pos, align_info.end_pos );
-
-		c_trace_filter filter( globals.m_local );
-
-		// our wish direction trace
-		interfaces.m_engine_trace->trace_ray( ray, e_mask::mask_playersolid, &filter, &trace );
-
-		// if trace hit anything
-		if ( trace.m_fraction < 1.f && trace.m_plane.m_normal.m_z == 0.f ) {
-			// wall angles
-			c_vector angles = { trace.m_plane.m_normal.m_x * -16.005f, trace.m_plane.m_normal.m_y * -16.005f, 0.f };
-
-			// initialize our second trace
-			align_info.second_end_pos = align_info.start_pos + angles;
-			ray_t second_ray( align_info.start_pos, align_info.second_end_pos );
-			interfaces.m_engine_trace->trace_ray( second_ray, e_mask::mask_playersolid, &filter, &second_trace );
-
-			if ( trace.m_plane.m_normal.m_x != second_trace.m_plane.m_normal.m_x || trace.m_plane.m_normal.m_y != second_trace.m_plane.m_normal.m_y ||
-			     trace.m_plane.m_normal.m_z != second_trace.m_plane.m_normal.m_z ) {
-				c_vector angle_to_wall = mathematics.to_angle( angles );
-
-				align_info.velocity = std::hypotf( globals.m_local->velocity( ).m_x, globals.m_local->velocity( ).m_y );
-				align_info.ideal_delta =
-					RAD2DEG( atanf( ( globals.m_cmd->m_buttons & in_duck ? 4.6775f : 4.5500f ) / align_info.velocity ) ) * ( 2.f * PI );
-
-				align_info.current_velocity     = globals.m_local->velocity( );
-				align_info.current_velocity.m_z = 0.f;
-
-				c_vector current_velocity_angle = mathematics.to_angle( align_info.current_velocity );
-
-				c_vector delta = current_velocity_angle - angle_to_wall;
-
-				delta.normalize_in_place( );
-
-				delta.m_y >= 0.f ? angle_to_wall.m_y += align_info.ideal_delta : angle_to_wall.m_y -= align_info.ideal_delta;
-
-				float cos_rot = std::cos( DEG2RAD( angle_to_wall.m_y - globals.m_cmd->m_view_point.m_y ) );
-				float sin_rot = std::sin( DEG2RAD( angle_to_wall.m_y - globals.m_cmd->m_view_point.m_y ) );
-
-				globals.m_cmd->m_forward_move = cos_rot * max_forward_speed;
-				globals.m_cmd->m_side_move    = -sin_rot * max_side_speed;
-			}
-		}
-	}( );
+		auto_align( globals.m_cmd, max_forward_speed, max_side_speed );
+	}( GET_CONFIG_BOOL( variables.m_movement.m_auto_align ) );
 
 	// pixelsurf (logic)
 	const float target_ps_velocity = gravity * 0.5f * memory.m_globals->m_interval_per_tick;
@@ -282,6 +202,8 @@ void movement_t::on_create_move_post( )
 							simulated_cmd->m_buttons |= e_buttons::in_duck;
 						else
 							simulated_cmd->m_buttons &= ~e_buttons::in_duck;
+
+						auto_align( simulated_cmd, max_forward_speed, max_side_speed );
 
 						prediction.begin( simulated_cmd );
 						prediction.end( );
@@ -727,6 +649,72 @@ void movement_t::strafe_to_yaw( c_angle& angle, const float yaw )
 
 	globals.m_cmd->m_side_move = delta > 0.f ? -max_side_speed : max_side_speed;
 	angle.m_y                  = mathematics.normalize_yaw( angle.m_y - delta );
+}
+
+void movement_t::auto_align( c_user_cmd* cmd, float max_fw, float max_sw )
+{
+	c_game_trace trace{ }, second_trace{ };
+
+	struct {
+		c_vector start_pos;
+		c_vector end_pos, second_end_pos;
+		c_vector current_velocity;
+		float velocity    = 0.f;
+		float ideal_delta = 0.f;
+	} align_info;
+
+	const c_vector wish_direction{ std::cos( DEG2RAD( globals.m_old_view_point.m_y + direction_yaw( ) ) ) * 17.f,
+		                           std::sin( DEG2RAD( globals.m_old_view_point.m_y + direction_yaw( ) ) ) * 17.f, 0.f };
+
+	if ( wish_direction.is_zero( ) )
+		return;
+
+	// set our start and finish points for engine tracing
+	align_info.start_pos = globals.m_local->abs_origin( );
+	align_info.end_pos   = align_info.start_pos + wish_direction;
+
+	ray_t ray( align_info.start_pos, align_info.end_pos );
+
+	c_trace_filter filter( globals.m_local );
+
+	// our wish direction trace
+	interfaces.m_engine_trace->trace_ray( ray, e_mask::mask_playersolid, &filter, &trace );
+
+	// if trace hit anything
+	if ( trace.m_fraction < 1.f && trace.m_plane.m_normal.m_z == 0.f ) {
+		// wall angles
+		c_vector angles = { trace.m_plane.m_normal.m_x * -16.005f, trace.m_plane.m_normal.m_y * -16.005f, 0.f };
+
+		// initialize our second trace
+		align_info.second_end_pos = align_info.start_pos + angles;
+		ray_t second_ray( align_info.start_pos, align_info.second_end_pos );
+		interfaces.m_engine_trace->trace_ray( second_ray, e_mask::mask_playersolid, &filter, &second_trace );
+
+		if ( trace.m_plane.m_normal.m_x != second_trace.m_plane.m_normal.m_x || trace.m_plane.m_normal.m_y != second_trace.m_plane.m_normal.m_y ||
+		     trace.m_plane.m_normal.m_z != second_trace.m_plane.m_normal.m_z ) {
+			c_vector angle_to_wall = mathematics.to_angle( angles );
+
+			align_info.velocity    = std::hypotf( globals.m_local->velocity( ).m_x, globals.m_local->velocity( ).m_y );
+			align_info.ideal_delta = RAD2DEG( atanf( ( cmd->m_buttons & in_duck ? 4.6775f : 4.5500f ) / align_info.velocity ) ) * ( 2.f * PI );
+
+			align_info.current_velocity     = globals.m_local->velocity( );
+			align_info.current_velocity.m_z = 0.f;
+
+			c_vector current_velocity_angle = mathematics.to_angle( align_info.current_velocity );
+
+			c_vector delta = current_velocity_angle - angle_to_wall;
+
+			delta.normalize_in_place( );
+
+			delta.m_y >= 0.f ? angle_to_wall.m_y += align_info.ideal_delta : angle_to_wall.m_y -= align_info.ideal_delta;
+
+			float cos_rot = std::cos( DEG2RAD( angle_to_wall.m_y - globals.m_old_view_point.m_y ) );
+			float sin_rot = std::sin( DEG2RAD( angle_to_wall.m_y - globals.m_old_view_point.m_y ) );
+
+			cmd->m_forward_move = cos_rot * max_fw;
+			cmd->m_side_move    = -sin_rot * max_sw;
+		}
+	}
 }
 
 const float movement_t::direction_yaw( )

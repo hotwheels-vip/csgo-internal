@@ -54,7 +54,14 @@ public:
 };
 
 struct variables_t {
-	struct visuals_t {
+	struct {
+		bool m_enable;
+		float m_fov;
+		bool m_backtrack_enabled;
+
+	} m_aimbot;
+
+	struct {
 		/* TODO ~ sort this into struct esp_t, and chams_t */
 
 		/* esp settings */
@@ -123,13 +130,13 @@ struct variables_t {
 		ADD_VARIABLE( bool, m_motion_blur, false );
 	} m_world;
 
-	struct misc_t {
+	struct {
 		ADD_VARIABLE( bool, m_practice_window, false );
 		ADD_VARIABLE( key_bind_t, m_practice_cp_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( key_bind_t, m_practice_tp_key, key_bind_t( 0, 1 ) );
 	} m_misc;
 
-	struct movement_t {
+	struct {
 		ADD_VARIABLE( bool, m_bunny_hop, false );
 
 		ADD_VARIABLE( bool, m_edge_jump, false );
@@ -165,7 +172,7 @@ struct variables_t {
 
 		ADD_VARIABLE( bool, m_auto_align, false );
 
-		struct indicators_t {
+		struct {
 			ADD_VARIABLE( bool, m_velocity_indicator, false );
 			ADD_VARIABLE( bool, m_velocity_graph, false );
 			ADD_VARIABLE( int, m_velocity_graph_position, 60 );
@@ -200,7 +207,7 @@ struct variables_t {
 		} m_indicators;
 	} m_movement;
 
-	struct menu_t {
+	struct {
 		ADD_VARIABLE( c_color, m_accent, c_color( 129, 99, 251, 255 ) );
 		ADD_VARIABLE( bool, m_watermark, true );
 	} m_menu;

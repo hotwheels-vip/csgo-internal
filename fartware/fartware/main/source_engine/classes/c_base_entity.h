@@ -8,6 +8,7 @@
 #include "../classes/c_weapon_data.h"
 #include "../structs/bounding_box_t.h"
 #include "../structs/matrix_t.h"
+#include "../structs/var_mapping.h"
 
 class c_base_entity;
 
@@ -151,26 +152,45 @@ public:
 	}
 };
 
+struct renderable_instance_t {
+	std::uint8_t m_alpha;
+};
+
 class c_client_renderable
 {
-private:
-	enum e_indexes {
-		_get_client_unknown = 0,
-		_model              = 7,
-	};
-
+	// private:
+	// enum e_indexes {
+	//	_get_client_unknown = 0,
+	//	_model              = 7,
+	// };
+	//
+	// public:
+	// c_client_unknown* get_client_unknown( )
+	//{
+	//	using fn = c_client_unknown*( __thiscall* )( void* );
+	//	return ( *( fn** )this )[ this->e_indexes::_get_client_unknown ]( this );
+	// }
+	//
+	// model_t* model( )
+	//{
+	//	using fn = model_t*( __thiscall* )( void* );
+	//	return ( *( fn** )this )[ this->e_indexes::_model ]( this );
+	// }
 public:
-	c_client_unknown* get_client_unknown( )
-	{
-		using fn = c_client_unknown*( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_get_client_unknown ]( this );
-	}
-
-	model_t* model( )
-	{
-		using fn = model_t*( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_model ]( this );
-	}
+	virtual c_client_unknown* get_client_unknown( )                                                          = 0;
+	virtual c_vector& get_render_origin( )                                                                   = 0;
+	virtual c_angle& get_render_angles( )                                                                    = 0;
+	virtual bool should_draw( )                                                                              = 0;
+	virtual int get_render_flags( )                                                                          = 0;
+	virtual bool is_transparent( )                                                                           = 0;
+	virtual std::uint16_t get_shadow_handle( ) const                                                         = 0;
+	virtual std::uint16_t& render_handle( )                                                                  = 0;
+	virtual const model_t* model( ) const                                                                    = 0;
+	virtual int draw_model( int flags, const renderable_instance_t& instance )                               = 0;
+	virtual int get_body( )                                                                                  = 0;
+	virtual void get_color_modulation( float* color )                                                        = 0;
+	virtual bool lod_test( )                                                                                 = 0;
+	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float cur_time ) = 0;
 };
 
 class c_base_entity
@@ -301,6 +321,8 @@ public:
 	add_variable( int, team, "CBaseEntity->m_iTeamNum" );
 	add_variable( c_vector, origin, "CBaseEntity->m_vecOrigin" );
 	add_variable( int, model_index, "CBaseEntity->m_nModelIndex" );
+	add_variable( float, simulation_time, "CBaseEntity->m_flSimulationTime" );
+	add_variable_offset( float, old_simulation_time, "CBaseEntity->m_flSimulationTime", 0x4 );
 
 	c_vector& abs_origin( )
 	{
@@ -381,6 +403,11 @@ public:
 	add_variable_offset( int, button_disabled, "CBasePlayer->m_hViewEntity", -0xC );
 	add_variable_offset( int, button_forced, "CBasePlayer->m_hViewEntity", -0x8 );
 	add_pvariable_offset( c_user_cmd*, current_command, "CBasePlayer->m_hViewEntity", -0x4 );
+
+	var_mapping* get_var_map( )
+	{
+		return reinterpret_cast< var_mapping* >( reinterpret_cast< std::uintptr_t >( this ) + 0x24 );
+	};
 };
 
 class c_fog_controller : public c_base_entity

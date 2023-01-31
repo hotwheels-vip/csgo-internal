@@ -187,6 +187,7 @@
     <ClInclude Include="main\source_engine\structs\matrix_t.h" />
     <ClInclude Include="main\source_engine\structs\rect_t.h" />
     <ClInclude Include="main\source_engine\structs\studio.h" />
+    <ClInclude Include="main\source_engine\structs\var_mapping.h" />
     <ClInclude Include="main\source_engine\structs\vcollide_t.h" />
     <ClInclude Include="main\utilities\console\console.h" />
     <ClInclude Include="main\utilities\event_listener\event_listener.h" />

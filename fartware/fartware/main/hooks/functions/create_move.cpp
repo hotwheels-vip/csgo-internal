@@ -1,10 +1,11 @@
 #include "../../convars/convars.h"
 #include "../../features/aimbot/aimbot.h"
+#include "../../features/lagcomp/lagcomp.h"
 #include "../../features/misc/misc.h"
+#include "../../features/movement/indicators/indicators.h"
 #include "../../features/movement/movement.h"
 #include "../../features/prediction/prediction.h"
 #include "../hooks.h"
-#include "../../features/movement/indicators/indicators.h"
 
 void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
 {
@@ -38,6 +39,8 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			indicators.m_detection.reset( );
 			return;
 		}
+
+		lagcomp.update( );
 
 		misc.on_create_move_pre( );
 		movement.on_create_move_pre( );

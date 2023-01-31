@@ -28,19 +28,29 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* thisptr, int edx
 
 		movement.handle_edgebug_view_point( );
 		break;
-	case e_client_frame_stage::net_update_postdataupdate_end: {
-		[ & ]( ) {
-			entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
-				if ( !entity || entity->is_dormant( ) || globals.m_local == entity || entity->team( ) == globals.m_local->team( ) )
-					return;
+	};
 
+	[ & ]( ) {
+		entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
+			if ( !entity || entity->is_dormant( ) || globals.m_local == entity || entity->team( ) == globals.m_local->team( ) )
+				return;
+
+			if ( stage == e_client_frame_stage::net_update_postdataupdate_end )
 				for ( unsigned int iterator = 0; iterator < 5; iterator++ )
 					entity->player_patch_econ_indices( )[ iterator ] = 0;
-			} ); /* rega r d s                                           */
-		}( );
-		break;
-	}
-	}
+			else if ( stage == e_client_frame_stage::net_update_end ) {
+				const auto var_map = entity->get_var_map( );
+				if ( !var_map )
+					return;
+
+				if ( var_map->interpolated_entries > 20108 )
+					return;
+
+				for ( int i = 0; i < var_map->interpolated_entries; i++ )
+					var_map->entries[ i ].needs_to_interpolate = false;
+			}
+		} ); /* rega r d s                                           */
+	}( );
 
 	weather.on_frame_stage_notify( stage );
 

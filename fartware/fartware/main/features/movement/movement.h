@@ -62,6 +62,8 @@ struct movement_t {
 	void rotate_movement( c_angle& angle );
 
 private:
+	void auto_align( c_user_cmd* cmd, float max_fw, float max_sw );
+
 	const float direction_yaw( );
 
 	void detect_edgebug( c_user_cmd* cmd );
