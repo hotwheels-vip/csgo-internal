@@ -244,6 +244,7 @@
     <ClCompile Include="main\hooks\functions\level_shutdown.cpp" />
     <ClCompile Include="main\hooks\functions\lock_cursor.cpp" />
     <ClCompile Include="main\hooks\functions\modify_eye_position.cpp" />
+    <ClCompile Include="main\hooks\functions\net_earliertempents.cpp" />
     <ClCompile Include="main\hooks\functions\on_full_update.cpp" />
     <ClCompile Include="main\hooks\functions\on_add_entity.cpp" />
     <ClCompile Include="main\hooks\functions\on_remove_entity.cpp" />

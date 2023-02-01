@@ -300,6 +300,7 @@
     <ClCompile Include="main\features\visuals\weather\weather.cpp" />
     <ClCompile Include="main\hooks\functions\on_full_update.cpp" />
     <ClCompile Include="main\source_engine\classes\c_prediction_copy.cpp" />
+    <ClCompile Include="main\hooks\functions\net_earliertempents.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />

@@ -1,4 +1,5 @@
 #include "hooks.h"
+#include "../convars/convars.h"
 
 bool hooks_t::on_attach( )
 {
@@ -51,6 +52,9 @@ bool hooks_t::on_attach( )
 		const auto on_full_update_address = reinterpret_cast< void* >(
 			memory.m_modules[ e_module_names::engine ].find_pattern( ( "55 8B EC 56 8B F1 8B 8E ? ? ? ? 85 C9 74 0F E8" ) ) );
 
+		const auto net_earliertempents_address =
+			utilities.get_virtual_function( convars.find( fnv1a::hash_const( "net_earliertempents" ) ), 13 /* GetBool */ );
+
 		if ( MH_Initialize( ) != MH_OK ) {
 			throw std::runtime_error( ( "failed initialize minhook" ) );
 			return false;
@@ -85,10 +89,10 @@ bool hooks_t::on_attach( )
 		                 ( "GlowEffectSpectator()" ) );
 		initialise_hook( hooks.draw_view_models, draw_view_models_address, &n_detoured_functions::draw_view_models,
 		                 ( "CViewRender::DrawViewModels()" ) );
-		initialise_hook( hooks.get_vcollide, get_vcollide_address, &n_detoured_functions::get_vcollide,
-		                 ( "CModelInfo::GetVCollide()" ) );
-		initialise_hook( hooks.on_full_update, on_full_update_address, &n_detoured_functions::on_full_update,
-		                 ( "OnFullUpdate()" ) );
+		initialise_hook( hooks.get_vcollide, get_vcollide_address, &n_detoured_functions::get_vcollide, ( "CModelInfo::GetVCollide()" ) );
+		initialise_hook( hooks.on_full_update, on_full_update_address, &n_detoured_functions::on_full_update, ( "OnFullUpdate()" ) );
+		initialise_hook( hooks.net_earliertempents, net_earliertempents_address, &n_detoured_functions::net_earliertempents,
+		                 ( "net_earliertempents::GetBool()" ) );
 
 		if ( interfaces.m_engine->is_in_game( ) ) {
 			console.print( "force updated entity cache" );
