@@ -66,9 +66,6 @@ void aimbot_t::on_create_move_post( )
 
 			const float fov = mathematics.calculate_fov( globals.m_cmd->m_view_point, delta );
 
-			console.print( "fov -> {:.5f}", fov );
-			console.print( "max_fov -> {:.5f}", max_fov );
-
 			if ( fov < max_fov ) {
 				max_fov = fov; 
 				best_entity           = entity;

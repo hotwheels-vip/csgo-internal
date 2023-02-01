@@ -121,7 +121,32 @@ void prediction_t::end( ) const
 
 void prediction_t::restore_entity_to_predicted_frame( int frame )
 {
-	static auto fn = reinterpret_cast< void( __stdcall* )( int, int ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 8B 4D ? 56 E8 ? ? ? ? 8B 75" ) );
-	fn( 0, frame );
+	/*static auto fn = reinterpret_cast< void( __stdcall* )( int, int ) >(
+	    memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 8B 4D ? 56 E8 ? ? ? ? 8B 75" ) );
+	fn( 0, frame );*/
+
+	static auto cl_predict = convars.find( fnv1a::hash_const( "cl_predict" ) );
+	if ( !cl_predict->get_int( ) )
+		return;
+
+	if ( !globals.m_local->predictable( ) )
+		return;
+
+	globals.m_local->restore_data( "RestoreEntityToPredictedFrame", frame, 2 /* PC_EVERYTHING */ );
+	globals.m_local->on_post_restore_data( );
+}
+
+void prediction_t::data_map_helper_t::store( unsigned char* start_data )
+{
+	this->m_pred_copy = c_prediction_copy( 2 /* PC_EVERYTHING */, start_data, true, reinterpret_cast< const unsigned char* >( globals.m_local ),
+	                                       false, c_prediction_copy::transferdata_copyonly );
+
+	this->m_pred_copy.transfer_data( this->m_pre_action, globals.m_local->index( ), globals.m_local->prediction_desc_map( ) );
+}
+
+void prediction_t::data_map_helper_t::apply( unsigned char* start_data )
+{
+	this->m_pred_copy = c_prediction_copy( 2 /* PC_EVERYTHING */, reinterpret_cast< unsigned char* >( globals.m_local ), false, start_data, true,
+	                                       c_prediction_copy::transferdata_copyonly );
+	this->m_pred_copy.transfer_data( this->m_post_action, globals.m_local->index( ), globals.m_local->prediction_desc_map( ) );
 }

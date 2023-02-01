@@ -186,6 +186,63 @@ void c_base_entity::set_abs_origin( const c_vector& origin )
 	original_set_abs_origin( this, origin );
 }
 
+/* void C_BaseEntity::RestoreData( const char *context, int slot, int type )
+{
+#if !defined( NO_ENTITY_PREDICTION )
+	VPROF( "C_BaseEntity::RestoreData" );
+
+	const void *src = ( slot == SLOT_ORIGINALDATA ) ? GetOriginalNetworkDataObject() : GetPredictedFrame( slot );
+	Assert( src );
+	
+	// some flags shouldn't be predicted - as we find them, add them to the savedEFlagsMask
+	const int savedEFlagsMask = EFL_DIRTY_SHADOWUPDATE | EFL_DIRTY_SPATIAL_PARTITION;
+	int savedEFlags = GetEFlags() & savedEFlagsMask;
+
+	CPredictionCopy copyHelper( type, (byte *)this, TD_OFFSET_NORMAL, (const byte *)src, TD_OFFSET_PACKED, CPredictionCopy::TRANSFERDATA_COPYONLY  );
+	copyHelper.TransferData( "C_BaseEntity::RestoreData", entindex(), GetPredDescMap() );
+
+	// set non-predicting flags back to their prior state
+	RemoveEFlags( savedEFlagsMask );
+	AddEFlags( savedEFlags );
+#endif
+}
+ */
+
+void c_base_entity::restore_data( const char* ctx, int slot, int type ) /* C_BaseEntity::RestoreData */
+{
+	static const auto original_restore_data = reinterpret_cast< void( __thiscall* )( void*, const char*, int, int ) >(
+		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 83 E4 F8 83 EC 44 53 56 8B" ) );
+
+	original_restore_data( this, ctx, slot, type );
+}
+
+/* void C_BaseEntity::OnPostRestoreData()
+{
+	// HACK Force recomputation of origin
+	InvalidatePhysicsRecursive( POSITION_CHANGED | ANGLES_CHANGED | VELOCITY_CHANGED );
+
+	if ( GetMoveParent() )
+	{
+		AddToAimEntsList();
+	}
+
+	// If our model index has changed, then make sure it's reflected in our model pointer.
+	if ( GetModel() != modelinfo->GetModel( GetModelIndex() ) )
+	{
+		MDLCACHE_CRITICAL_SECTION();
+		SetModelByIndex( GetModelIndex() );
+	}
+} */
+
+void c_base_entity::on_post_restore_data( )
+{
+	static const auto original_on_post_restore_data =
+		reinterpret_cast< void( __thiscall* )( void* ) >(
+		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 51 53 56 6A" ) );
+
+	original_on_post_restore_data( this );
+}
+
 c_vector c_base_entity::get_bone_position( int bone )
 {
 	assert( bone > -1 /* e_bone_indexes::bone_invalid */ && bone < 128 /* maxstudiobones */ );

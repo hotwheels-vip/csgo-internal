@@ -2,6 +2,7 @@
 
 #include "../../memory/memory.h"
 #include "../../source_engine/classes/c_prediction.h"
+#include "../../source_engine/classes/c_prediction_copy.h"
 
 struct prediction_t {
 	void begin( c_user_cmd* cmd );
@@ -15,6 +16,21 @@ struct prediction_t {
 		c_vector m_velocity = { };
 		c_vector m_origin   = { };
 	} m_data;
+
+	struct data_map_helper_t {
+		data_map_helper_t( const char* pre_action, const char* post_action )
+		{
+			this->m_pre_action  = pre_action;
+			this->m_post_action = post_action;
+		}
+
+		void store( unsigned char* start_data );
+		void apply( unsigned char* start_data );
+
+		c_prediction_copy m_pred_copy;
+		const char* m_pre_action;
+		const char* m_post_action;
+	};
 
 	c_user_cmd* m_last_cmd  = nullptr;
 	c_move_data m_move_data = { };

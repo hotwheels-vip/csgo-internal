@@ -73,3 +73,12 @@ protected:
 	int m_allocation_count;
 	int m_grow_size;
 };
+
+template< class T, class M = c_utl_memory< T > >
+class c_utl_stack
+{
+public:
+	M m_memory;
+	int m_size;
+	T* m_elements;
+};

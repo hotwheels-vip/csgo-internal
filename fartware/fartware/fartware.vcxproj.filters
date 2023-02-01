@@ -231,6 +231,7 @@
     <ClInclude Include="main\source_engine\structs\vcollide_t.h" />
     <ClInclude Include="main\features\visuals\weather\weather.h" />
     <ClInclude Include="main\source_engine\structs\var_mapping.h" />
+    <ClInclude Include="main\source_engine\classes\c_prediction_copy.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />
@@ -298,6 +299,7 @@
     <ClCompile Include="main\hooks\functions\get_vcollide.cpp" />
     <ClCompile Include="main\features\visuals\weather\weather.cpp" />
     <ClCompile Include="main\hooks\functions\on_full_update.cpp" />
+    <ClCompile Include="main\source_engine\classes\c_prediction_copy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />

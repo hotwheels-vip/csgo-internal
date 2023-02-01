@@ -177,7 +177,7 @@ void movement_t::on_create_move_post( )
 	}( GET_CONFIG_BOOL( variables.m_movement.m_auto_align ) );
 
 	// pixelsurf (logic)
-	const float target_ps_velocity = gravity * 0.5f * memory.m_globals->m_interval_per_tick;
+	const float target_ps_velocity = -gravity * 0.5f * memory.m_globals->m_interval_per_tick;
 	[ & ]( bool can_pixelsurf ) {
 		if ( can_pixelsurf ) {
 			if ( movement.m_pixelsurf_data.m_in_pixel_surf || globals.m_local->flags( ) & e_flags::fl_onground ||
@@ -211,7 +211,7 @@ void movement_t::on_create_move_post( )
 						if ( backup_flags & e_flags::fl_onground )
 							break;
 
-						if ( globals.m_local->velocity( ).m_z == -target_ps_velocity && backup_velocity.m_z == -target_ps_velocity ) {
+						if ( globals.m_local->velocity( ).m_z == target_ps_velocity && backup_velocity.m_z == target_ps_velocity ) {
 							movement.m_pixelsurf_data.m_prediction_ticks = globals.m_cmd->m_tick_count + i;
 							movement.m_pixelsurf_data.m_simulated_cmd    = simulated_cmd;
 							movement.m_pixelsurf_data.m_should_duck      = !( prediction_type == 1 );
@@ -366,7 +366,7 @@ void movement_t::on_create_move_post( )
 			else
 				globals.m_cmd->m_buttons &= ~e_buttons::in_duck;
 
-			if ( movement.m_pixelsurf_data.m_predicted_succesful && !( globals.m_local->velocity( ).m_z == -target_ps_velocity ) ) {
+			if ( movement.m_pixelsurf_data.m_predicted_succesful && !( globals.m_local->velocity( ).m_z == target_ps_velocity ) ) {
 				movement.m_pixelsurf_data.m_in_pixel_surf       = false;
 				movement.m_pixelsurf_data.m_predicted_succesful = false;
 				return;

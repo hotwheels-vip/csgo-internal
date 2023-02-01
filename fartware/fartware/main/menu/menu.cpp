@@ -436,8 +436,11 @@ void menu_t::on_end_scene( )
 					ImGui::SliderFloat( "fog density", &GET_CONFIG_FLOAT( variables.m_world.m_fog_density ), 0.f, 1.f, "%.2f" );
 				}
 
-				ImGui::Combo( "weather type", &GET_CONFIG_INT( variables.m_world.m_weather_type ),
-				              "none\0particle rain\0particle ash\0particle rain storm\0particle snow" );
+				ImGui::Checkbox( "precipitation", &GET_CONFIG_BOOL( variables.m_world.m_precipitation ) );
+				if ( GET_CONFIG_BOOL( variables.m_world.m_precipitation ) ) {
+					ImGui::Combo( "weather type", &GET_CONFIG_INT( variables.m_world.m_precipitation_type ),
+					              "rain\0ash\0rain storm\0snow" );
+				}
 
 				ImGui::Checkbox( "motion blur", &GET_CONFIG_BOOL( variables.m_world.m_motion_blur ) );
 

@@ -65,35 +65,35 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 	if ( stage != e_client_frame_stage::render_start )
 		return;
 
-	if ( globals.m_unloading )
+	if ( !GET_CONFIG_BOOL( variables.m_world.m_precipitation ) || globals.m_unloading ) {
 		reset( );
-
-		static int weather_type = 0;
-	switch ( GET_CONFIG_INT( variables.m_world.m_weather_type ) ) {
-	case 0: {
-		weather_type = 0;
-		break;
+		return;
 	}
-	case 1: {
+
+	if ( globals.m_unloading ) {
+		reset( );
+		return;
+	}
+
+	static int weather_type = 0;
+	switch ( GET_CONFIG_INT( variables.m_world.m_precipitation_type ) ) {
+	case 0: {
 		weather_type = e_precipitation_type::precipitation_type_particlerain;
 		break;
 	}
-	case 2: {
+	case 1: {
 		weather_type = e_precipitation_type::precipitation_type_particleash;
 		break;
 	}
-	case 3: {
+	case 2: {
 		weather_type = e_precipitation_type::precipitation_type_particlerainstorm;
 		break;
 	}
-	case 4: {
+	case 3: {
 		weather_type = e_precipitation_type::precipitation_type_particlesnow;
 		break;
 	}
 	}
-
-	if ( weather_type == 0 )
-		reset( );
 
 	if ( m_timer > -1 ) {
 		--m_timer;
@@ -144,7 +144,7 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 
 		/*static auto r_rainradius = convars.find( fnv1a::hash_const( "r_RainRadius" ) );
 		if ( r_rainradius->get_float( ) != 1000.f )
-			r_rainradius->set_value( 1000.f );*/
+		    r_rainradius->set_value( 1000.f );*/
 
 		*( int* )( ( uintptr_t )entity + 0xA00 ) = weather_type;
 

@@ -306,6 +306,8 @@ public:
 	void post_think( );
 	void set_next_think( int think );
 	void set_abs_origin( const c_vector& origin );
+	void restore_data( const char* ctx, int slot, int type );
+	void on_post_restore_data( );
 
 	c_vector eye_position( )
 	{
@@ -329,6 +331,7 @@ public:
 	add_variable( c_vector, origin, "CBaseEntity->m_vecOrigin" );
 	add_variable( int, model_index, "CBaseEntity->m_nModelIndex" );
 	add_variable( float, simulation_time, "CBaseEntity->m_flSimulationTime" );
+	add_variable( bool, predictable, "CBaseEntity->m_bPredictable" );
 	add_variable_offset( float, old_simulation_time, "CBaseEntity->m_flSimulationTime", 0x4 );
 
 	c_vector& abs_origin( )
