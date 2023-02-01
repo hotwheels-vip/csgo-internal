@@ -158,26 +158,33 @@ struct renderable_instance_t {
 
 class c_client_renderable
 {
-	// private:
-	// enum e_indexes {
-	//	_get_client_unknown = 0,
-	//	_model              = 7,
-	// };
-	//
-	// public:
-	// c_client_unknown* get_client_unknown( )
-	//{
-	//	using fn = c_client_unknown*( __thiscall* )( void* );
-	//	return ( *( fn** )this )[ this->e_indexes::_get_client_unknown ]( this );
-	// }
-	//
-	// model_t* model( )
-	//{
-	//	using fn = model_t*( __thiscall* )( void* );
-	//	return ( *( fn** )this )[ this->e_indexes::_model ]( this );
-	// }
+private:
+	enum e_indexes {
+		_get_client_unknown = 0,
+		_model              = 8,
+		_setup_bones        = 13,
+	};
+
 public:
-	virtual c_client_unknown* get_client_unknown( )                                                          = 0;
+	c_client_unknown* get_client_unknown( )
+	{
+		using fn = c_client_unknown*( __thiscall* )( void* );
+		return ( *( fn** )this )[ this->e_indexes::_get_client_unknown ]( this );
+	}
+
+	model_t* model( )
+	{
+		using fn = model_t*( __thiscall* )( void* );
+		return ( *( fn** )this )[ this->e_indexes::_model ]( this );
+	}
+
+	bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float cur_time )
+	{
+		using fn = bool( __thiscall* )( void*, matrix3x4_t*, int, int, float );
+		return ( *( fn** )this )[ this->e_indexes::_setup_bones ]( this, bone_to_world_out, max_bones, bone_mask, cur_time );
+	}
+
+	/*virtual c_client_unknown* get_client_unknown( )                                                          = 0;
 	virtual c_vector& get_render_origin( )                                                                   = 0;
 	virtual c_angle& get_render_angles( )                                                                    = 0;
 	virtual bool should_draw( )                                                                              = 0;
@@ -190,7 +197,7 @@ public:
 	virtual int get_body( )                                                                                  = 0;
 	virtual void get_color_modulation( float* color )                                                        = 0;
 	virtual bool lod_test( )                                                                                 = 0;
-	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float cur_time ) = 0;
+	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float cur_time ) = 0;*/
 };
 
 class c_base_entity
@@ -330,9 +337,7 @@ public:
 		return ( *( fn** )this )[ this->e_indexes::_abs_origin ]( this );
 	}
 
-	int get_bone_by_hash( const unsigned int bone_hash );
-
-	void get_bone_position( const int bone, c_vector& origin );
+	c_vector get_bone_position( int bone );
 
 	c_player_animation_layer* get_anim_layers( );
 

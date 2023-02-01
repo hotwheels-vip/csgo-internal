@@ -14,23 +14,21 @@ void c_anim_state::modify_eye_position( c_vector& input_eye_pos )
 	if ( !this->landing && this->anim_duck_amount == 0.f && ground_entity )
 		return;
 
-	if ( int head_bone_number = this->player->get_bone_by_hash( fnv1a::hash_const("head_0") ); head_bone_number != -1 ) {
-		c_vector head_position{ };
-		this->player->get_bone_position( head_bone_number, head_position );
+	c_vector head_position = this->player->get_bone_position( e_bone_index::bone_head );
+	if ( head_position.is_zero( ) )
+		return;
 
-		head_position.m_z += 1.7f;
+	head_position.m_z += 1.7f;
 
-		if ( head_position.m_z < input_eye_pos.m_z ) {
-			float factor       = 0.f;
-			const float delta  = std::fabsf( input_eye_pos.m_z - head_position.m_z );
-			const float offset   = ( delta - 4.0f ) / 6.0f;
+	if ( head_position.m_z < input_eye_pos.m_z ) {
+		float factor       = 0.f;
+		const float delta  = std::fabsf( input_eye_pos.m_z - head_position.m_z );
+		const float offset = ( delta - 4.0f ) / 6.0f;
 
-			if ( offset >= 0.f )
-				factor = std::min( offset, 1.0f );
+		if ( offset >= 0.f )
+			factor = std::min( offset, 1.0f );
 
-			const float sqaured_factor = ( factor * factor );
-			input_eye_pos.m_z +=
-				( ( head_position.m_z - input_eye_pos.m_z ) * ( ( sqaured_factor * 3.0f ) - ( ( sqaured_factor * 2.0f ) * factor ) ) );
-		}
+		const float sqaured_factor = ( factor * factor );
+		input_eye_pos.m_z += ( ( head_position.m_z - input_eye_pos.m_z ) * ( ( sqaured_factor * 3.0f ) - ( ( sqaured_factor * 2.0f ) * factor ) ) );
 	}
 }

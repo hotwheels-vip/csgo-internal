@@ -68,11 +68,12 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 	if ( globals.m_unloading )
 		reset( );
 
-	if ( !( GET_CONFIG_INT( variables.m_world.m_weather_type ) ) )
-		reset( );
-
-	static int weather_type = 0;
+		static int weather_type = 0;
 	switch ( GET_CONFIG_INT( variables.m_world.m_weather_type ) ) {
+	case 0: {
+		weather_type = 0;
+		break;
+	}
 	case 1: {
 		weather_type = e_precipitation_type::precipitation_type_particlerain;
 		break;
@@ -90,6 +91,9 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 		break;
 	}
 	}
+
+	if ( weather_type == 0 )
+		reset( );
 
 	if ( m_timer > -1 ) {
 		--m_timer;

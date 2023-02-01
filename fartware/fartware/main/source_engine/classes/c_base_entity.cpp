@@ -186,37 +186,20 @@ void c_base_entity::set_abs_origin( const c_vector& origin )
 	original_set_abs_origin( this, origin );
 }
 
-int c_base_entity::get_bone_by_hash( const unsigned int bone_hash )
+c_vector c_base_entity::get_bone_position( int bone )
 {
-	const auto model = this->client_renderable( )->model( );
-	if ( !model )
-		return -1;
+	assert( bone > -1 /* e_bone_indexes::bone_invalid */ && bone < 128 /* maxstudiobones */ );
 
-	const auto studio_hdr = interfaces.m_model_info->get_studio_model( model );
-	if ( !studio_hdr )
-		return -1;
+	const auto client_renderable = this->client_renderable( );
+	if ( !client_renderable )
+		return c_vector( 0, 0, 0 );
 
-	for ( int i = 0; i < studio_hdr->n_bones; i++ ) {
-		const auto bone = studio_hdr->get_bone( i );
-		if ( !bone )
-			break;
+	std::array< matrix3x4_t, 128 > bones_to_world = { };
 
-		if ( fnv1a::hash( bone->get_name( ) ) == bone_hash )
-			return i;
-	}
+	if ( client_renderable->setup_bones( bones_to_world.data( ), bones_to_world.size( ), 0x0007FF00 /* BONE_USED_BY_ANYTHING */, 0.f ) )
+		return bones_to_world[ bone ][ 3 ];
 
-	return -1;
-}
-
-void c_base_entity::get_bone_position( const int bone, c_vector& origin )
-{
-	static auto get_bone_position_fn = reinterpret_cast< void( __thiscall* )( void*, int, c_vector* ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 83 E4 F8 56 8B F1 57 83" ) );
-
-	c_vector return_value[ 4 ]{ };
-	get_bone_position_fn( this, bone, return_value );
-
-	origin = { return_value[ 1 ][ 0 ], return_value[ 2 ][ 1 ], return_value[ 3 ][ 2 ] };
+	return c_vector( 0, 0, 0 );
 }
 
 void c_base_entity::post_think( )
