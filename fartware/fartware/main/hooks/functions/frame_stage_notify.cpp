@@ -38,17 +38,17 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* thisptr, int edx
 			if ( stage == e_client_frame_stage::net_update_postdataupdate_end )
 				for ( unsigned int iterator = 0; iterator < 5; iterator++ )
 					entity->player_patch_econ_indices( )[ iterator ] = 0;
-			else if ( stage == e_client_frame_stage::net_update_end ) {
-				const auto var_map = entity->get_var_map( );
-				if ( !var_map )
-					return;
-
-				if ( var_map->interpolated_entries > 20108 )
-					return;
-
-				for ( int i = 0; i < var_map->interpolated_entries; i++ )
-					var_map->entries[ i ].needs_to_interpolate = false;
-			}
+			// else if ( stage == e_client_frame_stage::net_update_end ) {
+			//	const auto var_map = entity->get_var_map( );
+			//	if ( !var_map )
+			//		return;
+			//
+			//	if ( var_map->interpolated_entries > 20108 )
+			//		return;
+			//
+			//	for ( int i = 0; i < var_map->interpolated_entries; i++ )
+			//		var_map->entries[ i ].needs_to_interpolate = false;
+			// }
 		} ); /* rega r d s                                           */
 	}( );
 

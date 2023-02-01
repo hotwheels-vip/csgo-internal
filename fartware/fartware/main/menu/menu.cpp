@@ -137,9 +137,8 @@ void menu_t::on_end_scene( )
 		switch ( tab_number ) {
 		case 0: /* aimbot */ {
 			if ( ImGui::BeginChild(
-					 ( "main" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
-					 true ) ) {
+					 ( "main" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+					 true, 0, true ) ) {
 				ImGui::Checkbox( "aimbot", &GET_CONFIG_BOOL( variables.m_aimbot.m_enable ) );
 				ImGui::SliderFloat( "aimbot fov", &GET_CONFIG_FLOAT( variables.m_aimbot.m_fov ), 0.1f, 180.f, "%.1f" );
 				ImGui::Checkbox( "backtrack", &GET_CONFIG_BOOL( variables.m_aimbot.m_backtrack_enabled ) );
@@ -153,7 +152,6 @@ void menu_t::on_end_scene( )
 			if ( ImGui::BeginChild( ( "configuration" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-				
 				ImGui::EndChild( );
 			}
 			break;

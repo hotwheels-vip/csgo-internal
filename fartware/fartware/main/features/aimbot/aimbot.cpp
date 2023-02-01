@@ -43,7 +43,7 @@ void aimbot_t::on_create_move_post( )
 		return;
 
 	struct {
-		const float max_fov = GET_CONFIG_FLOAT( variables.m_aimbot.m_fov );
+		const float max_fov = 30.f;
 	} m_aimbot_info;
 
 	float field_of_view     = std::numeric_limits< float >::max( );

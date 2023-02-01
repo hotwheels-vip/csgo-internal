@@ -40,7 +40,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			return;
 		}
 
-		lagcomp.update( );
+		// lagcomp.update( );
 
 		misc.on_create_move_pre( );
 		movement.on_create_move_pre( );

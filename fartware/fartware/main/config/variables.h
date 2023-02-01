@@ -55,9 +55,9 @@ public:
 
 struct variables_t {
 	struct {
-		bool m_enable;
-		float m_fov;
-		bool m_backtrack_enabled;
+		ADD_VARIABLE( bool, m_enable, false );
+		ADD_VARIABLE( float, m_fov, 30.f );
+		ADD_VARIABLE( bool, m_backtrack_enabled, false );
 
 	} m_aimbot;
 
