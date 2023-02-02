@@ -8,8 +8,8 @@
 struct i_client_entity : public c_client_unknown, public c_client_renderable, public c_client_networkable, public c_client_thinkable {
 	virtual void release( ) = 0;
 
-	virtual c_vector& abs_origin( ) = 0;
-	virtual c_vector& abs_angles( ) = 0;
+	virtual c_vector& i_get_abs_origin( ) = 0;
+	virtual c_vector& i_get_abs_angles( ) = 0;
 
 	void set_abs_origin( c_vector& origin );
 
