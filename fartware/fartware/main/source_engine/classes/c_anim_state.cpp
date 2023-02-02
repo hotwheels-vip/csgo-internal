@@ -14,7 +14,7 @@ void c_anim_state::modify_eye_position( c_vector& input_eye_pos )
 	if ( !this->landing && this->anim_duck_amount == 0.f && ground_entity )
 		return;
 
-	c_vector head_position = this->player->get_bone_position( e_bone_index::bone_head );
+	c_vector head_position = this->player->get_bone_position( e_hitgroup::hitgroup_head );
 	if ( head_position.is_zero( ) )
 		return;
 

@@ -2,32 +2,39 @@
 #include "../../source_engine/structs/matrix_t.h"
 #include <array>
 #include <iostream>
+class c_base_entity;
 
 struct lagcomp_t {
 	struct record {
-		// For record validation purposes.
-		int player_index = -1;
+		bool valid            = false;
+		float simulation_time = -1.f;
 
-		float sim_time{ };
-		int tick_count{ };
+		c_vector abs_origin   = { };
+		c_vector eye_position = { };
 
-		bool valid{ };
+		c_base_entity* player = { };
 
-		matrix3x4_t matrix[ 128 ]{ };
+		matrix3x4_t bone_matrix[ 128 ] = { };
 	};
 
-	std::array< int, 65 > record_location{ };
-	std::array< record*, 65 > records{ };
+private:
+	std::array< int, 65 > heap_iterator;
+
+public:
+	std::array< record*, 65 > heap_records;
 
 	void update( );
-
-	void run( record rec );
 
 	// utils
 
 	float lerp_time( );
 
+	int max_ticks( );
+
 	bool is_valid( record rec );
+
+	void backtrack_player( record* heap_record );
+	void backtrack_player( c_base_entity* player );
 };
 
 inline lagcomp_t lagcomp = { };

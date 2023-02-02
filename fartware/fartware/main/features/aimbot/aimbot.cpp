@@ -1,4 +1,5 @@
 #include "aimbot.h"
+#include "../lagcomp/lagcomp.h"
 
 #include "../../convars/convars.h"
 
@@ -14,14 +15,34 @@
 #include "../../config/variables.h"
 #include "../entities/entities.h"
 
-bool aimbot_t::is_weapon_valid( )
+c_base_entity* aimbot_t::find_closest( c_cconvar* recoil_scale )
 {
-	auto weapon_handle = globals.m_local->active_weapon_handle( );
-	if ( !weapon_handle )
-		return false;
+	float closest_fov             = std::numeric_limits< float >::max( );
+	c_base_entity* closest_player = nullptr;
+	const auto eye_position       = globals.m_local->eye_position( );
 
-	const auto active_weapon = reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity_from_handle( weapon_handle ) );
+	entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
+		if ( !entity->is_valid( ) ) /* TODO ~ add entity->is_valid() check with params (check for team, dormant etc) */
+			return;
 
+		c_vector head_position = entity->get_bone_position( e_hitgroup::hitgroup_head );
+
+		c_angle delta = mathematics.calculate_angle( eye_position, head_position );
+		delta -= ( globals.m_local->aim_punch_angle( ) * recoil_scale->get_float( ) ); /* account for recoil */
+
+		const float fov = mathematics.calculate_fov( globals.m_cmd->m_view_point, delta );
+
+		if ( fov < closest_fov ) {
+			closest_fov    = fov;
+			closest_player = entity;
+		}
+	} );
+
+	return closest_player;
+}
+
+bool aimbot_t::is_weapon_valid( c_base_entity* active_weapon )
+{
 	if ( !active_weapon )
 		return false;
 
@@ -34,61 +55,60 @@ bool aimbot_t::is_weapon_valid( )
 	return definition_index > 0 && !misc && !( definition_index >= 68 );
 }
 
-/* AM VERY SORRY */
 void aimbot_t::on_create_move_post( )
 {
+	static auto recoil_scale = convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) );
+
+	// TODO add global weapon pointer
+	auto weapon_handle = globals.m_local->active_weapon_handle( );
+	if ( !weapon_handle )
+		return;
+
+	const auto active_weapon = reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity_from_handle( weapon_handle ) );
+
+	if ( !active_weapon )
+		return;
+
 	if ( !( globals.m_cmd->m_buttons & e_buttons::in_attack ) )
 		return;
 
-	if ( !is_weapon_valid( ) )
+	if ( !is_weapon_valid( active_weapon ) )
 		return;
 
-	float max_fov = 30.f;
-
-	const auto eye_position = globals.m_local->eye_position( );
-
-	const auto get_best_entity = [ & ]( ) {
-		c_base_entity* best_entity = nullptr;
-
-		entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
-			if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || entity->team( ) == globals.m_local->team( ) ||
-			     entity == globals.m_local ) /* TODO ~ add entity->is_valid() check with params (check for team, dormant etc) */
-				return;
-
-			c_vector head_position = entity->get_bone_position( e_bone_index::bone_head );
-
-			/*if ( !globals.m_local->is_visible( entity, head_position ) )
-				return;*/
-
-			c_angle delta = mathematics.calculate_angle( eye_position, head_position );
-			delta -= ( globals.m_local->aim_punch_angle( ) *
-			           convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) )->get_float( ) ); /* account for recoil */
-
-			const float fov = mathematics.calculate_fov( globals.m_cmd->m_view_point, delta );
-
-			if ( fov < max_fov ) {
-				max_fov = fov; 
-				best_entity           = entity;
-			}
-		} );
-
-		return best_entity;
-	};
-
-	const auto entity = get_best_entity( );
+	auto entity = find_closest( recoil_scale );
 
 	if ( !entity )
 		return;
 
-	c_vector head_position = entity->get_bone_position( e_bone_index::bone_head );
+	const auto head_position = entity->get_bone_position( hitgroup_head );
+	const auto local_eye_pos = globals.m_local->eye_position( );
 
-	c_angle delta = mathematics.calculate_angle( eye_position, head_position ) - globals.m_cmd->m_view_point;
+	// TODO autowalls
+	if ( !globals.m_local->is_visible( entity, head_position ) )
+		return;
 
-	delta -=
-		( globals.m_local->aim_punch_angle( ) * convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) )->get_float( ) ); /* account for recoil */
+	if ( GET_CONFIG_BOOL( variables.m_aimbot.m_backtrack_enabled ) )
+		lagcomp.backtrack_player( entity );
 
-	delta.normalize( );
+	c_vector forward_to_head = local_eye_pos - head_position;
+	c_angle angles_to_head{ };
 
-	globals.m_cmd->m_view_point += delta;
-	interfaces.m_engine->set_view_angles( globals.m_cmd->m_view_point );
+	mathematics.vector_angles( forward_to_head, angles_to_head );
+
+	// if we have a valid record, calculate to it instead
+	// this can be improved, but not really quite sure how
+	if ( globals.m_record ) {
+		forward_to_head = local_eye_pos - entity->get_bone_position( hitgroup_head, globals.m_record->bone_matrix );
+		mathematics.vector_angles( forward_to_head, angles_to_head );
+	}
+
+	angles_to_head += globals.m_local->aim_punch_angle( ) * ( recoil_scale->get_float( ) * -1.f );
+
+	angles_to_head = angles_to_head.normalize( );
+
+	// if ( active_weapon->can_shoot_primary( ) ) {
+	interfaces.m_engine->set_view_angles( angles_to_head );
+
+	globals.m_cmd->m_view_point = angles_to_head;
+	//}
 }

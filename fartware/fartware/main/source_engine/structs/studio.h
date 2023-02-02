@@ -1,7 +1,7 @@
 #pragma once
+#include "../classes/c_angle.h"
 #include "../classes/c_utl_vector.h"
 #include "../structs/matrix_t.h"
-#include "../classes/c_angle.h"
 
 using radian_euler = float[ 3 ];
 using quaternion   = float[ 4 ];
@@ -124,39 +124,48 @@ struct mstudiobonecontroller_t {
 
 struct mstudiobbox_t {
 	int i_bone;
-	int i_group;       // intersection group
+	int i_group;         // intersection group
 	c_vector vec_bb_min; // bounding box
 	c_vector vec_bb_max;
 	int n_hitbox_name_index; // offset to the name of the hitbox
-	c_angle ang_offset_orientation;
-	float fl_radius;
-	unsigned char pad0[ 0x10 ];
+private:
+	int32_t pad01[ 3 ];
 
-	inline const char* get_hitbox_name( ) const
+public:
+	float m_radius;
+
+private:
+	int32_t pad02[ 4 ];
+
+public:
+	const char* get_hitbox_name( ) const
 	{
-		if ( !n_hitbox_name_index )
-			return nullptr;
-		return ( const char* )this + n_hitbox_name_index;
+		if ( n_hitbox_name_index == 0 )
+			return reinterpret_cast< char* >( '\0' );
+
+		return reinterpret_cast< const char* >( this ) + n_hitbox_name_index;
 	}
 };
 
 struct mstudiohitboxset_t {
-	int n_name_index;
-	int n_hitboxes;
-	int n_hitbox_index;
+	int m_name_index;
+	int m_num_hitboxes;
+	int m_hitbox_index;
 
 	inline const char* get_name( ) const
 	{
-		if ( !n_name_index )
-			return nullptr;
-		return ( char* )this + n_name_index;
+		if ( !m_name_index )
+			return reinterpret_cast< char* >( '\0' );
+
+		return reinterpret_cast< const char* >( this ) + m_name_index;
 	}
 
 	inline mstudiobbox_t* get_hitbox( int i_hit_box ) const
 	{
-		if ( i_hit_box < 0 || i_hit_box >= n_hitboxes )
+		if ( i_hit_box < 0 || i_hit_box >= m_num_hitboxes )
 			return nullptr;
-		return ( mstudiobbox_t* )( ( std::uint8_t* )this + n_hitbox_index ) + i_hit_box;
+
+		return reinterpret_cast< mstudiobbox_t* >( ( std::uint8_t* )this + m_hitbox_index ) + i_hit_box;
 	}
 };
 
@@ -411,7 +420,7 @@ struct studiohdr_t {
 		if ( p_hitbox_set == nullptr )
 			return 0;
 
-		return p_hitbox_set->n_hitboxes;
+		return p_hitbox_set->m_num_hitboxes;
 	}
 
 	int n_local_animations;

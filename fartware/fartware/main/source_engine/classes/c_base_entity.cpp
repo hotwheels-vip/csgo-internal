@@ -8,6 +8,7 @@
 #include "../enumerations/e_item_definition_index.h"
 #include "../structs/studio.h"
 
+#include "../../globals.h"
 #include <array>
 
 bool c_base_entity::get_bounding_box( bounding_box_t* bbox )
@@ -125,7 +126,7 @@ void c_base_entity::set_animation_layers( c_player_animation_layer* layers )
 
 int c_base_entity::get_sequence_activity( int sequence )
 {
-	const auto model = this->client_renderable( )->model( );
+	const auto model = get_model( );
 	if ( !model )
 		return -1;
 
@@ -179,31 +180,24 @@ void c_base_entity::set_next_think( int think )
 	original_set_next_think( this, think );
 }
 
-void c_base_entity::set_abs_origin( const c_vector& origin )
-{
-	static auto original_set_abs_origin = reinterpret_cast< void( __thiscall* )( void*, const c_vector& ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( ( "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8" ) ) );
-	original_set_abs_origin( this, origin );
-}
-
 /* void C_BaseEntity::RestoreData( const char *context, int slot, int type )
 {
 #if !defined( NO_ENTITY_PREDICTION )
-	VPROF( "C_BaseEntity::RestoreData" );
+    VPROF( "C_BaseEntity::RestoreData" );
 
-	const void *src = ( slot == SLOT_ORIGINALDATA ) ? GetOriginalNetworkDataObject() : GetPredictedFrame( slot );
-	Assert( src );
-	
-	// some flags shouldn't be predicted - as we find them, add them to the savedEFlagsMask
-	const int savedEFlagsMask = EFL_DIRTY_SHADOWUPDATE | EFL_DIRTY_SPATIAL_PARTITION;
-	int savedEFlags = GetEFlags() & savedEFlagsMask;
+    const void *src = ( slot == SLOT_ORIGINALDATA ) ? GetOriginalNetworkDataObject() : GetPredictedFrame( slot );
+    Assert( src );
 
-	CPredictionCopy copyHelper( type, (byte *)this, TD_OFFSET_NORMAL, (const byte *)src, TD_OFFSET_PACKED, CPredictionCopy::TRANSFERDATA_COPYONLY  );
-	copyHelper.TransferData( "C_BaseEntity::RestoreData", entindex(), GetPredDescMap() );
+    // some flags shouldn't be predicted - as we find them, add them to the savedEFlagsMask
+    const int savedEFlagsMask = EFL_DIRTY_SHADOWUPDATE | EFL_DIRTY_SPATIAL_PARTITION;
+    int savedEFlags = GetEFlags() & savedEFlagsMask;
 
-	// set non-predicting flags back to their prior state
-	RemoveEFlags( savedEFlagsMask );
-	AddEFlags( savedEFlags );
+    CPredictionCopy copyHelper( type, (byte *)this, TD_OFFSET_NORMAL, (const byte *)src, TD_OFFSET_PACKED, CPredictionCopy::TRANSFERDATA_COPYONLY  );
+    copyHelper.TransferData( "C_BaseEntity::RestoreData", entindex(), GetPredDescMap() );
+
+    // set non-predicting flags back to their prior state
+    RemoveEFlags( savedEFlagsMask );
+    AddEFlags( savedEFlags );
 #endif
 }
  */
@@ -218,45 +212,72 @@ void c_base_entity::restore_data( const char* ctx, int slot, int type ) /* C_Bas
 
 /* void C_BaseEntity::OnPostRestoreData()
 {
-	// HACK Force recomputation of origin
-	InvalidatePhysicsRecursive( POSITION_CHANGED | ANGLES_CHANGED | VELOCITY_CHANGED );
+    // HACK Force recomputation of origin
+    InvalidatePhysicsRecursive( POSITION_CHANGED | ANGLES_CHANGED | VELOCITY_CHANGED );
 
-	if ( GetMoveParent() )
-	{
-		AddToAimEntsList();
-	}
+    if ( GetMoveParent() )
+    {
+        AddToAimEntsList();
+    }
 
-	// If our model index has changed, then make sure it's reflected in our model pointer.
-	if ( GetModel() != modelinfo->GetModel( GetModelIndex() ) )
-	{
-		MDLCACHE_CRITICAL_SECTION();
-		SetModelByIndex( GetModelIndex() );
-	}
+    // If our model index has changed, then make sure it's reflected in our model pointer.
+    if ( GetModel() != modelinfo->GetModel( GetModelIndex() ) )
+    {
+        MDLCACHE_CRITICAL_SECTION();
+        SetModelByIndex( GetModelIndex() );
+    }
 } */
 
 void c_base_entity::on_post_restore_data( )
 {
 	static const auto original_on_post_restore_data =
-		reinterpret_cast< void( __thiscall* )( void* ) >(
-		memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 51 53 56 6A" ) );
+		reinterpret_cast< void( __thiscall* )( void* ) >( memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 51 53 56 6A" ) );
 
 	original_on_post_restore_data( this );
 }
 
-c_vector c_base_entity::get_bone_position( int bone )
+// checks if entity is an enemy, not local, alive and not dormant
+bool c_base_entity::is_valid( )
 {
-	assert( bone > -1 /* e_bone_indexes::bone_invalid */ && bone < 128 /* maxstudiobones */ );
+	return this && this->is_alive( ) && !this->is_dormant( ) && this != globals.m_local && this->team( ) != globals.m_local->team( );
+}
 
-	const auto client_renderable = this->client_renderable( );
-	if ( !client_renderable )
-		return c_vector( 0, 0, 0 );
+c_vector c_base_entity::get_bone_position( int hitgroup, matrix3x4_t* matrix, float point_scale )
+{
+	if ( auto model = get_model( ) ) {
+		if ( auto studio_model = interfaces.m_model_info->get_studio_model( model ) ) {
+			if ( auto hitbox_set_ = studio_model->get_hitbox_set( hitbox_set( ) ) ) {
+				if ( auto hitbox = hitbox_set_->get_hitbox( hitgroup ) ) {
+					auto position = ( hitbox->vec_bb_min + hitbox->vec_bb_max ) * point_scale;
 
-	std::array< matrix3x4_t, 128 > bones_to_world = { };
+					return mathematics.vector_transform( position, matrix[ hitbox->i_bone ] );
+				}
+			}
+		}
+	}
 
-	if ( client_renderable->setup_bones( bones_to_world.data( ), bones_to_world.size( ), 0x0007FF00 /* BONE_USED_BY_ANYTHING */, 0.f ) )
-		return bones_to_world[ bone ][ 3 ];
+	return { };
+}
 
-	return c_vector( 0, 0, 0 );
+c_vector c_base_entity::get_bone_position( int hitgroup, float point_scale )
+{
+	if ( auto model = get_model( ) ) {
+		if ( auto studio_model = interfaces.m_model_info->get_studio_model( model ) ) {
+			matrix3x4_t matrix[ maxstudiobones ];
+
+			if ( setup_bones( matrix, maxstudiobones, 0x100, 0.f ) ) {
+				if ( auto hitbox_set_ = studio_model->get_hitbox_set( hitbox_set( ) ) ) {
+					if ( auto hitbox = hitbox_set_->get_hitbox( hitgroup ) ) {
+						auto position = ( hitbox->vec_bb_min + hitbox->vec_bb_max ) * point_scale;
+
+						return mathematics.vector_transform( position, matrix[ hitbox->i_bone ] );
+					}
+				}
+			}
+		}
+	}
+
+	return { };
 }
 
 void c_base_entity::post_think( )

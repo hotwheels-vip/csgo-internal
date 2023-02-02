@@ -92,30 +92,6 @@ enum e_bone_index : int {
 	bone_primary_jiggle_jnt,
 };
 
-enum e_hitbox_index : int {
-	hitbox_invalid = -1,
-	hitbox_head,
-	hitbox_neck,
-	hitbox_pelvis,
-	hitbox_stomach,
-	hitbox_thorax,
-	hitbox_chest,
-	hitbox_upper_chest,
-	hitbox_right_thigh,
-	hitbox_left_thigh,
-	hitbox_right_calf,
-	hitbox_left_calf,
-	hitbox_right_foot,
-	hitbox_left_foot,
-	hitbox_right_hand,
-	hitbox_left_hand,
-	hitbox_right_upper_arm,
-	hitbox_right_forearm,
-	hitbox_left_upper_arm,
-	hitbox_left_forearm,
-	hitbox_max
-};
-
 enum e_render_flags : unsigned int {
 	render_flags_disable_rendering       = 0x01,
 	render_flags_haschanged              = 0x02,
@@ -138,14 +114,14 @@ using mdl_handle_t = unsigned short;
 
 struct model_t {
 	unsigned char pad0[ 0x4 ];  // 0x0000
-	char m_name[ 260 ];    // 0x0004
-	int m_load_flags;       // 0x0108
-	int m_server_count;     // 0x010c
-	int m_type;             // 0x0110
-	int m_flags;            // 0x0114
-	c_vector m_mins;        // 0x0118
-	c_vector m_maxs;        // 0x0124
-	float m_radius;        // 0x0130
+	char m_name[ 260 ];         // 0x0004
+	int m_load_flags;           // 0x0108
+	int m_server_count;         // 0x010c
+	int m_type;                 // 0x0110
+	int m_flags;                // 0x0114
+	c_vector m_mins;            // 0x0118
+	c_vector m_maxs;            // 0x0124
+	float m_radius;             // 0x0130
 	unsigned char pad1[ 0x1c ]; // 0x0134
 };
 
@@ -160,21 +136,21 @@ class c_model_info
 {
 public:
 	virtual ~c_model_info( ) { }
-	virtual const model_t* get_model( int n_model_index ) const                                      = 0;
-	virtual int get_model_index( const char* sz_name ) const                                         = 0;
-	virtual const char* get_model_name( const model_t* p_model ) const                               = 0;
-	virtual void* get_v_collide( const model_t* p_model ) const                                = 0;
-	virtual void* get_v_collide( int n_model_index ) const                                     = 0;
-	virtual void* get_v_collide( const model_t* p_model, float fl_scale ) const                = 0;
-	virtual void* get_v_collide( int n_model_index, float fl_scale ) const                     = 0;
-	virtual void get_model_bounds( const model_t* p_model, c_vector& mins, c_vector& maxs ) const      = 0;
+	virtual const model_t* get_model( int n_model_index ) const                                          = 0;
+	virtual int get_model_index( const char* sz_name ) const                                             = 0;
+	virtual const char* get_model_name( const model_t* p_model ) const                                   = 0;
+	virtual void* get_v_collide( const model_t* p_model ) const                                          = 0;
+	virtual void* get_v_collide( int n_model_index ) const                                               = 0;
+	virtual void* get_v_collide( const model_t* p_model, float fl_scale ) const                          = 0;
+	virtual void* get_v_collide( int n_model_index, float fl_scale ) const                               = 0;
+	virtual void get_model_bounds( const model_t* p_model, c_vector& mins, c_vector& maxs ) const        = 0;
 	virtual void get_model_render_bounds( const model_t* p_model, c_vector& mins, c_vector& maxs ) const = 0;
-	virtual int get_model_frame_count( const model_t* p_model ) const                                = 0;
-	virtual int get_model_type( const model_t* p_model ) const                                       = 0;
-	virtual void* get_model_extra_data( const model_t* p_model )                                     = 0;
-	virtual bool model_has_material_proxy( const model_t* p_model ) const                            = 0;
-	virtual bool is_translucent( model_t const* p_model ) const                                      = 0;
-	virtual bool is_translucent_two_pass( const model_t* p_model ) const                             = 0;
+	virtual int get_model_frame_count( const model_t* p_model ) const                                    = 0;
+	virtual int get_model_type( const model_t* p_model ) const                                           = 0;
+	virtual void* get_model_extra_data( const model_t* p_model )                                         = 0;
+	virtual bool model_has_material_proxy( const model_t* p_model ) const                                = 0;
+	virtual bool is_translucent( model_t const* p_model ) const                                          = 0;
+	virtual bool is_translucent_two_pass( const model_t* p_model ) const                                 = 0;
 
 private:
 	virtual void unused0( ) { }
@@ -203,7 +179,7 @@ public:
 	virtual void set_level_screen_fade_range( float fl_min_size, float fl_max_size )                                                   = 0;
 	virtual void get_level_screen_fade_range( float* p_min_area, float* p_max_area ) const                                             = 0;
 	virtual void set_view_screen_fade_range( float fl_min_size, float fl_max_size )                                                    = 0;
-	virtual unsigned char compute_level_screen_fade( const c_vector& vec_abs_origin, float fl_radius, float fl_fade_scale ) const        = 0;
+	virtual unsigned char compute_level_screen_fade( const c_vector& vec_abs_origin, float fl_radius, float fl_fade_scale ) const      = 0;
 	virtual unsigned char compute_view_screen_fade( const c_vector& vec_abs_origin, float fl_radius, float fl_fade_scale ) const       = 0;
 	virtual int get_autoplay_list( const studiohdr_t* p_studio_hdr, unsigned short** p_autoplay_list ) const                           = 0;
 	virtual c_phys_collide* get_collide_for_virtual_terrain( int n_index )                                                             = 0;
@@ -211,7 +187,7 @@ public:
 	virtual const model_t* find_or_load_model( const char* sz_name ) const                                                             = 0;
 	virtual mdl_handle_t get_cache_handle( const model_t* p_model ) const                                                              = 0;
 	virtual int get_brush_model_plane_count( const model_t* p_model ) const                                                            = 0;
-	virtual void get_brush_model_plane( const model_t* p_model, int n_index, cplane_t& plane, c_vector* p_origin ) const                 = 0;
+	virtual void get_brush_model_plane( const model_t* p_model, int n_index, cplane_t& plane, c_vector* p_origin ) const               = 0;
 	virtual int get_surfaceprops_for_virtual_terrain( int n_index )                                                                    = 0;
 	virtual bool uses_env_cubemap( const model_t* p_model ) const                                                                      = 0;
 	virtual bool uses_static_lighting( const model_t* p_model ) const                                                                  = 0;

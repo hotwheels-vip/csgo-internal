@@ -418,7 +418,14 @@ void menu_t::on_end_scene( )
 					 true, 0, true ) ) {
 				// TODO add vis and invis colors
 				ImGui::Checkbox( "player glow", &GET_CONFIG_BOOL( variables.m_visuals.m_glow_enable ) );
-				ImGui::ColorEdit4( "##player glow color", &GET_CONFIG_COLOR( variables.m_visuals.m_glow_color ), color_picker_alpha_flags );
+				ImGui::ColorEdit4( "player visible##player vis glow color", &GET_CONFIG_COLOR( variables.m_visuals.m_glow_vis_color ),
+				                   color_picker_alpha_flags );
+
+				ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+				ImGui::ColorEdit4( "player invisible##player invis glow color", &GET_CONFIG_COLOR( variables.m_visuals.m_glow_invis_color ),
+				                   color_picker_alpha_flags );
+
 				ImGui::EndChild( );
 			}
 
@@ -438,8 +445,7 @@ void menu_t::on_end_scene( )
 
 				ImGui::Checkbox( "precipitation", &GET_CONFIG_BOOL( variables.m_world.m_precipitation ) );
 				if ( GET_CONFIG_BOOL( variables.m_world.m_precipitation ) ) {
-					ImGui::Combo( "weather type", &GET_CONFIG_INT( variables.m_world.m_precipitation_type ),
-					              "rain\0ash\0rain storm\0snow" );
+					ImGui::Combo( "weather type", &GET_CONFIG_INT( variables.m_world.m_precipitation_type ), "rain\0ash\0rain storm\0snow" );
 				}
 
 				ImGui::Checkbox( "motion blur", &GET_CONFIG_BOOL( variables.m_world.m_motion_blur ) );

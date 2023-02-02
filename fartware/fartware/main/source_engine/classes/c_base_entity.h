@@ -1,212 +1,34 @@
 #pragma once
 #include "../netvars/netvars.h"
 
+#include "i_client_entity.h"
+
+#include "c_collideable.h"
 #include "c_model_info.h"
+#include "c_player_animation_layer.h"
 #include "c_user_cmd.h"
 #include "c_vector.h"
 
 #include "../classes/c_weapon_data.h"
+
 #include "../structs/bounding_box_t.h"
 #include "../structs/matrix_t.h"
 #include "../structs/var_mapping.h"
 
-class c_base_entity;
-
-/* TODO ~ move to another file (enumerations folder) */
-enum e_obs_mode : int {
-	obs_mode_none = 0,
-	obs_mode_deathcam,
-	obs_mode_freezecam,
-	obs_mode_fixed,
-	obs_mode_in_eye,
-	obs_mode_chase,
-	obs_mode_roaming
-};
-
-enum e_precipitation_type : int {
-	precipitation_type_rain = 0,
-	precipitation_type_snow,
-	precipitation_type_ash,
-	precipitation_type_snowfall,
-	precipitation_type_particlerain,
-	precipitation_type_particleash,
-	precipitation_type_particlerainstorm,
-	precipitation_type_particlesnow,
-	num_precipitation_types
-};
-
-class c_player_animation_layer
-{
-public:
-	bool client_bleed;
-	float blend_in;
-	void* studio_hdr;
-	int dispatch_sequence;
-	int dispatch_sequence2;
-	int order;
-	int sequence;
-	float prev_cycle;
-	float weight;
-	float weight_delta_rate;
-	float playback_rate;
-	float cycle;
-	void* owner;
-	PAD( 4 );
-};
+#include "../enumerations/e_glow_style.h"
+#include "../enumerations/e_hitgroup.h"
+#include "../enumerations/e_obs_mode.h"
+#include "../enumerations/e_precipitation_type.h"
 
 constexpr float max_health = 100.f /* todo ~ dont hard codenz check game type */;
 
 class c_base_client;
 
-enum e_glow_style : int {
-	glow_style_default = 0,
-	glow_style_rim_3d,
-	glow_style_edge_highlight,
-	glow_style_edge_highlight_pulse,
-	glow_style_count
-};
-
-class c_collideable
-{
-private:
-	enum e_indexes {
-		_obb_mins = 1,
-		_obb_maxs = 2,
-	};
-
-public:
-	c_vector& obb_mins( )
-	{
-		using fn = c_vector&( __thiscall* )( c_collideable* );
-		return ( *( fn** )this )[ this->e_indexes::_obb_mins ]( this );
-	}
-
-	c_vector& obb_maxs( )
-	{
-		using fn = c_vector&( __thiscall* )( c_collideable* );
-		return ( *( fn** )this )[ this->e_indexes::_obb_maxs ]( this );
-	}
-};
-
-class c_client_unknown
-{
-	enum e_indexes {
-		_get_base_entity = 7,
-	};
-
-public:
-	c_base_entity* get_base_entity( )
-	{
-		using fn = c_base_entity*( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_get_base_entity ]( this );
-	}
-};
-
-class c_client_networkable
-{
-private:
-	enum e_indexes {
-		_release             = 1,
-		_get_client_class    = 2,
-		_on_pre_data_changed = 4,
-		_on_data_changed     = 5,
-		_pre_data_update     = 6,
-		_post_data_update    = 7
-	};
-
-public:
-	void release( )
-	{
-		using fn = void( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_release ]( this );
-	}
-
-	c_base_client* get_client_class( )
-	{
-		using fn = c_base_client*( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_get_client_class ]( this );
-	}
-
-	void on_pre_data_changed( int update_type )
-	{
-		using fn = void( __thiscall* )( void*, int );
-		return ( *( fn** )this )[ this->e_indexes::_on_pre_data_changed ]( this, update_type );
-	}
-
-	void on_data_changed( int update_type )
-	{
-		using fn = void( __thiscall* )( void*, int );
-		return ( *( fn** )this )[ this->e_indexes::_on_data_changed ]( this, update_type );
-	}
-
-	void pre_data_update( int update_type )
-	{
-		using fn = void( __thiscall* )( void*, int );
-		return ( *( fn** )this )[ this->e_indexes::_pre_data_update ]( this, update_type );
-	}
-
-	void post_data_update( int update_type )
-	{
-		using fn = void( __thiscall* )( void*, int );
-		return ( *( fn** )this )[ this->e_indexes::_post_data_update ]( this, update_type );
-	}
-};
-
-struct renderable_instance_t {
-	std::uint8_t m_alpha;
-};
-
-class c_client_renderable
-{
-private:
-	enum e_indexes {
-		_get_client_unknown = 0,
-		_model              = 8,
-		_setup_bones        = 13,
-	};
-
-public:
-	c_client_unknown* get_client_unknown( )
-	{
-		using fn = c_client_unknown*( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_get_client_unknown ]( this );
-	}
-
-	model_t* model( )
-	{
-		using fn = model_t*( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_model ]( this );
-	}
-
-	bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float cur_time )
-	{
-		using fn = bool( __thiscall* )( void*, matrix3x4_t*, int, int, float );
-		return ( *( fn** )this )[ this->e_indexes::_setup_bones ]( this, bone_to_world_out, max_bones, bone_mask, cur_time );
-	}
-
-	/*virtual c_client_unknown* get_client_unknown( )                                                          = 0;
-	virtual c_vector& get_render_origin( )                                                                   = 0;
-	virtual c_angle& get_render_angles( )                                                                    = 0;
-	virtual bool should_draw( )                                                                              = 0;
-	virtual int get_render_flags( )                                                                          = 0;
-	virtual bool is_transparent( )                                                                           = 0;
-	virtual std::uint16_t get_shadow_handle( ) const                                                         = 0;
-	virtual std::uint16_t& render_handle( )                                                                  = 0;
-	virtual const model_t* model( ) const                                                                    = 0;
-	virtual int draw_model( int flags, const renderable_instance_t& instance )                               = 0;
-	virtual int get_body( )                                                                                  = 0;
-	virtual void get_color_modulation( float* color )                                                        = 0;
-	virtual bool lod_test( )                                                                                 = 0;
-	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float cur_time ) = 0;*/
-};
-
-class c_base_entity
+class c_base_entity : public i_client_entity
 {
 private:
 	enum e_indexes {
 		_collideable             = 3,
-		_client_networkable      = 4,
-		_client_renderable       = 5,
 		_client_class            = 2,
 		_abs_origin              = 10,
 		_data_desc_map           = 15,
@@ -237,18 +59,6 @@ public:
 	{
 		using fn = c_collideable*( __thiscall* )( c_base_entity* );
 		return ( *( fn** )this )[ this->e_indexes::_collideable ]( this );
-	}
-
-	c_client_networkable* client_networkable( )
-	{
-		using fn = c_client_networkable*( __thiscall* )( c_base_entity* );
-		return ( *( fn** )this )[ this->e_indexes::_client_networkable ]( this );
-	}
-
-	c_client_renderable* client_renderable( )
-	{
-		using fn = c_client_renderable*( __thiscall* )( c_base_entity* );
-		return ( *( fn** )this )[ this->e_indexes::_client_renderable ]( this );
 	}
 
 	bool is_player( )
@@ -305,9 +115,9 @@ public:
 	c_user_cmd& last_command( );
 	void post_think( );
 	void set_next_think( int think );
-	void set_abs_origin( const c_vector& origin );
 	void restore_data( const char* ctx, int slot, int type );
 	void on_post_restore_data( );
+	bool is_valid( );
 
 	c_vector eye_position( )
 	{
@@ -334,13 +144,11 @@ public:
 	add_variable( bool, predictable, "CBaseEntity->m_bPredictable" );
 	add_variable_offset( float, old_simulation_time, "CBaseEntity->m_flSimulationTime", 0x4 );
 
-	c_vector& abs_origin( )
-	{
-		using fn = c_vector&( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_abs_origin ]( this );
-	}
+	// get bone pos calling setupbones
+	c_vector get_bone_position( int hitgroup, float point_scale = 0.5f );
 
-	c_vector get_bone_position( int bone );
+	// get bone pos with given matrix
+	c_vector get_bone_position( int hitgroup, matrix3x4_t* matrix, float point_scale = 0.5f );
 
 	c_player_animation_layer* get_anim_layers( );
 
@@ -365,6 +173,7 @@ public:
 
 	/* CBaseAnimating */
 	add_variable( int, sequence, "CBaseAnimating->m_nSequence" );
+	add_variable( std::int32_t, hitbox_set, "CBaseAnimating->m_nHitboxSet" );
 
 	/* CBaseCombatCharacter */
 	add_variable( unsigned int, active_weapon_handle, "CBaseCombatCharacter->m_hActiveWeapon" );
