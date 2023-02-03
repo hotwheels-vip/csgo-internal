@@ -186,8 +186,6 @@ void misc_t::on_create_move_pre( )
 					.append( std::vformat(
 						"{} {} {}", std::make_format_args( practice.saved_angles.m_x, practice.saved_angles.m_y, practice.saved_angles.m_z ) ) )
 					.c_str( ) );
-
-			g_log.print( "teleported to saved checkpoint.", "[practice]" );
 		}
 	}( GET_CONFIG_BOOL( variables.m_misc.m_practice_window ) );
 }

@@ -58,7 +58,8 @@ void mathematics_t::vector_angles( const c_vector vector, c_angle& view )
 	view.m_z = 0.f;
 }
 
-void mathematics_t::angle_matrix( const c_angle& angles, matrix3x4_t& matrix ) {
+void mathematics_t::angle_matrix( const c_angle& angles, matrix3x4_t& matrix )
+{
 	float sr{ }, sp{ }, sy{ }, cr{ }, cp{ }, cy{ };
 
 	this->sin_cos( DEG2RAD( angles.m_y ), &sy, &cy );
@@ -79,7 +80,7 @@ void mathematics_t::angle_matrix( const c_angle& angles, matrix3x4_t& matrix ) {
 	matrix[ 0 ][ 3 ] = 0.0f;
 	matrix[ 1 ][ 3 ] = 0.0f;
 	matrix[ 2 ][ 3 ] = 0.0f;
-	}
+}
 
 void mathematics_t::angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right, c_vector* up )
 {

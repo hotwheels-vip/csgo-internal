@@ -102,7 +102,8 @@ struct variables_t {
 		ADD_VARIABLE( bool, m_sniper_crosshair, false );
 
 		ADD_VARIABLE( bool, m_glow_enable, false );
-		ADD_VARIABLE( c_color, m_glow_color, c_color( 255, 255, 255, 180 ) );
+		ADD_VARIABLE( c_color, m_glow_vis_color, c_color( 255, 255, 255, 180 ) );
+		ADD_VARIABLE( c_color, m_glow_invis_color, c_color( 206, 66, 245, 180 ) );
 		/* chams settings */
 		ADD_VARIABLE( c_chams_settings, m_chams_layer_one,
 		              c_chams_settings( false, c_color( 255, 255, 255, 255 ), 0, false, c_color( 255, 255, 255, 255 ), 0, false,

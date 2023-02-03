@@ -127,7 +127,7 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 		if ( !rain_networkable )
 			return;
 
-		c_client_unknown* rain_unknown = ( ( c_client_renderable* )rain_networkable )->get_client_unknown( );
+		c_client_unknown* rain_unknown = ( c_client_unknown* )rain_networkable;
 		if ( !rain_unknown )
 			return;
 
@@ -135,11 +135,8 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 		if ( !entity )
 			return;
 
-		if ( !entity->client_networkable( ) )
-			return;
-
-		entity->client_networkable( )->pre_data_update( 0 );
-		entity->client_networkable( )->on_pre_data_changed( 0 );
+		entity->pre_data_update( 0 );
+		entity->on_pre_data_changed( 0 );
 		entity->index( ) = -1;
 
 		/*static auto r_rainradius = convars.find( fnv1a::hash_const( "r_RainRadius" ) );
@@ -155,8 +152,8 @@ void weather_t::on_frame_stage_notify( e_client_frame_stage stage )
 
 		entity->model_index( ) = -1;
 
-		entity->client_networkable( )->on_data_changed( 0 );
-		entity->client_networkable( )->post_data_update( 0 );
+		entity->on_data_changed( 0 );
+		entity->post_data_update( 0 );
 
 		m_created = true;
 	}
@@ -170,24 +167,22 @@ void weather_t::reset( )
 			if ( !entity )
 				continue;
 
-			auto client_class = entity->client_networkable( )->get_client_class( );
+			auto client_class = entity->get_client_class( );
 			if ( !client_class )
 				continue;
 
 			if ( client_class->m_class_id == e_class_index::cprecipitation ) {
-				if ( entity->client_networkable( ) ) {
-					entity->client_networkable( )->pre_data_update( 0 );
-					entity->client_networkable( )->on_pre_data_changed( 0 );
+				entity->pre_data_update( 0 );
+				entity->on_pre_data_changed( 0 );
 
-					*( int* )( ( uintptr_t )entity + 0xA00 ) = -1;
+				*( int* )( ( uintptr_t )entity + 0xA00 ) = -1;
 
-					entity->collideable( )->obb_mins( ) = c_vector{ 0, 0, 0 };
-					entity->collideable( )->obb_maxs( ) = c_vector{ 0, 0, 0 };
+				entity->collideable( )->obb_mins( ) = c_vector{ 0, 0, 0 };
+				entity->collideable( )->obb_maxs( ) = c_vector{ 0, 0, 0 };
 
-					entity->client_networkable( )->on_data_changed( 0 );
-					entity->client_networkable( )->post_data_update( 0 );
-					entity->client_networkable( )->release( );
-				}
+				entity->on_data_changed( 0 );
+				entity->post_data_update( 0 );
+				entity->release( );
 			}
 		}
 

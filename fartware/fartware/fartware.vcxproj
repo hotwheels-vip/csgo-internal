@@ -146,7 +146,12 @@
     <ClInclude Include="main\source_engine\classes\c_base_entity.h" />
     <ClInclude Include="main\source_engine\classes\c_client.h" />
     <ClInclude Include="main\source_engine\classes\c_client_entity_list.h" />
+    <ClInclude Include="main\source_engine\classes\c_client_networkable.h" />
+    <ClInclude Include="main\source_engine\classes\c_client_renderable.h" />
     <ClInclude Include="main\source_engine\classes\c_client_state.h" />
+    <ClInclude Include="main\source_engine\classes\c_client_thinkable.h" />
+    <ClInclude Include="main\source_engine\classes\c_client_unknown.h" />
+    <ClInclude Include="main\source_engine\classes\c_collideable.h" />
     <ClInclude Include="main\source_engine\classes\c_color.h" />
     <ClInclude Include="main\source_engine\classes\c_convar.h" />
     <ClInclude Include="main\source_engine\classes\c_engine.h" />
@@ -163,6 +168,7 @@
     <ClInclude Include="main\source_engine\classes\c_model_render.h" />
     <ClInclude Include="main\source_engine\classes\c_panel.h" />
     <ClInclude Include="main\source_engine\classes\c_physics_collisions.h" />
+    <ClInclude Include="main\source_engine\classes\c_player_animation_layer.h" />
     <ClInclude Include="main\source_engine\classes\c_prediction.h" />
     <ClInclude Include="main\source_engine\classes\c_prediction_copy.h" />
     <ClInclude Include="main\source_engine\classes\c_surface.h" />
@@ -174,12 +180,17 @@
     <ClInclude Include="main\source_engine\classes\c_weapon_data.h" />
     <ClInclude Include="main\source_engine\classes\c_weapon_system.h" />
     <ClInclude Include="main\source_engine\classes\c_key_values.h" />
+    <ClInclude Include="main\source_engine\classes\i_client_entity.h" />
     <ClInclude Include="main\source_engine\datatypes\datamap.h" />
     <ClInclude Include="main\source_engine\datatypes\datatable.h" />
     <ClInclude Include="main\source_engine\enumerations\e_client_frame_stage.h" />
     <ClInclude Include="main\source_engine\enumerations\e_flags.h" />
+    <ClInclude Include="main\source_engine\enumerations\e_glow_style.h" />
+    <ClInclude Include="main\source_engine\enumerations\e_hitgroup.h" />
     <ClInclude Include="main\source_engine\enumerations\e_item_definition_index.h" />
     <ClInclude Include="main\source_engine\enumerations\e_move_types.h" />
+    <ClInclude Include="main\source_engine\enumerations\e_obs_mode.h" />
+    <ClInclude Include="main\source_engine\enumerations\e_precipitation_type.h" />
     <ClInclude Include="main\source_engine\enumerations\e_weapon_type.h" />
     <ClInclude Include="main\source_engine\interfaces\interfaces.h" />
     <ClInclude Include="main\source_engine\netvars\netvars.h" />
@@ -199,6 +210,7 @@
     <ClInclude Include="main\utilities\memory\pe32.h" />
     <ClInclude Include="main\utilities\render\render.h" />
     <ClInclude Include="main\utilities\utilities.h" />
+    <ClInclude Include="main\utilities\virtual.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\imgui\imgui.cpp" />
@@ -261,6 +273,7 @@
     <ClCompile Include="main\source_engine\classes\c_base_entity.cpp" />
     <ClCompile Include="main\source_engine\classes\c_key_values.cpp" />
     <ClCompile Include="main\source_engine\classes\c_prediction_copy.cpp" />
+    <ClCompile Include="main\source_engine\classes\i_client_entity.cpp" />
     <ClCompile Include="main\source_engine\interfaces\interfaces.cpp" />
     <ClCompile Include="main\source_engine\netvars\netvars.cpp" />
     <ClCompile Include="main\utilities\event_listener\event_listener.cpp" />

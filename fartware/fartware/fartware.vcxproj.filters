@@ -232,6 +232,18 @@
     <ClInclude Include="main\features\visuals\weather\weather.h" />
     <ClInclude Include="main\source_engine\structs\var_mapping.h" />
     <ClInclude Include="main\source_engine\classes\c_prediction_copy.h" />
+    <ClInclude Include="main\source_engine\classes\c_client_renderable.h" />
+    <ClInclude Include="main\source_engine\classes\c_client_unknown.h" />
+    <ClInclude Include="main\utilities\virtual.h" />
+    <ClInclude Include="main\source_engine\enumerations\e_glow_style.h" />
+    <ClInclude Include="main\source_engine\enumerations\e_obs_mode.h" />
+    <ClInclude Include="main\source_engine\enumerations\e_precipitation_type.h" />
+    <ClInclude Include="main\source_engine\classes\c_collideable.h" />
+    <ClInclude Include="main\source_engine\classes\c_player_animation_layer.h" />
+    <ClInclude Include="main\source_engine\classes\c_client_networkable.h" />
+    <ClInclude Include="main\source_engine\classes\i_client_entity.h" />
+    <ClInclude Include="main\source_engine\classes\c_client_thinkable.h" />
+    <ClInclude Include="main\source_engine\enumerations\e_hitgroup.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\features\visuals\edicts\edicts.cpp" />
@@ -301,6 +313,7 @@
     <ClCompile Include="main\hooks\functions\on_full_update.cpp" />
     <ClCompile Include="main\source_engine\classes\c_prediction_copy.cpp" />
     <ClCompile Include="main\hooks\functions\net_earliertempents.cpp" />
+    <ClCompile Include="main\source_engine\classes\i_client_entity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="todo.md" />

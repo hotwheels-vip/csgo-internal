@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../dependencies/imgui/imgui.h"
+#include "features/lagcomp/lagcomp.h"
 #include "source_engine/classes/c_base_entity.h"
 #include "source_engine/classes/c_user_cmd.h"
 #include "source_engine/structs/matrix_t.h"
@@ -13,11 +14,7 @@ struct globals_t {
 	c_angle m_old_view_point    = { };
 	bool m_console_being_drawn  = false;
 	float m_last_tick_yaw       = { };
-
-	struct {
-		c_user_cmd* m_backup_cmd      = nullptr;
-		c_base_entity* m_backup_local = nullptr;
-	} backup;
+	lagcomp_t::record* m_record = nullptr;
 
 	bool m_unloading = false;
 };

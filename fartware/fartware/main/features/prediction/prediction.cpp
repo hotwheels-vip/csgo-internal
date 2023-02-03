@@ -121,9 +121,9 @@ void prediction_t::end( ) const
 
 void prediction_t::restore_entity_to_predicted_frame( int frame )
 {
-	/*static auto fn = reinterpret_cast< void( __stdcall* )( int, int ) >(
+	/* static auto fn = reinterpret_cast< void( __stdcall* )( int, int ) >(
 	    memory.m_modules[ e_module_names::client ].find_pattern( "55 8B EC 8B 4D ? 56 E8 ? ? ? ? 8B 75" ) );
-	fn( 0, frame );*/
+	fn( 0, frame ); */
 
 	static auto cl_predict = convars.find( fnv1a::hash_const( "cl_predict" ) );
 	if ( !cl_predict->get_int( ) )
@@ -132,8 +132,8 @@ void prediction_t::restore_entity_to_predicted_frame( int frame )
 	if ( !globals.m_local->predictable( ) )
 		return;
 
-	globals.m_local->restore_data( "RestoreEntityToPredictedFrame", frame, 2 /* PC_EVERYTHING */ );
-	globals.m_local->on_post_restore_data( );
+	globals.m_local->restore_data( "RestoreEntityToPredictedFrame", frame, 2 /* PC_EVERYTHING */ ); /* prediction_t::data_map_helper_t::store() im thinker */
+	globals.m_local->on_post_restore_data( ); /* prediction_t::data_map_helper_t::apply() im thinker */
 }
 
 void prediction_t::data_map_helper_t::store( unsigned char* start_data )

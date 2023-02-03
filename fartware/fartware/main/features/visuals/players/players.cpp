@@ -6,6 +6,7 @@
 #include "../../../utilities/mathematics/mathematics.h"
 #include "../../entities/avatars.h"
 #include "../../entities/entities.h"
+#include "../../lagcomp/lagcomp.h"
 
 void players_t::on_paint_traverse( )
 {

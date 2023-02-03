@@ -5,7 +5,11 @@
 #include "../../features/movement/indicators/indicators.h"
 #include "../../features/movement/movement.h"
 #include "../../features/prediction/prediction.h"
+
+#include "../../logging/logging.h"
 #include "../hooks.h"
+
+#include <psapi.h>
 
 void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
 {
@@ -27,6 +31,61 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		interfaces.m_prediction->update( memory.m_client_state->m_delta_tick, valid, memory.m_client_state->m_last_command_ack,
 		                                 memory.m_client_state->m_last_outgoing_command + memory.m_client_state->m_choked_commands );
 
+	/* TODO ~ fix something crashing here (todo with not closing a handle properly or smth) */
+	/*[ & ]( ) {
+		static HWND spotify_hwnd    = nullptr;
+		static float last_hwnd_time = 0.f, last_title_time = 0.f;
+
+		if ( ( !spotify_hwnd || spotify_hwnd == INVALID_HANDLE_VALUE ) && last_hwnd_time < memory.m_globals->m_real_time ) {
+			last_hwnd_time = memory.m_globals->m_real_time + 30.f;
+
+			for ( HWND hwnd = GetTopWindow( 0 ); hwnd; hwnd = GetWindow( hwnd, GW_HWNDNEXT ) ) {
+				if ( !LI_FN( IsWindowVisible )( hwnd ) )
+					continue;
+
+				int length = LI_FN( GetWindowTextLengthW )( hwnd );
+				if ( length == 0 )
+					continue;
+
+				WCHAR filename[ 300 ];
+				DWORD pid;
+				LI_FN( GetWindowThreadProcessId )( hwnd, &pid );
+
+				const auto spotify_handle = LI_FN( OpenProcess )( PROCESS_QUERY_INFORMATION, FALSE, pid );
+				LI_FN( K32GetModuleFileNameExW )( spotify_handle, nullptr, filename, 300 );
+
+				std::wstring sane_filename{ filename };
+
+				if ( spotify_handle )
+					LI_FN( CloseHandle )( spotify_handle );
+
+				if ( sane_filename.find( L"Spotify.exe" ) != std::string::npos )
+					spotify_hwnd = hwnd;
+			}
+		} else if ( spotify_hwnd && spotify_hwnd != INVALID_HANDLE_VALUE && last_title_time < memory.m_globals->m_real_time ) {
+			last_title_time = memory.m_globals->m_real_time + 1.f;
+
+			WCHAR title[ 300 ];
+
+			if ( !LI_FN( GetWindowTextW )( spotify_hwnd, title, 300 ) )
+				spotify_hwnd = nullptr;
+			else {
+				const std::wstring sane_title{ title };
+				const std::string ascii_title{ sane_title.begin( ), sane_title.end( ) };
+
+				static std::uint32_t hash = 0;
+
+				if ( sane_title.find( L"-" ) != std::string::npos ) {
+					if ( hash != fnv1a::hash( ascii_title.data( ) ) ) {
+						hash = fnv1a::hash( ascii_title.data( ) );
+
+						g_log.print( fmt::format( "now playing: {}", ascii_title ), "[spotify]" );
+					}
+				}
+			}
+		}
+	}( );*/
+
 	[ & ]( ) {
 		// yes this is supposed to be here
 		indicators.on_create_move_pre( );
@@ -37,10 +96,10 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			movement.m_pixelsurf_data.reset( );
 			movement.m_autoduck_data.reset( );
 			indicators.m_detection.reset( );
+
+			globals.m_record = nullptr;
 			return;
 		}
-
-		// lagcomp.update( );
 
 		misc.on_create_move_pre( );
 		movement.on_create_move_pre( );

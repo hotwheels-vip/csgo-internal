@@ -1,5 +1,7 @@
 #include "movement.h"
 
+/* NOTE ~ for the features that require us to simulate the local cmd, don't use the new operator, just use finish move, setup move */
+
 void movement_t::on_create_move_pre( )
 {
 	prediction.m_data.m_flags    = globals.m_local->flags( );

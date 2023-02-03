@@ -40,99 +40,153 @@ bool lagcomp_t::is_valid( lagcomp_t::record rec )
 	if ( !net_channel )
 		return false;
 
+	static auto sv_maxunlag = convars.find( fnv1a::hash_const( "sv_maxunlag" ) );
+
+	if ( !sv_maxunlag )
+		return false;
+
 	float correct = 0.f;
 
 	correct += net_channel->get_latency( FLOW_OUTGOING );
 	correct += net_channel->get_latency( FLOW_INCOMING );
 	correct += lagcomp.lerp_time( );
 
-	correct = std::clamp( correct, 0.f, convars.find( fnv1a::hash_const( "sv_maxunlag" ) )->get_float( ) );
+	correct = std::clamp( correct, 0.f, sv_maxunlag->get_float( ) );
 
-	const float delta_correct = std::fabsf( correct - ( memory.m_globals->m_current_time - rec.sim_time ) );
+	const float delta_correct = std::fabsf( correct - ( memory.m_globals->m_current_time - rec.simulation_time ) );
 
 	// TODO: configable
 	return delta_correct <= .2f;
 }
 
-// LIGA CODE FUCK YOU
+int lagcomp_t::max_ticks( )
+{
+	// this is gonna be used later for extended backtracking
+	const int extra_ticks = 0;
+
+	return mathematics.time_to_ticks( convars.find( fnv1a::hash_const( "sv_maxunlag" ) )->get_float( ) ) + extra_ticks;
+}
 
 void lagcomp_t::update( )
 {
-	// TODO, to make this function work:
-	//  add setup bones function to cbase entity
-	//  finish it, duh
-	//  call it (not calling rn cause this is useless
-	//  add checkbox in menu
+	if ( !GET_CONFIG_BOOL( variables.m_aimbot.m_backtrack_enabled ) ) {
+		// for ( std::size_t i = 0; i < heap_records.size( ); i++ ) {
+		//	if ( heap_records[ i ] ) {
+		//		delete[] heap_records[ i ];
+		//		heap_records[ i ] = NULL;
+		//	}
+		// }
 
-	const bool backtrack_enabled = GET_CONFIG_BOOL( variables.m_aimbot.m_backtrack_enabled );
+		return;
+	}
 
-	// tickrate
-	const auto max_allocation = static_cast< int >( 1.f / memory.m_globals->m_interval_per_tick );
-
-	entity_cache.enumerate( [ & ]( c_base_entity* entity ) {
-		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) )
-			return;
-
-		const auto index = entity->index( );
-
-		const auto& record_list = records[ index ];
-
-		if ( !record_list )
-			return;
-
-		for ( int i = 0; i < max_allocation; i++ ) {
-			auto& record = record_list[ i ];
-
-			if ( record.player_index != index && record.player_index != -1 ) {
-				delete[] records[ index ];
-
-				records[ index ] = nullptr;
-
-				break;
-			}
-
-			record.valid = backtrack_enabled ? is_valid( record ) : false;
-		}
-	} );
-
-	// cant get entity index through entity cache, so we loop through it again. fuck
-
-	for ( int i = 0; i < interfaces.m_client_entity_list->get_highest_entity_index( ); i++ ) {
-		auto entity = reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity( i ) );
-
-		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) ) {
-			if ( records[ i ] ) {
-				delete[] records[ i ];
-
-				records[ i ] = nullptr;
+	for ( int i = 1; i < 64; i++ ) {
+		auto player = reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity( i ) );
+		if ( !player->is_valid( ) ) {
+			if ( heap_records[ i ] ) {
+				delete[] heap_records[ i ];
+				heap_records[ i ] = NULL;
 			}
 
 			continue;
 		}
 
-		auto record    = records[ i ];
-		auto& location = record_location[ i ];
+		auto& current_heap_iterator = heap_iterator[ player->index( ) ];
 
-		if ( !record ) {
-			records[ i ] = new lagcomp_t::record[ max_allocation ];
+		if ( !heap_records[ i ] )
+			heap_records[ i ] = new record[ lagcomp.max_ticks( ) ];
 
-			location = 0;
-			record   = records[ i ];
-		}
+		auto& current_record = heap_records[ i ][ current_heap_iterator ];
 
-		if ( location >= max_allocation )
-			location = 0;
+		current_record.abs_origin      = player->abs_origin( );
+		current_record.eye_position    = player->eye_position( );
+		current_record.simulation_time = player->simulation_time( );
+		current_record.valid           = is_valid( current_record );
+		current_record.player          = player;
+		player->setup_bones( current_record.bone_matrix, 128, 256, 0.f );
 
-		lagcomp_t::record new_record{ };
+		current_heap_iterator++;
 
-		new_record.player_index = i;
-		new_record.sim_time     = entity->simulation_time( );
-		new_record.valid        = is_valid( new_record );
-
-		entity->client_renderable( )->setup_bones( new_record.matrix, 128, 0x0007FF00, 0.f );
-
-		memcpy( &record[ location ], &new_record, sizeof( lagcomp_t::record ) );
-
-		location++;
+		if ( current_heap_iterator >= lagcomp.max_ticks( ) )
+			current_heap_iterator = 0;
 	}
+}
+
+// grabs oldest avaiable record
+std::optional< lagcomp_t::record > oldest_record( c_base_entity* player )
+{
+	if ( lagcomp.heap_records[ player->index( ) ] ) {
+		int last_valid_heap_record   = 0;
+		float lowest_simulation_time = FLT_MAX;
+
+		for ( int current_heap_iterator = 0; current_heap_iterator < lagcomp.max_ticks( ); current_heap_iterator++ ) {
+			lagcomp_t::record* current_record = &lagcomp.heap_records[ player->index( ) ][ current_heap_iterator ];
+
+			if ( !current_record )
+				continue;
+
+			if ( current_record->simulation_time > lowest_simulation_time )
+				continue;
+
+			last_valid_heap_record = current_heap_iterator;
+			lowest_simulation_time = current_record->simulation_time;
+		}
+		return std::make_optional( lagcomp.heap_records[ player->index( ) ][ last_valid_heap_record ] );
+	}
+
+	return std::nullopt;
+}
+
+void lagcomp_t::backtrack_player( c_base_entity* player )
+{
+	static auto recoil_scale = convars.find( fnv1a::hash_const( "weapon_recoil_scale" ) );
+
+	auto entity_index = player->index( );
+
+	if ( !heap_records[ entity_index ] )
+		return;
+
+	float closest_fov = std::numeric_limits< float >::max( );
+	record* closest_record{ };
+
+	c_angle player_angles{ };
+	interfaces.m_engine->get_view_angles( player_angles );
+
+	const auto eye_position = globals.m_local->eye_position( );
+
+	for ( int current_heap_iterator = 0; current_heap_iterator < lagcomp.max_ticks( ); current_heap_iterator++ ) {
+		auto current_record = &heap_records[ entity_index ][ current_heap_iterator ];
+
+		if ( !current_record )
+			continue;
+		c_vector head_position = player->get_bone_position( e_hitgroup::hitgroup_head );
+
+		c_angle delta = mathematics.calculate_angle( eye_position, head_position );
+		delta -= ( globals.m_local->aim_punch_angle( ) * recoil_scale->get_float( ) );
+		auto record_fov = mathematics.calculate_fov( player_angles, delta );
+
+		if ( record_fov < closest_fov ) {
+			closest_fov    = record_fov;
+			closest_record = current_record;
+		}
+	}
+
+	globals.m_record = closest_record;
+
+	if ( !closest_record )
+		return;
+
+	// https://github.com/perilouswithadollarsign/cstrike15_src/blob/master/game/server/player_lagcompensation.cpp#L287
+
+	globals.m_cmd->m_tick_count = mathematics.time_to_ticks( closest_record->simulation_time + lerp_time( ) );
+}
+
+void lagcomp_t::backtrack_player( record* heap_record )
+{
+	globals.m_record = heap_record;
+
+	if ( !heap_record )
+		return;
+
+	globals.m_cmd->m_tick_count = mathematics.time_to_ticks( heap_record->simulation_time + lerp_time( ) );
 }

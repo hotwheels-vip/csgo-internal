@@ -43,7 +43,7 @@ void aimbot_t::on_create_move_post( )
 	if ( !is_weapon_valid( ) )
 		return;
 
-	float max_fov = 30.f;
+	float max_fov = 180.f;
 
 	const auto eye_position = globals.m_local->eye_position( );
 
@@ -57,8 +57,11 @@ void aimbot_t::on_create_move_post( )
 
 			c_vector head_position = entity->get_bone_position( e_bone_index::bone_head );
 
+			if ( head_position.is_zero( ) )
+				return;
+
 			/*if ( !globals.m_local->is_visible( entity, head_position ) )
-				return;*/
+			    return;*/
 
 			c_angle delta = mathematics.calculate_angle( eye_position, head_position );
 			delta -= ( globals.m_local->aim_punch_angle( ) *
@@ -67,8 +70,8 @@ void aimbot_t::on_create_move_post( )
 			const float fov = mathematics.calculate_fov( globals.m_cmd->m_view_point, delta );
 
 			if ( fov < max_fov ) {
-				max_fov = fov; 
-				best_entity           = entity;
+				max_fov     = fov;
+				best_entity = entity;
 			}
 		} );
 
@@ -81,6 +84,9 @@ void aimbot_t::on_create_move_post( )
 		return;
 
 	c_vector head_position = entity->get_bone_position( e_bone_index::bone_head );
+
+	if ( head_position.is_zero( ) )
+		return;
 
 	c_angle delta = mathematics.calculate_angle( eye_position, head_position ) - globals.m_cmd->m_view_point;
 
