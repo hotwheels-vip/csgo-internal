@@ -4,6 +4,7 @@ class c_base_client_dll;
 class c_engine_client;
 class c_client_entity_list;
 class c_input_system;
+class c_material_system;
 
 class c_key_values_system;
 class c_global_vars_base;
@@ -20,6 +21,7 @@ namespace n_interfaces
 		c_engine_client* m_engine_client           = nullptr;
 		c_client_entity_list* m_client_entity_list = nullptr;
 		c_input_system* m_input_system             = nullptr;
+		c_material_system* m_material_system       = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
 		c_global_vars_base* m_global_vars_base   = nullptr;

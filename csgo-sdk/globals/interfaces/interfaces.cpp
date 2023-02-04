@@ -20,6 +20,10 @@ bool n_interfaces::impl_t::on_attach( )
 	           static_cast< c_input_system* >( g_modules[ HASH_CT( "inputsystem.dll" ) ].find_interface( "InputSystemVersion" ) ) ) == nullptr )
 		return false;
 
+	if ( ( this->m_material_system =
+	           static_cast< c_material_system* >( g_modules[ HASH_CT( "materialsystem.dll" ) ].find_interface( "VMaterialSystem" ) ) ) == nullptr )
+		return false;
+
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
 			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( "KeyValuesSystem" ) )( ) ) == nullptr )
 		return false;
