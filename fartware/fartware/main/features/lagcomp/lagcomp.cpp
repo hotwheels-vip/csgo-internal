@@ -61,28 +61,30 @@ bool lagcomp_t::is_valid( lagcomp_t::record rec )
 
 int lagcomp_t::max_ticks( )
 {
+	static auto sv_maxunlag = convars.find( fnv1a::hash_const( "sv_maxunlag" ) );
+
 	// this is gonna be used later for extended backtracking
 	const int extra_ticks = 0;
 
-	return mathematics.time_to_ticks( convars.find( fnv1a::hash_const( "sv_maxunlag" ) )->get_float( ) ) + extra_ticks;
+	return mathematics.time_to_ticks( sv_maxunlag->get_float( ) ) + extra_ticks;
 }
 
 void lagcomp_t::update( )
 {
 	if ( !GET_CONFIG_BOOL( variables.m_aimbot.m_backtrack_enabled ) ) {
-		// for ( std::size_t i = 0; i < heap_records.size( ); i++ ) {
-		//	if ( heap_records[ i ] ) {
-		//		delete[] heap_records[ i ];
-		//		heap_records[ i ] = NULL;
-		//	}
-		// }
+		for ( std::size_t i = 0; i < heap_records.size( ); i++ ) {
+			if ( heap_records[ i ] ) {
+				delete[] heap_records[ i ];
+				heap_records[ i ] = NULL;
+			}
+		}
 
 		return;
 	}
 
-	for ( int i = 1; i < 64; i++ ) {
+	for ( int i = 0; i < interfaces.m_client_entity_list->get_highest_entity_index( ); i++ ) {
 		auto player = reinterpret_cast< c_base_entity* >( interfaces.m_client_entity_list->get_client_entity( i ) );
-		if ( !player->is_valid( ) ) {
+		if ( !player || player->team( ) == globals.m_local->team( ) ) {
 			if ( heap_records[ i ] ) {
 				delete[] heap_records[ i ];
 				heap_records[ i ] = NULL;

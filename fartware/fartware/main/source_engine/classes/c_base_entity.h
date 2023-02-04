@@ -144,11 +144,6 @@ public:
 	add_variable( bool, predictable, "CBaseEntity->m_bPredictable" );
 	add_variable_offset( float, old_simulation_time, "CBaseEntity->m_flSimulationTime", 0x4 );
 
-	c_vector& abs_origin( )
-	{
-		using fn = c_vector&( __thiscall* )( void* );
-		return ( *( fn** )this )[ this->e_indexes::_abs_origin ]( this );
-	}
 	// get bone pos calling setupbones
 	c_vector get_bone_position( int hitgroup, float point_scale = 0.5f );
 
