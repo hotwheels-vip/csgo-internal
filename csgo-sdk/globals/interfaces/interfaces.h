@@ -21,7 +21,8 @@ namespace n_interfaces
 		c_input_system* m_input_system             = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
-		c_global_vars_base* m_global_vars_base  = nullptr;
+		c_global_vars_base* m_global_vars_base   = nullptr;
+		void* m_client_mode                      = nullptr;
 		IDirect3DDevice9* m_direct_device        = nullptr;
 	};
 } // namespace n_interfaces

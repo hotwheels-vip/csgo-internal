@@ -28,12 +28,18 @@ bool n_interfaces::impl_t::on_attach( )
 			std::vformat( "found IKeyValuesSystem @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_key_values_system ) ) )
 				.c_str( ) );
 
-	if ( ( this->m_global_vars_base = **reinterpret_cast< c_global_vars_base*** >( g_virtual.get< unsigned int >( this->m_base_client, 11 ) + 0xA ) ) == nullptr )
+	if ( ( this->m_global_vars_base =
+	           **reinterpret_cast< c_global_vars_base*** >( g_virtual.get< unsigned int >( this->m_base_client, 11 ) + 0xa ) ) == nullptr )
 		return false;
 	else
 		g_console.print(
-			std::vformat( "found IGlobalVarsBase @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_global_vars_base ) ) )
-				.c_str( ) );
+			std::vformat( "found IGlobalVarsBase @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_global_vars_base ) ) ).c_str( ) );
+
+	if ( ( this->m_client_mode = **reinterpret_cast< void*** >( g_virtual.get< unsigned int >( this->m_base_client, 10 ) + 0x5 ) ) == nullptr )
+		return false;
+	else
+		g_console.print(
+			std::vformat( "found IClientModeShared @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_client_mode ) ) ).c_str( ) );
 
 	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]
 	                                   .find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" )
