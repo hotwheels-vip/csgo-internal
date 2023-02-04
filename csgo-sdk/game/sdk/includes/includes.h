@@ -13,6 +13,7 @@
 #include "../classes/c_net_channel_info.h"
 #include "../classes/c_weapon_system.h"
 #include "../classes/c_texture.h"
+#include "../classes/c_vector.h"
 
 #include "../structs/player_info_t.h"
 #include "../structs/texture_t.h"
