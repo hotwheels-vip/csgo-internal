@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="game\sdk\classes\c_weapon_data.cpp" />
     <ClCompile Include="globals\interfaces\interfaces.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utilities\console\console.cpp" />
@@ -38,6 +39,10 @@
     <ClInclude Include="game\sdk\classes\c_input_system.h" />
     <ClInclude Include="game\sdk\classes\c_key_values_system.h" />
     <ClInclude Include="game\sdk\classes\c_net_channel_info.h" />
+    <ClInclude Include="game\sdk\classes\c_weapon_data.h" />
+    <ClInclude Include="game\sdk\classes\c_weapon_system.h" />
+    <ClInclude Include="game\sdk\enums\e_item_definition_index.h" />
+    <ClInclude Include="game\sdk\enums\e_weapon_type.h" />
     <ClInclude Include="game\sdk\includes\includes.h" />
     <ClInclude Include="game\sdk\structs\interface_node_t.h" />
     <ClInclude Include="game\sdk\structs\player_info_t.h" />

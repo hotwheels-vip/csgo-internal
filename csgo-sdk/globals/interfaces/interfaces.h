@@ -7,6 +7,7 @@ class c_input_system;
 
 class c_key_values_system;
 class c_global_vars_base;
+class c_weapon_system;
 
 struct IDirect3DDevice9;
 
@@ -23,6 +24,7 @@ namespace n_interfaces
 		c_key_values_system* m_key_values_system = nullptr;
 		c_global_vars_base* m_global_vars_base   = nullptr;
 		void* m_client_mode                      = nullptr;
+		c_weapon_system* m_weapon_system         = nullptr;
 		IDirect3DDevice9* m_direct_device        = nullptr;
 	};
 } // namespace n_interfaces

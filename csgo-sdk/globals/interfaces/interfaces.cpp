@@ -41,6 +41,16 @@ bool n_interfaces::impl_t::on_attach( )
 		g_console.print(
 			std::vformat( "found IClientModeShared @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_client_mode ) ) ).c_str( ) );
 
+	if ( ( this->m_weapon_system = g_modules[ HASH_CT( "client.dll" ) ]
+	                                   .find_pattern( "8B 35 ? ? ? ? FF 10 0F B7 C0" )
+	                                   .add( 0x2 )
+	                                   .deref( 1 )
+	                                   .cast< c_weapon_system* >( ) ) == nullptr )
+		return false;
+	else
+		g_console.print(
+			std::vformat( "found IWeaponSystem @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_weapon_system ) ) ).c_str( ) );
+
 	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]
 	                                   .find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" )
 	                                   .add( 0x1 )
