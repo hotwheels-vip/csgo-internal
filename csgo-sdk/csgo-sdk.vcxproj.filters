@@ -45,6 +45,11 @@
     <ClInclude Include="game\sdk\enums\e_material_property_type.h" />
     <ClInclude Include="game\sdk\classes\c_texture.h" />
     <ClInclude Include="game\sdk\structs\texture_t.h" />
+    <ClInclude Include="game\sdk\classes\c_vector.h" />
+    <ClInclude Include="game\sdk\classes\c_engine_trace.h" />
+    <ClInclude Include="game\sdk\structs\matrix_t.h" />
+    <ClInclude Include="game\datatypes\c_utl_memory.h" />
+    <ClInclude Include="game\datatypes\c_utl_vector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
