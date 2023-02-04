@@ -4,6 +4,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utilities\utilities.cpp" />
     <ClCompile Include="utilities\console\console.cpp" />
+    <ClCompile Include="utilities\memory\memory.cpp" />
+    <ClCompile Include="utilities\modules\modules.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes.h" />
@@ -11,5 +13,12 @@
     <ClInclude Include="dependencies\lazy_importer\lazy_importer.h" />
     <ClInclude Include="utilities\utilities.h" />
     <ClInclude Include="utilities\console\console.h" />
+    <ClInclude Include="dependencies\fnv1a\fnv1a.h" />
+    <ClInclude Include="utilities\memory\memory.h" />
+    <ClInclude Include="utilities\memory\structs\pe32.h" />
+    <ClInclude Include="utilities\modules\modules.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
   </ItemGroup>
 </Project>

@@ -99,6 +99,12 @@ static unsigned long __stdcall on_attach( void* instance )
 	/* to-do ~ initialise shart here */
 	g_console.on_attach( "fart" );
 
+	g_console.print( "initialising module handles" );
+	if ( !g_modules.on_attach( ) )
+		g_console.print( "failed to initialise module handles" );
+	else
+		g_console.print( "initialised module handles" );
+
 	while ( !GetAsyncKeyState( VK_END ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 

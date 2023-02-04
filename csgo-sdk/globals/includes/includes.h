@@ -13,5 +13,8 @@
 /* console logging */
 #include "../../utilities/console/console.h"
 
+/* module handle shart */
+#include "../../utilities/modules/modules.h"
+
 /* formatting strings */
 #include <fmt/format.h>
