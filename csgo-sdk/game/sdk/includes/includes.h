@@ -7,6 +7,7 @@
 #include "../classes/c_input_system.h"
 #include "../classes/c_key_values_system.h"
 #include "../classes/c_net_channel_info.h"
+#include "../classes/c_global_vars_base.h"
 
 #include "../structs/player_info_t.h"
 

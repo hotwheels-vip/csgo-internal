@@ -6,6 +6,7 @@ class c_client_entity_list;
 class c_input_system;
 
 class c_key_values_system;
+class c_global_vars_base;
 
 struct IDirect3DDevice9;
 
@@ -20,6 +21,7 @@ namespace n_interfaces
 		c_input_system* m_input_system             = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
+		c_global_vars_base* m_global_vars_base  = nullptr;
 		IDirect3DDevice9* m_direct_device        = nullptr;
 	};
 } // namespace n_interfaces

@@ -30,6 +30,8 @@ struct address_t {
 
 		for ( int iterator = 0; iterator < amount; iterator )
 			return address_t( *( unsigned char** )this->m_value );
+
+		return address_t( );
 	}
 
 	template< typename t = address_t >

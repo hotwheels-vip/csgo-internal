@@ -1,6 +1,7 @@
 #include "interfaces.h"
 
 #include "../../globals/includes/includes.h"
+#include "../../utilities/memory/virtual.h"
 
 bool n_interfaces::impl_t::on_attach( )
 {
@@ -25,6 +26,13 @@ bool n_interfaces::impl_t::on_attach( )
 	else
 		g_console.print(
 			std::vformat( "found IKeyValuesSystem @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_key_values_system ) ) )
+				.c_str( ) );
+
+	if ( ( this->m_global_vars_base = **reinterpret_cast< c_global_vars_base*** >( g_virtual.get< unsigned int >( this->m_base_client, 11 ) + 0xA ) ) == nullptr )
+		return false;
+	else
+		g_console.print(
+			std::vformat( "found IGlobalVarsBase @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_global_vars_base ) ) )
 				.c_str( ) );
 
 	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]

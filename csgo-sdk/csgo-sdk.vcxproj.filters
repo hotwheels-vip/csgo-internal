@@ -30,6 +30,7 @@
     <ClInclude Include="game\sdk\classes\c_client_entity_list.h" />
     <ClInclude Include="game\sdk\classes\c_input_system.h" />
     <ClInclude Include="game\sdk\classes\c_key_values_system.h" />
+    <ClInclude Include="game\sdk\classes\c_global_vars_base.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
