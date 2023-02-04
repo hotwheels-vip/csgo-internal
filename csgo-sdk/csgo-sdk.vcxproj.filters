@@ -9,7 +9,7 @@
     <ClCompile Include="globals\interfaces\interfaces.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game\sdk\includes.h" />
+    <ClInclude Include="game\sdk\includes\includes.h" />
     <ClInclude Include="globals\includes\includes.h" />
     <ClInclude Include="dependencies\lazy_importer\lazy_importer.h" />
     <ClInclude Include="utilities\utilities.h" />
@@ -27,6 +27,9 @@
     <ClInclude Include="game\sdk\classes\c_engine_client.h" />
     <ClInclude Include="game\sdk\structs\player_info_t.h" />
     <ClInclude Include="game\sdk\classes\c_net_channel_info.h" />
+    <ClInclude Include="game\sdk\classes\c_client_entity_list.h" />
+    <ClInclude Include="game\sdk\classes\c_input_system.h" />
+    <ClInclude Include="game\sdk\classes\c_key_values_system.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

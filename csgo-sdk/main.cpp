@@ -2,6 +2,8 @@
     use the m_ prefix for members of structs and classes.
     state the reason why you have include a file.
 
+    macros UPPERCASE regar.ds.
+
     to-do example -
         to-do ~ blah blah blah
 
