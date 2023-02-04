@@ -33,8 +33,7 @@
 *.app
 
 # Dependencies
-*.vs
-*release
-*intermediate
-*debug
-*shipping
+*csgo-sdk/.vs
+*csgo-sdk/release
+*csgo-sdk/intermediates
+*csgo-sdk/debug
