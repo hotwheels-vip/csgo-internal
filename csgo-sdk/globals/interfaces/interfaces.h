@@ -7,6 +7,8 @@ class c_input_system;
 
 class c_key_values_system;
 
+struct IDirect3DDevice9;
+
 namespace n_interfaces
 {
 	struct impl_t {
@@ -18,6 +20,7 @@ namespace n_interfaces
 		c_input_system* m_input_system             = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
+		IDirect3DDevice9* m_direct_device        = nullptr;
 	};
 } // namespace n_interfaces
 

@@ -27,5 +27,15 @@ bool n_interfaces::impl_t::on_attach( )
 			std::vformat( "found IKeyValuesSystem @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_key_values_system ) ) )
 				.c_str( ) );
 
+	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]
+	                                   .find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" )
+	                                   .add( 0x1 )
+	                                   .deref( 2 )
+	                                   .cast< IDirect3DDevice9* >( ) ) == nullptr )
+		return false;
+	else
+		g_console.print(
+			std::vformat( "found IDirect3DDevice9 @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_direct_device ) ) ).c_str( ) );
+
 	return true;
 }

@@ -18,6 +18,20 @@ struct address_t {
 	t ccast( ) { return const_cast< t >( this->m_value ); }
 	// clang-format on
 
+	address_t add( int offset )
+	{
+		return address_t( this->m_value + offset );
+	}
+
+	address_t deref( int amount = 0 )
+	{
+		if ( !amount ) /* sorry bout Dat. */
+			return address_t( );
+
+		for ( int iterator = 0; iterator < amount; iterator )
+			return address_t( *( unsigned char** )this->m_value );
+	}
+
 	template< typename t = address_t >
 	t relative( unsigned int offset = 0x1 )
 	{
@@ -27,7 +41,7 @@ struct address_t {
 		if ( !relative_offset )
 			return t( );
 
-		return ( t )( new_address + sizeof( unsigned int ) + relative_offset );
+		return this->cast< t >( new_address + sizeof( unsigned int ) + relative_offset );
 	}
 
 private:
