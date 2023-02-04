@@ -59,7 +59,6 @@ address_t module_t::find_pattern( const char* signature )
 	return address_t( nullptr );
 }
 
-// template< typename T >
 void* module_t::find_interface( const char* interface_name )
 {
 	std::string_view converted_interface_name = interface_name;

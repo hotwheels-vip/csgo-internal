@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="globals\interfaces\interfaces.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utilities\console\console.cpp" />
     <ClCompile Include="utilities\memory\memory.cpp" />
@@ -28,12 +29,17 @@
   <ItemGroup>
     <ClInclude Include="dependencies\fnv1a\fnv1a.h" />
     <ClInclude Include="dependencies\lazy_importer\lazy_importer.h" />
+    <ClInclude Include="game\datatypes\datatable.h" />
+    <ClInclude Include="game\sdk\classes\c_base_client.h" />
+    <ClInclude Include="game\sdk\classes\c_base_client_dll.h" />
     <ClInclude Include="game\sdk\includes.h" />
     <ClInclude Include="game\sdk\structs\interface_node_t.h" />
     <ClInclude Include="globals\includes\includes.h" />
+    <ClInclude Include="globals\interfaces\interfaces.h" />
     <ClInclude Include="utilities\console\console.h" />
     <ClInclude Include="utilities\memory\memory.h" />
     <ClInclude Include="utilities\memory\structs\pe32.h" />
+    <ClInclude Include="utilities\memory\virtual.h" />
     <ClInclude Include="utilities\modules\modules.h" />
     <ClInclude Include="utilities\utilities.h" />
   </ItemGroup>

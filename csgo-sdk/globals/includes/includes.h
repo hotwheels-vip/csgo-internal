@@ -16,5 +16,8 @@
 /* module handle shart */
 #include "../../utilities/modules/modules.h"
 
+/* game interfaces */
+#include "../../globals/interfaces/interfaces.h"
+
 /* formatting strings */
 #include <format>

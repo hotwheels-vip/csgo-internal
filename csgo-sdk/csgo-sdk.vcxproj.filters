@@ -6,6 +6,7 @@
     <ClCompile Include="utilities\console\console.cpp" />
     <ClCompile Include="utilities\memory\memory.cpp" />
     <ClCompile Include="utilities\modules\modules.cpp" />
+    <ClCompile Include="globals\interfaces\interfaces.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes.h" />
@@ -18,6 +19,11 @@
     <ClInclude Include="utilities\memory\structs\pe32.h" />
     <ClInclude Include="utilities\modules\modules.h" />
     <ClInclude Include="game\sdk\structs\interface_node_t.h" />
+    <ClInclude Include="utilities\memory\virtual.h" />
+    <ClInclude Include="game\sdk\classes\c_base_client.h" />
+    <ClInclude Include="game\datatypes\datatable.h" />
+    <ClInclude Include="game\sdk\classes\c_base_client_dll.h" />
+    <ClInclude Include="globals\interfaces\interfaces.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

@@ -94,13 +94,6 @@ Huh */
 
 #include <thread>
 
-class f;
-
-void fart( )
-{
-	void* fart = reinterpret_cast< f* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClient" ) );
-}
-
 static unsigned long __stdcall on_attach( void* instance )
 {
 	/* to-do ~ initialise shart here */
@@ -112,7 +105,11 @@ static unsigned long __stdcall on_attach( void* instance )
 	else
 		g_console.print( "initialised module handles" );
 
-	fart( );
+    g_console.print( "initialising interfaces" );
+	if ( !g_interfaces.on_attach( ) )
+		g_console.print( "failed to initialise interfaces" );
+	else
+		g_console.print( "initialised interfaces" );
 
 	while ( !GetAsyncKeyState( VK_END ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
