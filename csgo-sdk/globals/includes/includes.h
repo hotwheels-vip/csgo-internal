@@ -17,4 +17,4 @@
 #include "../../utilities/modules/modules.h"
 
 /* formatting strings */
-#include <fmt/format.h>
+#include <format>
