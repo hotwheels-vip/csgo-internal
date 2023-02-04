@@ -4,15 +4,15 @@
 
 #include <unordered_map>
 
-std::unordered_map< unsigned int, module_handle_t > dumped_modules = { };
+std::unordered_map< unsigned int, module_t > dumped_modules = { };
 
-unsigned char* module_handle_t::find( const char* signature )
+address_t module_t::find( const char* signature )
 {
-	constexpr auto pattern_to_byte = []( const char* pattern ) {
+	static const auto pattern_to_byte = []( const char* pattern ) {
 		std::vector< int > bytes = { };
 
-		const auto start         = const_cast< char* >( pattern );
-		const auto end           = const_cast< char* >( pattern ) + std::strlen( pattern );
+		const auto start = const_cast< char* >( pattern );
+		const auto end   = const_cast< char* >( pattern ) + std::strlen( pattern );
 
 		for ( auto current = start; current < end; current++ ) {
 			if ( *current == '?' ) {
@@ -50,12 +50,12 @@ unsigned char* module_handle_t::find( const char* signature )
 		}
 
 		if ( found )
-			return &scan_bytes[ i ];
+			return address_t( &scan_bytes[ i ] );
 	}
 
-	g_console.print( std::vformat( "failed to find pattern {:s} in module {:s}", std::make_format_args( signature, this->m_name ) ).c_str( ) );
+	g_console.print( std::vformat( "failed to find pattern {:s}", std::make_format_args( signature ) ).c_str( ) );
 
-	return nullptr;
+	return address_t( nullptr );
 }
 
 bool n_modules::impl_t::on_attach( )
@@ -70,15 +70,14 @@ bool n_modules::impl_t::on_attach( )
 			const auto converted_name = std::wstring( entry->BaseDllName.Buffer );
 
 			if ( !( converted_name.empty( ) ) )
-				dumped_modules[ HASH_RT( std::string( converted_name.begin( ), converted_name.end( ) ).c_str( ) ) ] =
-					module_handle_t( entry->DllBase );
+				dumped_modules[ HASH_RT( std::string( converted_name.begin( ), converted_name.end( ) ).c_str( ) ) ] = module_t( entry->DllBase );
 		}
 	}
 
 	return !( dumped_modules.empty( ) );
 }
 
-module_handle_t n_modules::impl_t::operator[]( unsigned int hash )
+module_t n_modules::impl_t::operator[]( unsigned int hash )
 {
 	return dumped_modules[ hash ];
 }
