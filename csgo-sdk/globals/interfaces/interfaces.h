@@ -1,6 +1,7 @@
 #pragma once
 
 class c_base_client_dll;
+class c_engine_client;
 
 namespace n_interfaces
 {
@@ -8,6 +9,7 @@ namespace n_interfaces
 		bool on_attach( );
 
 		c_base_client_dll* m_base_client = nullptr;
+		c_engine_client* m_engine_client = nullptr;
 	};
 } // namespace n_interfaces
 

@@ -24,6 +24,9 @@
     <ClInclude Include="game\datatypes\datatable.h" />
     <ClInclude Include="game\sdk\classes\c_base_client_dll.h" />
     <ClInclude Include="globals\interfaces\interfaces.h" />
+    <ClInclude Include="game\sdk\classes\c_engine_client.h" />
+    <ClInclude Include="game\sdk\structs\player_info_t.h" />
+    <ClInclude Include="game\sdk\classes\c_net_channel_info.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
