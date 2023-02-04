@@ -17,6 +17,7 @@
     <ClInclude Include="utilities\memory\memory.h" />
     <ClInclude Include="utilities\memory\structs\pe32.h" />
     <ClInclude Include="utilities\modules\modules.h" />
+    <ClInclude Include="game\sdk\structs\interface_node_t.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

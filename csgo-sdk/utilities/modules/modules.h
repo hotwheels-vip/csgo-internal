@@ -9,7 +9,7 @@ struct address_t {
 
 	// clang-format off
 	template< typename t = address_t  >
-	t cast( ) { return reinterpret_cast< t >( this->m_value );}
+	t cast( ) { return reinterpret_cast< t >( this->m_value ); }
 
 	template< typename t = address_t  >
 	t scast( ) { return static_cast< t >( this->m_value ); }
@@ -35,13 +35,18 @@ private:
 };
 
 struct module_t {
-	module_t( ){ };
+public:
+	module_t( ) = default;
 	module_t( void* value )
 	{
 		this->m_value = value;
 	}
 
-	address_t find( const char* signature );
+	address_t find_pattern( const char* signature );
+
+	void* find_interface( const char* interface_name );
+
+	void* find_export( const char* export_name );
 
 	void* get_value( )
 	{

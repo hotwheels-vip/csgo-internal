@@ -94,6 +94,13 @@ Huh */
 
 #include <thread>
 
+class f;
+
+void fart( )
+{
+	void* fart = reinterpret_cast< f* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClient" ) );
+}
+
 static unsigned long __stdcall on_attach( void* instance )
 {
 	/* to-do ~ initialise shart here */
@@ -105,12 +112,7 @@ static unsigned long __stdcall on_attach( void* instance )
 	else
 		g_console.print( "initialised module handles" );
 
-	[ & ]( ) {
-		const auto draw_view_models_address = g_modules[ HASH_CT( "client.dll" ) ].find( "E8 ? ? ? ? 8B 43 10 8D 4D 04" ).relative< void* >( );
-
-		if ( draw_view_models_address )
-			g_console.print( "draw_view_models_address" );
-	}( );
+	fart( );
 
 	while ( !GetAsyncKeyState( VK_END ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
