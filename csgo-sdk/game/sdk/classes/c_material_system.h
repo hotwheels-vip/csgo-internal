@@ -67,4 +67,9 @@ public:
 	{
 		return g_virtual.call< c_material* >( this, 84, material_name, texture_group_name, complain, complain_prefix );
 	}
+
+	c_texture* find_texture( char const* texture_name, const char* texture_group_name, bool complain = true, int additional_creation_flags = 0 )
+	{
+		return g_virtual.call< c_texture* >( this, 91, texture_name, texture_group_name, complain, additional_creation_flags );
+	}
 };
