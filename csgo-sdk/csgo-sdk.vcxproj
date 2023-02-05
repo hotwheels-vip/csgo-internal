@@ -30,8 +30,8 @@
   <ItemGroup>
     <ClInclude Include="dependencies\fnv1a\fnv1a.h" />
     <ClInclude Include="dependencies\lazy_importer\lazy_importer.h" />
-    <ClInclude Include="game\datatypes\c_utl_memory.h" />
-    <ClInclude Include="game\datatypes\c_utl_vector.h" />
+    <ClInclude Include="game\sdk\classes\c_utl_memory.h" />
+    <ClInclude Include="game\sdk\classes\c_utl_vector.h" />
     <ClInclude Include="game\datatypes\datatable.h" />
     <ClInclude Include="game\sdk\classes\c_angle.h" />
     <ClInclude Include="game\sdk\classes\c_app_system.h" />
@@ -39,6 +39,7 @@
     <ClInclude Include="game\sdk\classes\c_base_client_dll.h" />
     <ClInclude Include="game\sdk\classes\c_client_entity_list.h" />
     <ClInclude Include="game\sdk\classes\c_client_state.h" />
+    <ClInclude Include="game\sdk\classes\c_debug_overlay.h" />
     <ClInclude Include="game\sdk\classes\c_engine_client.h" />
     <ClInclude Include="game\sdk\classes\c_engine_trace.h" />
     <ClInclude Include="game\sdk\classes\c_global_vars_base.h" />

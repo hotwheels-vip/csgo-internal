@@ -1,12 +1,11 @@
 #pragma once
 
-#include "../../datatypes/c_utl_memory.h"
-#include "../../datatypes/c_utl_vector.h"
 #include "../classes/c_app_system.h"
 #include "../classes/c_base_client.h"
 #include "../classes/c_base_client_dll.h"
 #include "../classes/c_client_entity_list.h"
 #include "../classes/c_client_state.h"
+#include "../classes/c_debug_overlay.h"
 #include "../classes/c_engine_client.h"
 #include "../classes/c_engine_trace.h"
 #include "../classes/c_global_vars_base.h"
@@ -17,6 +16,8 @@
 #include "../classes/c_material_var.h"
 #include "../classes/c_net_channel_info.h"
 #include "../classes/c_texture.h"
+#include "../classes/c_utl_memory.h"
+#include "../classes/c_utl_vector.h"
 #include "../classes/c_vector.h"
 #include "../classes/c_weapon_system.h"
 

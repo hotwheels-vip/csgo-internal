@@ -6,6 +6,7 @@ class c_client_entity_list;
 class c_input_system;
 class c_material_system;
 class c_engine_trace;
+class c_debug_overlay;
 
 class c_key_values_system;
 class c_global_vars_base;
@@ -25,6 +26,7 @@ namespace n_interfaces
 		c_input_system* m_input_system             = nullptr;
 		c_material_system* m_material_system       = nullptr;
 		c_engine_trace* m_engine_trace             = nullptr;
+		c_debug_overlay* m_debug_overlay           = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
 		c_global_vars_base* m_global_vars_base   = nullptr;

@@ -48,11 +48,12 @@
     <ClInclude Include="game\sdk\classes\c_vector.h" />
     <ClInclude Include="game\sdk\classes\c_engine_trace.h" />
     <ClInclude Include="game\sdk\structs\matrix_t.h" />
-    <ClInclude Include="game\datatypes\c_utl_memory.h" />
-    <ClInclude Include="game\datatypes\c_utl_vector.h" />
+    <ClInclude Include="game\sdk\classes\c_utl_memory.h" />
+    <ClInclude Include="game\sdk\classes\c_utl_vector.h" />
     <ClInclude Include="game\sdk\classes\c_app_system.h" />
     <ClInclude Include="game\sdk\classes\c_client_state.h" />
     <ClInclude Include="game\sdk\classes\c_angle.h" />
+    <ClInclude Include="game\sdk\classes\c_debug_overlay.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
