@@ -99,6 +99,11 @@
     <ClInclude Include="game\sdk\enums\e_field_types.h" />
     <ClInclude Include="game\sdk\structs\data_map_t.h" />
     <ClInclude Include="game\sdk\structs\type_description_t.h" />
+    <ClInclude Include="game\sdk\classes\c_animation_state.h" />
+    <ClInclude Include="game\sdk\classes\c_model_info.h" />
+    <ClInclude Include="game\sdk\structs\studiohdr_t.h" />
+    <ClInclude Include="game\sdk\structs\mstudiobone_t.h" />
+    <ClInclude Include="game\sdk\structs\mstudiohitboxset_t.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

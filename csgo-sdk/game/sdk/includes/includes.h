@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../classes/c_animation_state.h"
 #include "../classes/c_app_system.h"
 #include "../classes/c_base_client.h"
 #include "../classes/c_base_client_dll.h"
@@ -18,6 +19,7 @@
 #include "../classes/c_material.h"
 #include "../classes/c_material_system.h"
 #include "../classes/c_material_var.h"
+#include "../classes/c_model_info.h"
 #include "../classes/c_net_channel_info.h"
 #include "../classes/c_recv_proxy_data.h"
 #include "../classes/c_standart_recv_proxies.h"
@@ -27,16 +29,20 @@
 #include "../classes/c_weapon_system.h"
 #include "../classes/entity.h"
 
+#include "../structs/data_map_t.h"
 #include "../structs/data_variant_t.h"
 #include "../structs/matrix_t.h"
+#include "../structs/mstudiobone_t.h"
 #include "../structs/player_info_t.h"
 #include "../structs/recv_prop_t.h"
 #include "../structs/recv_table_t.h"
+#include "../structs/studiohdr_t.h"
 #include "../structs/texture_t.h"
 #include "../structs/type_description_t.h"
-#include "../structs/data_map_t.h"
+#include "../structs/mstudiobone_t.h"
 
 #include "../enums/e_command_buttons.h"
+#include "../enums/e_field_types.h"
 #include "../enums/e_image_format.h"
 #include "../enums/e_item_definition_index.h"
 #include "../enums/e_material_property_type.h"
@@ -44,6 +50,5 @@
 #include "../enums/e_preview_image_ret_val.h"
 #include "../enums/e_send_prop_type.h"
 #include "../enums/e_weapon_type.h"
-#include "../enums/e_field_types.h"
 
 #include <d3d9.h>

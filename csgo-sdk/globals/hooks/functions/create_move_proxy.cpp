@@ -13,6 +13,10 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	if ( !cmd || !verified_cmd )
 		return;
 
+	const auto l = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
+	if ( l )
+		g_console.print( std::to_string( l->get_bone_by_hash( HASH_CT( "head_0" ) ) ).c_str( ) );
+
 	cmd->m_view_point.normalize( );
 	cmd->m_view_point.clamp( );
 

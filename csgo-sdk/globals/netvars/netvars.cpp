@@ -77,6 +77,7 @@ unsigned int n_netvars::impl_t::find_in_data_map( data_map_t* map, const unsigne
 	return 0U;
 }
 
-n_netvars::impl_t::netvar_object_t n_netvars::impl_t::operator[]( unsigned int hash ) {
+n_netvars::impl_t::netvar_object_t n_netvars::impl_t::operator[]( unsigned int hash )
+{
 	return props[ hash ];
-		}
+}

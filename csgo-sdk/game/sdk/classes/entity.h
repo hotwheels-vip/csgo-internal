@@ -69,6 +69,8 @@ class c_client_renderable;
 class c_client_entity;
 class c_base_entity;
 class c_client_thinkable;
+class c_user_cmd;
+class c_animation_state;
 
 class c_client_unknown : public c_handle_entity
 {
@@ -197,38 +199,43 @@ class c_base_entity : public c_client_entity
 public:
 	/* DT_BasePlayer */
 	add_pvariable( float, get_fall_velocity, "CBasePlayer->m_flFallVelocity" );
-	// add_variable( c_angle, GetViewPunch, "CBasePlayer->m_viewPunchAngle" );
-	// add_variable( c_angle, GetPunch, "CBasePlayer->m_aimPunchAngle" );
-	// add_variable( c_vector, GetViewOffset, "CBasePlayer->m_vecViewOffset[0]" );
-	// add_variable( float, GetFriction, "CBasePlayer->m_flFriction" );
-	// add_variable( int, GetTickBase, "CBasePlayer->m_nTickBase" );
-	// add_pvariable( int, GetNextThinkTick, "CBasePlayer->m_nNextThinkTick" );
-	// add_variable( c_vector, GetVelocity, "CBasePlayer->m_vecVelocity[0]" );
-	// add_pvariable_offset( c_angle, GetViewAngles, "CBasePlayer->deadflag", 0x4 );
-	// add_variable( unsigned int, GetGroundEntityHandle, "CBasePlayer->m_hGroundEntity" );
-	// add_variable( int, GetHealth, "CBasePlayer->m_iHealth" );
-	// add_variable( int, GetLifeState, "CBasePlayer->m_lifeState" );
-	// add_variable( float, GetMaxSpeed, "CBasePlayer->m_flMaxspeed" );
-	// add_variable( int, GetFlags, "CBasePlayer->m_fFlags" );
-	// add_pvariable( int, GetObserverMode, "CBasePlayer->m_iObserverMode" );
-	// add_variable( unsigned int, GetObserverTargetHandle, "CBasePlayer->m_hObserverTarget" );
-	// add_variable( unsigned int, GetViewModelHandle, "CBasePlayer->m_hViewModel[0]" );
-	// add_pvariable( const char, GetLastPlace, "CBasePlayer->m_szLastPlaceName" );
-	// add_variable_offset( int, GetButtonDisabled, "CBasePlayer->m_hViewEntity", -0xC );
-	// add_variable_offset( int, GetButtonForced, "CBasePlayer->m_hViewEntity", -0x8 );
-	// add_pvariable_offset( CUserCmd*, GetCurrentCommand, "CBasePlayer->m_hViewEntity",
-	//                       -0x4 ); // @ida: client.dll @ [89 BE ? ? ? ? E8 ? ? ? ? 85 FF + 0x2]
+	add_variable( c_angle, get_view_punch, "CBasePlayer->m_viewPunchAngle" );
+	add_variable( c_angle, get_punch, "CBasePlayer->m_aimPunchAngle" );
+	add_variable( c_vector, get_view_offset, "CBasePlayer->m_vecViewOffset[0]" );
+	add_variable( float, get_friction, "CBasePlayer->m_flFriction" );
+	add_variable( int, get_tick_base, "CBasePlayer->m_nTickBase" );
+	add_pvariable( int, get_next_think_tick, "CBasePlayer->m_nNextThinkTick" );
+	add_variable( c_vector, get_velocity, "CBasePlayer->m_vecVelocity[0]" );
+	add_pvariable_offset( c_angle, get_view_angles, "CBasePlayer->deadflag", 0x4 );
+	add_variable( unsigned int, get_ground_entity_handle, "CBasePlayer->m_hGroundEntity" );
+	add_variable( int, get_health, "CBasePlayer->m_iHealth" );
+	add_variable( int, get_life_state, "CBasePlayer->m_lifeState" );
+	add_variable( float, get_max_speed, "CBasePlayer->m_flMaxspeed" );
+	add_variable( int, get_flags, "CBasePlayer->m_fFlags" );
+	add_pvariable( int, get_observer_mode, "CBasePlayer->m_iObserverMode" );
+	add_variable( unsigned int, get_observer_target_handle, "CBasePlayer->m_hObserverTarget" );
+	add_variable( unsigned int, get_view_model_handle, "CBasePlayer->m_hViewModel[0]" );
+	add_pvariable( const char, get_last_place, "CBasePlayer->m_szLastPlaceName" );
+	add_variable_offset( int, get_button_disabled, "CBasePlayer->m_hViewEntity", -0xC );
+	add_variable_offset( int, get_button_forced, "CBasePlayer->m_hViewEntity", -0x8 );
+	add_pvariable_offset( c_user_cmd*, get_current_command, "CBasePlayer->m_hViewEntity", -0x4 );
 
-	// add_datafield( int, get_eflags, this->get_prediction_desc_map( ), "m_iEFlags" );
-	// add_pdatafield( int, GetButtons, this->get_prediction_desc_map( ), "m_nButtons" );
-	// add_datafield( int, GetButtonLast, this->get_prediction_desc_map( ), "m_afButtonLast" );
-	// add_datafield( int, GetButtonPressed, this->get_prediction_desc_map( ), "m_afButtonPressed" );
-	// add_datafield( int, GetButtonReleased, this->get_prediction_desc_map( ), "m_afButtonReleased" );
-	// add_pdatafield( int, GetImpulse, this->get_prediction_desc_map( ), "m_nImpulse" );
-	// add_datafield( float, GetSurfaceFriction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
+	add_datafield( int, get_eflags, this->get_prediction_desc_map( ), "m_iEFlags" );
+	add_pdatafield( int, get_buttons, this->get_prediction_desc_map( ), "m_nButtons" );
+	add_datafield( int, get_button_last, this->get_prediction_desc_map( ), "m_afButtonLast" );
+	add_datafield( int, get_button_pressed, this->get_prediction_desc_map( ), "m_afButtonPressed" );
+	add_datafield( int, get_button_released, this->get_prediction_desc_map( ), "m_afButtonReleased" );
+	add_pdatafield( int, get_impulse, this->get_prediction_desc_map( ), "m_nImpulse" );
+	add_datafield( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
 
-	//inline bool is_alive( )
-	//{
-	//	return ( this->GetLifeState( ) == 0 /* LIFE_ALIVE */ );
-	//}
+	inline bool is_alive( )
+	{
+		return ( this->get_life_state( ) == 0 /* LIFE_ALIVE */ );
+	}
+
+	void modify_eye_position( const c_animation_state* animation_state, c_vector* position ) const;
+
+	int get_bone_by_hash( const unsigned int hash ) const;
+
+	c_vector get_bone_position( int bone );
 };

@@ -32,7 +32,10 @@ bool n_interfaces::impl_t::on_attach( )
 	     nullptr )
 		return false;
 
-	if ( ( this->m_convar = static_cast< c_convar* >( g_modules[ HASH_CT( "vstdlib.dll" ) ].find_interface( "VEngineCvar" ) ) ) ==
+	if ( ( this->m_convar = static_cast< c_convar* >( g_modules[ HASH_CT( "vstdlib.dll" ) ].find_interface( "VEngineCvar" ) ) ) == nullptr )
+		return false;
+
+	if ( ( this->m_model_info = static_cast< c_model_info* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VModelInfoClient" ) ) ) ==
 	     nullptr )
 		return false;
 
@@ -78,14 +81,13 @@ bool n_interfaces::impl_t::on_attach( )
 			std::vformat( "found IClientState @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_client_state ) ) ).c_str( ) );
 
 	if ( ( this->m_input = g_modules[ HASH_CT( "client.dll" ) ]
-	                                  .find_pattern( "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" )
-	                                  .add( 0x1 )
-	                                  .deref( 1 )
+	                           .find_pattern( "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" )
+	                           .add( 0x1 )
+	                           .deref( 1 )
 	                           .cast< c_input* >( ) ) == nullptr )
 		return false;
 	else
-		g_console.print(
-			std::vformat( "found IInput @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_input ) ) ).c_str( ) );
+		g_console.print( std::vformat( "found IInput @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_input ) ) ).c_str( ) );
 
 	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]
 	                                   .find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" )
