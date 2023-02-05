@@ -108,6 +108,7 @@
     <ClInclude Include="game\sdk\classes\c_move_data.h" />
     <ClInclude Include="game\sdk\classes\c_move_helper.h" />
     <ClInclude Include="game\sdk\classes\c_prediction.h" />
+    <ClInclude Include="game\sdk\classes\c_model_render.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

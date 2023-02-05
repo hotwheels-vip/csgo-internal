@@ -59,6 +59,7 @@
     <ClInclude Include="game\sdk\classes\c_game_movement.h" />
     <ClInclude Include="game\sdk\classes\c_input.h" />
     <ClInclude Include="game\sdk\classes\c_model_info.h" />
+    <ClInclude Include="game\sdk\classes\c_model_render.h" />
     <ClInclude Include="game\sdk\classes\c_move_data.h" />
     <ClInclude Include="game\sdk\classes\c_move_helper.h" />
     <ClInclude Include="game\sdk\classes\c_prediction.h" />

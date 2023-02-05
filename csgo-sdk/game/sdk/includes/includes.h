@@ -31,6 +31,7 @@
 #include "../classes/c_utl_memory.h"
 #include "../classes/c_utl_vector.h"
 #include "../classes/c_weapon_system.h"
+#include "../classes/c_model_render.h"
 #include "../classes/entity.h"
 
 #include "../structs/data_map_t.h"

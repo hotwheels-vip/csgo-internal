@@ -47,6 +47,10 @@ bool n_interfaces::impl_t::on_attach( )
 	     nullptr )
 		return false;
 
+	if ( ( this->m_model_render = static_cast< c_model_render* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VEngineModel" ) ) ) ==
+	     nullptr )
+		return false;
+
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
 			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( "KeyValuesSystem" ) )( ) ) == nullptr )
 		return false;
