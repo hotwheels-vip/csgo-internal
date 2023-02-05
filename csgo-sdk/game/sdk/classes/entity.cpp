@@ -65,7 +65,7 @@ void c_base_entity::set_next_think( int think )
 void c_base_entity::post_think( )
 {
 	static auto post_think_vphysics = reinterpret_cast< bool( __thiscall* )( c_base_entity* ) >(
-		g_modules[ HASH_CT( "client.dll" ) ]. find_pattern( ( ( "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB" ) ) ) );
+		g_modules[ HASH_CT( "client.dll" ) ].find_pattern( ( ( "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB" ) ) ) );
 
 	static auto simulate_player_simulated_entities = reinterpret_cast< void( __thiscall* )( c_base_entity* ) >(
 		g_modules[ HASH_CT( "client.dll" ) ].find_pattern( ( ( "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 74" ) ) ) );
@@ -98,6 +98,35 @@ bool c_base_entity::physics_run_think( int think_method )
 	return physics_run_think_fn( this, think_method );
 }
 
+bool c_base_entity::can_shoot( )
+{
+	const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( this->get_active_weapon_handle( ) );
+	if ( !weapon )
+		return false;
+
+	const float server_time = static_cast< float >( this->get_tick_base( ) ) * g_interfaces.m_global_vars_base->m_interval_per_tick;
+
+	if ( weapon->get_ammo( ) <= 0 )
+		return false;
+
+	if ( this->get_next_attack( ) > server_time )
+		return false;
+
+	const short definition_index = weapon->get_item_definition_index( );
+
+	if ( ( definition_index == e_item_definition_index::weapon_famas || definition_index == e_item_definition_index::weapon_glock ) &&
+	     weapon->is_burst_mode( ) && weapon->get_burst_shots_remaining( ) > 0 )
+		return true;
+
+	if ( weapon->get_next_primary_attack( ) > server_time )
+		return false;
+
+	if ( definition_index == e_item_definition_index::weapon_revolver && weapon->get_fire_ready_time( ) > server_time )
+		return false;
+
+	return true;
+}
+
 int c_base_entity::get_bone_by_hash( const unsigned int hash ) const
 {
 	if ( const auto model = this->get_model( ); model ) {
@@ -120,6 +149,20 @@ c_vector c_base_entity::get_bone_position( int bone )
 		return out[ bone ][ 3 ];
 
 	return c_vector( );
+}
+
+[[nodiscord]] c_vector c_base_entity::get_eye_position( bool should_correct = true )
+{
+	c_vector out{ };
+
+	g_virtual.call< void >( this, 169, std::ref( out ) );
+
+	if ( this->is_used_new_animation_state( ) && should_correct ) {
+		if ( const auto animation_state = this->get_animation_state( ); animation_state )
+			this->modify_eye_position( animation_state, &out );
+	}
+
+	return out;
 }
 
 c_user_cmd& c_base_entity::get_last_command( )

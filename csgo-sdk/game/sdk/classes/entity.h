@@ -237,6 +237,31 @@ public:
 	/* DT_BaseAnimating */
 	add_variable( int, get_sequence, "CBaseAnimating->m_nSequence" );
 
+	/* DT_CSPlayer */
+	add_variable_offset( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
+	add_variable_offset( c_animation_state*, get_animation_state, "CCSPlayer->m_bIsScoped", -0x14 );
+
+	/* DT_WeaponCSBase */
+	add_variable( bool, is_burst_mode, "CWeaponCSBase->m_bBurstMode" );
+	add_variable( float, get_accuracy_penalty, "CWeaponCSBase->m_fAccuracyPenalty" );
+	add_variable( float, get_fire_ready_time, "CWeaponCSBase->m_flPostponeFireReadyTime" );
+
+	/* DT_BaseCombatCharacter */
+	add_variable( float, get_next_attack, "CBaseCombatCharacter->m_flNextAttack" );
+	add_variable( unsigned int, get_active_weapon_handle, "CBaseCombatCharacter->m_hActiveWeapon" );
+	add_pvariable( unsigned int, get_weapons_handle, "CBaseCombatCharacter->m_hMyWeapons" );
+	add_pvariable( unsigned int, get_wearables_handle, "CBaseCombatCharacter->m_hMyWearables" );
+
+	/* DT_BaseCombatWeapon */ 
+	add_variable( float, get_next_primary_attack, "CBaseCombatWeapon->m_flNextPrimaryAttack" );
+	add_variable( int, get_ammo, "CBaseCombatWeapon->m_iClip1" );
+
+	/* DT_BaseAttributableItem */
+	add_variable( short, get_item_definition_index, "CBaseAttributableItem->m_iItemDefinitionIndex" );
+
+	/* DT_WeaponCSBaseGun */
+	add_variable( int, get_burst_shots_remaining, "CWeaponCSBaseGun->m_iBurstShotsRemaining" );
+
 	add_offset( unsigned int, get_index, 0x64 );
 	add_offset( bool, is_dormant, 0xed );
 
@@ -280,10 +305,12 @@ public:
 	void post_think( );
 
 	bool physics_run_think( int think_method );
+	bool can_shoot( );
 
 	int get_bone_by_hash( const unsigned int hash ) const;
 
 	c_vector get_bone_position( int bone );
+	[[nodiscord]] c_vector get_eye_position( bool should_correct = true );
 
 	c_user_cmd& get_last_command( );
 };
