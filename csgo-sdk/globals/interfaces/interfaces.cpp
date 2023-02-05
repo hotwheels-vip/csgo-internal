@@ -39,6 +39,10 @@ bool n_interfaces::impl_t::on_attach( )
 	     nullptr )
 		return false;
 
+	if ( ( this->m_game_movement = static_cast< c_game_movement* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "GameMovement" ) ) ) ==
+	     nullptr )
+		return false;
+
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
 			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( "KeyValuesSystem" ) )( ) ) == nullptr )
 		return false;

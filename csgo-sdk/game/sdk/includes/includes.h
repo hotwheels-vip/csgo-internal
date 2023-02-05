@@ -12,6 +12,8 @@
 #include "../classes/c_debug_overlay.h"
 #include "../classes/c_engine_client.h"
 #include "../classes/c_engine_trace.h"
+#include "../classes/c_game_movement.h"
+#include "../classes/c_move_data.h"
 #include "../classes/c_global_vars_base.h"
 #include "../classes/c_input.h"
 #include "../classes/c_input_system.h"
@@ -39,7 +41,6 @@
 #include "../structs/studiohdr_t.h"
 #include "../structs/texture_t.h"
 #include "../structs/type_description_t.h"
-#include "../structs/mstudiobone_t.h"
 
 #include "../enums/e_command_buttons.h"
 #include "../enums/e_field_types.h"

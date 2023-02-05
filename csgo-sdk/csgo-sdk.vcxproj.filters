@@ -104,6 +104,8 @@
     <ClInclude Include="game\sdk\structs\studiohdr_t.h" />
     <ClInclude Include="game\sdk\structs\mstudiobone_t.h" />
     <ClInclude Include="game\sdk\structs\mstudiohitboxset_t.h" />
+    <ClInclude Include="game\sdk\classes\c_game_movement.h" />
+    <ClInclude Include="game\sdk\classes\c_move_data.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

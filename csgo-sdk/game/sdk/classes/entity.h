@@ -216,7 +216,7 @@ public:
 	add_variable( unsigned int, get_observer_target_handle, "CBasePlayer->m_hObserverTarget" );
 	add_variable( unsigned int, get_view_model_handle, "CBasePlayer->m_hViewModel[0]" );
 	add_pvariable( const char, get_last_place, "CBasePlayer->m_szLastPlaceName" );
-	add_variable_offset( int, get_button_disabled, "CBasePlayer->m_hViewEntity", -0xC );
+	add_variable_offset( int, get_button_disabled, "CBasePlayer->m_hViewEntity", -0xc );
 	add_variable_offset( int, get_button_forced, "CBasePlayer->m_hViewEntity", -0x8 );
 	add_pvariable_offset( c_user_cmd*, get_current_command, "CBasePlayer->m_hViewEntity", -0x4 );
 
@@ -234,7 +234,7 @@ public:
 	add_variable( bool, get_predictable, "CBaseEntity->m_bPredictable" );
 
 	add_offset( unsigned int, get_index, 0x64 );
-	add_offset( bool, is_dormant, 0xED );
+	add_offset( bool, is_dormant, 0xed );
 
 	inline bool is_alive( )
 	{
