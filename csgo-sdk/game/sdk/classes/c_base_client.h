@@ -17,5 +17,5 @@ public:
 	char* m_network_name;
 	recv_table_t* m_recv_table;
 	c_base_client* m_next;
-	e_class_id m_classId;
+	e_class_id m_class_id;
 };

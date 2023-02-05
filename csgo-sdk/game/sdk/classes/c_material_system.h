@@ -53,6 +53,7 @@
 class c_material;
 class c_material_var;
 class c_key_values;
+class c_texture;
 
 class c_material_system
 {

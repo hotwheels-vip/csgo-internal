@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\sdk\classes\c_weapon_data.cpp" />
+    <ClCompile Include="game\sdk\classes\entity.cpp" />
     <ClCompile Include="globals\convars\convars.cpp" />
     <ClCompile Include="globals\interfaces\interfaces.cpp" />
     <ClCompile Include="main.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="dependencies\lazy_importer\lazy_importer.h" />
     <ClInclude Include="game\datatypes\fn_change_callback.h" />
     <ClInclude Include="game\datatypes\recv_var_proxy_fn.h" />
+    <ClInclude Include="game\sdk\classes\entity.h" />
     <ClInclude Include="game\sdk\classes\c_cconvar.h" />
     <ClInclude Include="game\sdk\classes\c_convar.h" />
     <ClInclude Include="game\sdk\classes\c_con_base.h" />
