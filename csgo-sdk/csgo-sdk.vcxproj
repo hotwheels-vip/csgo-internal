@@ -20,10 +20,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\crc32\crc32.cpp" />
+    <ClCompile Include="dependencies\minhook\src\buffer.c" />
+    <ClCompile Include="dependencies\minhook\src\hde\hde32.c" />
+    <ClCompile Include="dependencies\minhook\src\hde\hde64.c" />
+    <ClCompile Include="dependencies\minhook\src\hook.c" />
+    <ClCompile Include="dependencies\minhook\src\trampoline.c" />
     <ClCompile Include="game\sdk\classes\c_user_cmd.cpp" />
     <ClCompile Include="game\sdk\classes\c_weapon_data.cpp" />
     <ClCompile Include="game\sdk\classes\entity.cpp" />
     <ClCompile Include="globals\convars\convars.cpp" />
+    <ClCompile Include="globals\hooks\detour_hook\c_detour_hook.cpp" />
+    <ClCompile Include="globals\hooks\functions\alloc_key_values_memory.cpp" />
+    <ClCompile Include="globals\hooks\functions\create_move_proxy.cpp" />
+    <ClCompile Include="globals\hooks\hooks.cpp" />
     <ClCompile Include="globals\interfaces\interfaces.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utilities\console\console.cpp" />
@@ -35,6 +44,14 @@
     <ClInclude Include="dependencies\crc32\crc32.h" />
     <ClInclude Include="dependencies\fnv1a\fnv1a.h" />
     <ClInclude Include="dependencies\lazy_importer\lazy_importer.h" />
+    <ClInclude Include="dependencies\minhook\include\MinHook.h" />
+    <ClInclude Include="dependencies\minhook\src\buffer.h" />
+    <ClInclude Include="dependencies\minhook\src\hde\hde32.h" />
+    <ClInclude Include="dependencies\minhook\src\hde\hde64.h" />
+    <ClInclude Include="dependencies\minhook\src\hde\pstdint.h" />
+    <ClInclude Include="dependencies\minhook\src\hde\table32.h" />
+    <ClInclude Include="dependencies\minhook\src\hde\table64.h" />
+    <ClInclude Include="dependencies\minhook\src\trampoline.h" />
     <ClInclude Include="game\datatypes\fn_change_callback.h" />
     <ClInclude Include="game\datatypes\recv_var_proxy_fn.h" />
     <ClInclude Include="game\sdk\classes\c_input.h" />
@@ -85,6 +102,8 @@
     <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
     <ClInclude Include="game\sdk\structs\texture_t.h" />
     <ClInclude Include="globals\convars\convars.h" />
+    <ClInclude Include="globals\hooks\detour_hook\c_detour_hook.h" />
+    <ClInclude Include="globals\hooks\hooks.h" />
     <ClInclude Include="globals\includes\includes.h" />
     <ClInclude Include="globals\interfaces\interfaces.h" />
     <ClInclude Include="utilities\console\console.h" />

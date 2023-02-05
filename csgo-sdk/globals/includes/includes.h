@@ -22,5 +22,11 @@
 /* convar stuff */
 #include "../../globals/convars/convars.h"
 
+/* hooks */
+#include "../hooks/hooks.h"
+
+/* hooking dependencies */
+#include "../../dependencies/minhook/include/MinHook.h"
+
 /* formatting strings */
 #include <format>

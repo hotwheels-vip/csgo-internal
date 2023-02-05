@@ -13,6 +13,11 @@ public:
 		return g_virtual.call< bool >( this, 8, index, info );
 	}
 
+	int get_local_player( )
+	{
+		return g_virtual.call< int >( this, 12 );
+	}
+
 	int get_max_clients( )
 	{
 		return g_virtual.call< int >( this, 20 );

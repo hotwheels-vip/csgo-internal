@@ -23,7 +23,7 @@ struct address_t {
 		return address_t( this->m_value + offset );
 	}
 
-	address_t deref( int amount =1 )
+	address_t deref( int amount = 1 )
 	{
 		for ( int iterator = 0; iterator < amount; iterator )
 			return address_t( *( unsigned char** )this->m_value );
@@ -34,13 +34,13 @@ struct address_t {
 	template< typename t = address_t >
 	t relative( unsigned int offset = 0x1 )
 	{
-		unsigned int new_address = ( unsigned int )this->m_value + offset;
+		unsigned char* new_address =  this->m_value + offset;
 		int relative_offset      = *reinterpret_cast< int* >( new_address );
 
 		if ( !relative_offset )
 			return t( );
 
-		return this->cast< t >( new_address + sizeof( unsigned int ) + relative_offset );
+		return ( t )( new_address + sizeof( unsigned int ) + relative_offset );
 	}
 
 private:
