@@ -2,9 +2,11 @@
 
 #include "../../datatypes/c_utl_memory.h"
 #include "../../datatypes/c_utl_vector.h"
+#include "../classes/c_app_system.h"
 #include "../classes/c_base_client.h"
 #include "../classes/c_base_client_dll.h"
 #include "../classes/c_client_entity_list.h"
+#include "../classes/c_client_state.h"
 #include "../classes/c_engine_client.h"
 #include "../classes/c_engine_trace.h"
 #include "../classes/c_global_vars_base.h"

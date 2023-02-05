@@ -24,8 +24,8 @@ bool n_interfaces::impl_t::on_attach( )
 	           static_cast< c_material_system* >( g_modules[ HASH_CT( "materialsystem.dll" ) ].find_interface( "VMaterialSystem" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_engine_trace =
-	           static_cast< c_engine_trace* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "EngineTraceClient" ) ) ) == nullptr )
+	if ( ( this->m_engine_trace = static_cast< c_engine_trace* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "EngineTraceClient" ) ) ) ==
+	     nullptr )
 		return false;
 
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
@@ -58,6 +58,16 @@ bool n_interfaces::impl_t::on_attach( )
 	else
 		g_console.print(
 			std::vformat( "found IWeaponSystem @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_weapon_system ) ) ).c_str( ) );
+
+	if ( ( this->m_client_state = g_modules[ HASH_CT( "engine.dll" ) ]
+	                                  .find_pattern( "A1 ? ? ? ? 8B 88 ? ? ? ? 85 C9 75 07" )
+	                                  .add( 0x1 )
+	                                  .deref( 2 )
+	                                  .cast< c_client_state* >( ) ) == nullptr )
+		return false;
+	else
+		g_console.print(
+			std::vformat( "found IClientState @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_client_state ) ) ).c_str( ) );
 
 	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]
 	                                   .find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" )
