@@ -128,6 +128,12 @@ static unsigned long __stdcall on_attach( void* instance )
 	else
 		g_console.print( "initialised hooks" );
 
+		g_console.print( "initialising config system" );
+	if ( !g_config.on_attach( ) )
+		g_console.print( "failed to initialise config system" );
+	else
+		g_console.print( "initialised config system" );
+
 	g_console.print( "initialising hooks" );
 	if ( !g_hooks.on_attach( ) )
 		g_console.print( "failed to initialise hooks" );

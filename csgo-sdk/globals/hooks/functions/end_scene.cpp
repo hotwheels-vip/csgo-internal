@@ -21,11 +21,7 @@ long __stdcall n_detoured_functions::end_scene( IDirect3DDevice9* device )
 	if ( _ReturnAddress( ) != used_address )
 		return original( device );
 
-	g_render.on_end_scene(
-		[ & ]( ) {
-			
-		},
-		device );
+	g_render.on_end_scene( [ & ]( ) { g_menu.on_end_scene( ); }, device );
 
 	return original( device );
 }

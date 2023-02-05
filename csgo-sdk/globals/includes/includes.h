@@ -4,6 +4,10 @@
 /* hiding functions from the imports table */
 #include "../../dependencies/lazy_importer/lazy_importer.h"
 
+/* configuration system */
+#include "../config/config.h"
+#include "../config/variables.h"
+
 /* string hashing */
 #include "../../dependencies/fnv1a/fnv1a.h"
 
@@ -45,6 +49,7 @@
 #include "../../dependencies/imgui/imgui_freetype.h"
 #include "../../dependencies/imgui/imgui_impl_dx9.h"
 #include "../../dependencies/imgui/imgui_impl_win32.h"
+#include "../../dependencies/imgui/imgui_internal.h"
 
 /* formatting strings */
 #include <format>
