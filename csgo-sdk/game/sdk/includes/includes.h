@@ -7,6 +7,7 @@
 #include "../classes/c_cconvar.h"
 #include "../classes/c_client_entity_list.h"
 #include "../classes/c_client_state.h"
+#include "../classes/c_color.h"
 #include "../classes/c_con_base.h"
 #include "../classes/c_convar.h"
 #include "../classes/c_debug_overlay.h"

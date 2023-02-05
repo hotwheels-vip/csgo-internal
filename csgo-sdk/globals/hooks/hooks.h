@@ -1,6 +1,8 @@
 #pragma once
 #include "detour_hook/c_detour_hook.h"
 
+#include <d3d9.h>
+
 class c_vector;
 
 namespace n_hooks
@@ -13,6 +15,10 @@ namespace n_hooks
 		c_detour_hook m_create_move_proxy{ };
 		c_detour_hook m_run_command{ };
 		c_detour_hook m_emit_sound{ };
+
+		c_detour_hook m_lock_cursor{ };
+		c_detour_hook m_reset{ };
+		c_detour_hook m_end_scene{ };
 	};
 } // namespace n_hooks
 
@@ -26,4 +32,9 @@ namespace n_detoured_functions
 	void __stdcall emit_sound( void* filter, int idx, int channel, const char* sound_entry, unsigned int sound_entry_hash, const char* sample,
 	                           float volume, int seed, float attenuation, int flags, int pitch, const c_vector* origin, const c_vector* direction,
 	                           void* vec_origins, bool update_pos, float soundtime, int speakerentity, int unk );
+
+	void __fastcall lock_cursor( void* ecx, void* edx );
+	long __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters );
+	long __stdcall end_scene( IDirect3DDevice9* device );
+	long __stdcall wndproc( HWND window, unsigned int message, unsigned int wide_parameter, long long_parameter );
 } // namespace n_detoured_functions

@@ -122,18 +122,28 @@ static unsigned long __stdcall on_attach( void* instance )
 	else
 		g_console.print( "initialised convars" );
 
+		g_console.print( "initialising input system" );
+	if ( !g_input.on_attach( ) )
+		g_console.print( "failed to initialise input system" );
+	else
+		g_console.print( "initialised hooks" );
+
 	g_console.print( "initialising hooks" );
 	if ( !g_hooks.on_attach( ) )
 		g_console.print( "failed to initialise hooks" );
 	else
 		g_console.print( "initialised hooks" );
 
-	while ( !GetAsyncKeyState( VK_END ) )
+	while ( !g_input.is_key_down( VK_END ) && !g_input.is_key_down( VK_DELETE ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
 	g_console.on_release( );
 
 	g_hooks.on_release( );
+
+	g_input.on_release( );
+
+	g_render.on_release( );
 
 	LI_FN( FreeLibrary )( static_cast< HMODULE >( instance ) );
 

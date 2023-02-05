@@ -25,6 +25,22 @@
     <ClCompile Include="hacks\prediction\prediction.cpp" />
     <ClCompile Include="globals\hooks\functions\run_command.cpp" />
     <ClCompile Include="globals\hooks\functions\emit_sound.cpp" />
+    <ClCompile Include="globals\hooks\functions\lock_cursor.cpp" />
+    <ClCompile Include="globals\hooks\functions\reset.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_demo.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_freetype.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_tables.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="game\sdk\classes\c_color.cpp" />
+    <ClCompile Include="globals\render\render.cpp" />
+    <ClCompile Include="utilities\input\input.cpp" />
+    <ClCompile Include="globals\hooks\functions\end_scene.cpp" />
+    <ClCompile Include="globals\menu\menu.cpp" />
+    <ClCompile Include="globals\hooks\functions\wndproc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -116,6 +132,23 @@
     <ClInclude Include="utilities\memory\relative.h" />
     <ClInclude Include="game\sdk\enums\e_flags.h" />
     <ClInclude Include="game\sdk\classes\c_model_cache.h" />
+    <ClInclude Include="game\sdk\classes\c_surface.h" />
+    <ClInclude Include="dependencies\imgui\helpers\easing.h" />
+    <ClInclude Include="dependencies\imgui\helpers\fonts.h" />
+    <ClInclude Include="dependencies\imgui\imconfig.h" />
+    <ClInclude Include="dependencies\imgui\imgui.h" />
+    <ClInclude Include="dependencies\imgui\imgui_freetype.h" />
+    <ClInclude Include="dependencies\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="dependencies\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="dependencies\imgui\imstb_rectpack.h" />
+    <ClInclude Include="dependencies\imgui\imstb_textedit.h" />
+    <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="game\sdk\classes\c_color.h" />
+    <ClInclude Include="globals\render\render.h" />
+    <ClInclude Include="utilities\input\key_bind_t.h" />
+    <ClInclude Include="utilities\input\input.h" />
+    <ClInclude Include="globals\menu\menu.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

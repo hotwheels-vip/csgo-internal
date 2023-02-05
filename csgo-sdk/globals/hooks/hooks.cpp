@@ -32,6 +32,13 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( this->m_emit_sound, g_virtual.get( g_interfaces.m_engine_sound, 5 ), &n_detoured_functions::emit_sound,
 	                 "IEngineSound::EmitSound()" );
 
+	initialise_hook( this->m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
+
+	initialise_hook( this->m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );
+
+	initialise_hook( this->m_end_scene, g_virtual.get( g_interfaces.m_direct_device, 42 ), &n_detoured_functions::end_scene,
+	                 "IDirect3DDevice9::EndScene()" );
+
 	return true;
 }
 
