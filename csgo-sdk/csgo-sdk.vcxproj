@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\sdk\classes\c_weapon_data.cpp" />
+    <ClCompile Include="globals\convars\convars.cpp" />
     <ClCompile Include="globals\interfaces\interfaces.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utilities\console\console.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="game\datatypes\recv_var_proxy_fn.h" />
     <ClInclude Include="game\sdk\classes\c_cconvar.h" />
     <ClInclude Include="game\sdk\classes\c_convar.h" />
+    <ClInclude Include="game\sdk\classes\c_con_base.h" />
     <ClInclude Include="game\sdk\classes\c_recv_proxy_data.h" />
     <ClInclude Include="game\sdk\classes\c_standart_recv_proxies.h" />
     <ClInclude Include="game\sdk\classes\c_utl_memory.h" />
@@ -74,6 +76,7 @@
     <ClInclude Include="game\sdk\structs\recv_table_t.h" />
     <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
     <ClInclude Include="game\sdk\structs\texture_t.h" />
+    <ClInclude Include="globals\convars\convars.h" />
     <ClInclude Include="globals\includes\includes.h" />
     <ClInclude Include="globals\interfaces\interfaces.h" />
     <ClInclude Include="utilities\console\console.h" />

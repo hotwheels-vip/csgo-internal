@@ -8,6 +8,7 @@
     <ClCompile Include="utilities\modules\modules.cpp" />
     <ClCompile Include="globals\interfaces\interfaces.cpp" />
     <ClCompile Include="game\sdk\classes\c_weapon_data.cpp" />
+    <ClCompile Include="globals\convars\convars.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -64,6 +65,8 @@
     <ClInclude Include="game\sdk\classes\c_convar.h" />
     <ClInclude Include="game\datatypes\fn_change_callback.h" />
     <ClInclude Include="game\sdk\classes\c_cconvar.h" />
+    <ClInclude Include="globals\convars\convars.h" />
+    <ClInclude Include="game\sdk\classes\c_con_base.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

@@ -19,5 +19,8 @@
 /* game interfaces */
 #include "../../globals/interfaces/interfaces.h"
 
+/* convar stuff */
+#include "../../globals/convars/convars.h"
+
 /* formatting strings */
 #include <format>

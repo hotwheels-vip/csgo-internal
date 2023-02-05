@@ -24,6 +24,7 @@
 #include "../classes/c_weapon_system.h"
 #include "../classes/c_cconvar.h"
 #include "../classes/c_convar.h"
+#include "../classes/c_con_base.h"
 
 #include "../structs/data_variant_t.h"
 #include "../structs/matrix_t.h"

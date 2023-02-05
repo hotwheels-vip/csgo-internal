@@ -92,8 +92,8 @@ There's no one like him
 Nobody like chungus
 Huh */
 
-#include "globals/includes/includes.h"
 #include "game/sdk/includes/includes.h"
+#include "globals/includes/includes.h"
 
 #include <thread>
 
@@ -108,14 +108,19 @@ static unsigned long __stdcall on_attach( void* instance )
 	else
 		g_console.print( "initialised module handles" );
 
-    g_console.print( "initialising interfaces" );
+	g_console.print( "initialising interfaces" );
 	if ( !g_interfaces.on_attach( ) )
 		g_console.print( "failed to initialise interfaces" );
 	else
 		g_console.print( "initialised interfaces" );
 
-    static auto f = g_interfaces.m_convar->find_var( "sv_gravity" );
-	g_console.print( std::to_string( f->get_float( ) ).c_str( ) );
+	g_console.print( "initialising convars" );
+	if ( !g_convars.on_attach( ) )
+		g_console.print( "failed to initialise convars" );
+	else
+		g_console.print( "initialised convars" );
+
+	g_console.print( std::to_string( g_convars[ HASH_CT( "sv_gravity" ) ]->get_float( ) ).c_str( ) );
 
 	while ( !GetAsyncKeyState( VK_END ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
