@@ -1,4 +1,5 @@
 #pragma once
+#include "../../../globals/netvars/netvars.h"
 #include "../../../utilities/memory/virtual.h"
 
 enum e_data_update_type;
@@ -8,6 +9,8 @@ class c_vector;
 class c_angle;
 class c_client_unknown;
 class c_game_trace;
+class c_vector;
+class c_angle;
 class bf_read;
 
 struct ray_t;
@@ -26,21 +29,21 @@ public:
 class c_collideable
 {
 public:
-	virtual c_handle_entity* get_entity_handle( )                                               = 0;
-	virtual const c_vector& obb_mins( ) const                                                   = 0;
-	virtual const c_vector& obb_maxs( ) const                                                   = 0;
-	virtual void world_space_trigger_bounds( c_vector* world_mins, c_vector* world_maxs ) const = 0;
+	virtual c_handle_entity* get_entity_handle( )                                                 = 0;
+	virtual const c_vector& obb_mins( ) const                                                     = 0;
+	virtual const c_vector& obb_maxs( ) const                                                     = 0;
+	virtual void world_space_trigger_bounds( c_vector* world_mins, c_vector* world_maxs ) const   = 0;
 	virtual bool test_collision( const ray_t& ray, unsigned int contents_mask, c_game_trace& tr ) = 0;
 	virtual bool test_hitboxes( const ray_t& ray, unsigned int contents_mask, c_game_trace& tr )  = 0;
-	virtual int get_collision_model_index( )                                                    = 0;
-	virtual const model_t* get_collision_model( )                                               = 0;
-	virtual c_vector& get_collision_origin( ) const                                             = 0;
-	virtual c_angle& get_collision_angles( ) const                                              = 0;
-	virtual const matrix3x4_t& collision_to_world_transform( ) const                            = 0;
-	virtual int get_solid( ) const                                                              = 0;
-	virtual int get_solid_flags( ) const                                                        = 0;
-	virtual c_client_unknown* get_i_client_unknown( )                                           = 0;
-	virtual int get_collision_group( ) const                                                    = 0;
+	virtual int get_collision_model_index( )                                                      = 0;
+	virtual const model_t* get_collision_model( )                                                 = 0;
+	virtual c_vector& get_collision_origin( ) const                                               = 0;
+	virtual c_angle& get_collision_angles( ) const                                                = 0;
+	virtual const matrix3x4_t& collision_to_world_transform( ) const                              = 0;
+	virtual int get_solid( ) const                                                                = 0;
+	virtual int get_solid_flags( ) const                                                          = 0;
+	virtual c_client_unknown* get_i_client_unknown( )                                             = 0;
+	virtual int get_collision_group( ) const                                                      = 0;
 
 	virtual void world_space_surrounding_bounds( c_vector* mins, c_vector* maxs ) = 0;
 	virtual unsigned int get_required_trigger_flags( ) const                      = 0;
@@ -192,4 +195,40 @@ public:
 class c_base_entity : public c_client_entity
 {
 public:
+	/* DT_BasePlayer */
+	add_pvariable( float, get_fall_velocity, "CBasePlayer->m_flFallVelocity" );
+	// add_variable( c_angle, GetViewPunch, "CBasePlayer->m_viewPunchAngle" );
+	// add_variable( c_angle, GetPunch, "CBasePlayer->m_aimPunchAngle" );
+	// add_variable( c_vector, GetViewOffset, "CBasePlayer->m_vecViewOffset[0]" );
+	// add_variable( float, GetFriction, "CBasePlayer->m_flFriction" );
+	// add_variable( int, GetTickBase, "CBasePlayer->m_nTickBase" );
+	// add_pvariable( int, GetNextThinkTick, "CBasePlayer->m_nNextThinkTick" );
+	// add_variable( c_vector, GetVelocity, "CBasePlayer->m_vecVelocity[0]" );
+	// add_pvariable_offset( c_angle, GetViewAngles, "CBasePlayer->deadflag", 0x4 );
+	// add_variable( unsigned int, GetGroundEntityHandle, "CBasePlayer->m_hGroundEntity" );
+	// add_variable( int, GetHealth, "CBasePlayer->m_iHealth" );
+	// add_variable( int, GetLifeState, "CBasePlayer->m_lifeState" );
+	// add_variable( float, GetMaxSpeed, "CBasePlayer->m_flMaxspeed" );
+	// add_variable( int, GetFlags, "CBasePlayer->m_fFlags" );
+	// add_pvariable( int, GetObserverMode, "CBasePlayer->m_iObserverMode" );
+	// add_variable( unsigned int, GetObserverTargetHandle, "CBasePlayer->m_hObserverTarget" );
+	// add_variable( unsigned int, GetViewModelHandle, "CBasePlayer->m_hViewModel[0]" );
+	// add_pvariable( const char, GetLastPlace, "CBasePlayer->m_szLastPlaceName" );
+	// add_variable_offset( int, GetButtonDisabled, "CBasePlayer->m_hViewEntity", -0xC );
+	// add_variable_offset( int, GetButtonForced, "CBasePlayer->m_hViewEntity", -0x8 );
+	// add_pvariable_offset( CUserCmd*, GetCurrentCommand, "CBasePlayer->m_hViewEntity",
+	//                       -0x4 ); // @ida: client.dll @ [89 BE ? ? ? ? E8 ? ? ? ? 85 FF + 0x2]
+
+	// add_datafield( int, get_eflags, this->get_prediction_desc_map( ), "m_iEFlags" );
+	// add_pdatafield( int, GetButtons, this->get_prediction_desc_map( ), "m_nButtons" );
+	// add_datafield( int, GetButtonLast, this->get_prediction_desc_map( ), "m_afButtonLast" );
+	// add_datafield( int, GetButtonPressed, this->get_prediction_desc_map( ), "m_afButtonPressed" );
+	// add_datafield( int, GetButtonReleased, this->get_prediction_desc_map( ), "m_afButtonReleased" );
+	// add_pdatafield( int, GetImpulse, this->get_prediction_desc_map( ), "m_nImpulse" );
+	// add_datafield( float, GetSurfaceFriction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
+
+	//inline bool is_alive( )
+	//{
+	//	return ( this->GetLifeState( ) == 0 /* LIFE_ALIVE */ );
+	//}
 };

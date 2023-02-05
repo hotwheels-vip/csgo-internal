@@ -34,6 +34,7 @@
     <ClCompile Include="globals\hooks\functions\create_move_proxy.cpp" />
     <ClCompile Include="globals\hooks\hooks.cpp" />
     <ClCompile Include="globals\interfaces\interfaces.cpp" />
+    <ClCompile Include="globals\netvars\netvars.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utilities\console\console.cpp" />
     <ClCompile Include="utilities\memory\memory.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="game\sdk\classes\c_weapon_system.h" />
     <ClInclude Include="game\sdk\enums\e_command_buttons.h" />
     <ClInclude Include="game\sdk\enums\e_convar_flag.h" />
+    <ClInclude Include="game\sdk\enums\e_field_types.h" />
     <ClInclude Include="game\sdk\enums\e_image_format.h" />
     <ClInclude Include="game\sdk\enums\e_item_definition_index.h" />
     <ClInclude Include="game\sdk\enums\e_material_property_type.h" />
@@ -94,6 +96,7 @@
     <ClInclude Include="game\sdk\enums\e_send_prop_type.h" />
     <ClInclude Include="game\sdk\enums\e_weapon_type.h" />
     <ClInclude Include="game\sdk\includes\includes.h" />
+    <ClInclude Include="game\sdk\structs\data_map_t.h" />
     <ClInclude Include="game\sdk\structs\data_variant_t.h" />
     <ClInclude Include="game\sdk\structs\interface_node_t.h" />
     <ClInclude Include="game\sdk\structs\matrix_t.h" />
@@ -101,11 +104,13 @@
     <ClInclude Include="game\sdk\structs\recv_table_t.h" />
     <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
     <ClInclude Include="game\sdk\structs\texture_t.h" />
+    <ClInclude Include="game\sdk\structs\type_description_t.h" />
     <ClInclude Include="globals\convars\convars.h" />
     <ClInclude Include="globals\hooks\detour_hook\c_detour_hook.h" />
     <ClInclude Include="globals\hooks\hooks.h" />
     <ClInclude Include="globals\includes\includes.h" />
     <ClInclude Include="globals\interfaces\interfaces.h" />
+    <ClInclude Include="globals\netvars\netvars.h" />
     <ClInclude Include="utilities\console\console.h" />
     <ClInclude Include="utilities\memory\memory.h" />
     <ClInclude Include="utilities\memory\structs\pe32.h" />

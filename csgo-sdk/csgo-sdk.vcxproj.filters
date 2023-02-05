@@ -21,6 +21,7 @@
     <ClCompile Include="globals\hooks\detour_hook\c_detour_hook.cpp" />
     <ClCompile Include="globals\hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="globals\hooks\functions\create_move_proxy.cpp" />
+    <ClCompile Include="globals\netvars\netvars.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -94,6 +95,10 @@
     <ClInclude Include="dependencies\minhook\src\trampoline.h" />
     <ClInclude Include="globals\hooks\hooks.h" />
     <ClInclude Include="globals\hooks\detour_hook\c_detour_hook.h" />
+    <ClInclude Include="globals\netvars\netvars.h" />
+    <ClInclude Include="game\sdk\enums\e_field_types.h" />
+    <ClInclude Include="game\sdk\structs\data_map_t.h" />
+    <ClInclude Include="game\sdk\structs\type_description_t.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

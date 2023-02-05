@@ -33,6 +33,8 @@
 #include "../structs/recv_prop_t.h"
 #include "../structs/recv_table_t.h"
 #include "../structs/texture_t.h"
+#include "../structs/type_description_t.h"
+#include "../structs/data_map_t.h"
 
 #include "../enums/e_command_buttons.h"
 #include "../enums/e_image_format.h"
@@ -42,5 +44,6 @@
 #include "../enums/e_preview_image_ret_val.h"
 #include "../enums/e_send_prop_type.h"
 #include "../enums/e_weapon_type.h"
+#include "../enums/e_field_types.h"
 
 #include <d3d9.h>

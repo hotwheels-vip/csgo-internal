@@ -22,6 +22,9 @@
 /* convar stuff */
 #include "../../globals/convars/convars.h"
 
+/* netvar manager */
+#include "../../globals/netvars/netvars.h"
+
 /* hooks */
 #include "../hooks/hooks.h"
 

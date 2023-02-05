@@ -94,8 +94,6 @@ Huh */
 
 #include "globals/includes/includes.h"
 
-#include <thread>
-
 static unsigned long __stdcall on_attach( void* instance )
 {
 	g_console.on_attach( "fart" );
@@ -112,13 +110,19 @@ static unsigned long __stdcall on_attach( void* instance )
 	else
 		g_console.print( "initialised interfaces" );
 
+	g_console.print( "initialising netvar manager" );
+	if ( !g_netvars.on_attach( ) )
+		g_console.print( "failed to initialise netvar manager" );
+	else
+		g_console.print( "initialised netvar manager" );
+
 	g_console.print( "initialising convars" );
 	if ( !g_convars.on_attach( ) )
 		g_console.print( "failed to initialise convars" );
 	else
 		g_console.print( "initialised convars" );
 
-    	g_console.print( "initialising hooks" );
+	g_console.print( "initialising hooks" );
 	if ( !g_hooks.on_attach( ) )
 		g_console.print( "failed to initialise hooks" );
 	else
@@ -129,7 +133,7 @@ static unsigned long __stdcall on_attach( void* instance )
 
 	g_console.on_release( );
 
-    g_hooks.on_release( );
+	g_hooks.on_release( );
 
 	LI_FN( FreeLibrary )( static_cast< HMODULE >( instance ) );
 
