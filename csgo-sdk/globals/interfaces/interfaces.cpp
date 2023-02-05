@@ -32,6 +32,10 @@ bool n_interfaces::impl_t::on_attach( )
 	     nullptr )
 		return false;
 
+	if ( ( this->m_convar = static_cast< c_convar* >( g_modules[ HASH_CT( "vstdlib.dll" ) ].find_interface( "VEngineCvar" ) ) ) ==
+	     nullptr )
+		return false;
+
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
 			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( "KeyValuesSystem" ) )( ) ) == nullptr )
 		return false;

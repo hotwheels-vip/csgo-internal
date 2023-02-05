@@ -22,7 +22,6 @@
     <ClInclude Include="game\sdk\structs\interface_node_t.h" />
     <ClInclude Include="utilities\memory\virtual.h" />
     <ClInclude Include="game\sdk\classes\c_base_client.h" />
-    <ClInclude Include="game\datatypes\datatable.h" />
     <ClInclude Include="game\sdk\classes\c_base_client_dll.h" />
     <ClInclude Include="globals\interfaces\interfaces.h" />
     <ClInclude Include="game\sdk\classes\c_engine_client.h" />
@@ -54,6 +53,17 @@
     <ClInclude Include="game\sdk\classes\c_client_state.h" />
     <ClInclude Include="game\sdk\classes\c_angle.h" />
     <ClInclude Include="game\sdk\classes\c_debug_overlay.h" />
+    <ClInclude Include="game\sdk\enums\e_send_prop_type.h" />
+    <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
+    <ClInclude Include="game\datatypes\recv_var_proxy_fn.h" />
+    <ClInclude Include="game\sdk\structs\recv_table_t.h" />
+    <ClInclude Include="game\sdk\classes\c_recv_proxy_data.h" />
+    <ClInclude Include="game\sdk\structs\data_variant_t.h" />
+    <ClInclude Include="game\sdk\classes\c_standart_recv_proxies.h" />
+    <ClInclude Include="game\sdk\enums\e_convar_flag.h" />
+    <ClInclude Include="game\sdk\classes\c_convar.h" />
+    <ClInclude Include="game\datatypes\fn_change_callback.h" />
+    <ClInclude Include="game\sdk\classes\c_cconvar.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

@@ -15,13 +15,21 @@
 #include "../classes/c_material_system.h"
 #include "../classes/c_material_var.h"
 #include "../classes/c_net_channel_info.h"
+#include "../classes/c_recv_proxy_data.h"
+#include "../classes/c_standart_recv_proxies.h"
 #include "../classes/c_texture.h"
 #include "../classes/c_utl_memory.h"
 #include "../classes/c_utl_vector.h"
 #include "../classes/c_vector.h"
 #include "../classes/c_weapon_system.h"
+#include "../classes/c_cconvar.h"
+#include "../classes/c_convar.h"
 
+#include "../structs/data_variant_t.h"
+#include "../structs/matrix_t.h"
 #include "../structs/player_info_t.h"
+#include "../structs/recv_prop_t.h"
+#include "../structs/recv_table_t.h"
 #include "../structs/texture_t.h"
 
 #include "../enums/e_image_format.h"
@@ -29,6 +37,7 @@
 #include "../enums/e_material_property_type.h"
 #include "../enums/e_material_var_flags.h"
 #include "../enums/e_preview_image_ret_val.h"
+#include "../enums/e_send_prop_type.h"
 #include "../enums/e_weapon_type.h"
 
 #include <d3d9.h>

@@ -2,11 +2,12 @@
 
 class c_material_var;
 class c_vector;
+class c_key_values;
 
-enum class e_preview_image_ret_val;
-enum class e_image_format;
-enum class e_material_var_flags;
-enum class e_material_property_type;
+enum e_preview_image_ret_val;
+enum e_image_format;
+enum e_material_var_flags;
+enum e_material_property_type;
 
 class c_material
 {

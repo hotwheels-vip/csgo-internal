@@ -1,5 +1,6 @@
 #pragma once
 #include "../classes/c_utl_vector.h"
+#include "../classes/c_vector.h"
 
 #include <functional>
 
@@ -163,7 +164,6 @@ private:
 	}
 };
 
-class c_vector;
 struct matrix3x4_t;
 
 using trace_t = c_game_trace;

@@ -30,9 +30,14 @@
   <ItemGroup>
     <ClInclude Include="dependencies\fnv1a\fnv1a.h" />
     <ClInclude Include="dependencies\lazy_importer\lazy_importer.h" />
+    <ClInclude Include="game\datatypes\fn_change_callback.h" />
+    <ClInclude Include="game\datatypes\recv_var_proxy_fn.h" />
+    <ClInclude Include="game\sdk\classes\c_cconvar.h" />
+    <ClInclude Include="game\sdk\classes\c_convar.h" />
+    <ClInclude Include="game\sdk\classes\c_recv_proxy_data.h" />
+    <ClInclude Include="game\sdk\classes\c_standart_recv_proxies.h" />
     <ClInclude Include="game\sdk\classes\c_utl_memory.h" />
     <ClInclude Include="game\sdk\classes\c_utl_vector.h" />
-    <ClInclude Include="game\datatypes\datatable.h" />
     <ClInclude Include="game\sdk\classes\c_angle.h" />
     <ClInclude Include="game\sdk\classes\c_app_system.h" />
     <ClInclude Include="game\sdk\classes\c_base_client.h" />
@@ -53,16 +58,21 @@
     <ClInclude Include="game\sdk\classes\c_vector.h" />
     <ClInclude Include="game\sdk\classes\c_weapon_data.h" />
     <ClInclude Include="game\sdk\classes\c_weapon_system.h" />
+    <ClInclude Include="game\sdk\enums\e_convar_flag.h" />
     <ClInclude Include="game\sdk\enums\e_image_format.h" />
     <ClInclude Include="game\sdk\enums\e_item_definition_index.h" />
     <ClInclude Include="game\sdk\enums\e_material_property_type.h" />
     <ClInclude Include="game\sdk\enums\e_material_var_flags.h" />
     <ClInclude Include="game\sdk\enums\e_preview_image_ret_val.h" />
+    <ClInclude Include="game\sdk\enums\e_send_prop_type.h" />
     <ClInclude Include="game\sdk\enums\e_weapon_type.h" />
     <ClInclude Include="game\sdk\includes\includes.h" />
+    <ClInclude Include="game\sdk\structs\data_variant_t.h" />
     <ClInclude Include="game\sdk\structs\interface_node_t.h" />
     <ClInclude Include="game\sdk\structs\matrix_t.h" />
     <ClInclude Include="game\sdk\structs\player_info_t.h" />
+    <ClInclude Include="game\sdk\structs\recv_table_t.h" />
+    <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
     <ClInclude Include="game\sdk\structs\texture_t.h" />
     <ClInclude Include="globals\includes\includes.h" />
     <ClInclude Include="globals\interfaces\interfaces.h" />
