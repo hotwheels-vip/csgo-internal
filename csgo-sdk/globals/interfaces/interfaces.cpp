@@ -93,6 +93,16 @@ bool n_interfaces::impl_t::on_attach( )
 	else
 		g_console.print( std::vformat( "found IInput @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_input ) ) ).c_str( ) );
 
+	if ( ( this->m_move_helper = g_modules[ HASH_CT( "client.dll" ) ]
+	                                   .find_pattern( "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" )
+	                                   .add( 0x2 )
+	                                   .deref( 2 )
+	                                 .cast< c_move_helper* >( ) ) == nullptr )
+		return false;
+	else
+		g_console.print(
+			std::vformat( "found IMoveHelper @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_move_helper ) ) ).c_str( ) );
+
 	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]
 	                                   .find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" )
 	                                   .add( 0x1 )

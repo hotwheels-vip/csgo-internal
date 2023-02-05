@@ -11,6 +11,7 @@ class c_convar;
 class c_input;
 class c_model_info;
 class c_game_movement;
+class c_move_helper;
 
 class c_key_values_system;
 class c_global_vars_base;
@@ -41,6 +42,7 @@ namespace n_interfaces
 		c_weapon_system* m_weapon_system         = nullptr;
 		c_client_state* m_client_state           = nullptr;
 		c_input* m_input                         = nullptr;
+		c_move_helper* m_move_helper             = nullptr;
 		IDirect3DDevice9* m_direct_device        = nullptr;
 	};
 } // namespace n_interfaces
