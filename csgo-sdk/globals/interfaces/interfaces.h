@@ -12,6 +12,7 @@ class c_input;
 class c_model_info;
 class c_game_movement;
 class c_move_helper;
+class c_prediction;
 
 class c_key_values_system;
 class c_global_vars_base;
@@ -35,6 +36,7 @@ namespace n_interfaces
 		c_convar* m_convar                         = nullptr;
 		c_model_info* m_model_info                 = nullptr;
 		c_game_movement* m_game_movement           = nullptr;
+		c_prediction* m_prediction                 = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
 		c_global_vars_base* m_global_vars_base   = nullptr;

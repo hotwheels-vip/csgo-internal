@@ -61,6 +61,7 @@
     <ClInclude Include="game\sdk\classes\c_model_info.h" />
     <ClInclude Include="game\sdk\classes\c_move_data.h" />
     <ClInclude Include="game\sdk\classes\c_move_helper.h" />
+    <ClInclude Include="game\sdk\classes\c_prediction.h" />
     <ClInclude Include="game\sdk\classes\c_user_cmd.h" />
     <ClInclude Include="game\sdk\classes\entity.h" />
     <ClInclude Include="game\sdk\classes\c_cconvar.h" />

@@ -43,6 +43,10 @@ bool n_interfaces::impl_t::on_attach( )
 	     nullptr )
 		return false;
 
+	if ( ( this->m_prediction = static_cast< c_prediction* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClientPrediction" ) ) ) ==
+	     nullptr )
+		return false;
+
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
 			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( "KeyValuesSystem" ) )( ) ) == nullptr )
 		return false;
