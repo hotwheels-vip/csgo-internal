@@ -17,6 +17,7 @@ class c_model_render;
 class c_model_cache;
 class c_surface;
 class c_game_types;
+class c_localize;
 
 class c_key_values_system;
 class c_global_vars_base;
@@ -46,6 +47,7 @@ namespace n_interfaces
 		void* m_engine_sound                       = nullptr;
 		c_surface* m_surface                   = nullptr;
 		c_game_types* m_game_types                 = nullptr;
+		c_localize* m_localize                     = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
 		c_global_vars_base* m_global_vars_base   = nullptr;
