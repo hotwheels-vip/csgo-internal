@@ -228,6 +228,14 @@ public:
 	add_pdatafield( int, get_impulse, this->get_prediction_desc_map( ), "m_nImpulse" );
 	add_datafield( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
 
+	add_variable( int, get_team, "CBaseEntity->m_iTeamNum" );
+	add_variable( c_vector, get_origin, "CBaseEntity->m_vecOrigin" );
+	add_variable( float, get_simulation_time, "CBaseEntity->m_flSimulationTime" );
+	add_variable( bool, get_predictable, "CBaseEntity->m_bPredictable" );
+
+	add_offset( unsigned int, get_index, 0x64 );
+	add_offset( bool, is_dormant, 0xED );
+
 	inline bool is_alive( )
 	{
 		return ( this->get_life_state( ) == 0 /* LIFE_ALIVE */ );
