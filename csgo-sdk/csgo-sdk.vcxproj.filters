@@ -10,6 +10,8 @@
     <ClCompile Include="game\sdk\classes\c_weapon_data.cpp" />
     <ClCompile Include="globals\convars\convars.cpp" />
     <ClCompile Include="game\sdk\classes\entity.cpp" />
+    <ClCompile Include="game\sdk\classes\c_user_cmd.cpp" />
+    <ClCompile Include="dependencies\crc32\crc32.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -69,6 +71,10 @@
     <ClInclude Include="globals\convars\convars.h" />
     <ClInclude Include="game\sdk\classes\c_con_base.h" />
     <ClInclude Include="game\sdk\classes\entity.h" />
+    <ClInclude Include="game\sdk\classes\c_input.h" />
+    <ClInclude Include="game\sdk\classes\c_user_cmd.h" />
+    <ClInclude Include="game\sdk\enums\e_command_buttons.h" />
+    <ClInclude Include="dependencies\crc32\crc32.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

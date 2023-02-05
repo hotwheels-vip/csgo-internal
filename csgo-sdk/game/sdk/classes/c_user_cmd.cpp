@@ -1,7 +1,7 @@
 #include "c_user_cmd.h"
 #include "../../../dependencies/crc32/crc32.h"
 
-[[nodiscard]] unsigned int c_user_cmd::get_checksum( ) const
+[[nodiscard]] unsigned int c_user_cmd::get_check_sum( ) const
 {
 	unsigned int hash_crc = 0UL;
 

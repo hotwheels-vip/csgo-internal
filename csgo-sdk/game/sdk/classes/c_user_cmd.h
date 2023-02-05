@@ -1,10 +1,10 @@
 #pragma once
+#include "../classes/c_angle.h"
+#include "../classes/c_vector.h"
 
 enum e_command_buttons;
 
-class c_angle;
-class c_vector;
-
+#pragma pack( push, 4 )
 class c_user_cmd
 {
 public:
@@ -27,7 +27,7 @@ public:
 	c_vector m_head_angles;
 	c_vector m_head_offset;
 
-	[[nodiscard]] unsigned int get_checksum( ) const;
+	[[nodiscard]] unsigned int get_check_sum( ) const;
 };
 static_assert( sizeof( c_user_cmd ) == 0x64 );
 

@@ -22,10 +22,8 @@
 #include "../classes/c_recv_proxy_data.h"
 #include "../classes/c_standart_recv_proxies.h"
 #include "../classes/c_texture.h"
-#include "../classes/c_user_cmd.h"
 #include "../classes/c_utl_memory.h"
 #include "../classes/c_utl_vector.h"
-#include "../classes/c_vector.h"
 #include "../classes/c_weapon_system.h"
 #include "../classes/entity.h"
 

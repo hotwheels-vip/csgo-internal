@@ -23,11 +23,8 @@ struct address_t {
 		return address_t( this->m_value + offset );
 	}
 
-	address_t deref( int amount = 0 )
+	address_t deref( int amount =1 )
 	{
-		if ( !amount ) /* sorry bout Dat. */
-			return address_t( );
-
 		for ( int iterator = 0; iterator < amount; iterator )
 			return address_t( *( unsigned char** )this->m_value );
 

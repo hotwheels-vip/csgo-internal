@@ -8,6 +8,7 @@ class c_material_system;
 class c_engine_trace;
 class c_debug_overlay;
 class c_convar;
+class c_input;
 
 class c_key_values_system;
 class c_global_vars_base;
@@ -35,6 +36,7 @@ namespace n_interfaces
 		void* m_client_mode                      = nullptr;
 		c_weapon_system* m_weapon_system         = nullptr;
 		c_client_state* m_client_state           = nullptr;
+		c_input* m_input                         = nullptr;
 		IDirect3DDevice9* m_direct_device        = nullptr;
 	};
 } // namespace n_interfaces

@@ -77,6 +77,16 @@ bool n_interfaces::impl_t::on_attach( )
 		g_console.print(
 			std::vformat( "found IClientState @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_client_state ) ) ).c_str( ) );
 
+	if ( ( this->m_input = g_modules[ HASH_CT( "client.dll" ) ]
+	                                  .find_pattern( "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" )
+	                                  .add( 0x1 )
+	                                  .deref( 1 )
+	                           .cast< c_input* >( ) ) == nullptr )
+		return false;
+	else
+		g_console.print(
+			std::vformat( "found IInput @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_input ) ) ).c_str( ) );
+
 	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]
 	                                   .find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" )
 	                                   .add( 0x1 )
