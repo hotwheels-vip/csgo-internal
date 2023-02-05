@@ -51,8 +51,10 @@ bool n_interfaces::impl_t::on_attach( )
 	     nullptr )
 		return false;
 
-	if ( ( this->m_model_cache = static_cast< c_model_cache* >( g_modules[ HASH_CT( "datacache.dll" ) ].find_interface( "MDLCache" ) ) ) ==
-	     nullptr )
+	if ( ( this->m_model_cache = static_cast< c_model_cache* >( g_modules[ HASH_CT( "datacache.dll" ) ].find_interface( "MDLCache" ) ) ) == nullptr )
+		return false;
+
+	if ( ( this->m_engine_sound = g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "IEngineSoundClient" ) ) == nullptr )
 		return false;
 
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(

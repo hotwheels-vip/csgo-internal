@@ -32,6 +32,7 @@
     <ClCompile Include="globals\hooks\detour_hook\c_detour_hook.cpp" />
     <ClCompile Include="globals\hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="globals\hooks\functions\create_move_proxy.cpp" />
+    <ClCompile Include="globals\hooks\functions\emit_sound.cpp" />
     <ClCompile Include="globals\hooks\functions\run_command.cpp" />
     <ClCompile Include="globals\hooks\hooks.cpp" />
     <ClCompile Include="globals\interfaces\interfaces.cpp" />

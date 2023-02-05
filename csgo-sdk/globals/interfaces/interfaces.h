@@ -41,6 +41,7 @@ namespace n_interfaces
 		c_prediction* m_prediction                 = nullptr;
 		c_model_render* m_model_render             = nullptr;
 		c_model_cache* m_model_cache               = nullptr;
+		void* m_engine_sound                       = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
 		c_global_vars_base* m_global_vars_base   = nullptr;

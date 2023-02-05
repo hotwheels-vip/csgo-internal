@@ -24,6 +24,7 @@
     <ClCompile Include="globals\netvars\netvars.cpp" />
     <ClCompile Include="hacks\prediction\prediction.cpp" />
     <ClCompile Include="globals\hooks\functions\run_command.cpp" />
+    <ClCompile Include="globals\hooks\functions\emit_sound.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />

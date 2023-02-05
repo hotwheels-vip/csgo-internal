@@ -20,15 +20,17 @@ bool n_hooks::impl_t::on_attach( )
 		return false;
 	}
 
-	const auto alloc_key_values_memory_address = g_virtual.get( g_interfaces.m_key_values_system, 2 );
-	initialise_hook( this->m_alloc_key_values_memory, alloc_key_values_memory_address, &n_detoured_functions::alloc_key_values_memory,
-	                 "IKeyValuesSystem::AllocKeyValuesMemory()" );
+	initialise_hook( this->m_alloc_key_values_memory, g_virtual.get( g_interfaces.m_key_values_system, 2 ),
+	                 &n_detoured_functions::alloc_key_values_memory, "IKeyValuesSystem::AllocKeyValuesMemory()" );
 
-	const auto create_move_proxy_address = g_virtual.get( g_interfaces.m_base_client, 22 );
-	initialise_hook( this->m_create_move_proxy, create_move_proxy_address, &n_detoured_functions::create_move_proxy, "CHLClient::CreateMove()" );
+	initialise_hook( this->m_create_move_proxy, g_virtual.get( g_interfaces.m_base_client, 22 ), &n_detoured_functions::create_move_proxy,
+	                 "CHLClient::CreateMove()" );
 
-	const auto run_command_address = g_virtual.get( g_interfaces.m_prediction, 19 );
-	initialise_hook( this->m_run_command, run_command_address, &n_detoured_functions::run_command, "IPrediction::RunCommand()" );
+	initialise_hook( this->m_run_command, g_virtual.get( g_interfaces.m_prediction, 19 ), &n_detoured_functions::run_command,
+	                 "IPrediction::RunCommand()" );
+
+	initialise_hook( this->m_emit_sound, g_virtual.get( g_interfaces.m_engine_sound, 5 ), &n_detoured_functions::emit_sound,
+	                 "IEngineSound::EmitSound()" );
 
 	return true;
 }
