@@ -308,6 +308,7 @@ public:
 	bool can_shoot( );
 
 	int get_bone_by_hash( const unsigned int hash ) const;
+	int get_max_health( );
 
 	c_vector get_bone_position( int bone );
 	[[nodiscord]] c_vector get_eye_position( bool should_correct = true );

@@ -141,6 +141,13 @@ int c_base_entity::get_bone_by_hash( const unsigned int hash ) const
 	return -1;
 }
 
+int c_base_entity::get_max_health() {
+	if ( g_interfaces.m_game_types->get_current_game_type( ) == 6 /* GAMETYPE_FREEFORALL */ )
+		return 120;
+
+	return 100;
+}
+
 c_vector c_base_entity::get_bone_position( int bone )
 {
 	std::array< matrix3x4_t, 128 > out = { };

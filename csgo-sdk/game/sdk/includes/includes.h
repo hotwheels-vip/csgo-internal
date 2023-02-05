@@ -22,6 +22,7 @@
 #include "../classes/c_material_system.h"
 #include "../classes/c_material_var.h"
 #include "../classes/c_model_cache.h"
+#include "../classes/c_game_types.h"
 #include "../classes/c_model_info.h"
 #include "../classes/c_model_render.h"
 #include "../classes/c_move_data.h"
