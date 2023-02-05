@@ -92,7 +92,6 @@ There's no one like him
 Nobody like chungus
 Huh */
 
-#include "game/sdk/includes/includes.h"
 #include "globals/includes/includes.h"
 
 #include <thread>
@@ -119,8 +118,6 @@ static unsigned long __stdcall on_attach( void* instance )
 		g_console.print( "failed to initialise convars" );
 	else
 		g_console.print( "initialised convars" );
-
-	g_console.print( std::to_string( g_convars[ HASH_CT( "sv_gravity" ) ]->get_float( ) ).c_str( ) );
 
 	while ( !GetAsyncKeyState( VK_END ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

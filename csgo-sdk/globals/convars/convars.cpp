@@ -13,16 +13,12 @@ std::unordered_map< unsigned int, c_cconvar* > convars = { };
 
 bool n_convars::impl_t::on_attach( )
 {
-	c_con_base* iterator = **reinterpret_cast< c_con_base*** >( reinterpret_cast< unsigned long >( g_interfaces.m_convar ) + 0x34 );
+	c_con_base* iterator = **reinterpret_cast< c_con_base*** >( reinterpret_cast< unsigned long >( g_interfaces.m_convar ) + 0x34 ); /* 0x13f62db8 */
 	if ( !iterator )
 		return false;
 
-	for ( auto c = iterator->m_next; c; c = c->m_next ) {
-		const auto convar_name        = c->m_name;
-		const auto hashed_convar_name = HASH_RT( convar_name );
-
-		convars[ hashed_convar_name ] = ( c_cconvar* )c->m_accessor;
-	}
+	for ( auto c = iterator->m_next; c; c = c->m_next )
+		convars[ HASH_RT( c->m_name ) ] = reinterpret_cast< c_cconvar* >( c->m_accessor );
 
 	return !( convars.empty( ) );
 }

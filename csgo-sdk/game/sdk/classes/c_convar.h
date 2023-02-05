@@ -1,4 +1,5 @@
 #pragma once
+#include "../../../utilities/memory/virtual.h"
 #include "../../datatypes/fn_change_callback.h"
 #include "c_app_system.h"
 
@@ -7,6 +8,8 @@ class c_con_base;
 class c_cconvar;
 class c_con_cmd;
 class c_color;
+class c_cvar_query;
+
 class c_convar : public c_app_system
 {
 public:
