@@ -123,7 +123,9 @@
     <ClInclude Include="game\sdk\classes\c_animation_state.h" />
     <ClInclude Include="game\sdk\classes\c_color.h" />
     <ClInclude Include="game\sdk\classes\c_game_movement.h" />
+    <ClInclude Include="game\sdk\classes\c_game_types.h" />
     <ClInclude Include="game\sdk\classes\c_input.h" />
+    <ClInclude Include="game\sdk\classes\c_localize.h" />
     <ClInclude Include="game\sdk\classes\c_model_cache.h" />
     <ClInclude Include="game\sdk\classes\c_model_info.h" />
     <ClInclude Include="game\sdk\classes\c_model_render.h" />

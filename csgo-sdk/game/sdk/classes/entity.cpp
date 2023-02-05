@@ -127,6 +127,22 @@ bool c_base_entity::can_shoot( )
 	return true;
 }
 
+bool c_base_entity::is_enemy( c_base_entity* entity )
+{
+	if ( g_interfaces.m_game_types->get_current_game_type( ) == 6 /* GAMETYPE_FREEFORALL */ )
+		return ( this->get_survival_team( ) != entity->get_survival_team( ) );
+
+	static auto mp_teammates_are_enemies = g_convars[ HASH_CT( "mp_teammates_are_enemies" ) ];
+
+	if ( mp_teammates_are_enemies != nullptr && mp_teammates_are_enemies->get_bool( ) && this->get_team( ) == entity->get_team( ) && this != entity )
+		return true;
+
+	if ( this->get_team( ) != entity->get_team( ) )
+		return true;
+
+	return false;
+}
+
 int c_base_entity::get_bone_by_hash( const unsigned int hash ) const
 {
 	if ( const auto model = this->get_model( ); model ) {
@@ -141,7 +157,8 @@ int c_base_entity::get_bone_by_hash( const unsigned int hash ) const
 	return -1;
 }
 
-int c_base_entity::get_max_health() {
+int c_base_entity::get_max_health( )
+{
 	if ( g_interfaces.m_game_types->get_current_game_type( ) == 6 /* GAMETYPE_FREEFORALL */ )
 		return 120;
 
@@ -158,7 +175,7 @@ c_vector c_base_entity::get_bone_position( int bone )
 	return c_vector( );
 }
 
-[[nodiscord]] c_vector c_base_entity::get_eye_position( bool should_correct = true )
+c_vector c_base_entity::get_eye_position( bool should_correct )
 {
 	c_vector out{ };
 

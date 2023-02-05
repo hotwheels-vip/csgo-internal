@@ -240,6 +240,7 @@ public:
 	/* DT_CSPlayer */
 	add_variable_offset( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
 	add_variable_offset( c_animation_state*, get_animation_state, "CCSPlayer->m_bIsScoped", -0x14 );
+	add_variable( int, get_survival_team, "CCSPlayer->m_nSurvivalTeam" );
 
 	/* DT_WeaponCSBase */
 	add_variable( bool, is_burst_mode, "CWeaponCSBase->m_bBurstMode" );
@@ -306,12 +307,13 @@ public:
 
 	bool physics_run_think( int think_method );
 	bool can_shoot( );
+	bool is_enemy( c_base_entity* entity );
 
 	int get_bone_by_hash( const unsigned int hash ) const;
 	int get_max_health( );
 
 	c_vector get_bone_position( int bone );
-	[[nodiscord]] c_vector get_eye_position( bool should_correct = true );
+	c_vector get_eye_position( bool should_correct = true );
 
 	c_user_cmd& get_last_command( );
 };

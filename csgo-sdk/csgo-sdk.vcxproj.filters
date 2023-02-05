@@ -186,6 +186,8 @@
     <ClInclude Include="dependencies\json\json.hpp" />
     <ClInclude Include="dependencies\json\json_fwd.hpp" />
     <ClInclude Include="globals\config\variables.h" />
+    <ClInclude Include="game\sdk\classes\c_game_types.h" />
+    <ClInclude Include="game\sdk\classes\c_localize.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
