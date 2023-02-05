@@ -51,6 +51,10 @@ bool n_interfaces::impl_t::on_attach( )
 	     nullptr )
 		return false;
 
+	if ( ( this->m_model_cache = static_cast< c_model_cache* >( g_modules[ HASH_CT( "datacache.dll" ) ].find_interface( "MDLCache" ) ) ) ==
+	     nullptr )
+		return false;
+
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
 			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( "KeyValuesSystem" ) )( ) ) == nullptr )
 		return false;
@@ -72,50 +76,28 @@ bool n_interfaces::impl_t::on_attach( )
 		g_console.print(
 			std::vformat( "found IClientModeShared @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_client_mode ) ) ).c_str( ) );
 
-	if ( ( this->m_weapon_system = g_modules[ HASH_CT( "client.dll" ) ]
-	                                   .find_pattern( "8B 35 ? ? ? ? FF 10 0F B7 C0" )
-	                                   .add( 0x2 )
-	                                   .deref( 1 )
-	                                   .cast< c_weapon_system* >( ) ) == nullptr )
+	if ( ( this->m_weapon_system = *reinterpret_cast< c_weapon_system** >(
+			   g_modules[ HASH_CT( "client.dll" ) ].find_pattern( ( "8B 35 ? ? ? ? FF 10 0F B7 C0" ) ) + 0x2 ) ) == nullptr )
 		return false;
 	else
 		g_console.print(
 			std::vformat( "found IWeaponSystem @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_weapon_system ) ) ).c_str( ) );
 
-	if ( ( this->m_client_state = g_modules[ HASH_CT( "engine.dll" ) ]
-	                                  .find_pattern( "A1 ? ? ? ? 8B 88 ? ? ? ? 85 C9 75 07" )
-	                                  .add( 0x1 )
-	                                  .deref( 2 )
-	                                  .cast< c_client_state* >( ) ) == nullptr )
+	if ( ( this->m_client_state = **reinterpret_cast< c_client_state*** >(
+			   g_modules[ HASH_CT( "engine.dll" ) ].find_pattern( ( "A1 ? ? ? ? 8B 88 ? ? ? ? 85 C9 75 07" ) ) + 0x1 ) ) == nullptr )
 		return false;
 	else
 		g_console.print(
 			std::vformat( "found IClientState @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_client_state ) ) ).c_str( ) );
 
-	if ( ( this->m_input = g_modules[ HASH_CT( "client.dll" ) ]
-	                           .find_pattern( "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" )
-	                           .add( 0x1 )
-	                           .deref( 1 )
-	                           .cast< c_input* >( ) ) == nullptr )
+	if ( ( this->m_input = *reinterpret_cast< c_input** >( g_modules[ HASH_CT( "client.dll" ) ].find_pattern( "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" ) +
+	                                                       0x1 ) ) == nullptr )
 		return false;
 	else
 		g_console.print( std::vformat( "found IInput @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_input ) ) ).c_str( ) );
 
-	if ( ( this->m_move_helper = g_modules[ HASH_CT( "client.dll" ) ]
-	                                   .find_pattern( "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" )
-	                                   .add( 0x2 )
-	                                   .deref( 2 )
-	                                 .cast< c_move_helper* >( ) ) == nullptr )
-		return false;
-	else
-		g_console.print(
-			std::vformat( "found IMoveHelper @ {:p}", std::make_format_args( reinterpret_cast< void* >( this->m_move_helper ) ) ).c_str( ) );
-
-	if ( ( this->m_direct_device = g_modules[ HASH_CT( "shaderapidx9.dll" ) ]
-	                                   .find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" )
-	                                   .add( 0x1 )
-	                                   .deref( 2 )
-	                                   .cast< IDirect3DDevice9* >( ) ) == nullptr )
+	if ( ( this->m_direct_device = **reinterpret_cast< IDirect3DDevice9*** >(
+			   g_modules[ HASH_CT( "shaderapidx9.dll" ) ].find_pattern( "A1 ? ? ? ? 50 8B 08 FF 51 0C" ) + 0x1 ) ) == nullptr )
 		return false;
 	else
 		g_console.print(

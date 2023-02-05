@@ -228,22 +228,62 @@ public:
 	add_pdatafield( int, get_impulse, this->get_prediction_desc_map( ), "m_nImpulse" );
 	add_datafield( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
 
+	/* DT_BaseEntity */
 	add_variable( int, get_team, "CBaseEntity->m_iTeamNum" );
 	add_variable( c_vector, get_origin, "CBaseEntity->m_vecOrigin" );
 	add_variable( float, get_simulation_time, "CBaseEntity->m_flSimulationTime" );
 	add_variable( bool, get_predictable, "CBaseEntity->m_bPredictable" );
 
+	/* DT_BaseAnimating */
+	add_variable( int, get_sequence, "CBaseAnimating->m_nSequence" );
+
 	add_offset( unsigned int, get_index, 0x64 );
 	add_offset( bool, is_dormant, 0xed );
 
-	inline bool is_alive( )
+	bool is_alive( )
 	{
 		return ( this->get_life_state( ) == 0 /* LIFE_ALIVE */ );
 	}
 
+	void pre_think( )
+	{
+		g_virtual.call< void >( this, 318 );
+	}
+
+	void update_collision_bounds( )
+	{
+		g_virtual.call< void >( this, 340 );
+	}
+
+	void think( )
+	{
+		g_virtual.call< void >( this, 139 );
+	}
+
+	void studio_frame_advance( )
+	{
+		g_virtual.call< void >( this, 220 );
+	}
+
+	bool is_player( )
+	{
+		return g_virtual.call< bool >( this, 158 );
+	}
+
+	void set_sequence( int sequence )
+	{
+		g_virtual.call< void >( this, 219, sequence );
+	}
+
 	void modify_eye_position( const c_animation_state* animation_state, c_vector* position ) const;
+	void set_next_think( int think );
+	void post_think( );
+
+	bool physics_run_think( int think_method );
 
 	int get_bone_by_hash( const unsigned int hash ) const;
 
 	c_vector get_bone_position( int bone );
+
+	c_user_cmd& get_last_command( );
 };

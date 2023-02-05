@@ -14,6 +14,7 @@ class c_game_movement;
 class c_move_helper;
 class c_prediction;
 class c_model_render;
+class c_model_cache;
 
 class c_key_values_system;
 class c_global_vars_base;
@@ -39,6 +40,7 @@ namespace n_interfaces
 		c_game_movement* m_game_movement           = nullptr;
 		c_prediction* m_prediction                 = nullptr;
 		c_model_render* m_model_render             = nullptr;
+		c_model_cache* m_model_cache               = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
 		c_global_vars_base* m_global_vars_base   = nullptr;

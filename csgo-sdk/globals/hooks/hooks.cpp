@@ -24,9 +24,12 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( this->m_alloc_key_values_memory, alloc_key_values_memory_address, &n_detoured_functions::alloc_key_values_memory,
 	                 "IKeyValuesSystem::AllocKeyValuesMemory()" );
 
-		const auto create_move_proxy_address = g_virtual.get( g_interfaces.m_base_client, 22 );
-	initialise_hook( this->m_create_move_proxy, create_move_proxy_address, &n_detoured_functions::create_move_proxy,
-	                 "CHLClient::CreateMove()" );
+	const auto create_move_proxy_address = g_virtual.get( g_interfaces.m_base_client, 22 );
+	initialise_hook( this->m_create_move_proxy, create_move_proxy_address, &n_detoured_functions::create_move_proxy, "CHLClient::CreateMove()" );
+
+	const auto run_command_address = g_virtual.get( g_interfaces.m_prediction, 19 );
+	initialise_hook( this->m_run_command, run_command_address, &n_detoured_functions::run_command, "IPrediction::RunCommand()" );
+
 	return true;
 }
 

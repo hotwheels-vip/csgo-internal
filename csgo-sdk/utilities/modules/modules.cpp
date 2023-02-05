@@ -7,7 +7,7 @@
 
 std::unordered_map< unsigned int, module_t > modules = { };
 
-address_t module_t::find_pattern( const char* signature )
+unsigned char* module_t::find_pattern( const char* signature )
 {
 	static const auto pattern_to_byte = []( const char* pattern ) {
 		std::vector< int > bytes = { };
@@ -51,12 +51,12 @@ address_t module_t::find_pattern( const char* signature )
 		}
 
 		if ( found )
-			return address_t( &scan_bytes[ i ] );
+			return &scan_bytes[ i ];
 	}
 
 	g_console.print( std::vformat( "failed to find pattern {:s}", std::make_format_args( signature ) ).c_str( ) );
 
-	return address_t( nullptr );
+	return nullptr;
 }
 
 void* module_t::find_interface( const char* interface_name )
@@ -83,7 +83,7 @@ void* module_t::find_interface( const char* interface_name )
 			const auto interface_address = register_data->m_create_fn( );
 
 			g_console.print(
-				std::vformat( "found {:s} interface @ {:p}", std::make_format_args( register_data->m_name, interface_address ) ).c_str() );
+				std::vformat( "found {:s} interface @ {:p}", std::make_format_args( register_data->m_name, interface_address ) ).c_str( ) );
 
 			return interface_address;
 		}

@@ -2,6 +2,8 @@
 #include "../../includes/includes.h"
 #include "../hooks.h"
 
+#include "../../../hacks/prediction/prediction.h"
+
 void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
 {
 	static auto original = g_hooks.m_create_move_proxy.get_original< decltype( &n_detoured_functions::create_move_proxy ) >( );
@@ -13,6 +15,16 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	if ( !cmd || !verified_cmd )
 		return;
 
+	if ( const bool valid = g_interfaces.m_client_state->m_delta_tick > 0; valid )
+		g_interfaces.m_prediction->update( g_interfaces.m_client_state->m_delta_tick, valid, g_interfaces.m_client_state->m_last_command_ack,
+		                                   g_interfaces.m_client_state->m_last_outgoing_command + g_interfaces.m_client_state->m_choked_commands );
+
+	const auto local = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
+	if ( local && local->is_alive( ) ) {
+		g_prediction.begin( local, cmd );
+		g_prediction.end( local );
+	}
+
 	cmd->m_view_point.normalize( );
 	cmd->m_view_point.clamp( );
 
@@ -20,7 +32,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	verified_cmd->m_hash_crc = cmd->get_check_sum( );
 }
 
-__declspec( naked ) void __fastcall n_detoured_functions::create_move_proxy( [[maybe_unused]] void* thisptr, [[maybe_unused]] int edx,
+__declspec( naked ) void __fastcall n_detoured_functions::create_move_proxy( [[maybe_unused]] void* ecx, [[maybe_unused]] void* edx,
                                                                              [[maybe_unused]] int sequence_number,
                                                                              [[maybe_unused]] float input_sample_frametime,
                                                                              [[maybe_unused]] bool is_active )
