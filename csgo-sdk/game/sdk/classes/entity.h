@@ -220,14 +220,6 @@ public:
 	add_variable_offset( int, get_button_forced, "CBasePlayer->m_hViewEntity", -0x8 );
 	add_pvariable_offset( c_user_cmd*, get_current_command, "CBasePlayer->m_hViewEntity", -0x4 );
 
-	add_datafield( int, get_eflags, this->get_prediction_desc_map( ), "m_iEFlags" );
-	add_pdatafield( int, get_buttons, this->get_prediction_desc_map( ), "m_nButtons" );
-	add_datafield( int, get_button_last, this->get_prediction_desc_map( ), "m_afButtonLast" );
-	add_datafield( int, get_button_pressed, this->get_prediction_desc_map( ), "m_afButtonPressed" );
-	add_datafield( int, get_button_released, this->get_prediction_desc_map( ), "m_afButtonReleased" );
-	add_pdatafield( int, get_impulse, this->get_prediction_desc_map( ), "m_nImpulse" );
-	add_datafield( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
-
 	/* DT_BaseEntity */
 	add_variable( int, get_team, "CBaseEntity->m_iTeamNum" );
 	add_variable( c_vector, get_origin, "CBaseEntity->m_vecOrigin" );
@@ -253,16 +245,60 @@ public:
 	add_pvariable( unsigned int, get_weapons_handle, "CBaseCombatCharacter->m_hMyWeapons" );
 	add_pvariable( unsigned int, get_wearables_handle, "CBaseCombatCharacter->m_hMyWearables" );
 
-	/* DT_BaseCombatWeapon */ 
+	/* DT_BaseCombatWeapon */
 	add_variable( float, get_next_primary_attack, "CBaseCombatWeapon->m_flNextPrimaryAttack" );
+	add_variable( float, get_next_secondary_attack, "CBaseCombatWeapon->m_flNextSecondaryAttack" );
 	add_variable( int, get_ammo, "CBaseCombatWeapon->m_iClip1" );
+	add_variable( int, get_ammo_reserve, "CBaseCombatWeapon->m_iPrimaryReserveAmmoCount" );
+	add_variable( int, get_view_model_index, "CBaseCombatWeapon->m_iViewModelIndex" );
+	add_variable( int, get_world_model_index, "CBaseCombatWeapon->m_iWorldModelIndex" );
 
 	/* DT_BaseAttributableItem */
 	add_variable( short, get_item_definition_index, "CBaseAttributableItem->m_iItemDefinitionIndex" );
+	add_variable( int, get_item_id_high, "CBaseAttributableItem->m_iItemIDHigh" );
+	add_variable( int, get_item_id_low, "CBaseAttributableItem->m_iItemIDLow" );
+	add_variable( int, get_account_id, "CBaseAttributableItem->m_iAccountID" );
+	add_variable( int, get_entity_quality, "CBaseAttributableItem->m_iEntityQuality" );
+	add_pvariable( char, get_custom_name, "CBaseAttributableItem->m_szCustomName" );
+	add_variable( int, get_owner_xuid_low, "CBaseAttributableItem->m_OriginalOwnerXuidLow" );
+	add_variable( int, get_owner_xuid_high, "CBaseAttributableItem->m_OriginalOwnerXuidHigh" );
+	add_variable( int, get_fall_back_paint_kit, "CBaseAttributableItem->m_nFallbackPaintKit" );
+	add_variable( int, get_fall_back_seed, "CBaseAttributableItem->m_nFallbackSeed" );
+	add_variable( float, get_fall_back_wear, "CBaseAttributableItem->m_flFallbackWear" );
+	add_variable( int, get_fall_back_stat_trak, "CBaseAttributableItem->m_nFallbackStatTrak" );
 
 	/* DT_WeaponCSBaseGun */
 	add_variable( int, get_burst_shots_remaining, "CWeaponCSBaseGun->m_iBurstShotsRemaining" );
 
+	/* DT_BaseViewModel */
+	add_variable( unsigned int, get_owner_handle, "CBaseViewModel->m_hOwner" );
+	add_variable( unsigned int, get_weapon_handle, "CBaseViewModel->m_hWeapon" );
+
+	/* DT_FogController */
+	add_variable( int, enable, "CFogController->m_fog.enable" );
+	add_variable( float, start, "CFogController->m_fog.start" );
+	add_variable( float, end, "CFogController->m_fog.end" );
+	add_variable( float, density, "CFogController->m_fog.maxdensity" );
+	add_variable( int, color, "CFogController->m_fog.colorPrimary" );
+	add_variable( int, color_secondary, "CFogController->m_fog.colorSecondary" );
+
+	/* DT_Precipitation */
+	add_variable( int, precipitation_type, "CPrecipitation->m_nPrecipType" );
+
+	/* datamap variables */
+	add_datafield( int, get_eflags, this->get_prediction_desc_map( ), "m_iEFlags" );
+	add_pdatafield( int, get_buttons, this->get_prediction_desc_map( ), "m_nButtons" );
+	add_datafield( int, get_button_last, this->get_prediction_desc_map( ), "m_afButtonLast" );
+	add_datafield( int, get_button_pressed, this->get_prediction_desc_map( ), "m_afButtonPressed" );
+	add_datafield( int, get_button_released, this->get_prediction_desc_map( ), "m_afButtonReleased" );
+	add_pdatafield( int, get_impulse, this->get_prediction_desc_map( ), "m_nImpulse" );
+	add_datafield( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
+	add_datafield( const matrix3x4_t, get_coordinate_frame, this->get_data_desc_map( ), "m_rgflCoordinateFrame" );
+	add_datafield( int, get_move_tye, this->get_prediction_desc_map( ), "m_MoveType" );
+	add_datafield( float, get_stamina, this->get_prediction_desc_map( ), "m_flStamina" );
+	add_datafield( bool, is_reloading, this->get_prediction_desc_map( ), "m_bInReload" );
+
+	/* offsets */
 	add_offset( unsigned int, get_index, 0x64 );
 	add_offset( bool, is_dormant, 0xed );
 
@@ -271,9 +307,19 @@ public:
 		return ( this->get_life_state( ) == 0 /* LIFE_ALIVE */ );
 	}
 
+	int is_max_health( )
+	{
+		return g_virtual.call< int >( this, 123 );
+	}
+
 	void pre_think( )
 	{
 		g_virtual.call< void >( this, 318 );
+	}
+
+	const char* get_class_name( )
+	{
+		return g_virtual.call< const char* >( this, 143 );
 	}
 
 	void update_collision_bounds( )
@@ -294,6 +340,16 @@ public:
 	bool is_player( )
 	{
 		return g_virtual.call< bool >( this, 158 );
+	}
+
+	[[nodiscard]] float get_spread( )
+	{
+		return g_virtual.call< float >( this, 453 );
+	}
+
+	[[nodiscard]] float get_inaccuracy( )
+	{
+		return g_virtual.call< float >( this, 483 );
 	}
 
 	void set_sequence( int sequence )

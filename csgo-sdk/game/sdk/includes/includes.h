@@ -57,6 +57,7 @@
 #include "../enums/e_item_definition_index.h"
 #include "../enums/e_material_property_type.h"
 #include "../enums/e_material_var_flags.h"
+#include "../enums/e_move_type.h"
 #include "../enums/e_preview_image_ret_val.h"
 #include "../enums/e_send_prop_type.h"
 #include "../enums/e_weapon_type.h"

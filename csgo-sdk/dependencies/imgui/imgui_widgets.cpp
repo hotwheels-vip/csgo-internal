@@ -733,7 +733,7 @@ bool ImGui::ButtonEx( const char* label, const ImVec2& size_arg, ImGuiButtonFlag
 	RenderFrame( bb.Min - ImVec2( 2.f, 2.f ), bb.Max + ImVec2( 2.f, 2.f ), ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f ), true,
 	             g.Style.FrameRounding );
 	RenderFrame( bb.Min - ImVec2( 2.f, 2.f ), bb.Max + ImVec2( 2.f, 2.f ),
-	             ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.w, 1.f * frame_animation.AnimationData->second ), true,
+	             ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z, 1.f * frame_animation.AnimationData->second ), true,
 	             g.Style.FrameRounding );
 	window->DrawList->AddRect( bb.Min - ImVec2( 2.f, 2.f ), bb.Max + ImVec2( 2.f, 2.f ), ImColor( 50, 50, 50, 100 ), g.Style.FrameRounding );
 
