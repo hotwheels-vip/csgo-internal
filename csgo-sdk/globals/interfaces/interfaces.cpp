@@ -57,6 +57,9 @@ bool n_interfaces::impl_t::on_attach( )
 	if ( ( this->m_engine_sound = g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "IEngineSoundClient" ) ) == nullptr )
 		return false;
 
+	if ( ( this->m_surface = static_cast< c_surface* >( g_modules[ HASH_CT( "vguimatsurface.dll" ) ].find_interface( "VGUI_Surface" ) ) ) == nullptr )
+		return false;
+
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
 			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( "KeyValuesSystem" ) )( ) ) == nullptr )
 		return false;
