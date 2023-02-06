@@ -5,67 +5,67 @@
 
 bool n_interfaces::impl_t::on_attach( )
 {
-	if ( ( this->m_base_client = static_cast< c_base_client_dll* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClient" ) ) ) == nullptr )
+	if ( ( this->m_base_client = static_cast< c_base_client_dll* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClient018" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_engine_client = static_cast< c_engine_client* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VEngineClient" ) ) ) ==
+	if ( ( this->m_engine_client = static_cast< c_engine_client* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VEngineClient014" ) ) ) ==
 	     nullptr )
 		return false;
 
 	if ( ( this->m_client_entity_list =
-	           static_cast< c_client_entity_list* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClientEntityList" ) ) ) == nullptr )
+	           static_cast< c_client_entity_list* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClientEntityList003" ) ) ) == nullptr )
 		return false;
 
 	if ( ( this->m_input_system =
-	           static_cast< c_input_system* >( g_modules[ HASH_CT( "inputsystem.dll" ) ].find_interface( "InputSystemVersion" ) ) ) == nullptr )
+	           static_cast< c_input_system* >( g_modules[ HASH_CT( "inputsystem.dll" ) ].find_interface( "InputSystemVersion001" ) ) ) == nullptr )
 		return false;
 
 	if ( ( this->m_material_system =
-	           static_cast< c_material_system* >( g_modules[ HASH_CT( "materialsystem.dll" ) ].find_interface( "VMaterialSystem" ) ) ) == nullptr )
+	           static_cast< c_material_system* >( g_modules[ HASH_CT( "materialsystem.dll" ) ].find_interface( "VMaterialSystem080" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_engine_trace = static_cast< c_engine_trace* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "EngineTraceClient" ) ) ) ==
+	if ( ( this->m_engine_trace = static_cast< c_engine_trace* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "EngineTraceClient004" ) ) ) ==
 	     nullptr )
 		return false;
 
-	if ( ( this->m_debug_overlay = static_cast< c_debug_overlay* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VDebugOverlay" ) ) ) ==
+	if ( ( this->m_debug_overlay = static_cast< c_debug_overlay* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VDebugOverlay004" ) ) ) ==
 	     nullptr )
 		return false;
 
-	if ( ( this->m_convar = static_cast< c_convar* >( g_modules[ HASH_CT( "vstdlib.dll" ) ].find_interface( "VEngineCvar" ) ) ) == nullptr )
+	if ( ( this->m_convar = static_cast< c_convar* >( g_modules[ HASH_CT( "vstdlib.dll" ) ].find_interface( "VEngineCvar007" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_model_info = static_cast< c_model_info* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VModelInfoClient" ) ) ) ==
+	if ( ( this->m_model_info = static_cast< c_model_info* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VModelInfoClient004" ) ) ) ==
 	     nullptr )
 		return false;
 
-	if ( ( this->m_game_movement = static_cast< c_game_movement* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "GameMovement" ) ) ) ==
+	if ( ( this->m_game_movement = static_cast< c_game_movement* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "GameMovement001" ) ) ) ==
 	     nullptr )
 		return false;
 
-	if ( ( this->m_prediction = static_cast< c_prediction* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClientPrediction" ) ) ) ==
+	if ( ( this->m_prediction = static_cast< c_prediction* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClientPrediction001" ) ) ) ==
 	     nullptr )
 		return false;
 
-	if ( ( this->m_model_render = static_cast< c_model_render* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VEngineModel" ) ) ) ==
+	if ( ( this->m_model_render = static_cast< c_model_render* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VEngineModel016" ) ) ) ==
 	     nullptr )
 		return false;
 
-	if ( ( this->m_model_cache = static_cast< c_model_cache* >( g_modules[ HASH_CT( "datacache.dll" ) ].find_interface( "MDLCache" ) ) ) == nullptr )
+	if ( ( this->m_model_cache = static_cast< c_model_cache* >( g_modules[ HASH_CT( "datacache.dll" ) ].find_interface( "MDLCache004" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_engine_sound = g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "IEngineSoundClient" ) ) == nullptr )
+	if ( ( this->m_engine_sound = g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "IEngineSoundClient003" ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_surface = static_cast< c_surface* >( g_modules[ HASH_CT( "vguimatsurface.dll" ) ].find_interface( "VGUI_Surface" ) ) ) == nullptr )
+	if ( ( this->m_surface = static_cast< c_surface* >( g_modules[ HASH_CT( "vguimatsurface.dll" ) ].find_interface( "VGUI_Surface031" ) ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_game_types = static_cast< c_game_types* >( g_modules[ HASH_CT( "matchmaking.dll" ) ].find_interface( "VENGINE_GAMETYPES_VERSION" ) ) ) ==
+	if ( ( this->m_game_types = static_cast< c_game_types* >( g_modules[ HASH_CT( "matchmaking.dll" ) ].find_interface( "VENGINE_GAMETYPES_VERSION002" ) ) ) ==
 	     nullptr )
 		return false;
 
 	if ( ( this->m_localize =
-	           static_cast< c_localize* >( g_modules[ HASH_CT( "localize.dll" ) ].find_interface( "Localize_" ) ) ) ==
+	           static_cast< c_localize* >( g_modules[ HASH_CT( "localize.dll" ) ].find_interface( "Localize_001" ) ) ) ==
 	     nullptr )
 		return false;
 

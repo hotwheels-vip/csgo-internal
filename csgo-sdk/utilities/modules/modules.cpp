@@ -59,25 +59,18 @@ unsigned char* module_t::find_pattern( const char* signature )
 
 void* module_t::find_interface( const char* interface_name )
 {
-	std::string_view converted_interface_name = interface_name;
-	if ( converted_interface_name.empty( ) )
-		return nullptr;
-
-	const auto get_register_list = [ & ]( ) -> interface_node_t* {
-		const void* create_interface_export = this->find_export( "CreateInterface" );
-
+	constexpr auto get_register_list = []( const void* create_interface_export ) -> interface_node_t* {
 		if ( !create_interface_export )
 			throw std::runtime_error( "failed get CreateInterface address" );
 
-		const std::uintptr_t create_interface_relative = reinterpret_cast< std::uintptr_t >( create_interface_export ) + 0x5;
-		const std::uintptr_t create_interface = create_interface_relative + 4U + *reinterpret_cast< std::int32_t* >( create_interface_relative );
+		const unsigned int create_interface_relative = reinterpret_cast< unsigned int >( create_interface_export ) + 0x5;
+		const unsigned int create_interface = create_interface_relative + 4U + *reinterpret_cast< int* >( create_interface_relative );
 		return **reinterpret_cast< interface_node_t*** >( create_interface + 0x6 );
 	};
 
-	for ( const interface_node_t* register_data = get_register_list( ); register_data; register_data = register_data->m_next ) {
-		if ( ( std::string_view( register_data->m_name ).compare( 0U, converted_interface_name.length( ), converted_interface_name ) == 0 &&
-		       std::atoi( register_data->m_name + converted_interface_name.length( ) ) > 0 ) ||
-		     converted_interface_name.compare( register_data->m_name ) == 0 ) {
+	for ( const interface_node_t* register_data = get_register_list( this->find_export( "CreateInterface" ) ); register_data;
+	      register_data                         = register_data->m_next ) {
+		if ( HASH_RT( register_data->m_name ) == HASH_RT( interface_name ) ) {
 			const auto interface_address = register_data->m_create_fn( );
 
 			g_console.print(
