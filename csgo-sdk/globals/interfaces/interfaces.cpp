@@ -70,6 +70,9 @@ bool n_interfaces::impl_t::on_attach( )
 	if ( ( this->m_localize = static_cast< c_localize* >( g_modules[ HASH_CT( "localize.dll" ) ].find_interface( "Localize_001" ) ) ) == nullptr )
 		return false;
 
+	if ( ( this->m_panel = static_cast< c_panel* >( g_modules[ HASH_CT( "vgui2.dll" ) ].find_interface( "VGUI_Panel009" ) ) ) == nullptr )
+		return false;
+
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
 			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( HASH_CT( "KeyValuesSystem" ) ) )( ) ) == nullptr )
 		return false;

@@ -15,6 +15,8 @@ namespace n_hooks
 		c_detour_hook m_create_move_proxy{ };
 		c_detour_hook m_run_command{ };
 		c_detour_hook m_emit_sound{ };
+		c_detour_hook m_frame_stage_notify{ };
+		c_detour_hook m_paint_traverse{ };
 
 		c_detour_hook m_lock_cursor{ };
 		c_detour_hook m_reset{ };
@@ -32,6 +34,8 @@ namespace n_detoured_functions
 	void __stdcall emit_sound( void* filter, int idx, int channel, const char* sound_entry, unsigned int sound_entry_hash, const char* sample,
 	                           float volume, int seed, float attenuation, int flags, int pitch, const c_vector* origin, const c_vector* direction,
 	                           void* vec_origins, bool update_pos, float soundtime, int speakerentity, int unk );
+	void __fastcall frame_stage_notify( void* ecx, void* edx, int stage );
+	void __fastcall paint_traverse( void* ecx, void* edx, unsigned int panel, bool force_repaint, bool force );
 
 	void __fastcall lock_cursor( void* ecx, void* edx );
 	long __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters );

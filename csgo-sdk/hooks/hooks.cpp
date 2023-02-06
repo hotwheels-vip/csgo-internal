@@ -1,7 +1,7 @@
 #include "hooks.h"
 
-#include "../../utilities/memory/virtual.h"
-#include "../includes/includes.h"
+#include "../utilities/memory/virtual.h"
+#include "../globals/includes/includes.h"
 
 bool n_hooks::impl_t::on_attach( )
 {
@@ -31,6 +31,12 @@ bool n_hooks::impl_t::on_attach( )
 
 	initialise_hook( this->m_emit_sound, g_virtual.get( g_interfaces.m_engine_sound, 5 ), &n_detoured_functions::emit_sound,
 	                 "IEngineSound::EmitSound()" );
+
+	initialise_hook( this->m_frame_stage_notify, g_virtual.get( g_interfaces.m_base_client, 37 ), &n_detoured_functions::frame_stage_notify,
+	                 "CHLClient::FrameStageNotify()" );
+
+	initialise_hook( this->m_paint_traverse, g_virtual.get( g_interfaces.m_base_client, 37 ), &n_detoured_functions::paint_traverse,
+	                 "IPanel::PaintTraverse()" );
 
 	initialise_hook( this->m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 

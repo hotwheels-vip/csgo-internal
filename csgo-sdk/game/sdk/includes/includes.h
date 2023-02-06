@@ -29,6 +29,7 @@
 #include "../classes/c_move_data.h"
 #include "../classes/c_move_helper.h"
 #include "../classes/c_net_channel_info.h"
+#include "../classes/c_panel.h"
 #include "../classes/c_prediction.h"
 #include "../classes/c_recv_proxy_data.h"
 #include "../classes/c_standart_recv_proxies.h"

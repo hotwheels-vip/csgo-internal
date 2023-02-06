@@ -42,6 +42,7 @@
     <ClCompile Include="hacks\menu\menu.cpp" />
     <ClCompile Include="hooks\functions\wndproc.cpp" />
     <ClCompile Include="globals\config\config.cpp" />
+    <ClCompile Include="hooks\functions\frame_stage_notify.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
