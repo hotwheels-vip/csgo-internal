@@ -1,11 +1,13 @@
 #pragma once
+#include <unordered_map>
 
 struct module_t {
 public:
 	module_t( ) = default;
-	module_t( void* value )
+	module_t( void* value, const char* name )
 	{
 		this->m_value = value;
+		this->m_name  = name;
 	}
 
 	unsigned char* find_pattern( const char* signature );
@@ -19,8 +21,14 @@ public:
 		return this->m_value;
 	}
 
+	const char* get_name( )
+	{
+		return this->m_name;
+	}
+
 private:
 	void* m_value{ };
+	const char* m_name{ };
 };
 
 namespace n_modules
@@ -29,6 +37,8 @@ namespace n_modules
 		bool on_attach( );
 
 		module_t operator[]( unsigned int hash );
+
+		std::unordered_map< unsigned int, module_t > m_modules = { };
 	};
 } // namespace n_modules
 

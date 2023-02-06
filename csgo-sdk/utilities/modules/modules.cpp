@@ -3,10 +3,6 @@
 #include "../../globals/includes/includes.h"
 #include "../memory/structs/pe32.h"
 
-#include <unordered_map>
-
-std::unordered_map< unsigned int, module_t > modules = { };
-
 /* todo ~ use a hash map for the interfaces, and module exports (initialise them upon injection) */
 
 unsigned char* module_t::find_pattern( const char* signature )
@@ -141,23 +137,26 @@ bool n_modules::impl_t::on_attach( )
 {
 	const _PEB32* peb_data = reinterpret_cast< _PEB32* >( __readfsdword( 0x30 ) );
 
-	while ( modules.find( HASH_CT( "serverbrowser.dll" ) ) == modules.end( ) ) {
+	while ( this->m_modules.find( HASH_CT( "serverbrowser.dll" ) ) == this->m_modules.end( ) ) {
 		for ( LIST_ENTRY* list_entry = peb_data->Ldr->InLoadOrderModuleList.Flink; list_entry != &peb_data->Ldr->InLoadOrderModuleList;
 		      list_entry             = list_entry->Flink ) {
 			const _LDR_DATA_TABLE_ENTRY* entry = CONTAINING_RECORD( list_entry, _LDR_DATA_TABLE_ENTRY, InLoadOrderLinks );
 
 			if ( entry->BaseDllName.Buffer ) {
-				const auto converted_name = std::wstring( entry->BaseDllName.Buffer );
+				const auto dll_buffer = std::wstring( entry->BaseDllName.Buffer );
+				const std::string converted_dll_buffer( dll_buffer.begin( ), dll_buffer.end( ) );
 
-				modules[ HASH_RT( std::string( converted_name.begin( ), converted_name.end( ) ).c_str( ) ) ] = module_t( entry->DllBase );
+				const auto converted_name = converted_dll_buffer.c_str( );
+
+				this->m_modules[ HASH_RT( converted_name ) ] = module_t( entry->DllBase, converted_name );
 			}
 		}
 	}
 
-	return !( modules.empty( ) );
+	return !( this->m_modules.empty( ) );
 }
 
 module_t n_modules::impl_t::operator[]( unsigned int hash )
 {
-	return modules[ hash ];
+	return this->m_modules[ hash ];
 }
