@@ -39,13 +39,19 @@
     <ClCompile Include="game\sdk\classes\entity.cpp" />
     <ClCompile Include="globals\config\config.cpp" />
     <ClCompile Include="globals\convars\convars.cpp" />
+    <ClCompile Include="hacks\entity_cache\entity_cache.cpp" />
     <ClCompile Include="hooks\detour_hook\c_detour_hook.cpp" />
     <ClCompile Include="hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="hooks\functions\create_move_proxy.cpp" />
     <ClCompile Include="hooks\functions\emit_sound.cpp" />
     <ClCompile Include="hooks\functions\end_scene.cpp" />
     <ClCompile Include="hooks\functions\frame_stage_notify.cpp" />
+    <ClCompile Include="hooks\functions\level_init_pre_entity.cpp" />
+    <ClCompile Include="hooks\functions\level_shutdown.cpp" />
     <ClCompile Include="hooks\functions\lock_cursor.cpp" />
+    <ClCompile Include="hooks\functions\on_add_entity.cpp" />
+    <ClCompile Include="hooks\functions\on_remove_entity.cpp" />
+    <ClCompile Include="hooks\functions\paint_traverse.cpp" />
     <ClCompile Include="hooks\functions\reset.cpp" />
     <ClCompile Include="hooks\functions\run_command.cpp" />
     <ClCompile Include="hooks\functions\wndproc.cpp" />
@@ -132,6 +138,7 @@
     <ClInclude Include="game\sdk\classes\c_model_render.h" />
     <ClInclude Include="game\sdk\classes\c_move_data.h" />
     <ClInclude Include="game\sdk\classes\c_move_helper.h" />
+    <ClInclude Include="game\sdk\classes\c_panel.h" />
     <ClInclude Include="game\sdk\classes\c_prediction.h" />
     <ClInclude Include="game\sdk\classes\c_surface.h" />
     <ClInclude Include="game\sdk\classes\c_user_cmd.h" />
@@ -190,6 +197,7 @@
     <ClInclude Include="globals\config\config.h" />
     <ClInclude Include="globals\config\variables.h" />
     <ClInclude Include="globals\convars\convars.h" />
+    <ClInclude Include="hacks\entity_cache\entity_cache.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />
     <ClInclude Include="hooks\hooks.h" />
     <ClInclude Include="globals\includes\includes.h" />

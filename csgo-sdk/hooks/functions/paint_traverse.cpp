@@ -10,8 +10,13 @@ void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsi
 
 	original( ecx, edx, panel, force_repaint, force );
 
+	const auto local = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
+
 	switch ( panel_hash ) {
 	case HASH_CT( "FocusOverlayPanel" ): {
+		if ( local ) {
+			
+		}
 		break;
 	}
 	}

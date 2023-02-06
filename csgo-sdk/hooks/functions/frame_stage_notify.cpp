@@ -2,7 +2,9 @@
 #include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
-void __fastcall n_detoured_functions::frame_stage_notify(void* ecx, void* edx, int stage)
+#include "../../hacks/entity_cache/entity_cache.h"
+
+void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, int stage )
 {
 	static auto original = g_hooks.m_frame_stage_notify.get_original< decltype( &n_detoured_functions::frame_stage_notify ) >( );
 

@@ -1,13 +1,13 @@
 #include "input.h"
 #include "../../game/sdk/includes/includes.h"
-#include "../../globals/hooks/hooks.h"
+#include "../../hooks/hooks.h"
 #include "../../globals/includes/includes.h"
 
 #include <d3d9.h>
 
 bool n_input::impl_t::on_attach( )
 {
-	D3DDEVICE_CREATION_PARAMETERS creation_parameters = { };
+	D3DDEVICE_CREATION_PARAMETERS creation_parameters{ };
 	while ( FAILED( g_interfaces.m_direct_device->GetCreationParameters( &creation_parameters ) ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
 

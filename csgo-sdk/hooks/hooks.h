@@ -17,6 +17,10 @@ namespace n_hooks
 		c_detour_hook m_emit_sound{ };
 		c_detour_hook m_frame_stage_notify{ };
 		c_detour_hook m_paint_traverse{ };
+		c_detour_hook m_on_add_entity{ };
+		c_detour_hook m_on_remove_entity{ };
+		c_detour_hook m_level_init_pre_entity{ };
+		c_detour_hook m_level_shutdown{ };
 
 		c_detour_hook m_lock_cursor{ };
 		c_detour_hook m_reset{ };
@@ -36,6 +40,10 @@ namespace n_detoured_functions
 	                           void* vec_origins, bool update_pos, float soundtime, int speakerentity, int unk );
 	void __fastcall frame_stage_notify( void* ecx, void* edx, int stage );
 	void __fastcall paint_traverse( void* ecx, void* edx, unsigned int panel, bool force_repaint, bool force );
+	void __fastcall on_add_entity( void* ecx, void* edx, void* handle_entity, unsigned int entity_handle );
+	void __fastcall on_remove_entity( void* ecx, void* edx, void* handle_entity, unsigned int entity_handle );
+	void __stdcall level_init_pre_entity( const char* map_name );
+	void __fastcall level_shutdown( void* thisptr );
 
 	void __fastcall lock_cursor( void* ecx, void* edx );
 	long __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters );
