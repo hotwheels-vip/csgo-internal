@@ -35,7 +35,7 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( this->m_frame_stage_notify, g_virtual.get( g_interfaces.m_base_client, 37 ), &n_detoured_functions::frame_stage_notify,
 	                 "CHLClient::FrameStageNotify()" );
 
-	initialise_hook( this->m_paint_traverse, g_virtual.get( g_interfaces.m_base_client, 37 ), &n_detoured_functions::paint_traverse,
+	initialise_hook( this->m_paint_traverse, g_virtual.get( g_interfaces.m_panel, 37 ), &n_detoured_functions::paint_traverse,
 	                 "IPanel::PaintTraverse()" );
 
 	initialise_hook( this->m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
