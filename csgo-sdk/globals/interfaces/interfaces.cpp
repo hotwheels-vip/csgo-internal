@@ -5,7 +5,8 @@
 
 bool n_interfaces::impl_t::on_attach( )
 {
-	if ( ( this->m_base_client = static_cast< c_base_client_dll* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClient018" ) ) ) == nullptr )
+	if ( ( this->m_base_client = static_cast< c_base_client_dll* >( g_modules[ HASH_CT( "client.dll" ) ].find_interface( "VClient018" ) ) ) ==
+	     nullptr )
 		return false;
 
 	if ( ( this->m_engine_client = static_cast< c_engine_client* >( g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "VEngineClient014" ) ) ) ==
@@ -51,26 +52,26 @@ bool n_interfaces::impl_t::on_attach( )
 	     nullptr )
 		return false;
 
-	if ( ( this->m_model_cache = static_cast< c_model_cache* >( g_modules[ HASH_CT( "datacache.dll" ) ].find_interface( "MDLCache004" ) ) ) == nullptr )
+	if ( ( this->m_model_cache = static_cast< c_model_cache* >( g_modules[ HASH_CT( "datacache.dll" ) ].find_interface( "MDLCache004" ) ) ) ==
+	     nullptr )
 		return false;
 
 	if ( ( this->m_engine_sound = g_modules[ HASH_CT( "engine.dll" ) ].find_interface( "IEngineSoundClient003" ) ) == nullptr )
 		return false;
 
-	if ( ( this->m_surface = static_cast< c_surface* >( g_modules[ HASH_CT( "vguimatsurface.dll" ) ].find_interface( "VGUI_Surface031" ) ) ) == nullptr )
-		return false;
-
-	if ( ( this->m_game_types = static_cast< c_game_types* >( g_modules[ HASH_CT( "matchmaking.dll" ) ].find_interface( "VENGINE_GAMETYPES_VERSION002" ) ) ) ==
+	if ( ( this->m_surface = static_cast< c_surface* >( g_modules[ HASH_CT( "vguimatsurface.dll" ) ].find_interface( "VGUI_Surface031" ) ) ) ==
 	     nullptr )
 		return false;
 
-	if ( ( this->m_localize =
-	           static_cast< c_localize* >( g_modules[ HASH_CT( "localize.dll" ) ].find_interface( "Localize_001" ) ) ) ==
-	     nullptr )
+	if ( ( this->m_game_types = static_cast< c_game_types* >(
+			   g_modules[ HASH_CT( "matchmaking.dll" ) ].find_interface( "VENGINE_GAMETYPES_VERSION002" ) ) ) == nullptr )
+		return false;
+
+	if ( ( this->m_localize = static_cast< c_localize* >( g_modules[ HASH_CT( "localize.dll" ) ].find_interface( "Localize_001" ) ) ) == nullptr )
 		return false;
 
 	if ( ( this->m_key_values_system = reinterpret_cast< c_key_values_system*( __cdecl* )( ) >(
-			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( "KeyValuesSystem" ) )( ) ) == nullptr )
+			   g_modules[ HASH_CT( "vstdlib.dll" ) ].find_export( HASH_CT( "KeyValuesSystem" ) ) )( ) ) == nullptr )
 		return false;
 	else
 		g_console.print(

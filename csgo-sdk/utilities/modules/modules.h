@@ -14,7 +14,7 @@ public:
 
 	void* find_interface( const char* interface_name );
 
-	void* find_export( const char* export_name );
+	void* find_export( unsigned int hash );
 
 	void* get_value( )
 	{

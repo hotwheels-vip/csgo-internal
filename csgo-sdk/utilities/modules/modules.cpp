@@ -3,8 +3,6 @@
 #include "../../globals/includes/includes.h"
 #include "../memory/structs/pe32.h"
 
-/* todo ~ use a hash map for the interfaces, and module exports (initialise them upon injection) */
-
 unsigned char* module_t::find_pattern( const char* signature )
 {
 	static const auto pattern_to_byte = []( const char* pattern ) {
@@ -60,15 +58,17 @@ unsigned char* module_t::find_pattern( const char* signature )
 void* module_t::find_interface( const char* interface_name )
 {
 	constexpr auto get_register_list = []( const void* create_interface_export ) -> interface_node_t* {
-		if ( !create_interface_export )
+		if ( !create_interface_export ) {
 			throw std::runtime_error( "failed get CreateInterface address" );
+			return nullptr;
+		}
 
 		const unsigned int create_interface_relative = reinterpret_cast< unsigned int >( create_interface_export ) + 0x5;
-		const unsigned int create_interface = create_interface_relative + 4U + *reinterpret_cast< int* >( create_interface_relative );
+		const unsigned int create_interface          = create_interface_relative + 4u + *reinterpret_cast< int* >( create_interface_relative );
 		return **reinterpret_cast< interface_node_t*** >( create_interface + 0x6 );
 	};
 
-	for ( const interface_node_t* register_data = get_register_list( this->find_export( "CreateInterface" ) ); register_data;
+	for ( const interface_node_t* register_data = get_register_list( this->find_export( HASH_CT("CreateInterface") ) ); register_data;
 	      register_data                         = register_data->m_next ) {
 		if ( HASH_RT( register_data->m_name ) == HASH_RT( interface_name ) ) {
 			const auto interface_address = register_data->m_create_fn( );
@@ -85,42 +85,26 @@ void* module_t::find_interface( const char* interface_name )
 	return nullptr;
 }
 
-void* module_t::find_export( const char* export_name )
+void* module_t::find_export( unsigned int hash )
 {
-	const std::string_view converted_export_name = export_name;
-	if ( converted_export_name.empty( ) )
+	auto dos_headers = reinterpret_cast< IMAGE_DOS_HEADER* >( this->m_value );
+	auto nt_headers  = reinterpret_cast< IMAGE_NT_HEADERS* >( reinterpret_cast< unsigned int >( this->m_value ) + dos_headers->e_lfanew );
+	IMAGE_OPTIONAL_HEADER* optional_header = &nt_headers->OptionalHeader;
+
+	uintptr_t exportdir_address = optional_header->DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ].VirtualAddress;
+
+	if ( optional_header->DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ].Size <= 0U )
 		return nullptr;
 
-	const unsigned char* address                 = static_cast< const unsigned char* >( this->m_value );
-	const IMAGE_DOS_HEADER* dos_header           = static_cast< const IMAGE_DOS_HEADER* >( this->m_value );
-	const IMAGE_NT_HEADERS* nt_headers           = reinterpret_cast< const IMAGE_NT_HEADERS* >( address + dos_header->e_lfanew );
-	const IMAGE_OPTIONAL_HEADER* optional_header = &nt_headers->OptionalHeader;
+	auto export_directory = reinterpret_cast< IMAGE_EXPORT_DIRECTORY* >( reinterpret_cast< unsigned int >( this->m_value ) + exportdir_address );
+	auto names_rva        = reinterpret_cast< uintptr_t* >( reinterpret_cast< unsigned int >( this->m_value ) + export_directory->AddressOfNames );
+	auto functions_rva = reinterpret_cast< uintptr_t* >( reinterpret_cast< unsigned int >( this->m_value ) + export_directory->AddressOfFunctions );
+	auto name_ordinals =
+		reinterpret_cast< unsigned short* >( reinterpret_cast< unsigned int >( this->m_value ) + export_directory->AddressOfNameOrdinals );
 
-	const unsigned int export_size    = optional_header->DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ].Size;
-	const unsigned int export_address = optional_header->DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ].VirtualAddress;
-
-	if ( export_size <= 0U )
-		return nullptr;
-
-	const IMAGE_EXPORT_DIRECTORY* export_directory = reinterpret_cast< const IMAGE_EXPORT_DIRECTORY* >( address + export_address );
-	const unsigned int* names_rva                  = reinterpret_cast< const unsigned int* >( address + export_directory->AddressOfNames );
-	const unsigned int* functions_rva              = reinterpret_cast< const unsigned int* >( address + export_directory->AddressOfFunctions );
-	const unsigned short* name_ordinals            = reinterpret_cast< const unsigned short* >( address + export_directory->AddressOfNameOrdinals );
-
-	unsigned int right = export_directory->NumberOfNames;
-	unsigned int left  = 0;
-
-	while ( right != left ) {
-		const unsigned int middle = left + ( ( right - left ) >> 1U );
-		const int result          = converted_export_name.compare( reinterpret_cast< const char* >( address + names_rva[ middle ] ) );
-
-		if ( result == 0 )
-			return const_cast< void* >( static_cast< const void* >( address + functions_rva[ name_ordinals[ middle ] ] ) );
-
-		if ( result > 0 )
-			left = middle;
-		else
-			right = middle;
+	for ( size_t i = 0; i < export_directory->AddressOfFunctions; i++ ) {
+		if ( HASH_RT( reinterpret_cast< const char* >( reinterpret_cast< unsigned int >( this->m_value ) + names_rva[ i ] ) ) == hash )
+			return reinterpret_cast< void* >( reinterpret_cast< unsigned int >( this->m_value ) + functions_rva[ name_ordinals[ i ] ] );
 	}
 
 	return nullptr;
