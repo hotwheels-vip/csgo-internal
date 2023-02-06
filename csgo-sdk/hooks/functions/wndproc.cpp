@@ -1,7 +1,7 @@
 #include "../hooks.h"
 
-#include "../../../globals/includes/includes.h"
-#include "../../../game/sdk/includes/includes.h"
+#include "../../game/sdk/includes/includes.h"
+#include "../../globals/includes/includes.h"
 
 long __stdcall n_detoured_functions::wndproc( HWND window, unsigned int message, unsigned int wide_param, long long_param )
 {

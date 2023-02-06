@@ -1,5 +1,5 @@
 #include "menu.h"
-#include "../includes/includes.h"
+#include "../../globals/includes/includes.h"
 
 constexpr int color_picker_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreviewHalf |
                                          ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_NoInputs |
@@ -136,8 +136,6 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "main" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
-			
-
 				ImGui::EndChild( );
 			}
 
@@ -156,7 +154,6 @@ void n_menu::impl_t::on_end_scene( )
 					 ( "esp" ),
 					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
 					 0, true ) ) {
-
 				ImGui::EndChild( );
 			}
 
@@ -184,8 +181,6 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild( ( "world" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-
-
 				ImGui::EndChild( );
 			}
 			break;
@@ -195,8 +190,6 @@ void n_menu::impl_t::on_end_scene( )
 					 ( "movement" ),
 					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
 					 true ) ) {
-
-
 				ImGui::EndChild( );
 			}
 
@@ -206,7 +199,6 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild( ( "indicators" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-
 				ImGui::EndChild( );
 			}
 			break;
@@ -216,7 +208,6 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "game" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
-
 				ImGui::EndChild( );
 			}
 

@@ -1,5 +1,5 @@
-#include "../../../game/sdk/includes/includes.h"
-#include "../../../globals/includes/includes.h"
+#include "../../game/sdk/includes/includes.h"
+#include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
 void __fastcall n_detoured_functions::run_command( void* ecx, void* edx, void* entity, void* cmd, void* move_helper )

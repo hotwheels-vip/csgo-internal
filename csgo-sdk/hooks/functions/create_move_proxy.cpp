@@ -1,8 +1,8 @@
-#include "../../../game/sdk/includes/includes.h"
-#include "../../includes/includes.h"
+#include "../../game/sdk/includes/includes.h"
+#include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
-#include "../../../hacks/prediction/prediction.h"
+#include "../../hacks/prediction/prediction.h"
 
 void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
 {

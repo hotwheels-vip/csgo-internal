@@ -1,4 +1,4 @@
-#include "../../../globals/includes/includes.h"
+#include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
 long __stdcall n_detoured_functions::reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters )

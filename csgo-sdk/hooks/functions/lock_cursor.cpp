@@ -1,5 +1,5 @@
-#include "../../../game/sdk/includes/includes.h"
-#include "../../../globals/includes/includes.h"
+#include "../../game/sdk/includes/includes.h"
+#include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
 void __fastcall n_detoured_functions::lock_cursor( void* ecx, void* edx )

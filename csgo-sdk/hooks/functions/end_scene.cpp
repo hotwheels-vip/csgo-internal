@@ -1,4 +1,4 @@
-#include "../../../globals/includes/includes.h"
+#include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
 long __stdcall n_detoured_functions::end_scene( IDirect3DDevice9* device )

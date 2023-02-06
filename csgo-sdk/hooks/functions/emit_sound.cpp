@@ -1,5 +1,5 @@
-#include "../../../game/sdk/includes/includes.h"
-#include "../../../globals/includes/includes.h"
+#include "../../game/sdk/includes/includes.h"
+#include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
 void __stdcall n_detoured_functions::emit_sound( void* filter, int idx, int channel, const char* sound_entry, unsigned int sound_entry_hash,

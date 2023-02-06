@@ -12,7 +12,7 @@
 #include "../../dependencies/fnv1a/fnv1a.h"
 
 /* menu shart */
-#include "../menu/menu.h"
+#include "../../hacks/menu/menu.h"
 
 /* global utilities e.g. CreateThread(); */
 #include "../../utilities/utilities.h"
@@ -39,7 +39,7 @@
 #include "../render/render.h"
 
 /* hooks */
-#include "../hooks/hooks.h"
+#include "../../hooks/hooks.h"
 
 /* hooking dependencies */
 #include "../../dependencies/minhook/include/MinHook.h"
