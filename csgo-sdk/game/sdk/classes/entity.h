@@ -198,116 +198,116 @@ class c_base_entity : public c_client_entity
 {
 public:
 	/* DT_BasePlayer */
-	add_pvariable( float, get_fall_velocity, "CBasePlayer->m_flFallVelocity" );
-	add_variable( c_angle, get_view_punch, "CBasePlayer->m_viewPunchAngle" );
-	add_variable( c_angle, get_punch, "CBasePlayer->m_aimPunchAngle" );
-	add_variable( c_vector, get_view_offset, "CBasePlayer->m_vecViewOffset[0]" );
-	add_variable( float, get_friction, "CBasePlayer->m_flFriction" );
-	add_variable( int, get_tick_base, "CBasePlayer->m_nTickBase" );
-	add_pvariable( int, get_next_think_tick, "CBasePlayer->m_nNextThinkTick" );
-	add_variable( c_vector, get_velocity, "CBasePlayer->m_vecVelocity[0]" );
-	add_pvariable_offset( c_angle, get_view_angles, "CBasePlayer->deadflag", 0x4 );
-	add_variable( unsigned int, get_ground_entity_handle, "CBasePlayer->m_hGroundEntity" );
-	add_variable( int, get_health, "CBasePlayer->m_iHealth" );
-	add_variable( int, get_life_state, "CBasePlayer->m_lifeState" );
-	add_variable( float, get_max_speed, "CBasePlayer->m_flMaxspeed" );
-	add_variable( int, get_flags, "CBasePlayer->m_fFlags" );
-	add_pvariable( int, get_observer_mode, "CBasePlayer->m_iObserverMode" );
-	add_variable( unsigned int, get_observer_target_handle, "CBasePlayer->m_hObserverTarget" );
-	add_variable( unsigned int, get_view_model_handle, "CBasePlayer->m_hViewModel[0]" );
-	add_pvariable( const char, get_last_place, "CBasePlayer->m_szLastPlaceName" );
-	add_variable_offset( int, get_button_disabled, "CBasePlayer->m_hViewEntity", -0xc );
-	add_variable_offset( int, get_button_forced, "CBasePlayer->m_hViewEntity", -0x8 );
-	add_pvariable_offset( c_user_cmd*, get_current_command, "CBasePlayer->m_hViewEntity", -0x4 );
+	NETVAR_PVARIABLE( float, get_fall_velocity, "CBasePlayer->m_flFallVelocity" );
+	NETVAR_VARIABLE( c_angle, get_view_punch, "CBasePlayer->m_viewPunchAngle" );
+	NETVAR_VARIABLE( c_angle, get_punch, "CBasePlayer->m_aimPunchAngle" );
+	NETVAR_VARIABLE( c_vector, get_view_offset, "CBasePlayer->m_vecViewOffset[0]" );
+	NETVAR_VARIABLE( float, get_friction, "CBasePlayer->m_flFriction" );
+	NETVAR_VARIABLE( int, get_tick_base, "CBasePlayer->m_nTickBase" );
+	NETVAR_PVARIABLE( int, get_next_think_tick, "CBasePlayer->m_nNextThinkTick" );
+	NETVAR_VARIABLE( c_vector, get_velocity, "CBasePlayer->m_vecVelocity[0]" );
+	NETVAR_PVARIABLE_OFFSET( c_angle, get_view_angles, "CBasePlayer->deadflag", 0x4 );
+	NETVAR_VARIABLE( unsigned int, get_ground_entity_handle, "CBasePlayer->m_hGroundEntity" );
+	NETVAR_VARIABLE( int, get_health, "CBasePlayer->m_iHealth" );
+	NETVAR_VARIABLE( int, get_life_state, "CBasePlayer->m_lifeState" );
+	NETVAR_VARIABLE( float, get_max_speed, "CBasePlayer->m_flMaxspeed" );
+	NETVAR_VARIABLE( int, get_flags, "CBasePlayer->m_fFlags" );
+	NETVAR_PVARIABLE( int, get_observer_mode, "CBasePlayer->m_iObserverMode" );
+	NETVAR_VARIABLE( unsigned int, get_observer_target_handle, "CBasePlayer->m_hObserverTarget" );
+	NETVAR_VARIABLE( unsigned int, get_view_model_handle, "CBasePlayer->m_hViewModel[0]" );
+	NETVAR_PVARIABLE( const char, get_last_place, "CBasePlayer->m_szLastPlaceName" );
+	NETVAR_VARIABLE_OFFSET( int, get_button_disabled, "CBasePlayer->m_hViewEntity", -0xc );
+	NETVAR_VARIABLE_OFFSET( int, get_button_forced, "CBasePlayer->m_hViewEntity", -0x8 );
+	NETVAR_PVARIABLE_OFFSET( c_user_cmd*, get_current_command, "CBasePlayer->m_hViewEntity", -0x4 );
 
 	/* DT_BaseEntity */
-	add_variable( int, get_team, "CBaseEntity->m_iTeamNum" );
-	add_variable( c_vector, get_origin, "CBaseEntity->m_vecOrigin" );
-	add_variable( float, get_simulation_time, "CBaseEntity->m_flSimulationTime" );
-	add_variable( bool, get_predictable, "CBaseEntity->m_bPredictable" );
+	NETVAR_VARIABLE( int, get_team, "CBaseEntity->m_iTeamNum" );
+	NETVAR_VARIABLE( c_vector, get_origin, "CBaseEntity->m_vecOrigin" );
+	NETVAR_VARIABLE( float, get_simulation_time, "CBaseEntity->m_flSimulationTime" );
+	NETVAR_VARIABLE( bool, get_predictable, "CBaseEntity->m_bPredictable" );
 
 	/* DT_BaseAnimating */
-	add_variable( int, get_sequence, "CBaseAnimating->m_nSequence" );
+	NETVAR_VARIABLE( int, get_sequence, "CBaseAnimating->m_nSequence" );
 
 	/* DT_CSPlayer */
-	add_variable_offset( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
-	add_variable_offset( c_animation_state*, get_animation_state, "CCSPlayer->m_bIsScoped", -0x14 );
-	add_variable( int, get_survival_team, "CCSPlayer->m_nSurvivalTeam" );
+	NETVAR_VARIABLE_OFFSET( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
+	NETVAR_VARIABLE_OFFSET( c_animation_state*, get_animation_state, "CCSPlayer->m_bIsScoped", -0x14 );
+	NETVAR_VARIABLE( int, get_survival_team, "CCSPlayer->m_nSurvivalTeam" );
 
 	/* DT_WeaponCSBase */
-	add_variable( bool, is_burst_mode, "CWeaponCSBase->m_bBurstMode" );
-	add_variable( float, get_accuracy_penalty, "CWeaponCSBase->m_fAccuracyPenalty" );
-	add_variable( float, get_fire_ready_time, "CWeaponCSBase->m_flPostponeFireReadyTime" );
+	NETVAR_VARIABLE( bool, is_burst_mode, "CWeaponCSBase->m_bBurstMode" );
+	NETVAR_VARIABLE( float, get_accuracy_penalty, "CWeaponCSBase->m_fAccuracyPenalty" );
+	NETVAR_VARIABLE( float, get_fire_ready_time, "CWeaponCSBase->m_flPostponeFireReadyTime" );
 
 	/* DT_BaseCombatCharacter */
-	add_variable( float, get_next_attack, "CBaseCombatCharacter->m_flNextAttack" );
-	add_variable( unsigned int, get_active_weapon_handle, "CBaseCombatCharacter->m_hActiveWeapon" );
-	add_pvariable( unsigned int, get_weapons_handle, "CBaseCombatCharacter->m_hMyWeapons" );
-	add_pvariable( unsigned int, get_wearables_handle, "CBaseCombatCharacter->m_hMyWearables" );
+	NETVAR_VARIABLE( float, get_next_attack, "CBaseCombatCharacter->m_flNextAttack" );
+	NETVAR_VARIABLE( unsigned int, get_active_weapon_handle, "CBaseCombatCharacter->m_hActiveWeapon" );
+	NETVAR_PVARIABLE( unsigned int, get_weapons_handle, "CBaseCombatCharacter->m_hMyWeapons" );
+	NETVAR_PVARIABLE( unsigned int, get_wearables_handle, "CBaseCombatCharacter->m_hMyWearables" );
 
 	/* DT_BaseCombatWeapon */
-	add_variable( float, get_next_primary_attack, "CBaseCombatWeapon->m_flNextPrimaryAttack" );
-	add_variable( float, get_next_secondary_attack, "CBaseCombatWeapon->m_flNextSecondaryAttack" );
-	add_variable( int, get_ammo, "CBaseCombatWeapon->m_iClip1" );
-	add_variable( int, get_ammo_reserve, "CBaseCombatWeapon->m_iPrimaryReserveAmmoCount" );
-	add_variable( int, get_view_model_index, "CBaseCombatWeapon->m_iViewModelIndex" );
-	add_variable( int, get_world_model_index, "CBaseCombatWeapon->m_iWorldModelIndex" );
+	NETVAR_VARIABLE( float, get_next_primary_attack, "CBaseCombatWeapon->m_flNextPrimaryAttack" );
+	NETVAR_VARIABLE( float, get_next_secondary_attack, "CBaseCombatWeapon->m_flNextSecondaryAttack" );
+	NETVAR_VARIABLE( int, get_ammo, "CBaseCombatWeapon->m_iClip1" );
+	NETVAR_VARIABLE( int, get_ammo_reserve, "CBaseCombatWeapon->m_iPrimaryReserveAmmoCount" );
+	NETVAR_VARIABLE( int, get_view_model_index, "CBaseCombatWeapon->m_iViewModelIndex" );
+	NETVAR_VARIABLE( int, get_world_model_index, "CBaseCombatWeapon->m_iWorldModelIndex" );
 
 	/* DT_BaseAttributableItem */
-	add_variable( short, get_item_definition_index, "CBaseAttributableItem->m_iItemDefinitionIndex" );
-	add_variable( int, get_item_id_high, "CBaseAttributableItem->m_iItemIDHigh" );
-	add_variable( int, get_item_id_low, "CBaseAttributableItem->m_iItemIDLow" );
-	add_variable( int, get_account_id, "CBaseAttributableItem->m_iAccountID" );
-	add_variable( int, get_entity_quality, "CBaseAttributableItem->m_iEntityQuality" );
-	add_pvariable( char, get_custom_name, "CBaseAttributableItem->m_szCustomName" );
-	add_variable( int, get_owner_xuid_low, "CBaseAttributableItem->m_OriginalOwnerXuidLow" );
-	add_variable( int, get_owner_xuid_high, "CBaseAttributableItem->m_OriginalOwnerXuidHigh" );
-	add_variable( int, get_fall_back_paint_kit, "CBaseAttributableItem->m_nFallbackPaintKit" );
-	add_variable( int, get_fall_back_seed, "CBaseAttributableItem->m_nFallbackSeed" );
-	add_variable( float, get_fall_back_wear, "CBaseAttributableItem->m_flFallbackWear" );
-	add_variable( int, get_fall_back_stat_trak, "CBaseAttributableItem->m_nFallbackStatTrak" );
+	NETVAR_VARIABLE( short, get_item_definition_index, "CBaseAttributableItem->m_iItemDefinitionIndex" );
+	NETVAR_VARIABLE( int, get_item_id_high, "CBaseAttributableItem->m_iItemIDHigh" );
+	NETVAR_VARIABLE( int, get_item_id_low, "CBaseAttributableItem->m_iItemIDLow" );
+	NETVAR_VARIABLE( int, get_account_id, "CBaseAttributableItem->m_iAccountID" );
+	NETVAR_VARIABLE( int, get_entity_quality, "CBaseAttributableItem->m_iEntityQuality" );
+	NETVAR_PVARIABLE( char, get_custom_name, "CBaseAttributableItem->m_szCustomName" );
+	NETVAR_VARIABLE( int, get_owner_xuid_low, "CBaseAttributableItem->m_OriginalOwnerXuidLow" );
+	NETVAR_VARIABLE( int, get_owner_xuid_high, "CBaseAttributableItem->m_OriginalOwnerXuidHigh" );
+	NETVAR_VARIABLE( int, get_fall_back_paint_kit, "CBaseAttributableItem->m_nFallbackPaintKit" );
+	NETVAR_VARIABLE( int, get_fall_back_seed, "CBaseAttributableItem->m_nFallbackSeed" );
+	NETVAR_VARIABLE( float, get_fall_back_wear, "CBaseAttributableItem->m_flFallbackWear" );
+	NETVAR_VARIABLE( int, get_fall_back_stat_trak, "CBaseAttributableItem->m_nFallbackStatTrak" );
 
 	/* DT_WeaponCSBaseGun */
-	add_variable( int, get_burst_shots_remaining, "CWeaponCSBaseGun->m_iBurstShotsRemaining" );
+	NETVAR_VARIABLE( int, get_burst_shots_remaining, "CWeaponCSBaseGun->m_iBurstShotsRemaining" );
 
 	/* DT_BaseViewModel */
-	add_variable( unsigned int, get_owner_handle, "CBaseViewModel->m_hOwner" );
-	add_variable( unsigned int, get_weapon_handle, "CBaseViewModel->m_hWeapon" );
+	NETVAR_VARIABLE( unsigned int, get_owner_handle, "CBaseViewModel->m_hOwner" );
+	NETVAR_VARIABLE( unsigned int, get_weapon_handle, "CBaseViewModel->m_hWeapon" );
 
 	/* DT_FogController */
-	add_variable( int, enable, "CFogController->m_fog.enable" );
-	add_variable( float, start, "CFogController->m_fog.start" );
-	add_variable( float, end, "CFogController->m_fog.end" );
-	add_variable( float, density, "CFogController->m_fog.maxdensity" );
-	add_variable( int, color, "CFogController->m_fog.colorPrimary" );
-	add_variable( int, color_secondary, "CFogController->m_fog.colorSecondary" );
+	NETVAR_VARIABLE( int, enable, "CFogController->m_fog.enable" );
+	NETVAR_VARIABLE( float, start, "CFogController->m_fog.start" );
+	NETVAR_VARIABLE( float, end, "CFogController->m_fog.end" );
+	NETVAR_VARIABLE( float, density, "CFogController->m_fog.maxdensity" );
+	NETVAR_VARIABLE( int, color, "CFogController->m_fog.colorPrimary" );
+	NETVAR_VARIABLE( int, color_secondary, "CFogController->m_fog.colorSecondary" );
 
 	/* DT_Precipitation */
-	add_variable( int, precipitation_type, "CPrecipitation->m_nPrecipType" );
+	NETVAR_VARIABLE( int, precipitation_type, "CPrecipitation->m_nPrecipType" );
 
 	/* datamap variables */
-	add_datafield( int, get_eflags, this->get_prediction_desc_map( ), "m_iEFlags" );
-	add_pdatafield( int, get_buttons, this->get_prediction_desc_map( ), "m_nButtons" );
-	add_datafield( int, get_button_last, this->get_prediction_desc_map( ), "m_afButtonLast" );
-	add_datafield( int, get_button_pressed, this->get_prediction_desc_map( ), "m_afButtonPressed" );
-	add_datafield( int, get_button_released, this->get_prediction_desc_map( ), "m_afButtonReleased" );
-	add_pdatafield( int, get_impulse, this->get_prediction_desc_map( ), "m_nImpulse" );
-	add_datafield( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
-	add_datafield( const matrix3x4_t, get_coordinate_frame, this->get_data_desc_map( ), "m_rgflCoordinateFrame" );
-	add_datafield( int, get_move_tye, this->get_prediction_desc_map( ), "m_MoveType" );
-	add_datafield( float, get_stamina, this->get_prediction_desc_map( ), "m_flStamina" );
-	add_datafield( bool, is_reloading, this->get_prediction_desc_map( ), "m_bInReload" );
+	ADD_DATAFIELD( int, get_eflags, this->get_prediction_desc_map( ), "m_iEFlags" );
+	ADD_PDATAFIELD( int, get_buttons, this->get_prediction_desc_map( ), "m_nButtons" );
+	ADD_DATAFIELD( int, get_button_last, this->get_prediction_desc_map( ), "m_afButtonLast" );
+	ADD_DATAFIELD( int, get_button_pressed, this->get_prediction_desc_map( ), "m_afButtonPressed" );
+	ADD_DATAFIELD( int, get_button_released, this->get_prediction_desc_map( ), "m_afButtonReleased" );
+	ADD_PDATAFIELD( int, get_impulse, this->get_prediction_desc_map( ), "m_nImpulse" );
+	ADD_DATAFIELD( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
+	ADD_DATAFIELD( const matrix3x4_t, get_coordinate_frame, this->get_data_desc_map( ), "m_rgflCoordinateFrame" );
+	ADD_DATAFIELD( int, get_move_tye, this->get_prediction_desc_map( ), "m_MoveType" );
+	ADD_DATAFIELD( float, get_stamina, this->get_prediction_desc_map( ), "m_flStamina" );
+	ADD_DATAFIELD( bool, is_reloading, this->get_prediction_desc_map( ), "m_bInReload" );
 
 	/* offsets */
-	add_offset( unsigned int, get_index, 0x64 );
-	add_offset( bool, is_dormant, 0xed );
+	NETVAR_OFFSET( unsigned int, get_index, 0x64 );
+	NETVAR_OFFSET( bool, is_dormant, 0xed );
 
-	bool is_alive( )
+	const bool is_alive( )
 	{
 		return ( this->get_life_state( ) == 0 /* LIFE_ALIVE */ );
 	}
 
-	int is_max_health( )
+	const int is_max_health( )
 	{
 		return g_virtual.call< int >( this, 123 );
 	}
@@ -337,7 +337,7 @@ public:
 		g_virtual.call< void >( this, 220 );
 	}
 
-	bool is_player( )
+	const bool is_player( )
 	{
 		return g_virtual.call< bool >( this, 158 );
 	}

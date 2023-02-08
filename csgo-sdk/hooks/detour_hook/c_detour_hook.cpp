@@ -1,6 +1,6 @@
 #include "c_detour_hook.h"
 
-#include "../../includes/includes.h"
+#include "../../globals/includes/includes.h"
 
 bool c_detour_hook::create( void* function, void* detour )
 {
@@ -29,8 +29,9 @@ bool c_detour_hook::create( void* function, void* detour )
 	return true;
 }
 
-bool c_detour_hook::replace() {
-	if ( this->m_base_fn == nullptr )
+bool c_detour_hook::replace( )
+{
+	if ( !this->m_base_fn )
 		return false;
 
 	if ( this->m_is_hooked )
@@ -38,7 +39,7 @@ bool c_detour_hook::replace() {
 
 	const MH_STATUS status = MH_EnableHook( this->m_base_fn );
 
-	if (status != MH_OK) {
+	if ( status != MH_OK ) {
 		g_console.print( std::vformat( "failed to enable hook function, status: {:s}\nbase function -> {:p}",
 		                               std::make_format_args( MH_StatusToString( status ), m_base_fn ) )
 		                     .c_str( ) );

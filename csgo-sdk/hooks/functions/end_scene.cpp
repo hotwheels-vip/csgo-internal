@@ -14,7 +14,7 @@ long __stdcall n_detoured_functions::end_scene( IDirect3DDevice9* device )
 		char module_name[ MAX_PATH ] = { };
 		GetModuleFileName( static_cast< HMODULE >( memory_basic_information.AllocationBase ), module_name, MAX_PATH );
 
-		if ( strstr( module_name, ( "gameoverlayrenderer.dll" ) ) != nullptr )
+		if ( strstr( module_name, ( "gameoverlayrenderer.dll" ) ) )
 			used_address = _ReturnAddress( );
 	}
 

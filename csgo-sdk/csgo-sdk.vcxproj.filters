@@ -197,6 +197,8 @@
     <ClInclude Include="game\sdk\classes\c_localize.h" />
     <ClInclude Include="game\sdk\classes\c_panel.h" />
     <ClInclude Include="hacks\entity_cache\entity_cache.h" />
+    <ClInclude Include="globals\macros\macros.h" />
+    <ClInclude Include="globals\globals.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

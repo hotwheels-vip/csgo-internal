@@ -11,8 +11,7 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 	if ( !g_interfaces.m_engine_client->is_in_game( ) )
 		return original( ecx, edx, stage );
 
-	const auto local = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
-	if ( !local )
+	if ( !g_globals.local )
 		return original( ecx, edx, stage );
 
 	original( ecx, edx, stage );

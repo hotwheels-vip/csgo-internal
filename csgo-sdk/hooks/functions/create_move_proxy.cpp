@@ -15,15 +15,23 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	if ( !cmd || !verified_cmd )
 		return;
 
+	g_globals.cmd = cmd;
+
 	if ( const bool valid = g_interfaces.m_client_state->m_delta_tick > 0; valid )
 		g_interfaces.m_prediction->update( g_interfaces.m_client_state->m_delta_tick, valid, g_interfaces.m_client_state->m_last_command_ack,
 		                                   g_interfaces.m_client_state->m_last_outgoing_command + g_interfaces.m_client_state->m_choked_commands );
 
 	const auto local = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
-	if ( local && local->is_alive( ) ) {
+
+	g_globals.local = local;
+
+	[ & ]( ) {
+		if ( !local || !local->is_alive( ) || !g_interfaces.m_engine_client->is_connected( ) )
+			return;
+
 		g_prediction.begin( local, cmd );
 		g_prediction.end( local );
-	}
+	}( );
 
 	cmd->m_view_point.normalize( );
 	cmd->m_view_point.clamp( );

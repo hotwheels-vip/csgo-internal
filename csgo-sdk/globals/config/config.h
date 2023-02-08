@@ -76,11 +76,11 @@ inline n_config::impl_t g_config{ };
 
 #define TO_STRING( func ) #func
 #define ADD_VARIABLE( variable_type, variable_name, default_value )                                                                                  \
-	const std::uint32_t variable_name = g_config.add_new_variable< variable_type >(                                                                  \
-		HASH_CT( TO_STRING( variable_name ) ), HASH_CT( TO_STRING( variable_type ) ), default_value );
+	const std::uint32_t variable_name =                                                                                                              \
+		g_config.add_new_variable< variable_type >( HASH_BT( TO_STRING( variable_name ) ), HASH_BT( TO_STRING( variable_type ) ), default_value );
 #define ADD_VARIABLE_VECTOR( variable_type, vector_size, variable_name, default_value )                                                              \
 	const std::uint32_t variable_name = g_config.add_new_variable< std::vector< variable_type > >(                                                   \
-		HASH_CT( TO_STRING( variable_name ) ), HASH_CT( "std::vector<" TO_STRING( variable_type ) ">" ),                         \
+		HASH_BT( TO_STRING( variable_name ) ), HASH_BT( "std::vector<" TO_STRING( variable_type ) ">" ),                                             \
 		get_filled_vector< variable_type, vector_size >( default_value ) );
 
 #define INVALID_VARIABLE ( std::size_t )( -1 )

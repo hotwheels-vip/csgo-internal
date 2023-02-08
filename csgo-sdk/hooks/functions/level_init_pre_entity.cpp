@@ -11,8 +11,8 @@ void __stdcall n_detoured_functions::level_init_pre_entity( const char* map_name
 	g_entity_cache.on_level_init_pre_entity( );
 
 	const float rate = 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick;
-	g_convars[ HASH_CT( "cl_updaterate" ) ]->set_value( rate );
-	g_convars[ HASH_CT( "cl_cmdrate" ) ]->set_value( rate );
+	g_convars[ HASH_BT( "cl_updaterate" ) ]->set_value( rate );
+	g_convars[ HASH_BT( "cl_cmdrate" ) ]->set_value( rate );
 
 	return original( map_name );
 }

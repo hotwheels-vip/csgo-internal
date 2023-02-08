@@ -52,7 +52,7 @@ struct studiohdr_t {
 	{
 		const mstudiohitboxset_t* p_hitbox_set = get_hitbox_set( i_set );
 
-		if ( p_hitbox_set == nullptr )
+		if ( !p_hitbox_set )
 			return nullptr;
 
 		return p_hitbox_set->get_hitbox( i_hit_box );
@@ -62,7 +62,7 @@ struct studiohdr_t {
 	{
 		const mstudiohitboxset_t* p_hitbox_set = get_hitbox_set( i_set );
 
-		if ( p_hitbox_set == nullptr )
+		if ( !p_hitbox_set )
 			return 0;
 
 		return p_hitbox_set->m_hit_boxes;

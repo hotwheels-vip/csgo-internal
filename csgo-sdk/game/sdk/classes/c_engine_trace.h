@@ -225,7 +225,7 @@ public:
 
 	bool should_hit_entity( c_base_entity* handle_entity, int fContentsMask ) override
 	{
-		if ( m_check_callback != nullptr )
+		if ( m_check_callback )
 			return m_check_callback( handle_entity, fContentsMask );
 
 		return handle_entity != m_skip;

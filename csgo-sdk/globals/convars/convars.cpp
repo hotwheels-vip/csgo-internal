@@ -6,7 +6,7 @@
 #include "../../game/sdk/classes/c_convar.h"
 #include "../interfaces/interfaces.h"
 
-#include "../../dependencies/fnv1a/fnv1a.h"
+#include "../macros/macros.h"
 #include <unordered_map>
 
 std::unordered_map< unsigned int, c_cconvar* > convars = { };

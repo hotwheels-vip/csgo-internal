@@ -1,6 +1,9 @@
 #pragma once
 #include <Windows.h>
 
+/* macros */
+#include "../../globals/macros/macros.h"
+
 /* hiding functions from the imports table */
 #include "../../dependencies/lazy_importer/lazy_importer.h"
 
@@ -20,7 +23,7 @@
 /* console logging */
 #include "../../utilities/console/console.h"
 
-/* module handle shart */
+/* module handling */
 #include "../../utilities/modules/modules.h"
 
 /* game interfaces */
@@ -53,3 +56,9 @@
 
 /* formatting strings */
 #include <format>
+
+/* thread */
+#include <thread>
+
+/* globals */
+#include "../../globals/globals.h"

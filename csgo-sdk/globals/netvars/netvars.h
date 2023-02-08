@@ -1,5 +1,5 @@
 #pragma once
-#include "../../dependencies/fnv1a/fnv1a.h"
+#include "../../globals/macros/macros.h"
 
 #include <type_traits>
 
@@ -28,57 +28,57 @@ namespace n_netvars
 
 inline n_netvars::impl_t g_netvars{ };
 
-#define add_variable_offset( type, function_name, netvar, additional )                                                                               \
+#define NETVAR_VARIABLE_OFFSET( type, function_name, netvar, additional )                                                                            \
 	[[nodiscard]] std::add_lvalue_reference_t< type > function_name( )                                                                               \
 	{                                                                                                                                                \
-		static constexpr unsigned int hashed_value = HASH_CT( netvar );                                                                    \
-		static std::uintptr_t offset               = g_netvars[ hashed_value ].m_offset;                                                       \
+		static constexpr unsigned int hashed_value = HASH_BT( netvar );                                                                              \
+		static std::uintptr_t offset               = g_netvars[ hashed_value ].m_offset;                                                             \
 		return *( std::add_pointer_t< type > )( reinterpret_cast< std::uintptr_t >( this ) + offset + additional );                                  \
 	}
 
-#define add_variable( type, function_name, netvar ) add_variable_offset( type, function_name, netvar, 0U )
+#define NETVAR_VARIABLE( type, function_name, netvar ) NETVAR_VARIABLE_OFFSET( type, function_name, netvar, 0U )
 
-#define add_pvariable_offset( type, function_name, netvar, additional )                                                                              \
+#define NETVAR_PVARIABLE_OFFSET( type, function_name, netvar, additional )                                                                           \
 	[[nodiscard]] std::add_pointer_t< type > function_name( )                                                                                        \
 	{                                                                                                                                                \
-		static constexpr unsigned int hashed_value = HASH_CT( netvar );                                                                    \
-		static std::uintptr_t offset               = g_netvars[ hashed_value ].m_offset;                                                       \
+		static constexpr unsigned int hashed_value = HASH_BT( netvar );                                                                              \
+		static std::uintptr_t offset               = g_netvars[ hashed_value ].m_offset;                                                             \
 		return ( std::add_pointer_t< type > )( reinterpret_cast< std::uintptr_t >( this ) + offset + additional );                                   \
 	}
 
-#define add_pvariable( type, function_name, netvar ) add_pvariable_offset( type, function_name, netvar, 0U )
+#define NETVAR_PVARIABLE( type, function_name, netvar ) NETVAR_PVARIABLE_OFFSET( type, function_name, netvar, 0U )
 
-#define add_resource_variable( type, function_name, netvar )                                                                                         \
+#define NETVAR_RESOURCE_VARIABLE( type, function_name, netvar )                                                                                      \
 	[[nodiscard]] std::add_lvalue_reference_t< type > function_name( int nIndex )                                                                    \
 	{                                                                                                                                                \
-		static constexpr unsigned int hashed_value = HASH_CT( netvar );                                                                    \
-		static std::uintptr_t offset               = g_netvars[ hashed_value ].m_offset;                                                       \
+		static constexpr unsigned int hashed_value = HASH_BT( netvar );                                                                              \
+		static std::uintptr_t offset               = g_netvars[ hashed_value ].m_offset;                                                             \
 		return *( std::add_pointer_t< type > )( reinterpret_cast< std::uintptr_t >( this ) + offset + nIndex * sizeof( type ) );                     \
 	}
 
-#define add_datafield( type, function_name, data_map, data_field )                                                                                   \
+#define ADD_DATAFIELD( type, function_name, data_map, data_field )                                                                                   \
 	[[nodiscard]] std::add_lvalue_reference_t< type > function_name( )                                                                               \
 	{                                                                                                                                                \
-		static constexpr unsigned int hashed_value = HASH_CT( data_field );                                                                \
-		static std::uintptr_t offset               = g_netvars.find_in_data_map( data_map, hashed_value );                                             \
+		static constexpr unsigned int hashed_value = HASH_BT( data_field );                                                                          \
+		static std::uintptr_t offset               = g_netvars.find_in_data_map( data_map, hashed_value );                                           \
 		return *( std::add_pointer_t< type > )( reinterpret_cast< std::uintptr_t >( this ) + offset );                                               \
 	}
 
-#define add_pdatafield( type, function_name, data_map, data_field )                                                                                  \
+#define ADD_PDATAFIELD( type, function_name, data_map, data_field )                                                                                  \
 	[[nodiscard]] std::add_pointer_t< type > function_name( )                                                                                        \
 	{                                                                                                                                                \
-		static constexpr unsigned int hashed_value = HASH_CT( data_field );                                                                \
-		static std::uintptr_t offset               = g_netvars.find_in_data_map( data_map, hashed_value );                                             \
+		static constexpr unsigned int hashed_value = HASH_BT( data_field );                                                                          \
+		static std::uintptr_t offset               = g_netvars.find_in_data_map( data_map, hashed_value );                                           \
 		return ( std::add_pointer_t< type > )( reinterpret_cast< std::uintptr_t >( this ) + offset );                                                \
 	}
 
-#define add_offset( type, function_name, offset )                                                                                                    \
+#define NETVAR_OFFSET( type, function_name, offset )                                                                                                 \
 	[[nodiscard]] std::add_lvalue_reference_t< type > function_name( )                                                                               \
 	{                                                                                                                                                \
 		return *( std::add_pointer_t< type > )( reinterpret_cast< std::uintptr_t >( this ) + offset );                                               \
 	}
 
-#define add_poffset( type, function_name, offset )                                                                                                   \
+#define NETVAR_POFFSET( type, function_name, offset )                                                                                                \
 	[[nodiscard]] std::add_pointer_t< type > function_name( )                                                                                        \
 	{                                                                                                                                                \
 		return ( std::add_pointer_t< type > )( reinterpret_cast< std::uintptr_t >( this ) + offset );                                                \

@@ -1,9 +1,10 @@
 #include "input.h"
 #include "../../game/sdk/includes/includes.h"
-#include "../../hooks/hooks.h"
 #include "../../globals/includes/includes.h"
+#include "../../hooks/hooks.h"
 
 #include <d3d9.h>
+#include <thread>
 
 bool n_input::impl_t::on_attach( )
 {

@@ -62,7 +62,7 @@ public:
 
 		m_allocation_count = new_allocation_count;
 
-		if ( m_memory != nullptr )
+		if ( m_memory )
 			m_memory = static_cast< T* >( realloc( m_memory, m_allocation_count * sizeof( T ) ) );
 		else
 			m_memory = static_cast< T* >( malloc( m_allocation_count * sizeof( T ) ) );

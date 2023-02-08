@@ -68,7 +68,7 @@ void* module_t::find_interface( const char* interface_name )
 		return **reinterpret_cast< interface_node_t*** >( create_interface + 0x6 );
 	};
 
-	for ( const interface_node_t* register_data = get_register_list( this->find_export( HASH_CT("CreateInterface") ) ); register_data;
+	for ( const interface_node_t* register_data = get_register_list( this->find_export( HASH_BT( "CreateInterface" ) ) ); register_data;
 	      register_data                         = register_data->m_next ) {
 		if ( HASH_RT( register_data->m_name ) == HASH_RT( interface_name ) ) {
 			const auto interface_address = register_data->m_create_fn( );
@@ -114,7 +114,7 @@ bool n_modules::impl_t::on_attach( )
 {
 	const _PEB32* peb_data = reinterpret_cast< _PEB32* >( __readfsdword( 0x30 ) );
 
-	while ( this->m_modules.find( HASH_CT( "serverbrowser.dll" ) ) == this->m_modules.end( ) ) {
+	while ( this->m_modules.find( SERVERBROWSER_DLL ) == this->m_modules.end( ) ) {
 		for ( LIST_ENTRY* list_entry = peb_data->Ldr->InLoadOrderModuleList.Flink; list_entry != &peb_data->Ldr->InLoadOrderModuleList;
 		      list_entry             = list_entry->Flink ) {
 			const _LDR_DATA_TABLE_ENTRY* entry = CONTAINING_RECORD( list_entry, _LDR_DATA_TABLE_ENTRY, InLoadOrderLinks );

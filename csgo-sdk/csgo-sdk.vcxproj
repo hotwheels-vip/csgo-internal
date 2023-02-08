@@ -197,6 +197,8 @@
     <ClInclude Include="globals\config\config.h" />
     <ClInclude Include="globals\config\variables.h" />
     <ClInclude Include="globals\convars\convars.h" />
+    <ClInclude Include="globals\globals.h" />
+    <ClInclude Include="globals\macros\macros.h" />
     <ClInclude Include="hacks\entity_cache\entity_cache.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />
     <ClInclude Include="hooks\hooks.h" />

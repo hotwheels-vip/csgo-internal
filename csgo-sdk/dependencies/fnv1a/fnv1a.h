@@ -3,8 +3,8 @@
 
 namespace fnv1a
 {
-	constexpr unsigned int basis = 0x811c9dc5;
-	constexpr unsigned int prime = 0x1000193;
+	constexpr static unsigned int basis = 0x811c9dc5;
+	constexpr static unsigned int prime = 0x1000193;
 
 	consteval unsigned int hash_const( const char* string, const unsigned int value = basis ) noexcept
 	{
@@ -21,6 +21,3 @@ namespace fnv1a
 		return value;
 	}
 } // namespace fnv1a
-
-#define HASH_RT( string ) fnv1a::hash( string )
-#define HASH_CT( string ) fnv1a::hash_const( string )

@@ -1,12 +1,14 @@
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
 
-#include "config.h"
+#include <fstream>
+#include <shlobj.h>
+
 #include "../../dependencies/json/json.hpp"
 #include "../../game/sdk/classes/c_color.h"
 #include "../../utilities/console/console.h"
+#include "../macros/macros.h"
 
-#include <fstream>
-#include <shlobj.h>
+#include "config.h"
 
 bool n_config::impl_t::on_attach( )
 {
@@ -38,23 +40,23 @@ bool n_config::impl_t::save( std::string_view file_name )
 			entry[ ( "type-id" ) ] = variable.m_type_hash;
 
 			switch ( variable.m_type_hash ) {
-			case HASH_CT( "int" ): {
+			case HASH_BT( "int" ): {
 				entry[ ( "value" ) ] = variable.get< int >( );
 				break;
 			}
-			case HASH_CT( "float" ): {
+			case HASH_BT( "float" ): {
 				entry[ ( "value" ) ] = variable.get< float >( );
 				break;
 			}
-			case HASH_CT( "bool" ): {
+			case HASH_BT( "bool" ): {
 				entry[ ( "value" ) ] = variable.get< bool >( );
 				break;
 			}
-			case HASH_CT( "std::string" ): {
+			case HASH_BT( "std::string" ): {
 				entry[ ( "value" ) ] = variable.get< std::string >( );
 				break;
 			}
-			case HASH_CT( "c_color" ): {
+			case HASH_BT( "c_color" ): {
 				const auto& color = variable.get< c_color >( );
 
 				nlohmann::json sub = { };
@@ -67,7 +69,7 @@ bool n_config::impl_t::save( std::string_view file_name )
 				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
-			case HASH_CT( "key_bind_t" ): {
+			case HASH_BT( "key_bind_t" ): {
 				const auto& bind = variable.get< key_bind_t >( );
 
 				nlohmann::json sub = { };
@@ -78,7 +80,7 @@ bool n_config::impl_t::save( std::string_view file_name )
 				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
-			case HASH_CT( "std::vector<bool>" ): {
+			case HASH_BT( "std::vector<bool>" ): {
 				const auto& booleans = variable.get< std::vector< bool > >( );
 
 				nlohmann::json sub = { };
@@ -89,7 +91,7 @@ bool n_config::impl_t::save( std::string_view file_name )
 				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
-			case HASH_CT( "std::vector<int>" ): {
+			case HASH_BT( "std::vector<int>" ): {
 				const auto& integers = variable.get< std::vector< int > >( );
 
 				nlohmann::json sub = { };
@@ -100,7 +102,7 @@ bool n_config::impl_t::save( std::string_view file_name )
 				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
-			case HASH_CT( "std::vector<float>" ): {
+			case HASH_BT( "std::vector<float>" ): {
 				const auto& floats = variable.get< std::vector< float > >( );
 
 				nlohmann::json sub = { };
@@ -111,7 +113,7 @@ bool n_config::impl_t::save( std::string_view file_name )
 				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
-			case HASH_CT( "std::vector<std::string>" ): {
+			case HASH_BT( "std::vector<std::string>" ): {
 				const auto& strings = variable.get< std::vector< std::string > >( );
 
 				nlohmann::json sub = { };
@@ -180,23 +182,23 @@ bool n_config::impl_t::load( std::string_view file_name )
 			auto& entry = this->m_variables[ index ];
 
 			switch ( variable[ ( "type-id" ) ].get< unsigned int >( ) ) {
-			case HASH_CT( "bool" ): {
+			case HASH_BT( "bool" ): {
 				entry.set< bool >( variable[ ( "value" ) ].get< bool >( ) );
 				break;
 			}
-			case HASH_CT( "float" ): {
+			case HASH_BT( "float" ): {
 				entry.set< float >( variable[ ( "value" ) ].get< float >( ) );
 				break;
 			}
-			case HASH_CT( "int" ): {
+			case HASH_BT( "int" ): {
 				entry.set< int >( variable[ ( "value" ) ].get< int >( ) );
 				break;
 			}
-			case HASH_CT( "std::string" ): {
+			case HASH_BT( "std::string" ): {
 				entry.set< std::string >( variable[ ( "value" ) ].get< std::string >( ) );
 				break;
 			}
-			case HASH_CT( "c_color" ): {
+			case HASH_BT( "c_color" ): {
 				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 
 				entry.set< c_color >( c_color( vector[ 0 ].get< std::uint8_t >( ), vector[ 1 ].get< std::uint8_t >( ),
@@ -204,14 +206,14 @@ bool n_config::impl_t::load( std::string_view file_name )
 
 				break;
 			}
-			case HASH_CT( "key_bind_t" ): {
+			case HASH_BT( "key_bind_t" ): {
 				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 
 				entry.set< key_bind_t >( key_bind_t( vector[ 0 ].get< int >( ), vector[ 1 ].get< int >( ) ) );
 
 				break;
 			}
-			case HASH_CT( "std::vector<bool>" ): {
+			case HASH_BT( "std::vector<bool>" ): {
 				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 				auto& booleans              = entry.get< std::vector< bool > >( );
 
@@ -222,7 +224,7 @@ bool n_config::impl_t::load( std::string_view file_name )
 
 				break;
 			}
-			case HASH_CT( "std::vector<int>" ): {
+			case HASH_BT( "std::vector<int>" ): {
 				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 				auto& integers              = entry.get< std::vector< int > >( );
 
@@ -233,7 +235,7 @@ bool n_config::impl_t::load( std::string_view file_name )
 
 				break;
 			}
-			case HASH_CT( "std::vector<float>" ): {
+			case HASH_BT( "std::vector<float>" ): {
 				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 				auto& floats                = entry.get< std::vector< float > >( );
 
@@ -244,7 +246,7 @@ bool n_config::impl_t::load( std::string_view file_name )
 
 				break;
 			}
-			case HASH_CT( "std::vector<std::string>" ): {
+			case HASH_BT( "std::vector<std::string>" ): {
 				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 				auto& strings               = entry.get< std::vector< std::string > >( );
 
