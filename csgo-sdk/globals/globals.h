@@ -12,4 +12,4 @@ namespace n_globals
 
 } // namespace n_globals
 
-inline n_globals::impl_t g_globals;
+inline n_globals::impl_t g_ctx;

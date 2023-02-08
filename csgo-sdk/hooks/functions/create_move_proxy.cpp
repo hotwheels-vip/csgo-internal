@@ -15,7 +15,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	if ( !cmd || !verified_cmd )
 		return;
 
-	g_globals.m_cmd = cmd;
+	g_ctx.m_cmd = cmd;
 
 	if ( const bool valid = g_interfaces.m_client_state->m_delta_tick > 0; valid )
 		g_interfaces.m_prediction->update( g_interfaces.m_client_state->m_delta_tick, valid, g_interfaces.m_client_state->m_last_command_ack,
@@ -23,7 +23,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 
 	const auto local = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
 
-	g_globals.m_local = local;
+	g_ctx.m_local = local;
 
 	[ & ]( ) {
 		if ( !local || !local->is_alive( ) || !g_interfaces.m_engine_client->is_connected( ) )

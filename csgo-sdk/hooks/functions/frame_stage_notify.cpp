@@ -11,7 +11,7 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 	if ( !g_interfaces.m_engine_client->is_in_game( ) )
 		return original( ecx, edx, stage );
 
-	if ( !g_globals.local )
+	if ( !g_ctx.m_local )
 		return original( ecx, edx, stage );
 
 	original( ecx, edx, stage );
