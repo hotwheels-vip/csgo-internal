@@ -2,16 +2,28 @@
 
 class c_user_cmd;
 class c_base_entity;
+#include "../../game/sdk/classes/c_vector.h"
 
 namespace n_prediction
 {
 	struct impl_t {
+		struct {
+			c_vector velocity{ };
+			c_vector view_angles{ };
+			float fall_velocity{ };
+			int flags{ };
+			int move_type{ };
+		} backup_data;
+
 		void begin( c_base_entity* local, c_user_cmd* cmd );
 		void end( c_base_entity* local ) const;
+		void update( );
 
 		static int get_corrected_tick_base( c_base_entity* local, c_user_cmd* cmd );
 
 	private:
+		void handle_buttons( c_base_entity* local, c_user_cmd* cmd );
+
 		unsigned int* m_prediction_random_seed = nullptr;
 		c_base_entity** m_prediction_player    = nullptr;
 

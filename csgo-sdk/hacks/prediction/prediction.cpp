@@ -2,6 +2,13 @@
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
 
+void n_prediction::impl_t::update( )
+{
+	if ( const bool valid = g_interfaces.m_client_state->m_delta_tick > 0; valid )
+		g_interfaces.m_prediction->update( g_interfaces.m_client_state->m_delta_tick, valid, g_interfaces.m_client_state->m_last_command_ack,
+		                                   g_interfaces.m_client_state->m_last_outgoing_command + g_interfaces.m_client_state->m_choked_commands );
+}
+
 void n_prediction::impl_t::begin( c_base_entity* local, c_user_cmd* cmd )
 {
 	if ( !g_interfaces.m_move_helper )
@@ -28,8 +35,10 @@ void n_prediction::impl_t::begin( c_base_entity* local, c_user_cmd* cmd )
 
 	g_interfaces.m_global_vars_base->m_current_time =
 		static_cast< float >( local->get_tick_base( ) ) * g_interfaces.m_global_vars_base->m_interval_per_tick;
+
 	g_interfaces.m_global_vars_base->m_frame_time =
 		g_interfaces.m_prediction->m_engine_paused ? 0.f : g_interfaces.m_global_vars_base->m_interval_per_tick;
+
 	g_interfaces.m_global_vars_base->m_tick_count = local->get_tick_base( );
 
 	g_interfaces.m_prediction->m_is_first_time_predicted = false;
@@ -40,25 +49,7 @@ void n_prediction::impl_t::begin( c_base_entity* local, c_user_cmd* cmd )
 
 	g_interfaces.m_game_movement->start_track_prediction_errors( local );
 
-	/* not needed*/
-	/*if ( cmd->m_weapon_select ) {
-	    static auto active_weapon = reinterpret_cast< c_base_entity* >(
-	        g_interfaces.m_client_entity_list->get_client_entity_from_handle( local->active_weapon_handle( ) ) );
-	    if ( active_weapon ) {
-	        static auto weapon_data = g_interfaces.m_weapon_system->get_weapon_data( active_weapon->item_definition_index( ) );
-	        if ( weapon_data )
-	            local->select_item( weapon_data->m_weapon_name, cmd->m_weapon_sub_type );
-	    }
-	}*/
-
-	const int buttons         = cmd->m_buttons;
-	const int local_buttons   = *local->get_buttons( );
-	const int buttons_changed = buttons ^ local_buttons;
-
-	local->get_button_last( )     = local_buttons;
-	*local->get_buttons( )        = buttons;
-	local->get_button_pressed( )  = buttons_changed & buttons;
-	local->get_button_released( ) = buttons_changed & ( ~buttons );
+	g_prediction.handle_buttons( local, cmd );
 
 	g_interfaces.m_prediction->check_moving_ground( local, g_interfaces.m_global_vars_base->m_frame_time );
 
@@ -128,3 +119,15 @@ int n_prediction::impl_t::get_corrected_tick_base( c_base_entity* local, c_user_
 
 	return corrected_tick_base;
 }
+
+void n_prediction::impl_t::handle_buttons( c_base_entity* local, c_user_cmd* cmd )
+{
+	const int buttons         = cmd->m_buttons;
+	const int local_buttons   = *local->get_buttons( );
+	const int buttons_changed = buttons ^ local_buttons;
+
+	local->get_button_last( )     = local_buttons;
+	*local->get_buttons( )        = buttons;
+	local->get_button_pressed( )  = buttons_changed & buttons;
+	local->get_button_released( ) = buttons_changed & ( ~buttons );
+};

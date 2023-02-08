@@ -17,20 +17,18 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 
 	g_ctx.m_cmd = cmd;
 
-	if ( const bool valid = g_interfaces.m_client_state->m_delta_tick > 0; valid )
-		g_interfaces.m_prediction->update( g_interfaces.m_client_state->m_delta_tick, valid, g_interfaces.m_client_state->m_last_command_ack,
-		                                   g_interfaces.m_client_state->m_last_outgoing_command + g_interfaces.m_client_state->m_choked_commands );
-
 	const auto local = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
 
 	g_ctx.m_local = local;
 
+	g_prediction.update( );
+
 	[ & ]( ) {
-		if ( !local || !local->is_alive( ) || !g_interfaces.m_engine_client->is_connected( ) )
+		if ( !g_ctx.m_local || !g_ctx.m_local->is_alive( ) || !g_interfaces.m_engine_client->is_connected( ) )
 			return;
 
-		g_prediction.begin( local, cmd );
-		g_prediction.end( local );
+		g_prediction.begin( g_ctx.m_local, cmd );
+		g_prediction.end( g_ctx.m_local );
 	}( );
 
 	cmd->m_view_point.normalize( );
