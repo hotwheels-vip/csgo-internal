@@ -10,7 +10,7 @@ void __fastcall n_detoured_functions::level_shutdown( void* thisptr )
 
 	g_entity_cache.on_level_shutdown( );
 
-	g_globals.local = nullptr;
+	g_globals.m_local = nullptr;
 
 	return original( thisptr );
 }

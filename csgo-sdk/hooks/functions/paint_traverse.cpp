@@ -12,7 +12,7 @@ void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsi
 
 	switch ( panel_hash ) {
 	case HASH_BT( "FocusOverlayPanel" ): {
-		if ( g_globals.local ) { }
+		if ( g_globals.m_local ) { }
 		break;
 	}
 	}
