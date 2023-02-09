@@ -24,6 +24,7 @@ class c_key_values_system;
 class c_global_vars_base;
 class c_weapon_system;
 class c_client_state;
+class c_physics_collison;
 
 struct IDirect3DDevice9;
 
@@ -50,6 +51,7 @@ namespace n_interfaces
 		c_game_types* m_game_types                 = nullptr;
 		c_localize* m_localize                     = nullptr;
 		c_panel* m_panel                           = nullptr;
+		c_physics_collison* m_physics_collison     = nullptr;
 
 		c_key_values_system* m_key_values_system = nullptr;
 		c_global_vars_base* m_global_vars_base   = nullptr;

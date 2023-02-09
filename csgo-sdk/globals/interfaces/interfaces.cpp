@@ -59,6 +59,9 @@ bool n_interfaces::impl_t::on_attach( )
 	if ( !( m_panel = static_cast< c_panel* >( g_modules[ VGUI2_DLL ].find_interface( "VGUI_Panel009" ) ) ) )
 		return false;
 
+	if ( !( m_physics_collison = static_cast< c_physics_collison* >( g_modules[ PHYSICS_DLL ].find_interface( "VPhysicsCollision" ) ) ) )
+		return false;
+
 	if ( !( m_key_values_system =
 	            reinterpret_cast< c_key_values_system*( __cdecl* )( ) >( g_modules[ VSTDLIB_DLL ].find_export( HASH_BT( "KeyValuesSystem" ) ) )( ) ) )
 		return false;
