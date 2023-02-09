@@ -7,6 +7,10 @@ namespace n_variables
 	struct impl_t {
 		/* menu */
 		ADD_VARIABLE( c_color, m_accent, c_color( 129, 99, 251, 255 ) );
+
+		/* visuals - edicts */
+		ADD_VARIABLE( bool, m_precipitation, false );
+		ADD_VARIABLE( int, m_precipitation_type, 0 );
 	};
 }; // namespace n_variables
 

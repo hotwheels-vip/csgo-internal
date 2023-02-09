@@ -49,6 +49,9 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_level_shutdown, g_virtual.get( g_interfaces.m_base_client, 7 ), &n_detoured_functions::level_shutdown,
 	                 "CHLClient::LevelShutdown()" );
 
+	initialise_hook( m_get_vcollide, g_virtual.get( g_interfaces.m_model_info, 6 ), &n_detoured_functions::get_vcollide,
+	                 "CModelInfo::GetVCollide()" );
+
 	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 
 	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );

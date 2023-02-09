@@ -181,6 +181,10 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild( ( "world" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
+				ImGui::Checkbox( "precipitation", &GET_VARIABLE( g_variables.m_precipitation, bool ) );
+				if ( GET_VARIABLE( g_variables.m_precipitation, bool ) )
+					ImGui::Combo( "weather type", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
+
 				ImGui::EndChild( );
 			}
 			break;

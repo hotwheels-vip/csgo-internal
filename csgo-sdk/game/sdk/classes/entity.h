@@ -2,7 +2,6 @@
 #include "../../../globals/netvars/netvars.h"
 #include "../../../utilities/memory/virtual.h"
 
-enum e_data_update_type;
 enum class e_class_id;
 
 class c_vector;
@@ -30,8 +29,8 @@ class c_collideable
 {
 public:
 	virtual c_handle_entity* get_entity_handle( )                                                 = 0;
-	virtual const c_vector& obb_mins( ) const                                                     = 0;
-	virtual const c_vector& obb_maxs( ) const                                                     = 0;
+	virtual c_vector& obb_mins( )                                                                 = 0;
+	virtual c_vector& obb_maxs( )                                                                 = 0;
 	virtual void world_space_trigger_bounds( c_vector* world_mins, c_vector* world_maxs ) const   = 0;
 	virtual bool test_collision( const ray_t& ray, unsigned int contents_mask, c_game_trace& tr ) = 0;
 	virtual bool test_hitboxes( const ray_t& ray, unsigned int contents_mask, c_game_trace& tr )  = 0;
@@ -148,10 +147,10 @@ public:
 	virtual void release( )                                              = 0;
 	virtual c_base_client* get_client_class( )                           = 0;
 	virtual void notify_should_transmit( int state )                     = 0;
-	virtual void on_pre_data_changed( e_data_update_type update_type )   = 0;
-	virtual void on_data_changed( e_data_update_type update_type )       = 0;
-	virtual void pre_data_update( e_data_update_type update_type )       = 0;
-	virtual void post_data_update( e_data_update_type update_type )      = 0;
+	virtual void on_pre_data_changed( int update_type )                  = 0;
+	virtual void on_data_changed( int update_type )                      = 0;
+	virtual void pre_data_update( int update_type )                      = 0;
+	virtual void post_data_update( int update_type )                     = 0;
 	virtual void on_data_unchanged_in_pvs( )                             = 0;
 	virtual bool is_dormant( ) const                                     = 0;
 	virtual int get_index( ) const                                       = 0;
@@ -225,6 +224,7 @@ public:
 	NETVAR_VARIABLE( c_vector, get_origin, "CBaseEntity->m_vecOrigin" );
 	NETVAR_VARIABLE( float, get_simulation_time, "CBaseEntity->m_flSimulationTime" );
 	NETVAR_VARIABLE( bool, get_predictable, "CBaseEntity->m_bPredictable" );
+	NETVAR_VARIABLE( int, get_model_index, "CBaseEntity->m_nModelIndex" );
 
 	/* DT_BaseAnimating */
 	NETVAR_VARIABLE( int, get_sequence, "CBaseAnimating->m_nSequence" );

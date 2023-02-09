@@ -143,6 +143,8 @@ static unsigned long __stdcall on_attach( void* instance )
 	while ( !g_input.is_key_down( VK_END ) && !g_input.is_key_down( VK_DELETE ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
+	g_ctx.m_unloading = true;
+
 	g_console.on_release( );
 
 	g_hooks.on_release( );

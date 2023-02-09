@@ -49,6 +49,8 @@
     <ClCompile Include="hooks\functions\on_remove_entity.cpp" />
     <ClCompile Include="hooks\functions\level_init_pre_entity.cpp" />
     <ClCompile Include="hooks\functions\level_shutdown.cpp" />
+    <ClCompile Include="hacks\visuals\edicts\edicts.cpp" />
+    <ClCompile Include="hooks\functions\get_vcollide.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -199,6 +201,9 @@
     <ClInclude Include="hacks\entity_cache\entity_cache.h" />
     <ClInclude Include="globals\macros\macros.h" />
     <ClInclude Include="globals\globals.h" />
+    <ClInclude Include="game\sdk\structs\vcollide_t.h" />
+    <ClInclude Include="hacks\visuals\edicts\edicts.h" />
+    <ClInclude Include="game\sdk\classes\c_physics_collisons.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

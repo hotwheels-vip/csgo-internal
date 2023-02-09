@@ -21,6 +21,7 @@ namespace n_hooks
 		c_detour_hook m_on_remove_entity{ };
 		c_detour_hook m_level_init_pre_entity{ };
 		c_detour_hook m_level_shutdown{ };
+		c_detour_hook m_get_vcollide{ };
 
 		c_detour_hook m_lock_cursor{ };
 		c_detour_hook m_reset{ };
@@ -44,6 +45,7 @@ namespace n_detoured_functions
 	void __fastcall on_remove_entity( void* ecx, void* edx, void* handle_entity, unsigned int entity_handle );
 	void __stdcall level_init_pre_entity( const char* map_name );
 	void __fastcall level_shutdown( void* thisptr );
+	void* __fastcall get_vcollide( void* ecx, void* edx, int model_index );
 
 	void __fastcall lock_cursor( void* ecx, void* edx );
 	long __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters );
