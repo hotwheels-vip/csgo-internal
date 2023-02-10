@@ -11,6 +11,9 @@ namespace n_variables
 		/* visuals - edicts */
 		ADD_VARIABLE( bool, m_precipitation, false );
 		ADD_VARIABLE( int, m_precipitation_type, 0 );
+
+		/* misc - movement */
+		ADD_VARIABLE( bool, m_auto_align, false );
 	};
 }; // namespace n_variables
 

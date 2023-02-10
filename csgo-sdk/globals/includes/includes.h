@@ -11,6 +11,8 @@
 #include "../config/config.h"
 #include "../config/variables.h"
 
+#include "../math/math.h"
+
 /* string hashing */
 #include "../../dependencies/fnv1a/fnv1a.h"
 

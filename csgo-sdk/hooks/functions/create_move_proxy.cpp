@@ -3,6 +3,7 @@
 #include "../hooks.h"
 
 #include "../../hacks/prediction/prediction.h"
+#include "../../hacks/movement/movement.h"
 
 void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
 {
@@ -24,11 +25,13 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	g_prediction.update( );
 
 	[ & ]( ) {
-		if ( !g_ctx.m_local || !g_ctx.m_local->is_alive( ) || !g_interfaces.m_engine_client->is_connected( ) )
+		if ( !g_ctx.m_local || !g_ctx.m_local->is_alive( ) || !g_ctx.m_cmd )
 			return;
 
 		g_prediction.begin( g_ctx.m_local, cmd );
 		g_prediction.end( g_ctx.m_local );
+
+		g_movement.on_create_move_post( );
 	}( );
 
 	cmd->m_view_point.normalize( );

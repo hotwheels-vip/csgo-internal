@@ -142,6 +142,11 @@ public:
 		return ( std::fpclassify( this->m_x ) == FP_ZERO && std::fpclassify( this->m_y ) == FP_ZERO && std::fpclassify( this->m_z ) == FP_ZERO );
 	}
 
+	    [[nodiscard]] c_angle flip( ) const
+	{
+		return c_angle( this->m_x + 180.f, this->m_y + 180.f, this->m_z );
+	}
+
 	c_angle clamp( )
 	{
 		this->m_x = std::clamp( this->m_x, -89.f, 89.f );

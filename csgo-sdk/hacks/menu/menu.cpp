@@ -194,6 +194,8 @@ void n_menu::impl_t::on_end_scene( )
 					 ( "movement" ),
 					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
 					 true ) ) {
+				ImGui::Checkbox( "auto align", &GET_VARIABLE( g_variables.m_auto_align, bool ) );
+
 				ImGui::EndChild( );
 			}
 

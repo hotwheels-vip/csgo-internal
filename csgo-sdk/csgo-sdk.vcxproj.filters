@@ -51,6 +51,8 @@
     <ClCompile Include="hooks\functions\level_shutdown.cpp" />
     <ClCompile Include="hacks\visuals\edicts\edicts.cpp" />
     <ClCompile Include="hooks\functions\get_vcollide.cpp" />
+    <ClCompile Include="hacks\movement\movement.cpp" />
+    <ClCompile Include="globals\math\math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -204,6 +206,8 @@
     <ClInclude Include="game\sdk\structs\vcollide_t.h" />
     <ClInclude Include="hacks\visuals\edicts\edicts.h" />
     <ClInclude Include="game\sdk\classes\c_physics_collisons.h" />
+    <ClInclude Include="hacks\movement\movement.h" />
+    <ClInclude Include="globals\math\math.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

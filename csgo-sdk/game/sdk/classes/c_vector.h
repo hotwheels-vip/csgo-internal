@@ -2,6 +2,9 @@
 #include <cmath>
 #include <limits>
 
+#include "../../../globals/math/math.h"
+#include "c_angle.h"
+
 class c_vector_2d
 {
 public:
@@ -189,6 +192,17 @@ public:
 	{
 		return ( std::fabsf( this->m_x - vector.m_x ) < error_margin && std::fabsf( this->m_y - vector.m_y ) < error_margin &&
 		         std::fabsf( this->m_z - vector.m_z ) < error_margin );
+	}
+
+	c_angle to_angle( ) const
+	{
+		c_angle ret{ };
+
+		ret.m_x = rad2deg( std::atan2f( -this->m_z, this->length_2d( ) ) );
+		ret.m_y = rad2deg( std::atan2f( this->m_y, this->m_x ) );
+		ret.m_z = 0.f;
+
+		return ret;
 	}
 
 	[[nodiscard]] bool is_zero( ) const
