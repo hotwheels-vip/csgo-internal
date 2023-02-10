@@ -2,13 +2,99 @@
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
 
-void n_movement::impl_t::on_create_move_post( )
+void n_movement::impl_t::on_create_move_pre( )
 {
+	const auto move_type = g_ctx.m_local->get_move_type( );
+	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly ||
+	     move_type == e_move_types::move_type_observer )
+		return;
+
+	if ( GET_VARIABLE( g_variables.m_bunny_hop, bool ) &&
+	     !( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) ) )
+		this->bunny_hop( );
+}
+
+void n_movement::impl_t::bunny_hop( )
+{
+	if ( !( g_ctx.m_local->get_flags( ) & e_flags::fl_onground ) )
+		g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_jump;
+}
+
+void n_movement::impl_t::on_create_move_post( int pre_prediction_flags )
+{
+	const auto move_type = g_ctx.m_local->get_move_type( );
+	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly ||
+	     move_type == e_move_types::move_type_observer )
+		return;
+
+	if ( GET_VARIABLE( g_variables.m_edge_jump, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_edge_jump_key, key_bind_t ) ) )
+		this->edge_jump( pre_prediction_flags );
+
+	if ( GET_VARIABLE( g_variables.m_long_jump, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_long_jump_key, key_bind_t ) ) )
+		this->long_jump( );
+
+	if ( GET_VARIABLE( g_variables.m_mini_jump, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_mini_jump_key, key_bind_t ) ) )
+		this->mini_jump( pre_prediction_flags );
+
+	if ( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) )
+		this->jump_bug( pre_prediction_flags );
+
 	if ( GET_VARIABLE( g_variables.m_auto_align, bool ) )
 		this->auto_align( );
 }
 
-void n_movement::impl_t::auto_align() {
+void n_movement::impl_t::edge_jump( int pre_prediction_flags )
+{
+	if ( ( pre_prediction_flags & e_flags::fl_onground ) && !( g_ctx.m_local->get_flags( ) & e_flags::fl_onground ) )
+		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_jump;
+}
+
+void n_movement::impl_t::long_jump( )
+{
+	static int saved_tick = 0;
+
+	if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground )
+		saved_tick = g_interfaces.m_global_vars_base->m_tick_count;
+
+	if ( !( g_interfaces.m_global_vars_base->m_tick_count - saved_tick > 2 ) && !( g_ctx.m_local->get_flags( ) & e_flags::fl_onground ) )
+		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
+}
+
+void n_movement::impl_t::mini_jump( int pre_prediction_flags )
+{
+	if ( pre_prediction_flags & e_flags::fl_onground && !( g_ctx.m_local->get_flags( ) & e_flags::fl_onground ) ) {
+		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_jump;
+		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
+	}
+}
+
+void n_movement::impl_t::jump_bug( int pre_prediction_flags )
+{
+	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) ) {
+		static bool ducked = false;
+
+		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( pre_prediction_flags & e_flags::fl_onground ) && !ducked ) {
+			g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
+			ducked = true;
+		} else
+			ducked = false;
+
+		if ( pre_prediction_flags & e_flags::fl_onground && ducked )
+			ducked = false;
+	} else {
+		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( pre_prediction_flags & e_flags::fl_onground ) )
+			g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
+
+		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground )
+			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_jump;
+
+		if ( !( g_ctx.m_local->get_flags( ) & fl_onground ) && pre_prediction_flags & fl_onground )
+			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_duck;
+	}
+}
+
+void n_movement::impl_t::auto_align( )
+{
 	auto rotate_movement = []( c_angle& ang ) -> void {
 		c_vector vec_move = c_vector( g_ctx.m_cmd->m_forward_move, g_ctx.m_cmd->m_side_move, g_ctx.m_cmd->m_up_move );
 

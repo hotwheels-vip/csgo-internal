@@ -183,6 +183,7 @@
     <ClInclude Include="game\sdk\enums\e_item_definition_index.h" />
     <ClInclude Include="game\sdk\enums\e_material_property_type.h" />
     <ClInclude Include="game\sdk\enums\e_material_var_flags.h" />
+    <ClInclude Include="game\sdk\enums\e_move_types.h" />
     <ClInclude Include="game\sdk\enums\e_preview_image_ret_val.h" />
     <ClInclude Include="game\sdk\enums\e_send_prop_type.h" />
     <ClInclude Include="game\sdk\enums\e_weapon_type.h" />

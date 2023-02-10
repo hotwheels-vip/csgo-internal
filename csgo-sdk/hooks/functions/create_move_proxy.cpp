@@ -28,10 +28,14 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		if ( !g_ctx.m_local || !g_ctx.m_local->is_alive( ) || !g_ctx.m_cmd )
 			return;
 
+		g_movement.on_create_move_pre( );
+
+		const auto pre_prediction_flags = g_ctx.m_local->get_flags( );
+
 		g_prediction.begin( g_ctx.m_local, cmd );
 		g_prediction.end( g_ctx.m_local );
 
-		g_movement.on_create_move_post( );
+		g_movement.on_create_move_post( pre_prediction_flags );
 	}( );
 
 	cmd->m_view_point.normalize( );

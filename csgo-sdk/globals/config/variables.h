@@ -13,6 +13,20 @@ namespace n_variables
 		ADD_VARIABLE( int, m_precipitation_type, 0 );
 
 		/* misc - movement */
+		ADD_VARIABLE( bool, m_bunny_hop, false );
+
+		ADD_VARIABLE( bool, m_edge_jump, false );
+		ADD_VARIABLE( key_bind_t, m_edge_jump_key, key_bind_t( 0, 1 ) );
+
+		ADD_VARIABLE( bool, m_long_jump, false );
+		ADD_VARIABLE( key_bind_t, m_long_jump_key, key_bind_t( 0, 1 ) );
+
+		ADD_VARIABLE( bool, m_mini_jump, false );
+		ADD_VARIABLE( key_bind_t, m_mini_jump_key, key_bind_t( 0, 1 ) );
+
+		ADD_VARIABLE( bool, m_jump_bug, false );
+		ADD_VARIABLE( key_bind_t, m_jump_bug_key, key_bind_t( 0, 1 ) );
+
 		ADD_VARIABLE( bool, m_auto_align, false );
 	};
 }; // namespace n_variables
