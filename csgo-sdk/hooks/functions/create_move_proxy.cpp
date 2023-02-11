@@ -22,6 +22,8 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 
 	g_ctx.m_local = local;
 
+	const auto old_view_point = g_ctx.m_cmd->m_view_point;
+
 	g_prediction.update( );
 
 	[ & ]( ) {
@@ -35,7 +37,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		g_prediction.begin( g_ctx.m_local, cmd );
 		g_prediction.end( g_ctx.m_local );
 
-		g_movement.on_create_move_post( pre_prediction_flags );
+		g_movement.on_create_move_post( pre_prediction_flags, old_view_point );
 	}( );
 
 	cmd->m_view_point.normalize( );

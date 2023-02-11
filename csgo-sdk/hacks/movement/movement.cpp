@@ -1,6 +1,7 @@
 #include "movement.h"
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
+#include "../prediction/prediction.h"
 
 void n_movement::impl_t::on_create_move_pre( )
 {
@@ -20,7 +21,7 @@ void n_movement::impl_t::bunny_hop( )
 		g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_jump;
 }
 
-void n_movement::impl_t::on_create_move_post( int pre_prediction_flags )
+void n_movement::impl_t::on_create_move_post( int pre_prediction_flags, const c_angle& old_view_point )
 {
 	const auto move_type = g_ctx.m_local->get_move_type( );
 	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly ||
@@ -39,11 +40,7 @@ void n_movement::impl_t::on_create_move_post( int pre_prediction_flags )
 	if ( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) )
 		this->jump_bug( pre_prediction_flags );
 
-	if ( GET_VARIABLE( g_variables.m_pixel_surf, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_pixel_surf_key, key_bind_t ) ) )
-		this->pixel_surf( g_convars[ HASH_BT( "sv_gravity" ) ]->get_float( ) );
-	else
-
-		if ( GET_VARIABLE( g_variables.m_auto_align, bool ) )
+	if ( GET_VARIABLE( g_variables.m_auto_align, bool ) && !( pre_prediction_flags & e_flags::fl_onground ) )
 		this->auto_align( g_ctx.m_cmd );
 }
 
@@ -95,14 +92,6 @@ void n_movement::impl_t::jump_bug( int pre_prediction_flags )
 		if ( !( g_ctx.m_local->get_flags( ) & fl_onground ) && pre_prediction_flags & fl_onground )
 			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_duck;
 	}
-}
-
-void n_movement::impl_t::pixel_surf( const float gravity )
-{
-	if ( this->m_pixel_surf_data.m_in_pixel_surf || g_ctx.m_local->get_flags( ) & e_flags::fl_onground || g_ctx.m_local->get_velocity( ).m_z >= 0.f )
-		return;
-
-		const float target_velocity = -gravity * 0.5f * g_interfaces.m_global_vars_base->m_interval_per_tick;
 }
 
 void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, const c_angle& ang )
@@ -189,4 +178,42 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 
 	c_angle strafe_angle = c_angle( g_ctx.m_cmd->m_view_point.m_x, strafe_yaw, 0.f );
 	rotate_movement( cmd, strafe_angle );
+}
+
+void n_movement::impl_t::movement_fix( const c_angle& old_view_point )
+{
+	c_vector forward = { }, right = { }, up = { };
+	g_math.angle_vectors( old_view_point, &forward, &right, &up );
+
+	forward.m_z = right.m_z = up.m_x = up.m_y = 0.f;
+
+	forward.normalize_in_place( );
+	right.normalize_in_place( );
+	up.normalize_in_place( );
+
+	c_vector old_forward = { }, old_right = { }, old_up = { };
+	g_math.angle_vectors( g_ctx.m_cmd->m_view_point, &old_forward, &old_right, &old_up );
+
+	old_forward.m_z = old_right.m_z = old_up.m_x = old_up.m_y = 0.f;
+
+	old_forward.normalize_in_place( );
+	old_right.normalize_in_place( );
+	old_up.normalize_in_place( );
+
+	const float pitch_forward = forward.m_x * g_ctx.m_cmd->m_forward_move;
+	const float yaw_forward   = forward.m_y * g_ctx.m_cmd->m_forward_move;
+	const float pitch_side    = right.m_x * g_ctx.m_cmd->m_side_move;
+	const float yaw_side      = right.m_y * g_ctx.m_cmd->m_side_move;
+	const float roll_up       = up.m_z * g_ctx.m_cmd->m_up_move;
+
+	const float x = old_forward.m_x * pitch_side + old_forward.m_y * yaw_side + old_forward.m_x * pitch_forward + old_forward.m_y * yaw_forward +
+	                old_forward.m_z * roll_up;
+	const float y =
+		old_right.m_x * pitch_side + old_right.m_y * yaw_side + old_right.m_x * pitch_forward + old_right.m_y * yaw_forward + old_right.m_z * roll_up;
+
+	const auto cl_forwardspeed = g_convars[ HASH_BT( "cl_forwardspeed" ) ]->get_float( );
+	const auto cl_sidespeed    = g_convars[ HASH_BT( "cl_sidespeed" ) ]->get_float( );
+
+	g_ctx.m_cmd->m_forward_move = std::clamp( x, -cl_forwardspeed, cl_forwardspeed );
+	g_ctx.m_cmd->m_side_move    = std::clamp( y, -cl_sidespeed, cl_sidespeed );
 }
