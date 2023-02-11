@@ -9,6 +9,8 @@ namespace n_globals
 		c_user_cmd* m_cmd      = nullptr;
 		c_base_entity* m_local = nullptr;
 		bool m_unloading{ };
+		// fps lower then server tickrate
+		bool m_low_fps = false;
 	};
 
 } // namespace n_globals

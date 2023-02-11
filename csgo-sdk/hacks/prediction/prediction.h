@@ -2,6 +2,7 @@
 
 class c_user_cmd;
 class c_base_entity;
+class c_angle;
 #include "../../game/sdk/classes/c_vector.h"
 
 namespace n_prediction
@@ -9,8 +10,9 @@ namespace n_prediction
 	struct impl_t {
 		struct {
 			c_vector velocity{ };
-			c_vector view_angles{ };
-			float fall_velocity{ };
+			c_vector origin{ };
+			c_angle view_angles{ };
+			float* fall_velocity{ };
 			int flags{ };
 			int move_type{ };
 		} backup_data;
