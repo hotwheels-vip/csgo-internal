@@ -40,7 +40,7 @@ void n_movement::impl_t::on_create_move_post( int pre_prediction_flags )
 		this->jump_bug( pre_prediction_flags );
 
 	if ( GET_VARIABLE( g_variables.m_auto_align, bool ) )
-		this->auto_align( );
+		this->auto_align( g_ctx.m_cmd );
 }
 
 void n_movement::impl_t::edge_jump( int pre_prediction_flags )
@@ -70,7 +70,8 @@ void n_movement::impl_t::mini_jump( int pre_prediction_flags )
 
 void n_movement::impl_t::jump_bug( int pre_prediction_flags )
 {
-	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) ) {
+	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) )
+	{
 		static bool ducked = false;
 
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( pre_prediction_flags & e_flags::fl_onground ) && !ducked ) {
@@ -81,7 +82,9 @@ void n_movement::impl_t::jump_bug( int pre_prediction_flags )
 
 		if ( pre_prediction_flags & e_flags::fl_onground && ducked )
 			ducked = false;
-	} else {
+	}
+	else
+	{
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( pre_prediction_flags & e_flags::fl_onground ) )
 			g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
 
@@ -93,48 +96,57 @@ void n_movement::impl_t::jump_bug( int pre_prediction_flags )
 	}
 }
 
-void n_movement::impl_t::auto_align( )
+void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, const c_angle& ang )
 {
-	auto rotate_movement = []( c_angle& ang ) -> void {
-		c_vector vec_move = c_vector( g_ctx.m_cmd->m_forward_move, g_ctx.m_cmd->m_side_move, g_ctx.m_cmd->m_up_move );
+	c_vector vec_move = c_vector( cmd->m_forward_move, cmd->m_side_move, cmd->m_up_move );
 
-		const float speed = vec_move.length_2d( );
+	const float speed = vec_move.length_2d( );
 
-		const float rotation = deg2rad( g_ctx.m_cmd->m_view_point.m_y - ang.m_y );
+	const float rotation = deg2rad( g_ctx.m_cmd->m_view_point.m_y - ang.m_y );
 
-		g_ctx.m_cmd->m_forward_move = std::cosf( rotation ) * speed;
-		g_ctx.m_cmd->m_side_move    = std::sinf( rotation ) * speed;
-	};
+	cmd->m_forward_move = std::cosf( rotation ) * speed;
+	cmd->m_side_move    = std::sinf( rotation ) * speed;
+}
 
+void n_movement::impl_t::auto_align( c_user_cmd* cmd )
+{
 	const c_vector origin   = g_ctx.m_local->get_origin( );
 	const c_vector velocity = g_ctx.m_local->get_velocity( );
 
-	constexpr float distance_till_adjust = 0.03125f;
-	auto get_colliding_wall              = []( trace_t& out_trace ) -> bool {
-        constexpr float trace_additive = distance_till_adjust + ( 32.f / 2.f );
+	constexpr static float distance_till_adjust = 0.03125f;
+	constexpr static float error_margin         = 0.01f;
 
-        const c_vector_2d ray_differences[ 4 ] = { c_vector_2d( trace_additive, 0.f ), c_vector_2d( 0.f, trace_additive ),
-                                                   c_vector_2d( -trace_additive, 0.f ), c_vector_2d( 0.f, -trace_additive ) };
+	auto get_colliding_wall = [ & ]( trace_t& out_trace ) -> bool {
 
-        int walls_hit = 0;
-        for ( int i = 1; i <= 4; i++ ) {
-            if ( walls_hit > 1 )
-                break;
+		const float max_fw_move = g_convars[ HASH_BT( "cl_forwardspeed" ) ]->get_float( );
+		const float max_sm_move = g_convars[ HASH_BT( "cl_sidespeed" ) ]->get_float( );
 
-            trace_t trace{ };
-            c_trace_filter filter( g_ctx.m_local );
+		float fw_move = cmd->m_forward_move / max_fw_move;
+		float sm_move = cmd->m_side_move / max_sm_move;
 
-            c_vector to = g_ctx.m_local->get_origin( ) + c_vector( ray_differences[ i - 1 ].m_x, ray_differences[ i - 1 ].m_y, 0 );
-            ray_t ray( g_ctx.m_local->get_origin( ), to );
-            g_interfaces.m_engine_trace->trace_ray( ray, 0xFFFFFFFF /* MASK_ALL */, &filter, &trace );
+		c_vector va_forward = cmd->m_view_point.forward( ).normalize( ).to_vector( );
+		c_vector va_right   = cmd->m_view_point.right( ).normalize( ).to_vector( );
 
-            if ( trace.did_hit( ) && !trace.m_hit_entity->is_player( ) ) {
-                walls_hit++;
-                out_trace = trace;
-            }
-        }
+		c_vector wish_dir = { va_forward.m_x * fw_move + va_right.m_x * sm_move, va_forward.m_y * fw_move + va_right.m_y * sm_move, 0.f };
 
-        return walls_hit == 1;
+		c_vector direct_dir = { roundf( wish_dir.m_x ), roundf( wish_dir.m_y ), 0.f };
+
+		float trace_additive = ( distance_till_adjust + error_margin ) + g_ctx.m_local->get_collideable( )->obb_maxs( ).m_x;
+
+		trace_t trace;
+		c_trace_filter filter( g_ctx.m_local );
+
+		c_vector trace_dir = g_ctx.m_local->get_abs_origin( ) + c_vector( trace_additive * direct_dir.m_x, trace_additive * direct_dir.m_y, 0.f );
+
+		ray_t ray( g_ctx.m_local->get_abs_origin( ), trace_dir );
+		g_interfaces.m_engine_trace->trace_ray( ray, 0xFFFFFFFF /*MASK_ALL*/, &filter, &trace );
+
+		if ( trace.did_hit( ) && !trace.m_hit_entity->is_player( ) ) {
+			out_trace = trace;
+			return true;
+		}
+
+		return false;
 	};
 
 	constexpr auto has_to_align = []( const c_vector& origin ) -> bool {
@@ -167,6 +179,6 @@ void n_movement::impl_t::auto_align( )
 
 	strafe_yaw += yaw_delta < 0.f ? -minimum_gain : minimum_gain;
 
-	c_angle strafe_angle = c_angle( g_ctx.m_cmd->m_view_point.m_x, strafe_yaw, g_ctx.m_cmd->m_view_point.m_z );
-	rotate_movement( strafe_angle );
+	c_angle strafe_angle = c_angle( g_ctx.m_cmd->m_view_point.m_x, strafe_yaw, 0.f );
+	rotate_movement( cmd, strafe_angle );
 }

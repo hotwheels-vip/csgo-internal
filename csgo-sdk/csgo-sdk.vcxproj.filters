@@ -53,6 +53,7 @@
     <ClCompile Include="hooks\functions\get_vcollide.cpp" />
     <ClCompile Include="hacks\movement\movement.cpp" />
     <ClCompile Include="globals\math\math.cpp" />
+    <ClCompile Include="game\sdk\classes\c_angle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />

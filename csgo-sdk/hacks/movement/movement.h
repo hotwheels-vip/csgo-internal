@@ -1,4 +1,6 @@
 #pragma once
+class c_user_cmd;
+class c_angle;
 
 namespace n_movement
 {
@@ -15,7 +17,9 @@ namespace n_movement
 		void mini_jump( int pre_prediction_flags );
 		void jump_bug( int pre_prediction_flags );
 
-		void auto_align( );
+		void auto_align( c_user_cmd* cmd );
+
+		void rotate_movement( c_user_cmd* cmd, const c_angle& angle );
 	};
 } // namespace n_movement
 

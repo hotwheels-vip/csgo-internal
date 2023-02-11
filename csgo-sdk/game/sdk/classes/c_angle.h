@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <cmath>
+class c_vector;
 
 class c_angle
 {
@@ -142,7 +143,7 @@ public:
 		return ( std::fpclassify( this->m_x ) == FP_ZERO && std::fpclassify( this->m_y ) == FP_ZERO && std::fpclassify( this->m_z ) == FP_ZERO );
 	}
 
-	    [[nodiscard]] c_angle flip( ) const
+	[[nodiscard]] c_angle flip( ) const
 	{
 		return c_angle( this->m_x + 180.f, this->m_y + 180.f, this->m_z );
 	}
@@ -170,6 +171,12 @@ public:
 		this->m_z = std::fmodf( this->m_z, value );
 		return *this;
 	}
+
+	c_vector to_vector( );
+
+	c_angle forward( );
+	c_angle right( );
+	c_angle up( );
 
 public:
 	float m_x = { }, m_y = { }, m_z = { };

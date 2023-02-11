@@ -33,6 +33,7 @@
     <ClCompile Include="dependencies\minhook\src\hde\hde64.c" />
     <ClCompile Include="dependencies\minhook\src\hook.c" />
     <ClCompile Include="dependencies\minhook\src\trampoline.c" />
+    <ClCompile Include="game\sdk\classes\c_angle.cpp" />
     <ClCompile Include="game\sdk\classes\c_color.cpp" />
     <ClCompile Include="game\sdk\classes\c_user_cmd.cpp" />
     <ClCompile Include="game\sdk\classes\c_weapon_data.cpp" />
