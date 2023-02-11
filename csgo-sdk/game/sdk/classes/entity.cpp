@@ -90,6 +90,35 @@ void c_base_entity::post_think( )
 	g_interfaces.m_model_cache->end_lock( );
 }
 
+void c_base_entity::restore_entity_to_predicted_frame( int frame )
+{
+	static auto cl_predict = g_convars[ HASH_BT( "cl_predict" ) ];
+	if ( !cl_predict->get_int( ) )
+		return;
+
+	if ( !this->is_predictable( ) )
+		return;
+
+	this->restore_data( "RestoreEntityToPredictedFrame", frame, 2 /* PC_EVERYTHING */ );
+	this->on_post_restore_data( );
+}
+
+void c_base_entity::restore_data( const char* context, int slot, int type )
+{
+	static const auto restore_data_fn = reinterpret_cast< void( __thiscall* )( void*, const char*, int, int ) >(
+		g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 E4 F8 83 EC 44 53 56 8B" ) );
+
+	restore_data_fn( this, context, slot, type );
+}
+
+void c_base_entity::on_post_restore_data( )
+{
+	static const auto on_post_restore_data_fn =
+		reinterpret_cast< void( __thiscall* )( void* ) >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 51 53 56 6A" ) );
+
+	on_post_restore_data_fn( this );
+}
+
 bool c_base_entity::physics_run_think( int think_method )
 {
 	static auto physics_run_think_fn =

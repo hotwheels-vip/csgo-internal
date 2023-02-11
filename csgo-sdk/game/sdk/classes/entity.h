@@ -223,7 +223,7 @@ public:
 	NETVAR_VARIABLE( int, get_team, "CBaseEntity->m_iTeamNum" );
 	NETVAR_VARIABLE( c_vector, get_origin, "CBaseEntity->m_vecOrigin" );
 	NETVAR_VARIABLE( float, get_simulation_time, "CBaseEntity->m_flSimulationTime" );
-	NETVAR_VARIABLE( bool, get_predictable, "CBaseEntity->m_bPredictable" );
+	NETVAR_VARIABLE( bool, is_predictable, "CBaseEntity->m_bPredictable" );
 	NETVAR_VARIABLE( int, get_model_index, "CBaseEntity->m_nModelIndex" );
 
 	/* DT_BaseAnimating */
@@ -360,6 +360,9 @@ public:
 	void modify_eye_position( const c_animation_state* animation_state, c_vector* position ) const;
 	void set_next_think( int think );
 	void post_think( );
+	void restore_entity_to_predicted_frame( int frame );
+	void restore_data( const char* context, int slot, int type );
+	void on_post_restore_data( );
 
 	bool physics_run_think( int think_method );
 	bool can_shoot( );

@@ -27,6 +27,9 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_jump_bug, false );
 		ADD_VARIABLE( key_bind_t, m_jump_bug_key, key_bind_t( 0, 1 ) );
 
+		ADD_VARIABLE( bool, m_pixel_surf, false );
+		ADD_VARIABLE( key_bind_t, m_pixel_surf_key, key_bind_t( 0, 1 ) );
+
 		ADD_VARIABLE( bool, m_auto_align, false );
 	};
 }; // namespace n_variables

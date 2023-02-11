@@ -39,7 +39,11 @@ void n_movement::impl_t::on_create_move_post( int pre_prediction_flags )
 	if ( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) )
 		this->jump_bug( pre_prediction_flags );
 
-	if ( GET_VARIABLE( g_variables.m_auto_align, bool ) )
+	if ( GET_VARIABLE( g_variables.m_pixel_surf, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_pixel_surf_key, key_bind_t ) ) )
+		this->pixel_surf( g_convars[ HASH_BT( "sv_gravity" ) ]->get_float( ) );
+	else
+
+		if ( GET_VARIABLE( g_variables.m_auto_align, bool ) )
 		this->auto_align( g_ctx.m_cmd );
 }
 
@@ -70,8 +74,7 @@ void n_movement::impl_t::mini_jump( int pre_prediction_flags )
 
 void n_movement::impl_t::jump_bug( int pre_prediction_flags )
 {
-	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) )
-	{
+	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) ) {
 		static bool ducked = false;
 
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( pre_prediction_flags & e_flags::fl_onground ) && !ducked ) {
@@ -82,9 +85,7 @@ void n_movement::impl_t::jump_bug( int pre_prediction_flags )
 
 		if ( pre_prediction_flags & e_flags::fl_onground && ducked )
 			ducked = false;
-	}
-	else
-	{
+	} else {
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( pre_prediction_flags & e_flags::fl_onground ) )
 			g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
 
@@ -94,6 +95,14 @@ void n_movement::impl_t::jump_bug( int pre_prediction_flags )
 		if ( !( g_ctx.m_local->get_flags( ) & fl_onground ) && pre_prediction_flags & fl_onground )
 			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_duck;
 	}
+}
+
+void n_movement::impl_t::pixel_surf( const float gravity )
+{
+	if ( this->m_pixel_surf_data.m_in_pixel_surf || g_ctx.m_local->get_flags( ) & e_flags::fl_onground || g_ctx.m_local->get_velocity( ).m_z >= 0.f )
+		return;
+
+		const float target_velocity = -gravity * 0.5f * g_interfaces.m_global_vars_base->m_interval_per_tick;
 }
 
 void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, const c_angle& ang )
@@ -117,7 +126,6 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 	constexpr static float error_margin         = 0.01f;
 
 	auto get_colliding_wall = [ & ]( trace_t& out_trace ) -> bool {
-
 		const float max_fw_move = g_convars[ HASH_BT( "cl_forwardspeed" ) ]->get_float( );
 		const float max_sm_move = g_convars[ HASH_BT( "cl_sidespeed" ) ]->get_float( );
 
@@ -133,7 +141,7 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 
 		float trace_additive = ( distance_till_adjust + error_margin ) + g_ctx.m_local->get_collideable( )->obb_maxs( ).m_x;
 
-		trace_t trace;
+		trace_t trace{ };
 		c_trace_filter filter( g_ctx.m_local );
 
 		c_vector trace_dir = g_ctx.m_local->get_abs_origin( ) + c_vector( trace_additive * direct_dir.m_x, trace_additive * direct_dir.m_y, 0.f );
@@ -164,7 +172,7 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 	if ( velocity.length_2d( ) == 0.f || g_ctx.m_local->get_flags( ) & e_flags::fl_onground || !has_to_align( origin ) )
 		return;
 
-	trace_t hit_trace;
+	trace_t hit_trace{ };
 	bool is_valid = get_colliding_wall( hit_trace );
 
 	if ( !is_valid )

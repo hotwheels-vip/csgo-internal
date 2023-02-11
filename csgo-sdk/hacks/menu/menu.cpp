@@ -208,6 +208,9 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Checkbox( "jump bug", &GET_VARIABLE( g_variables.m_jump_bug, bool ) );
 				ImGui::Keybind( "jump bug key", &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) );
 
+				ImGui::Checkbox( "pixel surf", &GET_VARIABLE( g_variables.m_pixel_surf, bool ) );
+				ImGui::Keybind( "pixel surf key", &GET_VARIABLE( g_variables.m_pixel_surf_key, key_bind_t ) );
+
 				ImGui::Checkbox( "auto align", &GET_VARIABLE( g_variables.m_auto_align, bool ) );
 
 				ImGui::EndChild( );
