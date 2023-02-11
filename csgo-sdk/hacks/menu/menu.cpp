@@ -222,42 +222,6 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild( ( "indicators" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-				ImGui::Checkbox( "velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator, bool ) );
-				if ( GET_VARIABLE( g_variables.m_velocity_indicator, bool ) ) {
-					if ( GET_VARIABLE( g_variables.m_velocity_indicator_custom_color, bool ) ) {
-						ImGui::ColorEdit4( "##velocity indicator color 1", &GET_VARIABLE( g_variables.m_velocity_indicator_color1, c_color ),
-						                   color_picker_alpha_flags );
-
-						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
-
-						ImGui::ColorEdit4( "##velocity indicator color 2", &GET_VARIABLE( g_variables.m_velocity_indicator_color2, c_color ),
-						                   color_picker_alpha_flags );
-					} else {
-						ImGui::ColorEdit4( "##velocity indicator color 3", &GET_VARIABLE( g_variables.m_velocity_indicator_color3, c_color ),
-						                   color_picker_alpha_flags );
-
-						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
-
-						ImGui::ColorEdit4( "##velocity indicator color 4", &GET_VARIABLE( g_variables.m_velocity_indicator_color4, c_color ),
-						                   color_picker_alpha_flags );
-
-						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 50.f );
-
-						ImGui::ColorEdit4( "##velocity indicator color 5", &GET_VARIABLE( g_variables.m_velocity_indicator_color5, c_color ),
-						                   color_picker_alpha_flags );
-					}
-
-					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "show pre speed##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_show_pre_speed, bool ) );
-
-					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "fade alpha##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_fade_alpha, bool ) );
-
-					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "custom color##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_custom_color, bool ) );
-
-					ImGui::SliderInt( "position##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_position, int ), 0, 100, "%d%%" );
-				}
 				ImGui::EndChild( );
 			}
 			break;
