@@ -34,7 +34,7 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_frame_stage_notify, g_virtual.get( g_interfaces.m_base_client, 37 ), &n_detoured_functions::frame_stage_notify,
 	                 "CHLClient::FrameStageNotify()" );
 
-	initialise_hook( m_paint_traverse, g_virtual.get( g_interfaces.m_panel, 37 ), &n_detoured_functions::paint_traverse, "IPanel::PaintTraverse()" );
+	initialise_hook( m_paint_traverse, g_virtual.get( g_interfaces.m_panel, 41 ), &n_detoured_functions::paint_traverse, "IPanel::PaintTraverse()" );
 
 	initialise_hook( m_on_add_entity, reinterpret_cast< void* >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 51 8B 45 0C 53 56 8B F1 57" ) ),
 	                 &n_detoured_functions::on_add_entity, "IClientEntityList::OnAddEntity()" );

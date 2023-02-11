@@ -54,6 +54,8 @@
     <ClCompile Include="hacks\movement\movement.cpp" />
     <ClCompile Include="globals\math\math.cpp" />
     <ClCompile Include="game\sdk\classes\c_angle.cpp" />
+    <ClCompile Include="hacks\lagcomp\lagcomp.cpp" />
+    <ClCompile Include="hacks\indicators\indicators.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -210,6 +212,8 @@
     <ClInclude Include="hacks\movement\movement.h" />
     <ClInclude Include="globals\math\math.h" />
     <ClInclude Include="game\sdk\enums\e_move_types.h" />
+    <ClInclude Include="hacks\lagcomp\lagcomp.h" />
+    <ClInclude Include="hacks\indicators\indicators.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

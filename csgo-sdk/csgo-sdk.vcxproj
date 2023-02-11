@@ -42,6 +42,8 @@
     <ClCompile Include="globals\convars\convars.cpp" />
     <ClCompile Include="globals\math\math.cpp" />
     <ClCompile Include="hacks\entity_cache\entity_cache.cpp" />
+    <ClCompile Include="hacks\indicators\indicators.cpp" />
+    <ClCompile Include="hacks\lagcomp\lagcomp.cpp" />
     <ClCompile Include="hacks\movement\movement.cpp" />
     <ClCompile Include="hacks\visuals\edicts\edicts.cpp" />
     <ClCompile Include="hooks\detour_hook\c_detour_hook.cpp" />
@@ -209,6 +211,8 @@
     <ClInclude Include="globals\macros\macros.h" />
     <ClInclude Include="globals\math\math.h" />
     <ClInclude Include="hacks\entity_cache\entity_cache.h" />
+    <ClInclude Include="hacks\indicators\indicators.h" />
+    <ClInclude Include="hacks\lagcomp\lagcomp.h" />
     <ClInclude Include="hacks\movement\movement.h" />
     <ClInclude Include="hacks\visuals\edicts\edicts.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />

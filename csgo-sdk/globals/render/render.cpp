@@ -1,6 +1,6 @@
 #include "render.h"
-#include "../includes/includes.h"
 #include "../../dependencies/imgui/helpers/fonts.h"
+#include "../includes/includes.h"
 
 void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, IDirect3DDevice9* device )
 {
@@ -85,7 +85,9 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 	ImGui_ImplWin32_NewFrame( );
 	ImGui::NewFrame( );
 
-	function();
+	this->draw_cached_data( );
+
+	function( );
 
 	ImGui::EndFrame( );
 	ImGui::Render( );
@@ -98,4 +100,46 @@ void n_render::impl_t::on_release( )
 	ImGui_ImplDX9_Shutdown( );
 	ImGui_ImplWin32_Shutdown( );
 	ImGui::DestroyContext( );
+}
+
+void n_render::impl_t::draw_cached_data( )
+{
+	const auto draw_list = ImGui::GetBackgroundDrawList( );
+
+	std::unique_lock< std::shared_mutex > lock( this->m_mutex );
+
+	if ( this->m_thread_safe_draw_data.empty( ) )
+		return;
+
+	for ( const draw_object_t& data : this->m_thread_safe_draw_data ) {
+		if ( !data.m_obj.has_value( ) )
+			continue;
+
+		switch ( data.m_type ) {
+		case e_draw_type::draw_type_text: {
+			const auto& obj = std::any_cast< text_draw_object_t >( data.m_obj );
+			this->text( draw_list, obj.m_font, obj.m_position, obj.m_text, obj.m_color, obj.m_outline_color, obj.m_draw_flags );
+			break;
+		}
+		default:
+			break;
+		}
+	}
+}
+
+void n_render::impl_t::text( ImDrawList* draw_list, ImFont* font, const c_vector_2d& position, const std::string& text, const unsigned int& color,
+                             const ImU32& outline_color, e_text_flags draw_flags )
+{
+	draw_list->PushTextureID( font->ContainerAtlas->TexID );
+
+	if ( draw_flags & e_text_flags::text_flag_dropshadow )
+		draw_list->AddText( font, font->FontSize, ImVec2( position.m_x + 1.f, position.m_y + 1.f ), outline_color, text.c_str( ) );
+	else if ( draw_flags & e_text_flags::text_flag_outline ) {
+		draw_list->AddText( font, font->FontSize, ImVec2( position.m_x + 1.f, position.m_y - 1.f ), outline_color, text.c_str( ) );
+		draw_list->AddText( font, font->FontSize, ImVec2( position.m_x - 1.f, position.m_y + 1.f ), outline_color, text.c_str( ) );
+	}
+
+	draw_list->AddText( font, font->FontSize, ImVec2( position.m_x, position.m_y ), color, text.c_str( ) );
+
+	draw_list->PopTextureID( );
 }

@@ -31,6 +31,22 @@ namespace n_variables
 		ADD_VARIABLE( key_bind_t, m_pixel_surf_key, key_bind_t( 0, 1 ) );
 
 		ADD_VARIABLE( bool, m_auto_align, false );
+
+		/* misc - movement - indicators */
+		ADD_VARIABLE( bool, m_velocity_indicator, false );
+		ADD_VARIABLE( bool, m_velocity_indicator_fade_alpha, false );
+		ADD_VARIABLE( bool, m_velocity_indicator_custom_color, false );
+		ADD_VARIABLE( int, m_velocity_indicator_position, 30 );
+		ADD_VARIABLE( bool, m_velocity_indicator_show_pre_speed, false );
+
+		/* custom colors */
+		ADD_VARIABLE( c_color, m_velocity_indicator_color1, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( c_color, m_velocity_indicator_color2, c_color( 255, 255, 255, 255 ) );
+
+		/* speed based colors */
+		ADD_VARIABLE( c_color, m_velocity_indicator_color3, c_color( 255, 199, 89, 255 ) );
+		ADD_VARIABLE( c_color, m_velocity_indicator_color4, c_color( 255, 119, 119, 255 ) );
+		ADD_VARIABLE( c_color, m_velocity_indicator_color5, c_color( 30, 255, 109, 255 ) );
 	};
 }; // namespace n_variables
 
