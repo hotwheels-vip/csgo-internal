@@ -73,5 +73,9 @@ void __fastcall n_detoured_functions::particle_collection_simulate( void* ecx, v
 
 	std::string_view root_name = root->m_def.m_obj->m_name.m_buffer;
 
-
+	if ( std::string_view{ root_name }.starts_with( "rain" ) || std::string_view{ root_name }.starts_with( "snow" ) ||
+	     std::string_view{ root_name }.starts_with( "ash" ) ) {
+		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
+			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_precipitation_color, c_color ), iterator );
+	}
 }

@@ -11,6 +11,7 @@ namespace n_variables
 		/* visuals - edicts */
 		ADD_VARIABLE( bool, m_precipitation, false );
 		ADD_VARIABLE( int, m_precipitation_type, 0 );
+		ADD_VARIABLE( c_color, m_precipitation_color, c_color( 255, 255, 255, 255 ) );
 
 		/* misc - movement */
 		ADD_VARIABLE( bool, m_bunny_hop, false );
