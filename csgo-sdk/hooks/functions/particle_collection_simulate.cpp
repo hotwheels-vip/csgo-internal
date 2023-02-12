@@ -91,4 +91,10 @@ void __fastcall n_detoured_functions::particle_collection_simulate( void* ecx, v
 	       hash == HASH_BT( "weapon_molotov_thrown" ) ) )
 		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
 			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_custom_molotov_color, c_color ), iterator );
+
+	if ( GET_VARIABLE( g_variables.m_custom_blood, bool ) &&
+	     ( hash == HASH_BT( "blood_impact_light" ) || hash == HASH_BT( "blood_impact_medium" ) || hash == HASH_BT( "blood_impact_heavy" ) ||
+	       hash == HASH_BT( "blood_impact_light_headshot" ) ) )
+		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
+			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_custom_blood_color, c_color ), iterator );
 }

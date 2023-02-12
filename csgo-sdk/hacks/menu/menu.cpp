@@ -199,6 +199,11 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::ColorEdit4( "##custom molotov color picker", &GET_VARIABLE( g_variables.m_custom_molotov_color, c_color ),
 					                   color_picker_alpha_flags );
 
+				ImGui::Checkbox( "custom blood color", &GET_VARIABLE( g_variables.m_custom_blood, bool ) );
+				if ( GET_VARIABLE( g_variables.m_custom_blood, bool ) )
+					ImGui::ColorEdit4( "##custom blood color picker", &GET_VARIABLE( g_variables.m_custom_blood_color, c_color ),
+					                   color_picker_alpha_flags );
+
 				ImGui::EndChild( );
 			}
 			break;
