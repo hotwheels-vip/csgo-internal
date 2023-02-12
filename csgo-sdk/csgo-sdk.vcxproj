@@ -59,6 +59,7 @@
     <ClCompile Include="hooks\functions\on_add_entity.cpp" />
     <ClCompile Include="hooks\functions\on_remove_entity.cpp" />
     <ClCompile Include="hooks\functions\paint_traverse.cpp" />
+    <ClCompile Include="hooks\functions\particle_collection_simulate.cpp" />
     <ClCompile Include="hooks\functions\reset.cpp" />
     <ClCompile Include="hooks\functions\run_command.cpp" />
     <ClCompile Include="hooks\functions\wndproc.cpp" />
@@ -150,6 +151,8 @@
     <ClInclude Include="game\sdk\classes\c_prediction.h" />
     <ClInclude Include="game\sdk\classes\c_surface.h" />
     <ClInclude Include="game\sdk\classes\c_user_cmd.h" />
+    <ClInclude Include="game\sdk\classes\c_utl_reference.h" />
+    <ClInclude Include="game\sdk\classes\c_utl_string.h" />
     <ClInclude Include="game\sdk\classes\entity.h" />
     <ClInclude Include="game\sdk\classes\c_cconvar.h" />
     <ClInclude Include="game\sdk\classes\c_convar.h" />
