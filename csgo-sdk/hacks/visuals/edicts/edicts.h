@@ -13,6 +13,7 @@ namespace n_edicts
 	private:
 		void precipitation( );
 		void fog( );
+		void disable_post_processing( );
 	};
 } // namespace n_edicts
 

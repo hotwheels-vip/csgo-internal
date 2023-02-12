@@ -58,6 +58,7 @@
     <ClCompile Include="hacks\indicators\indicators.cpp" />
     <ClCompile Include="hooks\functions\particle_collection_simulate.cpp" />
     <ClCompile Include="hooks\functions\find_material.cpp" />
+    <ClCompile Include="hacks\misc\misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="game\sdk\classes\c_utl_string.h" />
     <ClInclude Include="game\sdk\classes\c_utl_reference.h" />
     <ClInclude Include="game\sdk\classes\c_studio_render.h" />
+    <ClInclude Include="hacks\misc\misc.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

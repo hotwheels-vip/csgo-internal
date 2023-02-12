@@ -92,7 +92,7 @@ There's no one like him
 Nobody like chungus
 Huh */
 
-#include "game/sdk/includes/includes.h" +
+#include "game/sdk/includes/includes.h"
 #include "globals/includes/includes.h"
 
 static unsigned long __stdcall on_attach( void* instance )

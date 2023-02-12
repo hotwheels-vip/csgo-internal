@@ -212,6 +212,10 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::ColorEdit4( "##custom blood color picker", &GET_VARIABLE( g_variables.m_custom_blood_color, c_color ),
 					                   color_picker_alpha_flags );
 
+				ImGui::CustomSeparator( "removals" );
+				ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
+				ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
+
 				ImGui::EndChild( );
 			}
 			break;
