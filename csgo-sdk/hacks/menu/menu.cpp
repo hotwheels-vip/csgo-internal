@@ -169,14 +169,30 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::EndChild( );
 			}
 
+			static auto backup_cursor_position = ImGui::GetCursorPos( );
+
 			if ( ImGui::BeginChild(
-					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
-					 true, 0, true ) ) {
+					 ( "glow" ),
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
+					 0, true ) ) {
 				ImGui::EndChild( );
 			}
 
+			if ( ImGui::BeginChild(
+					 ( "removals & optimisations" ),
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
+					 true ) ) {
+
+				ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
+				ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
+
+				ImGui::EndChild( );
+			}
+
+			ImGui::SetCursorPos( backup_cursor_position );
+
 			ImGui::SameLine( );
-			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
+			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f - 120.f /* hardcoded*/ );
 
 			if ( ImGui::BeginChild( ( "world" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
@@ -211,10 +227,6 @@ void n_menu::impl_t::on_end_scene( )
 				if ( GET_VARIABLE( g_variables.m_custom_blood, bool ) )
 					ImGui::ColorEdit4( "##custom blood color picker", &GET_VARIABLE( g_variables.m_custom_blood_color, c_color ),
 					                   color_picker_alpha_flags );
-
-				ImGui::CustomSeparator( "removals" );
-				ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
-				ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
 
 				ImGui::EndChild( );
 			}
