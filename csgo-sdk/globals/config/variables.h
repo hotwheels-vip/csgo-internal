@@ -8,29 +8,27 @@ namespace n_variables
 		/* menu */
 		ADD_VARIABLE( c_color, m_accent, c_color( 129, 99, 251, 255 ) );
 
-		/* visuals - edicts */
+		/* visuals - world */
 		ADD_VARIABLE( bool, m_precipitation, false );
 		ADD_VARIABLE( int, m_precipitation_type, 0 );
 		ADD_VARIABLE( c_color, m_precipitation_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( bool, m_custom_smoke, false );
+		ADD_VARIABLE( c_color, m_custom_smoke_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( bool, m_custom_molotov, false );
+		ADD_VARIABLE( c_color, m_custom_molotov_color, c_color( 255, 255, 255, 255 ) );
 
 		/* misc - movement */
 		ADD_VARIABLE( bool, m_bunny_hop, false );
-
 		ADD_VARIABLE( bool, m_edge_jump, false );
 		ADD_VARIABLE( key_bind_t, m_edge_jump_key, key_bind_t( 0, 1 ) );
-
 		ADD_VARIABLE( bool, m_long_jump, false );
 		ADD_VARIABLE( key_bind_t, m_long_jump_key, key_bind_t( 0, 1 ) );
-
 		ADD_VARIABLE( bool, m_mini_jump, false );
 		ADD_VARIABLE( key_bind_t, m_mini_jump_key, key_bind_t( 0, 1 ) );
-
 		ADD_VARIABLE( bool, m_jump_bug, false );
 		ADD_VARIABLE( key_bind_t, m_jump_bug_key, key_bind_t( 0, 1 ) );
-
 		ADD_VARIABLE( bool, m_pixel_surf, false );
 		ADD_VARIABLE( key_bind_t, m_pixel_surf_key, key_bind_t( 0, 1 ) );
-
 		ADD_VARIABLE( bool, m_auto_align, false );
 
 		ADD_VARIABLE( bool, m_velocity_indicator, false );
@@ -39,11 +37,9 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_velocity_indicator_custom_color, false );
 		ADD_VARIABLE( int, m_velocity_indicator_padding, 5 );
 
-		/* custom colors */
+		/* misc - movement - indicators */
 		ADD_VARIABLE( c_color, m_velocity_indicator_color1, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_velocity_indicator_color2, c_color( 255, 255, 255, 255 ) );
-
-		/* speed based colors */
 		ADD_VARIABLE( c_color, m_velocity_indicator_color3, c_color( 255, 199, 89, 255 ) );
 		ADD_VARIABLE( c_color, m_velocity_indicator_color4, c_color( 255, 119, 119, 255 ) );
 		ADD_VARIABLE( c_color, m_velocity_indicator_color5, c_color( 30, 255, 109, 255 ) );
@@ -52,7 +48,6 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_stamina_indicator_show_pre_speed, false );
 		ADD_VARIABLE( c_color, m_stamina_indicator_color1, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_stamina_indicator_color2, c_color( 255, 255, 255, 255 ) );
-
 		ADD_VARIABLE( bool, m_stamina_indicator_fade_alpha, false );
 		ADD_VARIABLE( int, m_stamina_indicator_padding, 5 );
 	};

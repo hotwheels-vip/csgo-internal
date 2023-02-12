@@ -74,10 +74,21 @@ void __fastcall n_detoured_functions::particle_collection_simulate( void* ecx, v
 
 	const auto hash = HASH_RT( std::string( root->m_def.m_obj->m_name.m_buffer ).c_str( ) );
 
-	const bool should_color_modulate =
-		hash == HASH_BT( "rain" ) || hash == HASH_BT( "rain_storm" ) || hash == HASH_BT( "snow" ) || hash == HASH_BT( "ash" );
-
-	if ( should_color_modulate )
+	if ( GET_VARIABLE( g_variables.m_precipitation, bool ) &&
+	     ( hash == HASH_BT( "rain" ) || hash == HASH_BT( "rain_storm" ) || hash == HASH_BT( "snow" ) || hash == HASH_BT( "ash" ) ) )
 		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
 			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_precipitation_color, c_color ), iterator );
+
+	if ( GET_VARIABLE( g_variables.m_custom_smoke, bool ) &&
+	     ( hash == HASH_BT( "explosion_smokegrenade" ) || hash == HASH_BT( "explosion_smokegrenade_fallback" ) ) )
+		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
+			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_custom_smoke_color, c_color ), iterator );
+
+	if ( GET_VARIABLE( g_variables.m_custom_molotov, bool ) &&
+	     ( hash == HASH_BT( "explosion_molotov_air" ) || hash == HASH_BT( "extinguish_fire" ) || hash == HASH_BT( "molotov_groundfire" ) ||
+	       hash == HASH_BT( "molotov_groundfire_fallback" ) || hash == HASH_BT( "molotov_groundfire_fallback2" ) ||
+	       hash == HASH_BT( "molotov_explosion" ) || hash == HASH_BT( "weapon_molotov_held" ) || hash == HASH_BT( "weapon_molotov_fp" ) ||
+	       hash == HASH_BT( "weapon_molotov_thrown" ) ) )
+		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
+			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_custom_molotov_color, c_color ), iterator );
 }

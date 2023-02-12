@@ -188,6 +188,17 @@ void n_menu::impl_t::on_end_scene( )
 
 					ImGui::Combo( "weather type", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
 				}
+
+				ImGui::Checkbox( "custom smoke color", &GET_VARIABLE( g_variables.m_custom_smoke, bool ) );
+				if ( GET_VARIABLE( g_variables.m_custom_smoke, bool ) )
+					ImGui::ColorEdit4( "##custom smoke color picker", &GET_VARIABLE( g_variables.m_custom_smoke_color, c_color ),
+					                   color_picker_alpha_flags );
+
+				ImGui::Checkbox( "custom molotov color", &GET_VARIABLE( g_variables.m_custom_molotov, bool ) );
+				if ( GET_VARIABLE( g_variables.m_custom_molotov, bool ) )
+					ImGui::ColorEdit4( "##custom molotov color picker", &GET_VARIABLE( g_variables.m_custom_molotov_color, c_color ),
+					                   color_picker_alpha_flags );
+
 				ImGui::EndChild( );
 			}
 			break;
@@ -259,8 +270,7 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::SetCursorPosX( 26.f );
 					ImGui::Checkbox( "custom color##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_custom_color, bool ) );
 
-					ImGui::SliderInt( "padding##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_padding, int ), 5, 100,
-					                  "%d%%" );
+					ImGui::SliderInt( "padding##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_padding, int ), 5, 100, "%d%%" );
 				}
 
 				ImGui::Checkbox( "stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator, bool ) );
@@ -270,15 +280,14 @@ void n_menu::impl_t::on_end_scene( )
 
 					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
-					ImGui::ColorEdit4( "##stamina indicator color 2",
-					                   &GET_VARIABLE( g_variables.m_stamina_indicator_color2, c_color ), color_picker_alpha_flags );
+					ImGui::ColorEdit4( "##stamina indicator color 2", &GET_VARIABLE( g_variables.m_stamina_indicator_color2, c_color ),
+					                   color_picker_alpha_flags );
 
 					ImGui::SetCursorPosX( 26.f );
 					ImGui::Checkbox( "show pre speed##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_show_pre_speed, bool ) );
 
 					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "fade alpha##stamina indicator",
-					                 &GET_VARIABLE( g_variables.m_stamina_indicator_fade_alpha, bool ) );
+					ImGui::Checkbox( "fade alpha##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_fade_alpha, bool ) );
 
 					ImGui::SliderInt( "padding##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_padding, int ), 5, 100, "%d%%" );
 				}
