@@ -92,6 +92,7 @@ There's no one like him
 Nobody like chungus
 Huh */
 
+#include "game/sdk/includes/includes.h" +
 #include "globals/includes/includes.h"
 
 static unsigned long __stdcall on_attach( void* instance )
@@ -122,13 +123,13 @@ static unsigned long __stdcall on_attach( void* instance )
 	else
 		g_console.print( "initialised convars" );
 
-		g_console.print( "initialising input system" );
+	g_console.print( "initialising input system" );
 	if ( !g_input.on_attach( ) )
 		g_console.print( "failed to initialise input system" );
 	else
 		g_console.print( "initialised hooks" );
 
-		g_console.print( "initialising config system" );
+	g_console.print( "initialising config system" );
 	if ( !g_config.on_attach( ) )
 		g_console.print( "failed to initialise config system" );
 	else
@@ -150,9 +151,10 @@ static unsigned long __stdcall on_attach( void* instance )
 	g_input.on_release( );
 
 	g_render.on_release( );
-	std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
 
 	g_console.on_release( );
+
+	g_interfaces.m_client_state->m_delta_tick = -1;
 
 	LI_FN( FreeLibrary )( static_cast< HMODULE >( instance ) );
 

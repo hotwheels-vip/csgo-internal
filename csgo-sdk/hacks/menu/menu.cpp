@@ -183,10 +183,18 @@ void n_menu::impl_t::on_end_scene( )
 			                        true, 0, true ) ) {
 				ImGui::Checkbox( "precipitation", &GET_VARIABLE( g_variables.m_precipitation, bool ) );
 				if ( GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
-					ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
-					                   color_picker_alpha_flags );
+					/*ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
+					                   color_picker_alpha_flags );*/
 
 					ImGui::Combo( "weather type", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
+				}
+
+				ImGui::Checkbox( "fog", &GET_VARIABLE( g_variables.m_fog, bool ) );
+				if ( GET_VARIABLE( g_variables.m_fog, bool ) ) {
+					ImGui::ColorEdit4( "##fog picker", &GET_VARIABLE( g_variables.m_fog_color, c_color ), color_picker_alpha_flags );
+
+					ImGui::SliderFloat( "start##fog", &GET_VARIABLE( g_variables.m_fog_start, float ), 0.f, 5000.f, "%.1f" );
+					ImGui::SliderFloat( "end##fog", &GET_VARIABLE( g_variables.m_fog_end, float ), 0.f, 5000.f, "%.1f" );
 				}
 
 				ImGui::Checkbox( "custom smoke color", &GET_VARIABLE( g_variables.m_custom_smoke, bool ) );

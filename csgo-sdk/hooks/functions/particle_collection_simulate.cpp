@@ -60,6 +60,7 @@ public:
 	c_particle_attribute_address_table m_particle_attributes;
 };
 
+/* https://github.com/Synth1a/uwu.beta/blob/31f46f3ff6fe283d69e4e261222dc7abb987dba0/uwu.beta/csgo_sdk/hooks.cpp#L347 */
 void __fastcall n_detoured_functions::particle_collection_simulate( void* ecx, void* edx )
 {
 	static auto original = g_hooks.m_particle_collection_simulate.get_original< void( __fastcall* )( void* ) >( );
@@ -74,10 +75,11 @@ void __fastcall n_detoured_functions::particle_collection_simulate( void* ecx, v
 
 	const auto hash = HASH_RT( std::string( root->m_def.m_obj->m_name.m_buffer ).c_str( ) );
 
-	if ( GET_VARIABLE( g_variables.m_precipitation, bool ) &&
+	/* looks so ugly :skull: */
+	/*if ( GET_VARIABLE( g_variables.m_precipitation, bool ) &&
 	     ( hash == HASH_BT( "rain" ) || hash == HASH_BT( "rain_storm" ) || hash == HASH_BT( "snow" ) || hash == HASH_BT( "ash" ) ) )
 		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
-			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_precipitation_color, c_color ), iterator );
+			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_precipitation_color, c_color ), iterator );*/
 
 	if ( GET_VARIABLE( g_variables.m_custom_smoke, bool ) &&
 	     ( hash == HASH_BT( "explosion_smokegrenade" ) || hash == HASH_BT( "explosion_smokegrenade_fallback" ) ) )

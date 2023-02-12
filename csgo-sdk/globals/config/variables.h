@@ -11,7 +11,12 @@ namespace n_variables
 		/* visuals - world */
 		ADD_VARIABLE( bool, m_precipitation, false );
 		ADD_VARIABLE( int, m_precipitation_type, 0 );
-		ADD_VARIABLE( c_color, m_precipitation_color, c_color( 255, 255, 255, 255 ) );
+		/*ADD_VARIABLE( c_color, m_precipitation_color, c_color( 255, 255, 255, 255 ) );*/
+		ADD_VARIABLE( bool, m_fog, false );
+		ADD_VARIABLE( float, m_fog_start, 0.f );
+		ADD_VARIABLE( float, m_fog_end, 0.f );
+		ADD_VARIABLE( c_color, m_fog_color, c_color( 255, 255, 255, 255 ) );
+
 		ADD_VARIABLE( bool, m_custom_smoke, false );
 		ADD_VARIABLE( c_color, m_custom_smoke_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_custom_molotov, false );

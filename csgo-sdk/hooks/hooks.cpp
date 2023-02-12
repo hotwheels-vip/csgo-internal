@@ -57,6 +57,9 @@ bool n_hooks::impl_t::on_attach( )
 						 "55 8B EC 83 E4 F8 83 EC 30 56 57 8B F9 0F 28 E1 8B 0D ? ? ? ? F3 0F 11 64 24 ? 89 7C 24 18 8B 81" ) ),
 	                 &n_detoured_functions::particle_collection_simulate, "CParticleCollection::Simulate()" );
 
+	initialise_hook( m_find_material, g_virtual.get( g_interfaces.m_material_system, 84 ), &n_detoured_functions::find_material,
+	                 "CMaterialSystem::FindMaterial()" );
+
 	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 
 	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );

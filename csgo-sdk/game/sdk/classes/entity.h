@@ -276,12 +276,12 @@ public:
 	NETVAR_VARIABLE( unsigned int, get_weapon_handle, "CBaseViewModel->m_hWeapon" );
 
 	/* DT_FogController */
-	NETVAR_VARIABLE( int, enable, "CFogController->m_fog.enable" );
-	NETVAR_VARIABLE( float, start, "CFogController->m_fog.start" );
-	NETVAR_VARIABLE( float, end, "CFogController->m_fog.end" );
-	NETVAR_VARIABLE( float, density, "CFogController->m_fog.maxdensity" );
-	NETVAR_VARIABLE( int, color, "CFogController->m_fog.colorPrimary" );
-	NETVAR_VARIABLE( int, color_secondary, "CFogController->m_fog.colorSecondary" );
+	NETVAR_VARIABLE( int, get_fog_enable, "CFogController->m_fog.enable" );
+	NETVAR_VARIABLE( float, get_fog_start, "CFogController->m_fog.start" );
+	NETVAR_VARIABLE( float, get_fog_end, "CFogController->m_fog.end" );
+	NETVAR_VARIABLE( float, get_fog_density, "CFogController->m_fog.maxdensity" );
+	NETVAR_VARIABLE( int, get_fog_color, "CFogController->m_fog.colorPrimary" );
+	NETVAR_VARIABLE( int, get_fog_color_secondary, "CFogController->m_fog.colorSecondary" );
 
 	/* DT_Precipitation */
 	NETVAR_VARIABLE( int, precipitation_type, "CPrecipitation->m_nPrecipType" );

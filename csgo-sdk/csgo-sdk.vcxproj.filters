@@ -57,6 +57,7 @@
     <ClCompile Include="hacks\lagcomp\lagcomp.cpp" />
     <ClCompile Include="hacks\indicators\indicators.cpp" />
     <ClCompile Include="hooks\functions\particle_collection_simulate.cpp" />
+    <ClCompile Include="hooks\functions\find_material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />

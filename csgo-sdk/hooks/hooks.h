@@ -5,6 +5,8 @@
 
 class c_vector;
 
+class c_material;
+
 namespace n_hooks
 {
 	struct impl_t {
@@ -23,6 +25,7 @@ namespace n_hooks
 		c_detour_hook m_level_shutdown{ };
 		c_detour_hook m_get_vcollide{ };
 		c_detour_hook m_particle_collection_simulate{ };
+		c_detour_hook m_find_material{ };
 
 		c_detour_hook m_lock_cursor{ };
 		c_detour_hook m_reset{ };
@@ -48,6 +51,8 @@ namespace n_detoured_functions
 	void __fastcall level_shutdown( void* thisptr );
 	void* __fastcall get_vcollide( void* ecx, void* edx, int model_index );
 	void __fastcall particle_collection_simulate( void* ecx, void* edx );
+	c_material* __fastcall find_material( void* ecx, void* edx, const char* material_name, const char* texture_group, bool complain,
+	                                      const char* complain_prefix );
 
 	void __fastcall lock_cursor( void* ecx, void* edx );
 	long __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters );

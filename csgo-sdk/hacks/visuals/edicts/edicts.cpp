@@ -64,9 +64,65 @@ constexpr static char collide_data[] = {
 
 static vcollide_t precipitation_collideable{ };
 
-void n_edicts::impl_t::on_frame_stage_notify( )
+void n_edicts::impl_t::on_frame_stage_notify( int stage )
 {
-	if ( g_ctx.m_unloading || !GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
+	switch ( stage ) {
+	case 5: {
+		this->precipitation( );
+		this->fog( );
+		break;
+	}
+	}
+}
+
+void n_edicts::impl_t::reset( )
+{
+	if ( m_created ) {
+		g_entity_cache.enumerate( e_enumeration_type::type_edicts, [ & ]( c_base_entity* entity ) {
+			if ( !entity )
+				return;
+
+			auto client_class = entity->get_client_networkable( )->get_client_class( );
+			if ( !client_class )
+				return;
+
+			if ( static_cast< int >( client_class->m_class_id ) == 138 /* cprecipitation class id */ ) {
+				const auto networkable = entity->get_client_networkable( );
+				if ( !networkable )
+					return;
+
+				networkable->pre_data_update( 0 );
+				networkable->on_pre_data_changed( 0 );
+
+				*( int* )( ( uintptr_t )entity + 0xA00 ) = -1;
+
+				const auto collideable = entity->get_collideable( );
+				if ( !collideable )
+					return;
+
+				collideable->obb_mins( ) = c_vector{ 0, 0, 0 };
+				collideable->obb_maxs( ) = c_vector{ 0, 0, 0 };
+
+				networkable->on_data_changed( 0 );
+				networkable->post_data_update( 0 );
+				networkable->release( );
+			}
+		} );
+
+		g_interfaces.m_physics_collison->v_collide_unload( &precipitation_collideable );
+		m_created = false;
+		m_timer   = -1;
+	}
+}
+
+void* n_edicts::impl_t::get_precipitation_collideable( )
+{
+	return &precipitation_collideable;
+}
+
+void n_edicts::impl_t::precipitation( )
+{
+	if ( !GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
 		this->reset( );
 		return;
 	}
@@ -161,47 +217,29 @@ void n_edicts::impl_t::on_frame_stage_notify( )
 	}
 }
 
-void n_edicts::impl_t::reset( )
+void n_edicts::impl_t::fog( )
 {
-	if ( m_created ) {
-		g_entity_cache.enumerate( e_enumeration_type::type_edicts, [ & ]( c_base_entity* entity ) {
-			if ( !entity )
-				return;
+	g_entity_cache.enumerate( e_enumeration_type::type_edicts, [ & ]( c_base_entity* entity ) {
+		if ( !entity || entity->is_dormant( ) )
+			return;
 
-			auto client_class = entity->get_client_networkable( )->get_client_class( );
-			if ( !client_class )
-				return;
+		const auto client_networkable = entity->get_client_networkable( );
+		if ( !client_networkable )
+			return;
 
-			if ( static_cast< int >( client_class->m_class_id ) == 138 /* cprecipitation class id */ ) {
-				const auto networkable = entity->get_client_networkable( );
-				if ( !networkable )
-					return;
+		const auto client_class = client_networkable->get_client_class( );
+		if ( !client_class )
+			return;
 
-				networkable->pre_data_update( 0 );
-				networkable->on_pre_data_changed( 0 );
+		if ( !( static_cast< int >( client_class->m_class_id ) == 78 ) )
+			return;
 
-				*( int* )( ( uintptr_t )entity + 0xA00 ) = -1;
+		const c_color color = GET_VARIABLE( g_variables.m_fog_color, c_color );
 
-				const auto collideable = entity->get_collideable( );
-				if ( !collideable )
-					return;
-
-				collideable->obb_mins( ) = c_vector{ 0, 0, 0 };
-				collideable->obb_maxs( ) = c_vector{ 0, 0, 0 };
-
-				networkable->on_data_changed( 0 );
-				networkable->post_data_update( 0 );
-				networkable->release( );
-			}
-		} );
-
-		g_interfaces.m_physics_collison->v_collide_unload( &precipitation_collideable );
-		m_created = false;
-		m_timer   = -1;
-	}
-}
-
-void* n_edicts::impl_t::get_precipitation_collideable( )
-{
-	return &precipitation_collideable;
+		entity->get_fog_enable( )  = GET_VARIABLE( g_variables.m_fog, bool ) ? 1 : 0;
+		entity->get_fog_start( )   = GET_VARIABLE( g_variables.m_fog_start, float );
+		entity->get_fog_end( )     = GET_VARIABLE( g_variables.m_fog_end, float );
+		entity->get_fog_density( ) = color.base< e_color_type::color_type_a >( );
+		entity->get_fog_color( )   = ImGui::ColorConvertFloat4ToU32( color.get_vec4( ) );
+	} );
 }

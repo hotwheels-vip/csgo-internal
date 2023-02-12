@@ -20,8 +20,7 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 	if ( !g_ctx.m_local->is_alive( ) )
 		g_edicts.reset( );
 
-	if ( stage == 5 /* e_client_frame_stage::render_start */ )
-		g_edicts.on_frame_stage_notify( );
+	g_edicts.on_frame_stage_notify( stage );
 
 	original( ecx, edx, stage );
 }
