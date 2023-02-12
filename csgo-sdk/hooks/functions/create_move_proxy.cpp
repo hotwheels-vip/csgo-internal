@@ -4,6 +4,7 @@
 
 #include "../../hacks/prediction/prediction.h"
 #include "../../hacks/movement/movement.h"
+#include "../../hacks/lagcomp/lagcomp.h"
 
 void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
 {
@@ -31,12 +32,14 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			return;
 
 		g_movement.on_create_move_pre( );
+		g_lagcomp.on_create_move_pre( );
 
 		const auto pre_prediction_flags = g_ctx.m_local->get_flags( );
 
 		g_prediction.begin( g_ctx.m_local, cmd );
 		g_prediction.end( g_ctx.m_local );
 
+		g_lagcomp.on_create_move_post( );
 		g_movement.on_create_move_post( pre_prediction_flags, old_view_point );
 	}( );
 

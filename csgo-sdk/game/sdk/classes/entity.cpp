@@ -204,6 +204,23 @@ c_vector c_base_entity::get_bone_position( int bone )
 	return c_vector( );
 }
 
+c_vector c_base_entity::get_hitbox_position( int hitbox, matrix3x4_t* matrix )
+{
+	auto hdr = g_interfaces.m_model_info->get_studio_model( get_model( ) );
+	if ( !hdr )
+		return { };
+
+	auto hitbox_set = hdr->get_hitbox_set( get_hitbox_set( ) );
+	[[unlikely]] if ( !hitbox_set )
+		return { };
+
+	auto new_hitbox = hitbox_set->get_hitbox( hitbox );
+	if ( !new_hitbox )
+		return { };
+
+	return g_math.vector_transform( ( new_hitbox->m_bb_min + new_hitbox->m_bb_max ) * 0.5f, matrix[ new_hitbox->m_bone ] );
+}
+
 c_vector c_base_entity::get_eye_position( bool should_correct )
 {
 	c_vector out{ };

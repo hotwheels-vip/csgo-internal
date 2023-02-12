@@ -1,6 +1,7 @@
 #include "math.h"
 #include "../../game/sdk/classes/c_angle.h"
 #include "../../game/sdk/classes/c_vector.h"
+#include "../../game/sdk/structs/matrix_t.h"
 
 float n_math::impl_t::normalize_angle( float angle, float start, float end ) const
 {
@@ -42,3 +43,52 @@ void n_math::impl_t::angle_vectors( const c_angle& angle, c_vector* forward, c_v
 		up->m_z = cr * cp;
 	}
 }
+
+c_angle n_math::impl_t::calculate_angle( const c_vector& start, const c_vector& end )
+{
+	c_angle out{ };
+	const c_vector delta = end - start;
+	this->vector_angles( delta, out );
+	out.normalize( );
+
+	return out;
+}
+
+float n_math::impl_t::calculate_fov( const c_angle& view_point, const c_angle& aim_angle )
+{
+	c_vector forward_angles{ }, forward_aim_angles{ };
+
+	this->angle_vectors( view_point, &forward_aim_angles );
+	this->angle_vectors( aim_angle, &forward_angles );
+
+	return rad2deg( acos( forward_aim_angles.dot_product( forward_angles ) / forward_aim_angles.length_squared( ) ) );
+}
+
+void n_math::impl_t::vector_angles( const c_vector& forward, c_angle& view )
+{
+	float pitch{ }, yaw{ };
+
+	if ( forward.m_x == 0.f && forward.m_y == 0.f ) {
+		pitch = ( forward.m_z > 0.f ) ? 270.f : 90.f;
+		yaw   = 0.f;
+	} else {
+		pitch = std::atan2f( -forward.m_z, forward.length_2d( ) ) * 180.f / std::numbers::pi_v<float>;
+
+		if ( pitch < 0.f )
+			pitch += 360.f;
+
+		yaw = std::atan2f( forward.m_y, forward.m_x ) * 180.f / std::numbers::pi_v< float >;
+
+		if ( yaw < 0.f )
+			yaw += 360.f;
+	}
+
+	view.m_x = pitch;
+	view.m_y = yaw;
+	view.m_z = 0.f;
+}
+
+c_vector n_math::impl_t::vector_transform( const c_vector& transform, const matrix3x4_t& matrix ) {
+	return c_vector( transform.dot_product( matrix[ 0 ] ) + matrix[ 0 ][ 3 ], transform.dot_product( matrix[ 1 ] ) + matrix[ 1 ][ 3 ],
+	                 transform.dot_product( matrix[ 2 ] ) + matrix[ 2 ][ 3 ] );
+		}

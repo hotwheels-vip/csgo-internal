@@ -228,6 +228,7 @@ public:
 
 	/* DT_BaseAnimating */
 	NETVAR_VARIABLE( int, get_sequence, "CBaseAnimating->m_nSequence" );
+	NETVAR_VARIABLE( int, get_hitbox_set, "CBaseAnimating->m_nHitboxSet" );
 
 	/* DT_CSPlayer */
 	NETVAR_VARIABLE_OFFSET( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
@@ -372,6 +373,7 @@ public:
 	int get_max_health( );
 
 	c_vector get_bone_position( int bone );
+	c_vector get_hitbox_position( int hitbox, matrix3x4_t* matrix );
 	c_vector get_eye_position( bool should_correct = true );
 
 	c_user_cmd& get_last_command( );

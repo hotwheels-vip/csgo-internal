@@ -13,7 +13,7 @@ void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsi
 	original( ecx, edx, panel, force_repaint, force );
 
 	switch ( panel_hash ) {
-	case HASH_BT( "FocusOverlayPanel" ): {
+	case HASH_BT( "MatSystemTopPanel" ): {
 		g_render.clear_draw_data( );
 
 		if ( g_ctx.m_local )
