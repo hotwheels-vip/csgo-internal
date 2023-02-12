@@ -68,15 +68,16 @@ void __fastcall n_detoured_functions::particle_collection_simulate( void* ecx, v
 
 	const auto particle_collection = reinterpret_cast< c_particle_collection* >( ecx );
 
-	c_particle_collection* root    = particle_collection;
+	c_particle_collection* root = particle_collection;
 	while ( root->m_parent )
 		root = root->m_parent;
 
-	std::string_view root_name = root->m_def.m_obj->m_name.m_buffer;
+	const auto hash = HASH_RT( std::string( root->m_def.m_obj->m_name.m_buffer ).c_str( ) );
 
-	if ( std::string_view{ root_name }.starts_with( "rain" ) || std::string_view{ root_name }.starts_with( "snow" ) ||
-	     std::string_view{ root_name }.starts_with( "ash" ) ) {
+	const bool should_color_modulate =
+		hash == HASH_BT( "rain" ) || hash == HASH_BT( "rain_storm" ) || hash == HASH_BT( "snow" ) || hash == HASH_BT( "ash" );
+
+	if ( should_color_modulate )
 		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
 			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_precipitation_color, c_color ), iterator );
-	}
 }
