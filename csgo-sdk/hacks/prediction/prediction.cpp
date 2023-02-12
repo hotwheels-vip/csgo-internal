@@ -4,16 +4,20 @@
 
 void n_prediction::impl_t::update( )
 {
+	/* store globally */
+	static auto frame_rate = 1.0f;
+	frame_rate             = 0.9f * frame_rate + 0.1f * g_interfaces.m_global_vars_base->m_abs_frame_time;
+
 	// if this is true, do not run advanced prediction features
-	g_ctx.m_low_fps = ImGui::GetIO( ).Framerate < ( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
+	g_ctx.m_low_fps = frame_rate < ( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
 
 	// handle backup data
-	g_prediction.backup_data.flags         = g_ctx.m_local->get_flags( );
-	g_prediction.backup_data.move_type     = g_ctx.m_local->get_move_type( );
-	g_prediction.backup_data.velocity      = g_ctx.m_local->get_velocity( );
-	g_prediction.backup_data.fall_velocity = g_ctx.m_local->get_fall_velocity( );
-	g_prediction.backup_data.origin        = g_ctx.m_local->get_abs_origin( );
-	g_prediction.backup_data.view_angles   = g_ctx.m_cmd->m_view_point;
+	g_prediction.m_backup_data.flags         = g_ctx.m_local->get_flags( );
+	g_prediction.m_backup_data.move_type     = g_ctx.m_local->get_move_type( );
+	g_prediction.m_backup_data.velocity      = g_ctx.m_local->get_velocity( );
+	g_prediction.m_backup_data.fall_velocity = g_ctx.m_local->get_fall_velocity( );
+	g_prediction.m_backup_data.origin        = g_ctx.m_local->get_abs_origin( );
+	g_prediction.m_backup_data.view_angles   = g_ctx.m_cmd->m_view_point;
 
 	if ( const bool valid = g_interfaces.m_client_state->m_delta_tick > 0; valid )
 		g_interfaces.m_prediction->update( g_interfaces.m_client_state->m_delta_tick, valid, g_interfaces.m_client_state->m_last_command_ack,
@@ -60,7 +64,7 @@ void n_prediction::impl_t::begin( c_base_entity* local, c_user_cmd* cmd )
 
 	g_interfaces.m_game_movement->start_track_prediction_errors( local );
 
-	g_prediction.handle_buttons( local, cmd );
+	g_prediction.update_button_state( local, cmd );
 
 	g_interfaces.m_prediction->check_moving_ground( local, g_interfaces.m_global_vars_base->m_frame_time );
 
@@ -131,7 +135,7 @@ int n_prediction::impl_t::get_corrected_tick_base( c_base_entity* local, c_user_
 	return corrected_tick_base;
 }
 
-void n_prediction::impl_t::handle_buttons( c_base_entity* local, c_user_cmd* cmd )
+void n_prediction::impl_t::update_button_state( c_base_entity* local, c_user_cmd* cmd )
 {
 	const int buttons         = cmd->m_buttons;
 	const int local_buttons   = *local->get_buttons( );

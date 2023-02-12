@@ -11,6 +11,8 @@ namespace n_globals
 		bool m_unloading{ };
 		// fps lower then server tickrate
 		bool m_low_fps = false;
+
+		float m_width{ }, m_height{ };
 	};
 
 } // namespace n_globals

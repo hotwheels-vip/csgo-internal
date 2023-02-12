@@ -85,6 +85,11 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 	ImGui_ImplWin32_NewFrame( );
 	ImGui::NewFrame( );
 
+	const auto display_size = ImGui::GetIO( ).DisplaySize;
+
+	g_ctx.m_width  = display_size.x;
+	g_ctx.m_height = display_size.y;
+
 	this->draw_cached_data( );
 
 	function( );
@@ -97,6 +102,8 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 
 void n_render::impl_t::on_release( )
 {
+	this->clear_draw_data( );
+
 	ImGui_ImplDX9_Shutdown( );
 	ImGui_ImplWin32_Shutdown( );
 	ImGui::DestroyContext( );

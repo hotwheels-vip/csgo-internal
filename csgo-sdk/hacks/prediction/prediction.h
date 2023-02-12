@@ -15,7 +15,7 @@ namespace n_prediction
 			float* fall_velocity{ };
 			int flags{ };
 			int move_type{ };
-		} backup_data;
+		} m_backup_data;
 
 		void begin( c_base_entity* local, c_user_cmd* cmd );
 		void end( c_base_entity* local ) const;
@@ -24,7 +24,7 @@ namespace n_prediction
 		static int get_corrected_tick_base( c_base_entity* local, c_user_cmd* cmd );
 
 	private:
-		void handle_buttons( c_base_entity* local, c_user_cmd* cmd );
+		void update_button_state( c_base_entity* local, c_user_cmd* cmd );
 
 		unsigned int* m_prediction_random_seed = nullptr;
 		c_base_entity** m_prediction_player    = nullptr;
