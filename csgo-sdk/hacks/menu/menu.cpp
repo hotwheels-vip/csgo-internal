@@ -152,7 +152,7 @@ void n_menu::impl_t::on_end_scene( )
 		case 1: /* visuals */ {
 			if ( ImGui::BeginChild(
 					 ( "esp" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f - 20.f ), true,
 					 0, true ) ) {
 				ImGui::EndChild( );
 			}
@@ -170,6 +170,8 @@ void n_menu::impl_t::on_end_scene( )
 			}
 
 			static auto backup_cursor_position = ImGui::GetCursorPos( );
+
+			ImGui::SetCursorPosY( backup_cursor_position.y - 20.f );
 
 			if ( ImGui::BeginChild(
 					 ( "glow" ),
@@ -192,7 +194,7 @@ void n_menu::impl_t::on_end_scene( )
 			ImGui::SetCursorPos( backup_cursor_position );
 
 			ImGui::SameLine( );
-			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f - 120.f /* hardcoded*/ );
+			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f - 110.f /* hardcoded*/ );
 
 			if ( ImGui::BeginChild( ( "world" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
