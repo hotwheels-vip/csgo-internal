@@ -66,8 +66,9 @@ void __fastcall n_detoured_functions::particle_collection_simulate( void* ecx, v
 
 	original( ecx );
 
-	auto particle_collection    = reinterpret_cast< c_particle_collection* >( ecx );
-	c_particle_collection* root = particle_collection;
+	const auto particle_collection = reinterpret_cast< c_particle_collection* >( ecx );
+
+	c_particle_collection* root    = particle_collection;
 	while ( root->m_parent )
 		root = root->m_parent;
 
