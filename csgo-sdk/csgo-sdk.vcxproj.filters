@@ -217,6 +217,7 @@
     <ClInclude Include="hacks\indicators\indicators.h" />
     <ClInclude Include="game\sdk\classes\c_utl_string.h" />
     <ClInclude Include="game\sdk\classes\c_utl_reference.h" />
+    <ClInclude Include="game\sdk\classes\c_studio_render.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

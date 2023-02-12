@@ -34,6 +34,7 @@
 #include "../classes/c_prediction.h"
 #include "../classes/c_recv_proxy_data.h"
 #include "../classes/c_standart_recv_proxies.h"
+#include "../classes/c_studio_render.h"
 #include "../classes/c_surface.h"
 #include "../classes/c_texture.h"
 #include "../classes/c_utl_memory.h"

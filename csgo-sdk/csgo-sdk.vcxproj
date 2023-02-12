@@ -149,6 +149,7 @@
     <ClInclude Include="game\sdk\classes\c_panel.h" />
     <ClInclude Include="game\sdk\classes\c_physics_collisons.h" />
     <ClInclude Include="game\sdk\classes\c_prediction.h" />
+    <ClInclude Include="game\sdk\classes\c_studio_render.h" />
     <ClInclude Include="game\sdk\classes\c_surface.h" />
     <ClInclude Include="game\sdk\classes\c_user_cmd.h" />
     <ClInclude Include="game\sdk\classes\c_utl_reference.h" />
