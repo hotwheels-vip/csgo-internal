@@ -46,6 +46,14 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_velocity_indicator_color3, c_color( 255, 199, 89, 255 ) );
 		ADD_VARIABLE( c_color, m_velocity_indicator_color4, c_color( 255, 119, 119, 255 ) );
 		ADD_VARIABLE( c_color, m_velocity_indicator_color5, c_color( 30, 255, 109, 255 ) );
+
+		ADD_VARIABLE( bool, m_stamina_indicator, false );
+		ADD_VARIABLE( bool, m_stamina_indicator_show_pre_speed, false );
+		ADD_VARIABLE( c_color, m_stamina_indicator_color1, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( c_color, m_stamina_indicator_color2, c_color( 255, 255, 255, 255 ) );
+
+		ADD_VARIABLE( bool, m_stamina_indicator_fade_alpha, false );
+		ADD_VARIABLE( int, m_stamina_indicator_padding, 5 );
 	};
 }; // namespace n_variables
 
