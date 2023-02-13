@@ -1,6 +1,7 @@
 #pragma once
 #include "../../../globals/netvars/netvars.h"
 #include "../../../utilities/memory/virtual.h"
+#include "../structs/var_mapping.h"
 
 enum class e_class_id;
 
@@ -211,7 +212,7 @@ public:
 	NETVAR_VARIABLE( int, get_life_state, "CBasePlayer->m_lifeState" );
 	NETVAR_VARIABLE( float, get_max_speed, "CBasePlayer->m_flMaxspeed" );
 	NETVAR_VARIABLE( int, get_flags, "CBasePlayer->m_fFlags" );
-	NETVAR_PVARIABLE( int, get_observer_mode, "CBasePlayer->m_iObserverMode" );
+	NETVAR_VARIABLE( int, get_observer_mode, "CBasePlayer->m_iObserverMode" );
 	NETVAR_VARIABLE( unsigned int, get_observer_target_handle, "CBasePlayer->m_hObserverTarget" );
 	NETVAR_VARIABLE( unsigned int, get_view_model_handle, "CBasePlayer->m_hViewModel[0]" );
 	NETVAR_PVARIABLE( const char, get_last_place, "CBasePlayer->m_szLastPlaceName" );
@@ -357,6 +358,11 @@ public:
 	{
 		g_virtual.call< void >( this, 219, sequence );
 	}
+
+	var_mapping* get_var_map( )
+	{
+		return reinterpret_cast< var_mapping* >( reinterpret_cast< std::uintptr_t >( this ) + 0x24 );
+	};
 
 	void modify_eye_position( const c_animation_state* animation_state, c_vector* position ) const;
 	void set_next_think( int think );

@@ -1,7 +1,9 @@
 #include "math.h"
 #include "../../game/sdk/classes/c_angle.h"
+#include "../../game/sdk/classes/c_global_vars_base.h"
 #include "../../game/sdk/classes/c_vector.h"
 #include "../../game/sdk/structs/matrix_t.h"
+#include "../interfaces/interfaces.h"
 
 float n_math::impl_t::normalize_angle( float angle, float start, float end ) const
 {
@@ -15,6 +17,16 @@ void n_math::impl_t::sin_cos( float radians, float* sine, float* cosine ) const
 {
 	*sine   = sinf( radians );
 	*cosine = cosf( radians );
+}
+
+std::int32_t n_math::impl_t::time_to_ticks( float time )
+{
+	return static_cast< std::int32_t >( 0.5f + time / g_interfaces.m_global_vars_base->m_interval_per_tick );
+}
+
+float n_math::impl_t::ticks_to_time( std::int32_t ticks )
+{
+	return static_cast< float >( ticks ) * g_interfaces.m_global_vars_base->m_interval_per_tick;
 }
 
 void n_math::impl_t::angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right, c_vector* up )
@@ -72,7 +84,7 @@ void n_math::impl_t::vector_angles( const c_vector& forward, c_angle& view )
 		pitch = ( forward.m_z > 0.f ) ? 270.f : 90.f;
 		yaw   = 0.f;
 	} else {
-		pitch = std::atan2f( -forward.m_z, forward.length_2d( ) ) * 180.f / std::numbers::pi_v<float>;
+		pitch = std::atan2f( -forward.m_z, forward.length_2d( ) ) * 180.f / std::numbers::pi_v< float >;
 
 		if ( pitch < 0.f )
 			pitch += 360.f;
@@ -88,7 +100,8 @@ void n_math::impl_t::vector_angles( const c_vector& forward, c_angle& view )
 	view.m_z = 0.f;
 }
 
-c_vector n_math::impl_t::vector_transform( const c_vector& transform, const matrix3x4_t& matrix ) {
+c_vector n_math::impl_t::vector_transform( const c_vector& transform, const matrix3x4_t& matrix )
+{
 	return c_vector( transform.dot_product( matrix[ 0 ] ) + matrix[ 0 ][ 3 ], transform.dot_product( matrix[ 1 ] ) + matrix[ 1 ][ 3 ],
 	                 transform.dot_product( matrix[ 2 ] ) + matrix[ 2 ][ 3 ] );
-		}
+}

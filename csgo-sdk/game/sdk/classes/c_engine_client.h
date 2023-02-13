@@ -1,4 +1,5 @@
 #pragma once
+#include "../../../game/sdk/classes/c_angle.h"
 #include "../../../utilities/memory/virtual.h"
 
 struct player_info_t;
@@ -76,6 +77,18 @@ public:
 	bool is_hltv( )
 	{
 		return g_virtual.call< bool >( this, 93 );
+	}
+
+	void set_view_angles( c_angle& view_angle )
+	{
+		g_virtual.call< void, c_angle& >( this, 19, view_angle );
+	}
+
+	c_angle& get_view_angles( )
+	{
+		c_angle ang{ };
+		g_virtual.call< void, c_angle& >( this, 18, ang );
+		return ang;
 	}
 
 	unsigned int get_engine_build_number( )

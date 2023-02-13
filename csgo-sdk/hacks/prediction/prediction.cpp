@@ -12,12 +12,12 @@ void n_prediction::impl_t::update( )
 	g_ctx.m_low_fps = frame_rate < ( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
 
 	// handle backup data
-	g_prediction.m_backup_data.flags         = g_ctx.m_local->get_flags( );
-	g_prediction.m_backup_data.move_type     = g_ctx.m_local->get_move_type( );
-	g_prediction.m_backup_data.velocity      = g_ctx.m_local->get_velocity( );
-	g_prediction.m_backup_data.fall_velocity = g_ctx.m_local->get_fall_velocity( );
-	g_prediction.m_backup_data.origin        = g_ctx.m_local->get_abs_origin( );
-	g_prediction.m_backup_data.view_angles   = g_ctx.m_cmd->m_view_point;
+	g_prediction.backup_data.m_flags         = g_ctx.m_local->get_flags( );
+	g_prediction.backup_data.m_move_type     = g_ctx.m_local->get_move_type( );
+	g_prediction.backup_data.m_velocity      = g_ctx.m_local->get_velocity( );
+	g_prediction.backup_data.m_fall_velocity = g_ctx.m_local->get_fall_velocity( );
+	g_prediction.backup_data.m_origin        = g_ctx.m_local->get_abs_origin( );
+	g_prediction.backup_data.m_view_angles   = g_ctx.m_cmd->m_view_point;
 
 	if ( const bool valid = g_interfaces.m_client_state->m_delta_tick > 0; valid )
 		g_interfaces.m_prediction->update( g_interfaces.m_client_state->m_delta_tick, valid, g_interfaces.m_client_state->m_last_command_ack,

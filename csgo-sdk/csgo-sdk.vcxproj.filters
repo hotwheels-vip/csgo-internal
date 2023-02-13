@@ -59,6 +59,8 @@
     <ClCompile Include="hooks\functions\particle_collection_simulate.cpp" />
     <ClCompile Include="hooks\functions\find_material.cpp" />
     <ClCompile Include="hacks\misc\misc.cpp" />
+    <ClCompile Include="hooks\functions\modify_eye_position.cpp" />
+    <ClCompile Include="hooks\functions\override_mouse_input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -221,6 +223,8 @@
     <ClInclude Include="game\sdk\classes\c_utl_reference.h" />
     <ClInclude Include="game\sdk\classes\c_studio_render.h" />
     <ClInclude Include="hacks\misc\misc.h" />
+    <ClInclude Include="game\sdk\enums\e_client_frame_stage.h" />
+    <ClInclude Include="game\sdk\structs\var_mapping.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

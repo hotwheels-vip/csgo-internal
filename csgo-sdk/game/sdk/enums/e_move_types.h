@@ -1,4 +1,5 @@
 #pragma once
+#include <initializer_list>
 
 enum e_move_types : int {
 	move_type_none = 0,
@@ -16,3 +17,5 @@ enum e_move_types : int {
 	move_type_last     = move_type_custom,
 	move_type_max_bits = 4
 };
+
+inline constexpr static const std::initializer_list< int > invalid_move_types = { move_type_ladder, move_type_observer, move_type_noclip };

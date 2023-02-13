@@ -9,13 +9,13 @@ namespace n_prediction
 {
 	struct impl_t {
 		struct {
-			c_vector velocity{ };
-			c_vector origin{ };
-			c_angle view_angles{ };
-			float* fall_velocity{ };
-			int flags{ };
-			int move_type{ };
-		} m_backup_data;
+			c_vector m_velocity{ };
+			c_vector m_origin{ };
+			c_angle m_view_angles{ };
+			float* m_fall_velocity{ };
+			int m_flags{ };
+			int m_move_type{ };
+		} backup_data;
 
 		void begin( c_base_entity* local, c_user_cmd* cmd );
 		void end( c_base_entity* local ) const;

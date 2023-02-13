@@ -54,8 +54,10 @@
 #include "../structs/studiohdr_t.h"
 #include "../structs/texture_t.h"
 #include "../structs/type_description_t.h"
+#include "../structs/var_mapping.h"
 #include "../structs/vcollide_t.h"
 
+#include "../enums/e_client_frame_stage.h"
 #include "../enums/e_command_buttons.h"
 #include "../enums/e_field_types.h"
 #include "../enums/e_flags.h"

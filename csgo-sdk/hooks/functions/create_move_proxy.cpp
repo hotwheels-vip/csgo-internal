@@ -2,10 +2,10 @@
 #include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
-#include "../../hacks/prediction/prediction.h"
-#include "../../hacks/movement/movement.h"
 #include "../../hacks/lagcomp/lagcomp.h"
 #include "../../hacks/misc/misc.h"
+#include "../../hacks/movement/movement.h"
+#include "../../hacks/prediction/prediction.h"
 
 void __stdcall create_move( int sequence_number, float input_sample_frametime, bool is_active, bool& send_packet )
 {
@@ -24,29 +24,30 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 
 	g_ctx.m_local = local;
 
-	const auto old_view_point = g_ctx.m_cmd->m_view_point;
-
 	g_prediction.update( );
 
 	[ & ]( ) {
-		if ( !g_ctx.m_local || !g_ctx.m_local->is_alive( ) || !g_ctx.m_cmd )
+		if ( !g_ctx.m_local || !g_ctx.m_local->is_alive( ) || !g_ctx.m_cmd || g_ctx.m_local->get_observer_mode( ) == 1 /*DEATH_CAM*/ ) {
+			g_movement.m_edgebug_data.reset( );
+			g_movement.m_pixelsurf_data.reset( );
+			g_movement.m_autoduck_data.reset( );
 			return;
-
+		}
 		g_movement.on_create_move_pre( );
 		g_lagcomp.on_create_move_pre( );
 		g_misc.on_create_move_pre( );
-
-		const auto pre_prediction_flags = g_ctx.m_local->get_flags( );
 
 		g_prediction.begin( g_ctx.m_local, cmd );
 		g_prediction.end( g_ctx.m_local );
 
 		g_lagcomp.on_create_move_post( );
-		g_movement.on_create_move_post( pre_prediction_flags, old_view_point );
+		g_movement.on_create_move_post( );
 	}( );
 
 	cmd->m_view_point.normalize( );
 	cmd->m_view_point.clamp( );
+
+	g_ctx.m_last_tick_yaw = cmd->m_view_point.m_y;
 
 	verified_cmd->m_user_cmd = *cmd;
 	verified_cmd->m_hash_crc = cmd->get_check_sum( );

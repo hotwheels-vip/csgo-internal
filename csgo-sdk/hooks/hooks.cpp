@@ -67,6 +67,12 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_end_scene, g_virtual.get( g_interfaces.m_direct_device, 42 ), &n_detoured_functions::end_scene,
 	                 "IDirect3DDevice9::EndScene()" );
 
+	initialise_hook( m_modify_eye_position, g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14" ),
+	                 &n_detoured_functions::modify_eye_position, "CBaseAnimating::ModifyEyePos()" );
+
+	initialise_hook( m_override_mouse_input, g_virtual.get( g_interfaces.m_client_mode, 23 ), &n_detoured_functions::override_mouse_input,
+	                 ( "IClientModeShared::OverrideMouseInput()" ) );
+
 	if ( g_interfaces.m_engine_client->is_in_game( ) )
 		g_interfaces.m_client_state->m_delta_tick = -1;
 

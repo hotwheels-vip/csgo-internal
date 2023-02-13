@@ -152,8 +152,8 @@ void n_menu::impl_t::on_end_scene( )
 		case 1: /* visuals */ {
 			if ( ImGui::BeginChild(
 					 ( "esp" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f - 20.f ), true,
-					 0, true ) ) {
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f - 20.f ),
+					 true, 0, true ) ) {
 				ImGui::EndChild( );
 			}
 
@@ -184,7 +184,6 @@ void n_menu::impl_t::on_end_scene( )
 					 ( "removals & optimisations" ),
 					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
 					 true ) ) {
-
 				ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
 				ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
 
@@ -253,11 +252,23 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Checkbox( "jump bug", &GET_VARIABLE( g_variables.m_jump_bug, bool ) );
 				ImGui::Keybind( "jump bug key", &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) );
 
+				ImGui::Checkbox( "edge bug", &GET_VARIABLE( g_variables.m_edge_bug, bool ) );
+				ImGui::Keybind( "edge bug key", &GET_VARIABLE( g_variables.m_edge_bug_key, key_bind_t ) );
+
+				if ( GET_VARIABLE( g_variables.m_edge_bug, bool ) ) {
+					ImGui::SliderInt( "edge bug predicted ticks", &GET_VARIABLE( g_variables.m_edge_bug_ticks, int ), 0, 32 );
+					ImGui::Checkbox( "advanced detection", &GET_VARIABLE( g_variables.m_advanced_detection, bool ) );
+					ImGui::SliderFloat( "mouse lock scale", &GET_VARIABLE( g_variables.m_edge_bug_lock_amt, float ), 0.f, 1.f );
+				}
+
 				ImGui::Checkbox( "pixel surf", &GET_VARIABLE( g_variables.m_pixel_surf, bool ) );
 				ImGui::Keybind( "pixel surf key", &GET_VARIABLE( g_variables.m_pixel_surf_key, key_bind_t ) );
 
 				ImGui::Checkbox( "auto align", &GET_VARIABLE( g_variables.m_auto_align, bool ) );
 
+				ImGui::Checkbox( "no crouch cooldown", &GET_VARIABLE( g_variables.m_no_crouch_cooldown, bool ) );
+
+				ImGui::Checkbox( "auto duck", &GET_VARIABLE( g_variables.m_auto_duck, bool ) );
 				ImGui::EndChild( );
 			}
 

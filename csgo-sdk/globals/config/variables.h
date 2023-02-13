@@ -28,6 +28,7 @@ namespace n_variables
 
 		/* misc - movement */
 		ADD_VARIABLE( bool, m_bunny_hop, false );
+		ADD_VARIABLE( bool, m_no_crouch_cooldown, false );
 		ADD_VARIABLE( bool, m_edge_jump, false );
 		ADD_VARIABLE( key_bind_t, m_edge_jump_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( bool, m_long_jump, false );
@@ -39,6 +40,13 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_pixel_surf, false );
 		ADD_VARIABLE( key_bind_t, m_pixel_surf_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( bool, m_auto_align, false );
+		ADD_VARIABLE( bool, m_auto_duck, false );
+
+		ADD_VARIABLE( bool, m_edge_bug, false );
+		ADD_VARIABLE( bool, m_advanced_detection, false );
+		ADD_VARIABLE( key_bind_t, m_edge_bug_key, key_bind_t( 0, 1 ) );
+		ADD_VARIABLE( int, m_edge_bug_ticks, 32 );
+		ADD_VARIABLE( float, m_edge_bug_lock_amt, 0.3f );
 
 		ADD_VARIABLE( bool, m_velocity_indicator, false );
 		ADD_VARIABLE( bool, m_velocity_indicator_show_pre_speed, false );
