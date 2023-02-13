@@ -5987,7 +5987,7 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 			RenderFadedGradientLine(
 				parent_window->DrawList,
 				child_window->Pos + ImVec2( ( ( cursor_position.x - backup_cursor_position.x ) - ( tab_width ) / 2.f ) + text_size.x, 24.f ),
-				ImVec2( tab_width - 13.f, 1.f ), ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], selected_animation.AnimationData->second ) );
+				ImVec2( tab_width - text_size.x, 1.f ), ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], selected_animation.AnimationData->second ) );
 
 			if ( hovered && IsMouseClicked( ImGuiMouseButton_Left ) )
 				*subtab_number = iterator;
