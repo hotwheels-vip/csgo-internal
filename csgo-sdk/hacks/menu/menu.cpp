@@ -180,7 +180,7 @@ void n_menu::impl_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			static int other_subtab_number = 0;
-			if ( ImGui::BeginChild( ( "other" ), { "main", "effects", "removals" }, &other_subtab_number,
+			if ( ImGui::BeginChild( ( "other" ), { "other", "effects", "removals" }, &other_subtab_number,
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
 
