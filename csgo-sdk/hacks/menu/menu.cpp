@@ -191,7 +191,7 @@ void n_menu::impl_t::on_end_scene( )
 						/*ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
 						                   color_picker_alpha_flags );*/
 
-						ImGui::Combo( "weather type", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
+						ImGui::Combo( "type##precipitation", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
 					}
 
 					ImGui::Checkbox( "fog", &GET_VARIABLE( g_variables.m_fog, bool ) );
