@@ -150,38 +150,55 @@ void n_edicts::impl_t::dropped_weapons( )
 
 		const auto class_id = client_class->m_class_id;
 
-		switch ( class_id ) {
-		default: {
-			if ( class_id == e_class_ids::c_base_weapon_world_model )
+		if ( class_id == e_class_ids::c_base_weapon_world_model )
+			return;
+
+		if ( strstr( client_class->m_network_name, "CWeapon" ) || class_id == e_class_ids::c_deagle || class_id == e_class_ids::cak47 ) {
+			const short definition_index = entity->get_item_definition_index( );
+			if ( !definition_index )
 				return;
 
-			if ( strstr( client_class->m_network_name, "CWeapon" ) || class_id == e_class_ids::c_deagle ||
-			     class_id == e_class_ids::cak47 ) {
-				const short definition_index = entity->get_item_definition_index( );
-				if ( !definition_index )
-					return;
+			const auto weapon_data = g_interfaces.m_weapon_system->get_weapon_data( definition_index );
+			if ( !weapon_data || !weapon_data->is_gun( ) )
+				return;
 
-				const auto weapon_data = g_interfaces.m_weapon_system->get_weapon_data( definition_index );
-				if ( !weapon_data || !weapon_data->is_gun( ) )
-					return;
+			const auto owner_entity = g_interfaces.m_client_entity_list->get< c_base_entity >( entity->get_owner_entity_handle( ) );
+			if ( owner_entity )
+				return;
 
-				const auto owner_entity = g_interfaces.m_client_entity_list->get< c_base_entity >( entity->get_owner_entity_handle( ) );
-				if ( owner_entity )
-					return;
+			bounding_box_t box{ };
+			if ( !entity->get_bounding_box( &box ) )
+				return;
 
-				bounding_box_t box{ };
-				if ( !entity->get_bounding_box( &box ) )
-					return;
-
+			if ( GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) )
 				g_render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_rect,
 					std::make_any< rect_draw_object_t >( c_vector_2d( box.m_left, box.m_top ), c_vector_2d( box.m_right, box.m_bottom ),
-				                                         c_color( 1.f, 1.f, 1.f, 1.f ).get_u32( ), c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), false,
-				                                         0.f, ImDrawFlags_::ImDrawFlags_None, 1.f,
+				                                         GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ).get_u32( ),
+				                                         c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), false, 0.f, ImDrawFlags_::ImDrawFlags_None, 1.f,
 				                                         e_rect_flags::rect_flag_inner_outline | e_rect_flags::rect_flag_outer_outline ) );
+
+			if ( GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) ) {
+				const auto localized_name = g_interfaces.m_localize->find( weapon_data->m_hud_name );
+
+				const std::wstring w = localized_name;
+				if ( w.empty( ) )
+					return;
+
+				const std::string converted_name( w.begin( ), w.end( ) );
+				if ( converted_name.empty( ) )
+					return;
+
+				const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+					g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, converted_name.c_str( ) );
+
+				g_render.m_draw_data.emplace_back(
+					e_draw_type::draw_type_text, std::make_any< text_draw_object_t >(
+													 g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
+													 c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ),
+													 converted_name, GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ).get_u32( ),
+													 c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
 			}
-			break;
-		}
 		}
 	} );
 }
