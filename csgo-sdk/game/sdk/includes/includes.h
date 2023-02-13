@@ -41,9 +41,11 @@
 #include "../classes/c_utl_reference.h"
 #include "../classes/c_utl_string.h"
 #include "../classes/c_utl_vector.h"
+#include "../classes/c_weapon_data.h"
 #include "../classes/c_weapon_system.h"
 #include "../classes/entity.h"
 
+#include "../structs/bounding_box_t.h"
 #include "../structs/data_map_t.h"
 #include "../structs/data_variant_t.h"
 #include "../structs/matrix_t.h"
@@ -56,8 +58,8 @@
 #include "../structs/type_description_t.h"
 #include "../structs/var_mapping.h"
 #include "../structs/vcollide_t.h"
-#include "../structs/bounding_box_t.h"
 
+#include "../enums/e_class_ids.h"
 #include "../enums/e_client_frame_stage.h"
 #include "../enums/e_command_buttons.h"
 #include "../enums/e_field_types.h"

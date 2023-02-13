@@ -4,7 +4,7 @@ class c_client_networkable;
 
 struct recv_table_t;
 
-enum class e_class_id;
+enum class e_class_ids;
 
 using create_client_class_fn = c_client_networkable*( __cdecl* )( int, int );
 using create_event_fn        = c_client_networkable*( __cdecl* )( );
@@ -17,5 +17,5 @@ public:
 	char* m_network_name;
 	recv_table_t* m_recv_table;
 	c_base_client* m_next;
-	e_class_id m_class_id;
+	e_class_ids m_class_id;
 };

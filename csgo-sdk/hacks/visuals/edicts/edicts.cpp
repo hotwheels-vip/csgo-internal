@@ -75,6 +75,12 @@ void n_edicts::impl_t::on_frame_stage_notify( int stage )
 	}
 }
 
+void n_edicts::impl_t::on_paint_traverse( )
+{
+	if ( GET_VARIABLE( g_variables.m_dropped_weapons, bool ) )
+		this->dropped_weapons( );
+}
+
 void n_edicts::impl_t::reset( )
 {
 	if ( m_created ) {
@@ -118,6 +124,66 @@ void n_edicts::impl_t::reset( )
 void* n_edicts::impl_t::get_precipitation_collideable( )
 {
 	return &precipitation_collideable;
+}
+
+void n_edicts::impl_t::dropped_weapons( )
+{
+	g_entity_cache.enumerate( e_enumeration_type::type_edicts, [ & ]( c_base_entity* entity ) {
+		if ( !entity || entity == g_ctx.m_local || entity->is_dormant( ) )
+			return;
+
+		const auto client_renderable = entity->get_client_renderable( );
+		if ( !client_renderable )
+			return;
+
+		const auto client_unknown = client_renderable->get_client_unknown( );
+		if ( !client_unknown )
+			return;
+
+		const auto client_networkable = client_unknown->get_client_networkable( );
+		if ( !client_networkable )
+			return;
+
+		const auto client_class = client_networkable->get_client_class( );
+		if ( !client_class )
+			return;
+
+		const auto class_id = client_class->m_class_id;
+
+		switch ( class_id ) {
+		default: {
+			if ( class_id == e_class_ids::c_base_weapon_world_model )
+				return;
+
+			if ( strstr( client_class->m_network_name, "CWeapon" ) || class_id == e_class_ids::c_deagle ||
+			     class_id == e_class_ids::cak47 ) {
+				const short definition_index = entity->get_item_definition_index( );
+				if ( !definition_index )
+					return;
+
+				const auto weapon_data = g_interfaces.m_weapon_system->get_weapon_data( definition_index );
+				if ( !weapon_data || !weapon_data->is_gun( ) )
+					return;
+
+				const auto owner_entity = g_interfaces.m_client_entity_list->get< c_base_entity >( entity->get_owner_entity_handle( ) );
+				if ( owner_entity )
+					return;
+
+				bounding_box_t box{ };
+				if ( !entity->get_bounding_box( &box ) )
+					return;
+
+				g_render.m_draw_data.emplace_back(
+					e_draw_type::draw_type_rect,
+					std::make_any< rect_draw_object_t >( c_vector_2d( box.m_left, box.m_top ), c_vector_2d( box.m_right, box.m_bottom ),
+				                                         c_color( 1.f, 1.f, 1.f, 1.f ).get_u32( ), c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), false,
+				                                         0.f, ImDrawFlags_::ImDrawFlags_None, 1.f,
+				                                         e_rect_flags::rect_flag_inner_outline | e_rect_flags::rect_flag_outer_outline ) );
+			}
+			break;
+		}
+		}
+	} );
 }
 
 void n_edicts::impl_t::precipitation( )
@@ -169,7 +235,7 @@ void n_edicts::impl_t::precipitation( )
 	static c_base_client* precipitation_client_class = nullptr;
 	if ( !precipitation_client_class ) {
 		for ( auto client_class = g_interfaces.m_base_client->get_all_classes( ); client_class; client_class = client_class->m_next ) {
-			if ( static_cast< int >( client_class->m_class_id ) == 138 /* cprecipitation class id */ ) {
+			if ( client_class->m_class_id == e_class_ids::c_precipitation ) {
 				precipitation_client_class = client_class;
 				break;
 			}
@@ -231,7 +297,7 @@ void n_edicts::impl_t::fog( )
 		if ( !client_class )
 			return;
 
-		if ( !( static_cast< int >( client_class->m_class_id ) == 78 ) )
+		if ( !( client_class->m_class_id == e_class_ids::c_fog_controller ) )
 			return;
 
 		const c_color color = GET_VARIABLE( g_variables.m_fog_color, c_color );

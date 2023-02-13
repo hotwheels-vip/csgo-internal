@@ -534,9 +534,9 @@ void n_movement::impl_t::strafe_to_yaw( c_user_cmd* cmd, c_angle& angle, const f
 	angle.m_y        = g_math.normalize_angle( angle.m_y - delta );
 }
 
-void n_movement::impl_t::handle_edgebug_view_point( )
+void n_movement::impl_t::on_frame_stage_notify( int stage )
 {
-	if ( !g_movement.m_edgebug_data.m_will_edgebug || !g_movement.m_edgebug_data.m_strafing )
+	if ( !g_movement.m_edgebug_data.m_will_edgebug || !g_movement.m_edgebug_data.m_strafing || stage != e_client_frame_stage::start )
 		return;
 
 	float final_yaw{ };

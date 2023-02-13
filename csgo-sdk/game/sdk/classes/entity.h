@@ -3,7 +3,7 @@
 #include "../../../utilities/memory/virtual.h"
 #include "../structs/var_mapping.h"
 
-enum class e_class_id;
+enum class e_class_ids;
 
 class c_vector;
 class c_angle;
@@ -156,7 +156,7 @@ public:
 	virtual void on_data_unchanged_in_pvs( )                             = 0;
 	virtual bool is_dormant( ) const                                     = 0;
 	virtual int get_index( ) const                                       = 0;
-	virtual void receive_message( e_class_id class_index, bf_read& msg ) = 0;
+	virtual void receive_message( e_class_ids class_index, bf_read& msg ) = 0;
 	virtual void* get_data_table_base_ptr( )                             = 0;
 	virtual void set_destroyed_on_recreate_entities( )                   = 0;
 };
@@ -227,6 +227,7 @@ public:
 	NETVAR_VARIABLE( float, get_simulation_time, "CBaseEntity->m_flSimulationTime" );
 	NETVAR_VARIABLE( bool, is_predictable, "CBaseEntity->m_bPredictable" );
 	NETVAR_VARIABLE( int, get_model_index, "CBaseEntity->m_nModelIndex" );
+	NETVAR_VARIABLE( unsigned int, get_owner_entity_handle, "CBaseEntity->m_hOwnerEntity" );
 
 	/* DT_BaseAnimating */
 	NETVAR_VARIABLE( int, get_sequence, "CBaseAnimating->m_nSequence" );

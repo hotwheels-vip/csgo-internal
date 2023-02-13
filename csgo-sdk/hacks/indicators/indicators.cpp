@@ -5,9 +5,6 @@
 
 void n_indicators::impl_t::on_paint_traverse( )
 {
-	if ( !g_render.m_initialised )
-		return;
-
 	const bool on_ground = g_ctx.m_local->get_flags( ) & e_flags::fl_onground;
 
 	if ( GET_VARIABLE( g_variables.m_velocity_indicator, bool ) )

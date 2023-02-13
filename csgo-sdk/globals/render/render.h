@@ -28,6 +28,8 @@ enum e_font_names {
 enum e_draw_type {
 	draw_type_none = 0,
 	draw_type_text,
+	draw_type_line,
+	draw_type_rect,
 	draw_type_max
 };
 
@@ -35,6 +37,12 @@ enum e_text_flags {
 	text_flag_none       = 0,
 	text_flag_dropshadow = 1,
 	text_flag_outline    = 2
+};
+
+enum e_rect_flags {
+	rect_flag_none          = 0,
+	rect_flag_inner_outline = 1,
+	rect_flag_outer_outline = 2
 };
 
 struct draw_object_t {
@@ -51,6 +59,25 @@ struct text_draw_object_t {
 	unsigned int m_color         = { };
 	unsigned int m_outline_color = { };
 	e_text_flags m_draw_flags    = { };
+};
+
+struct line_draw_object_t {
+	c_vector_2d m_start  = { };
+	c_vector_2d m_end    = { };
+	unsigned int m_color = 0x0;
+	float m_thickness    = 0.f;
+};
+
+struct rect_draw_object_t {
+	c_vector_2d m_min            = { };
+	c_vector_2d m_max            = { };
+	unsigned int m_color         = { };
+	unsigned int m_outline_color = { };
+	bool m_filled                = false;
+	float m_rounding             = 0.f;
+	int m_corner_rounding_flags  = 0;
+	float m_thickness            = 1.f;
+	unsigned int m_outline_flags = e_rect_flags::rect_flag_none;
 };
 
 namespace n_render
@@ -91,6 +118,10 @@ namespace n_render
 	private:
 		void text( ImDrawList* draw_list, ImFont* font, const c_vector_2d& position, const std::string& text, const unsigned int& color,
 		           const unsigned int& outline_color, e_text_flags draw_flags = e_text_flags::text_flag_dropshadow );
+
+		void rect( ImDrawList* draw_list, const c_vector_2d& min, const c_vector_2d& max, const unsigned int& color,
+		           const unsigned int& outline_color, bool filled, float rounding, int corner_rounding_flags, float thickness,
+		           unsigned int outline_flags );
 	};
 } // namespace n_render
 

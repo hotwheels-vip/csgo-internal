@@ -130,6 +130,17 @@ void n_render::impl_t::draw_cached_data( )
 			this->text( draw_list, obj.m_font, obj.m_position, obj.m_text, obj.m_color, obj.m_outline_color, obj.m_draw_flags );
 			break;
 		}
+		case e_draw_type::draw_type_line: {
+			const auto& obj = std::any_cast< line_draw_object_t >( data.m_obj );
+			draw_list->AddLine( ImVec2( obj.m_start.m_x, obj.m_start.m_y ), ImVec2( obj.m_end.m_x, obj.m_end.m_y ), obj.m_color, obj.m_thickness );
+			break;
+		}
+		case e_draw_type::draw_type_rect: {
+			const auto& obj = std::any_cast< rect_draw_object_t >( data.m_obj );
+			this->rect( draw_list, obj.m_min, obj.m_max, obj.m_color, obj.m_outline_color, obj.m_filled, obj.m_rounding, obj.m_corner_rounding_flags,
+			            obj.m_thickness, obj.m_outline_flags );
+			break;
+		}
 		default:
 			break;
 		}
@@ -160,7 +171,7 @@ bool n_render::impl_t::world_to_screen( const c_vector& origin, c_vector_2d& scr
 }
 
 void n_render::impl_t::text( ImDrawList* draw_list, ImFont* font, const c_vector_2d& position, const std::string& text, const unsigned int& color,
-                             const ImU32& outline_color, e_text_flags draw_flags )
+                             const unsigned int& outline_color, e_text_flags draw_flags )
 {
 	draw_list->PushTextureID( font->ContainerAtlas->TexID );
 
@@ -174,4 +185,20 @@ void n_render::impl_t::text( ImDrawList* draw_list, ImFont* font, const c_vector
 	draw_list->AddText( font, font->FontSize, ImVec2( position.m_x, position.m_y ), color, text.c_str( ) );
 
 	draw_list->PopTextureID( );
+}
+
+void n_render::impl_t::rect( ImDrawList* draw_list, const c_vector_2d& min, const c_vector_2d& max, const unsigned int& color,
+                             const unsigned int& outline_color,
+                     bool filled, float rounding, int corner_rounding_flags, float thickness, unsigned int outline_flags )
+{
+	if ( filled )
+		draw_list->AddRectFilled( ImVec2( min.m_x, min.m_y ), ImVec2( max.m_x, max.m_y ), color, rounding, corner_rounding_flags );
+	else
+		draw_list->AddRect( ImVec2( min.m_x, min.m_y ), ImVec2( max.m_x, max.m_y ), color, rounding, corner_rounding_flags, thickness );
+
+	if ( outline_flags & e_rect_flags::rect_flag_inner_outline )
+		draw_list->AddRect( ImVec2( min.m_x + 1.f, min.m_y + 1.f ), ImVec2( max.m_x - 1.f, max.m_y - 1.f ), outline_color );
+
+	if ( outline_flags & e_rect_flags::rect_flag_outer_outline )
+		draw_list->AddRect( ImVec2( min.m_x - 1.f, min.m_y - 1.f ), ImVec2( max.m_x + 1.f, max.m_y + 1.f ), outline_color );
 }

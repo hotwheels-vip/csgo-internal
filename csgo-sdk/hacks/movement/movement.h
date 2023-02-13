@@ -50,7 +50,7 @@ namespace n_movement
 		void on_create_move_pre( );
 		void on_create_move_post( );
 
-		void handle_edgebug_view_point( );
+		void on_frame_stage_notify( int stage );
 
 		void rotate_movement( c_user_cmd* cmd, const c_angle& angle );
 

@@ -225,6 +225,8 @@
     <ClInclude Include="hacks\misc\misc.h" />
     <ClInclude Include="game\sdk\enums\e_client_frame_stage.h" />
     <ClInclude Include="game\sdk\structs\var_mapping.h" />
+    <ClInclude Include="game\sdk\structs\bounding_box_t.h" />
+    <ClInclude Include="game\sdk\enums\e_class_ids.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

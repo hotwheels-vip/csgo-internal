@@ -150,10 +150,23 @@ void n_menu::impl_t::on_end_scene( )
 			break;
 		}
 		case 1: /* visuals */ {
+			static int esp_subtab_number = 0;
+
 			if ( ImGui::BeginChild(
-					 ( "esp" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
-					 true, 0, true ) ) {
+					 ( "esp" ), { "players", "edicts" }, &esp_subtab_number,
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
+					 0, true ) ) {
+				switch ( esp_subtab_number ) {
+				case 0: {
+					break;
+				}
+				case 1:
+				{
+					ImGui::Checkbox( "dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons, bool ) );
+					break;
+				}
+				}
+
 				ImGui::EndChild( );
 			}
 
@@ -163,6 +176,7 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "chams" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+
 				static int selected_chams_layer = 0;
 				ImGui::Combo( "chams layer selection", &selected_chams_layer, "layer one\0layer two\0layer three\0layer four\0\0" );
 
@@ -170,9 +184,8 @@ void n_menu::impl_t::on_end_scene( )
 			}
 
 			if ( ImGui::BeginChild(
-					 ( "glow" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true,
-					 0, true ) ) {
+					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+					 true, 0, true ) ) {
 				ImGui::EndChild( );
 			}
 
@@ -180,10 +193,9 @@ void n_menu::impl_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			static int other_subtab_number = 0;
-			if ( ImGui::BeginChild( ( "other" ), { "other", "effects", "removals" }, &other_subtab_number,
+			if ( ImGui::BeginChild( ( "other" ), { "effects", "removals" }, &other_subtab_number,
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-
 				switch ( other_subtab_number ) {
 				case 0: {
 					ImGui::Checkbox( "precipitation", &GET_VARIABLE( g_variables.m_precipitation, bool ) );
@@ -201,9 +213,7 @@ void n_menu::impl_t::on_end_scene( )
 						ImGui::SliderFloat( "start##fog", &GET_VARIABLE( g_variables.m_fog_start, float ), 0.f, 5000.f, "%.1f" );
 						ImGui::SliderFloat( "end##fog", &GET_VARIABLE( g_variables.m_fog_end, float ), 0.f, 5000.f, "%.1f" );
 					}
-					break;
-				}
-				case 1: {
+
 					ImGui::Checkbox( "custom smoke color", &GET_VARIABLE( g_variables.m_custom_smoke, bool ) );
 					if ( GET_VARIABLE( g_variables.m_custom_smoke, bool ) )
 						ImGui::ColorEdit4( "##custom smoke color picker", &GET_VARIABLE( g_variables.m_custom_smoke_color, c_color ),
@@ -218,9 +228,10 @@ void n_menu::impl_t::on_end_scene( )
 					if ( GET_VARIABLE( g_variables.m_custom_blood, bool ) )
 						ImGui::ColorEdit4( "##custom blood color picker", &GET_VARIABLE( g_variables.m_custom_blood_color, c_color ),
 						                   color_picker_alpha_flags );
+
 					break;
 				}
-				case 2: {
+				case 1: {
 					ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
 					ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
 					break;

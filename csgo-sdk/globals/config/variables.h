@@ -8,6 +8,11 @@ namespace n_variables
 		/* menu */
 		ADD_VARIABLE( c_color, m_accent, c_color( 129, 99, 251, 255 ) );
 
+		/* visuals - players */
+
+		/* visuals - edicts */
+		ADD_VARIABLE( bool, m_dropped_weapons, false );
+
 		/* visuals - world */
 		ADD_VARIABLE( bool, m_precipitation, false );
 		ADD_VARIABLE( int, m_precipitation_type, 0 );
