@@ -46,7 +46,8 @@ void n_movement::impl_t::on_create_move_post( )
 	if ( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) )
 		this->jump_bug( );
 
-	if ( GET_VARIABLE( g_variables.m_auto_align, bool ) && !( g_prediction.backup_data.m_flags & e_flags::fl_onground ) )
+	if ( GET_VARIABLE( g_variables.m_auto_align, bool ) && !( g_prediction.backup_data.m_flags & e_flags::fl_onground ||
+	                                                          this->m_pixelsurf_data.m_in_pixel_surf || this->m_edgebug_data.m_will_edgebug ) )
 		this->auto_align( g_ctx.m_cmd );
 
 	this->pixel_surf( target_ps_velocity );
@@ -313,7 +314,15 @@ void n_movement::impl_t::pixel_surf_locking( float target_ps_velocity )
 			g_ctx.m_cmd->m_side_move    = g_movement.m_pixelsurf_data.m_simulated_cmd->m_side_move;
 			g_ctx.m_cmd->m_forward_move = g_movement.m_pixelsurf_data.m_simulated_cmd->m_forward_move;
 
-			g_movement.rotate_movement( g_movement.m_pixelsurf_data.m_simulated_cmd, g_movement.m_pixelsurf_data.m_simulated_cmd->m_view_point );
+			const c_vector movement = { g_ctx.m_cmd->m_forward_move, g_ctx.m_cmd->m_side_move, 0 };
+			c_angle movement_angle{ };
+			g_math.vector_angles( movement, movement_angle );
+
+			const float rotation =
+				deg2rad( g_ctx.m_cmd->m_view_point.m_y - g_movement.m_pixelsurf_data.m_simulated_cmd->m_view_point.m_y + movement_angle.m_y );
+
+			g_ctx.m_cmd->m_forward_move = std::cosf( rotation ) * movement.length_2d( );
+			g_ctx.m_cmd->m_side_move    = std::sinf( rotation ) * movement.length_2d( );
 		}
 
 		if ( g_movement.m_pixelsurf_data.m_should_duck )
@@ -324,7 +333,9 @@ void n_movement::impl_t::pixel_surf_locking( float target_ps_velocity )
 		if ( g_movement.m_pixelsurf_data.m_predicted_succesful && !( g_ctx.m_local->get_velocity( ).m_z == target_ps_velocity ) ) {
 			g_movement.m_pixelsurf_data.m_in_pixel_surf       = false;
 			g_movement.m_pixelsurf_data.m_predicted_succesful = false;
+			return;
 		}
+		return;
 	}
 }
 
