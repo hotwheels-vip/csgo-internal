@@ -423,7 +423,7 @@ void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, const c_angle& ang )
 
 	const float speed = vec_move.length_2d( );
 
-	const float rotation = deg2rad( g_ctx.m_cmd->m_view_point.m_y - ang.m_y );
+	const float rotation = deg2rad( cmd->m_view_point.m_y - ang.m_y );
 
 	cmd->m_forward_move = std::cosf( rotation ) * speed;
 	cmd->m_side_move    = std::sinf( rotation ) * speed;
@@ -490,7 +490,7 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 	if ( !is_valid )
 		return;
 
-	float gain_fraction = g_ctx.m_cmd->m_buttons & e_command_buttons::in_duck ? 4.6775f : 4.5500f;
+	float gain_fraction = cmd->m_buttons & e_command_buttons::in_duck ? 4.6775f : 4.5500f;
 	float minimum_gain  = rad2deg( atan( gain_fraction / velocity.length_2d( ) ) ) * ( 2.f * std::numbers::pi_v< float > );
 
 	float strafe_yaw = c_vector( hit_trace.m_plane.m_normal ).to_angle( ).flip( ).m_y;
@@ -499,7 +499,7 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 
 	strafe_yaw += yaw_delta < 0.f ? -minimum_gain : minimum_gain;
 
-	c_angle strafe_angle = c_angle( g_ctx.m_cmd->m_view_point.m_x, strafe_yaw, 0.f );
+	c_angle strafe_angle = c_angle( cmd->m_view_point.m_x, strafe_yaw, 0.f );
 
 	rotate_movement( cmd, strafe_angle );
 }
