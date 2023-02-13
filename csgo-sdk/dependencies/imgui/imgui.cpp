@@ -1,5 +1,5 @@
 // dear imgui, v1.89 WIP
-// (main code and documentation) 
+// (main code and documentation)
 
 #include "../../globals/render/render.h"
 
@@ -5897,6 +5897,7 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 	}
 
 	const auto draw_position = child_window->Pos - ImVec2( 0.f, 20.f );
+		const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
 	if ( show_text ) {
 		parent_window->DrawList->AddRectFilled(
@@ -5926,7 +5927,7 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 			ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * text_animation.AnimationData->second ), name );
 
 		RenderFadedGradientLine( parent_window->DrawList, draw_position + ImVec2( 0.f, 20.f ), ImVec2( child_window->Size.x, 1.f ),
-		                         ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
+		                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z) );
 	}
 
 	if ( border ) {
@@ -5981,13 +5982,13 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 			selected_animation.Update( 2.f, selected ? 2.f : -2.f );
 
 			TextColored( ImColor::Blend( ImColor( 1.f, 1.f, 1.f, hovered_text_animation.AnimationData->second ),
-			                             ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ), selected_animation.AnimationData->second ),
+			                             ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z), selected_animation.AnimationData->second ),
 			             tab_name );
 
 			RenderFadedGradientLine(
 				parent_window->DrawList,
-				child_window->Pos + ImVec2( ( ( cursor_position.x - backup_cursor_position.x ) - ( tab_width ) / 2.f ) + text_size.x, 24.f ),
-				ImVec2( tab_width - text_size.x, 1.f ), ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], selected_animation.AnimationData->second ) );
+				ImVec2( child_window->Pos.x + ( tab_center_x - tab_width / 2.f ), child_window->Pos.y + cursor_position.y + text_size.y + 6.f ),
+				ImVec2( tab_width, 1.f ), ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], selected_animation.AnimationData->second ) );
 
 			if ( hovered && IsMouseClicked( ImGuiMouseButton_Left ) )
 				*subtab_number = iterator;
