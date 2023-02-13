@@ -313,7 +313,7 @@ void n_movement::impl_t::pixel_surf_locking( float target_ps_velocity )
 			g_ctx.m_cmd->m_side_move    = g_movement.m_pixelsurf_data.m_simulated_cmd->m_side_move;
 			g_ctx.m_cmd->m_forward_move = g_movement.m_pixelsurf_data.m_simulated_cmd->m_forward_move;
 
-			g_movement.rotate_movement( g_ctx.m_cmd, g_movement.m_pixelsurf_data.m_simulated_cmd->m_view_point );
+			g_movement.rotate_movement( g_movement.m_pixelsurf_data.m_simulated_cmd, g_movement.m_pixelsurf_data.m_simulated_cmd->m_view_point );
 		}
 
 		if ( g_movement.m_pixelsurf_data.m_should_duck )
@@ -359,7 +359,9 @@ void n_movement::impl_t::pixel_surf( float target_ps_velocity )
 					simulated_cmd->m_buttons &= ~e_command_buttons::in_duck;
 
 				// only predict auto align calculations if enough fps
-				auto_align( simulated_cmd );
+
+				if ( GET_VARIABLE( g_variables.m_auto_align, bool ) )
+					auto_align( simulated_cmd );
 
 				g_prediction.begin( g_ctx.m_local, simulated_cmd );
 				g_prediction.end( g_ctx.m_local );
@@ -391,8 +393,7 @@ void n_movement::impl_t::pixel_surf( float target_ps_velocity )
 
 void n_movement::impl_t::jump_bug( )
 {
-	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) )
-	{
+	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) ) {
 		static bool ducked = false;
 
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( g_prediction.backup_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -403,9 +404,7 @@ void n_movement::impl_t::jump_bug( )
 
 		if ( g_prediction.backup_data.m_flags & e_flags::fl_onground && ducked )
 			ducked = false;
-	}
-	else
-	{
+	} else {
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( g_prediction.backup_data.m_flags & e_flags::fl_onground ) )
 			g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
 
@@ -480,6 +479,9 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 		       ( ( remainder2.m_x >= distance_to_stop && remainder2.m_x <= distance_till_adjust ) ||
 		         ( remainder2.m_y >= distance_to_stop && remainder2.m_y <= distance_till_adjust ) );
 	};
+
+	if ( this->m_pixelsurf_data.m_predicted_succesful )
+		return;
 
 	if ( velocity.length_2d( ) == 0.f || g_ctx.m_local->get_flags( ) & e_flags::fl_onground || !has_to_align( origin ) )
 		return;
