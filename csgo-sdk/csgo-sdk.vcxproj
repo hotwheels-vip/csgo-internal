@@ -47,6 +47,7 @@
     <ClCompile Include="hacks\misc\misc.cpp" />
     <ClCompile Include="hacks\movement\movement.cpp" />
     <ClCompile Include="hacks\visuals\edicts\edicts.cpp" />
+    <ClCompile Include="hacks\visuals\players\players.cpp" />
     <ClCompile Include="hooks\detour_hook\c_detour_hook.cpp" />
     <ClCompile Include="hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="hooks\functions\create_move_proxy.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="hacks\misc\misc.h" />
     <ClInclude Include="hacks\movement\movement.h" />
     <ClInclude Include="hacks\visuals\edicts\edicts.h" />
+    <ClInclude Include="hacks\visuals\players\players.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />
     <ClInclude Include="hooks\hooks.h" />
     <ClInclude Include="globals\includes\includes.h" />

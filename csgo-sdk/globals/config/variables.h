@@ -9,11 +9,18 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_accent, c_color( 129, 99, 251, 255 ) );
 
 		/* visuals - players */
+		ADD_VARIABLE( bool, m_players, false );
+		ADD_VARIABLE( bool, m_players_box, false );
+		ADD_VARIABLE( c_color, m_players_box_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( c_color, m_players_box_outline_color, c_color( 0, 0, 0, 255 ) );
+		ADD_VARIABLE( bool, m_players_name, false );
+		ADD_VARIABLE( c_color, m_players_name_color, c_color( 255, 255, 255, 255 ) );
 
 		/* visuals - edicts */
 		ADD_VARIABLE( bool, m_dropped_weapons, false );
 		ADD_VARIABLE( bool, m_dropped_weapons_box, false );
 		ADD_VARIABLE( c_color, m_dropped_weapons_box_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( c_color, m_dropped_weapons_box_outline_color, c_color( 0, 0, 0, 255 ) );
 		ADD_VARIABLE( bool, m_dropped_weapons_name, false );
 		ADD_VARIABLE( c_color, m_dropped_weapons_name_color, c_color( 255, 255, 255, 255 ) );
 

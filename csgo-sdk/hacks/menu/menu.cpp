@@ -158,15 +158,40 @@ void n_menu::impl_t::on_end_scene( )
 					 0, true ) ) {
 				switch ( esp_subtab_number ) {
 				case 0: {
+					ImGui::Checkbox( "players", &GET_VARIABLE( g_variables.m_players, bool ) );
+					if ( GET_VARIABLE( g_variables.m_players, bool ) ) {
+						ImGui::Checkbox( "bounding box##player", &GET_VARIABLE( g_variables.m_players_box, bool ) );
+						if ( GET_VARIABLE( g_variables.m_players_box, bool ) ) {
+							ImGui::ColorEdit4( "##player bounding box color",
+							                   &GET_VARIABLE( g_variables.m_players_box_color, c_color ), color_picker_alpha_flags );
+
+							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+							ImGui::ColorEdit4( "##player bounding box outline color",
+							                   &GET_VARIABLE( g_variables.m_players_box_outline_color, c_color ), color_picker_alpha_flags );
+						}
+
+						ImGui::Checkbox( "name##player", &GET_VARIABLE( g_variables.m_players_name, bool ) );
+						if ( GET_VARIABLE( g_variables.m_players_name, bool ) )
+							ImGui::ColorEdit4( "##player name color", &GET_VARIABLE( g_variables.m_players_name_color, c_color ),
+							                   color_picker_alpha_flags );
+					}
 					break;
 				}
 				case 1: {
 					ImGui::Checkbox( "dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons, bool ) );
 					if ( GET_VARIABLE( g_variables.m_dropped_weapons, bool ) ) {
 						ImGui::Checkbox( "bounding box##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) );
-						if ( GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) )
+						if ( GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) ) {
 							ImGui::ColorEdit4( "##dropped weapons bounding box color",
 							                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ), color_picker_alpha_flags );
+
+							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+							ImGui::ColorEdit4( "##dropped weapons bounding box outline color",
+							                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ),
+							                   color_picker_alpha_flags );
+						}
 
 						ImGui::Checkbox( "name##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) );
 						if ( GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) )
@@ -187,8 +212,6 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "chams" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
-				static int selected_chams_layer = 0;
-				ImGui::Combo( "chams layer selection", &selected_chams_layer, "layer one\0layer two\0layer three\0layer four\0\0" );
 
 				ImGui::EndChild( );
 			}

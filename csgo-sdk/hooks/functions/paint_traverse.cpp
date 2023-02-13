@@ -4,6 +4,7 @@
 
 #include "../../hacks/indicators/indicators.h"
 #include "../../hacks/visuals/edicts/edicts.h"
+#include "../../hacks/visuals/players/players.h"
 
 void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsigned int panel, bool force_repaint, bool force )
 {
@@ -21,8 +22,8 @@ void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsi
 			if ( g_ctx.m_local ) {
 				g_indicators.on_paint_traverse( );
 				g_edicts.on_paint_traverse( );
-			}
-			else
+				g_players.on_paint_traverse( );
+			} else
 				g_indicators.m_indicator_data.reset( );
 		}
 
