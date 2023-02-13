@@ -56,6 +56,7 @@
 #include "../structs/type_description_t.h"
 #include "../structs/var_mapping.h"
 #include "../structs/vcollide_t.h"
+#include "../structs/bounding_box_t.h"
 
 #include "../enums/e_client_frame_stage.h"
 #include "../enums/e_command_buttons.h"

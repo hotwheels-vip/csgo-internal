@@ -1,8 +1,10 @@
 #pragma once
 #include "../../../game/sdk/classes/c_angle.h"
+#include "../../../game/sdk/classes/c_angle.h"
 #include "../../../utilities/memory/virtual.h"
 
 struct player_info_t;
+struct view_matrix_t;
 
 class c_net_channel_info;
 
@@ -81,14 +83,12 @@ public:
 
 	void set_view_angles( c_angle& view_angle )
 	{
-		g_virtual.call< void, c_angle& >( this, 19, view_angle );
+		g_virtual.call< void >( this, 19, view_angle );
 	}
 
-	c_angle& get_view_angles( )
+	void get_view_angles( c_angle& view_angle )
 	{
-		c_angle ang{ };
-		g_virtual.call< void, c_angle& >( this, 18, ang );
-		return ang;
+		g_virtual.call< void >( this, 18, std::ref(view_angle) );
 	}
 
 	unsigned int get_engine_build_number( )
@@ -99,6 +99,11 @@ public:
 	const char* get_product_version_string( )
 	{
 		return g_virtual.call< const char* >( this, 105 );
+	}
+
+	const view_matrix_t& get_world_to_screen_matrix( )
+	{
+		return g_virtual.call< const view_matrix_t& >( this, 37 );
 	}
 
 	void execute_client_cmd( const char* cmd_string )

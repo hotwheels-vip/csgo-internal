@@ -17,6 +17,7 @@ struct ray_t;
 struct model_t;
 struct matrix3x4_t;
 struct data_map_t;
+struct bounding_box_t;
 
 class c_handle_entity
 {
@@ -373,6 +374,7 @@ public:
 	bool physics_run_think( int think_method );
 	bool can_shoot( );
 	bool is_enemy( c_base_entity* entity );
+	bool get_bounding_box( bounding_box_t* box );
 
 	int get_bone_by_hash( const unsigned int hash ) const;
 	int get_max_health( );

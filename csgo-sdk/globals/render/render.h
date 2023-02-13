@@ -14,6 +14,7 @@ struct ImFont;
 struct ImDrawList;
 struct ImColor;
 class c_vector_2d;
+class c_vector;
 
 enum e_font_names {
 	font_name_verdana_11 = 0,
@@ -44,12 +45,12 @@ struct draw_object_t {
 };
 
 struct text_draw_object_t {
-	ImFont* m_font                   = { };
-	c_vector_2d m_position           = { };
-	std::string m_text               = { };
-	unsigned int m_color             = { };
-	unsigned int m_outline_color     = { };
-	e_text_flags m_draw_flags        = { };
+	ImFont* m_font               = { };
+	c_vector_2d m_position       = { };
+	std::string m_text           = { };
+	unsigned int m_color         = { };
+	unsigned int m_outline_color = { };
+	e_text_flags m_draw_flags    = { };
 };
 
 namespace n_render
@@ -75,6 +76,8 @@ namespace n_render
 		void on_release( );
 
 		void draw_cached_data( );
+
+		bool world_to_screen( const c_vector& origin, c_vector_2d& screen );
 
 		/* todo ~ make all these variables private, and make getter functions for them */
 		std::deque< draw_object_t > m_draw_data             = { };

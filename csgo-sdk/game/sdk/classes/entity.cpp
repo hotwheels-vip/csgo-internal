@@ -159,6 +159,62 @@ bool c_base_entity::is_enemy( c_base_entity* entity )
 	return false;
 }
 
+#undef max
+#undef min
+
+bool c_base_entity::get_bounding_box( bounding_box_t* box )
+{
+	const auto client_renderable = this->get_client_renderable( );
+	if ( !client_renderable )
+		return false;
+
+	const auto client_unknown = client_renderable->get_client_unknown( );
+	if ( !client_unknown )
+		return false;
+
+	const auto collideable = client_unknown->get_collideable( );
+	if ( !collideable )
+		return false;
+
+	/* https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/game/shared/collisionproperty.h#L77 */
+	const c_vector mins = collideable->obb_mins( );
+	const c_vector maxs   = collideable->obb_maxs( );
+
+	std::array< c_vector, 8U > points = { c_vector( mins.m_x, mins.m_y, mins.m_z ), c_vector( mins.m_x, maxs.m_y, mins.m_z ),
+		                                  c_vector( maxs.m_x, maxs.m_y, mins.m_z ), c_vector( maxs.m_x, mins.m_y, mins.m_z ),
+		                                  c_vector( maxs.m_x, maxs.m_y, maxs.m_z ), c_vector( mins.m_x, maxs.m_y, maxs.m_z ),
+		                                  c_vector( mins.m_x, mins.m_y, maxs.m_z ), c_vector( maxs.m_x, mins.m_y, maxs.m_z ) };
+
+	if ( !( points.data( ) ) )
+		return false;
+
+	const matrix3x4_t& transformed_matrix = this->get_coordinate_frame( );
+
+	float left   = std::numeric_limits< float >::max( );
+	float top    = std::numeric_limits< float >::max( );
+	float right  = std::numeric_limits< float >::lowest( );
+	float bottom = std::numeric_limits< float >::lowest( );
+
+	std::array< c_vector_2d, 8U > screen_points = { };
+	for ( std::size_t i = 0U; i < 8U; i++ ) {
+		if ( !g_render.world_to_screen( g_math.vector_transform( points[ i ], transformed_matrix ), screen_points[ i ] ) )
+			return false;
+
+		left   = std::min( left, screen_points[ i ].m_x );
+		top    = std::min( top, screen_points[ i ].m_y );
+		right  = std::max( right, screen_points[ i ].m_x );
+		bottom = std::max( bottom, screen_points[ i ].m_y );
+	}
+
+	box->m_left   = static_cast< int >( left );
+	box->m_top    = static_cast< int >( top );
+	box->m_right  = static_cast< int >( right );
+	box->m_bottom = static_cast< int >( bottom );
+	box->m_width  = static_cast< int >( right ) - static_cast< int >( left );
+	box->m_height = static_cast< int >( bottom ) - static_cast< int >( top );
+	return true;
+}
+
 int c_base_entity::get_bone_by_hash( const unsigned int hash ) const
 {
 	if ( const auto model = this->get_model( ); model ) {

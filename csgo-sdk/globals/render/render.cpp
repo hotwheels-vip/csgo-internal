@@ -1,5 +1,7 @@
 #include "render.h"
 #include "../../dependencies/imgui/helpers/fonts.h"
+
+#include "../../game/sdk/includes/includes.h"
 #include "../includes/includes.h"
 
 void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, IDirect3DDevice9* device )
@@ -132,6 +134,29 @@ void n_render::impl_t::draw_cached_data( )
 			break;
 		}
 	}
+}
+
+bool n_render::impl_t::world_to_screen( const c_vector& origin, c_vector_2d& screen )
+{
+	const auto& world_to_screen_matrix = g_interfaces.m_engine_client->get_world_to_screen_matrix();
+
+	const float width = world_to_screen_matrix[ 3 ][ 0 ] * origin.m_x + world_to_screen_matrix[ 3 ][ 1 ] * origin.m_y +
+	                    world_to_screen_matrix[ 3 ][ 2 ] * origin.m_z + world_to_screen_matrix[ 3 ][ 3 ];
+
+	if ( width < 0.001f )
+		return false;
+
+	const float inverse = 1.0f / width;
+	screen.m_x          = ( world_to_screen_matrix[ 0 ][ 0 ] * origin.m_x + world_to_screen_matrix[ 0 ][ 1 ] * origin.m_y +
+                   world_to_screen_matrix[ 0 ][ 2 ] * origin.m_z + world_to_screen_matrix[ 0 ][ 3 ] ) *
+	             inverse;
+	screen.m_y = ( world_to_screen_matrix[ 1 ][ 0 ] * origin.m_x + world_to_screen_matrix[ 1 ][ 1 ] * origin.m_y +
+	               world_to_screen_matrix[ 1 ][ 2 ] * origin.m_z + world_to_screen_matrix[ 1 ][ 3 ] ) *
+	             inverse;
+
+	screen.m_x = ( g_ctx.m_width * 0.5f ) + ( screen.m_x * g_ctx.m_width ) * 0.5f;
+	screen.m_y = ( g_ctx.m_height * 0.5f ) - ( screen.m_y * g_ctx.m_height ) * 0.5f;
+	return true;
 }
 
 void n_render::impl_t::text( ImDrawList* draw_list, ImFont* font, const c_vector_2d& position, const std::string& text, const unsigned int& color,
