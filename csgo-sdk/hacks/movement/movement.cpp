@@ -369,10 +369,8 @@ void n_movement::impl_t::pixel_surf( float target_ps_velocity )
 				else
 					simulated_cmd->m_buttons &= ~e_command_buttons::in_duck;
 
-				// only predict auto align calculations if enough fps
-
-				if ( GET_VARIABLE( g_variables.m_auto_align, bool ) )
-					auto_align( simulated_cmd );
+				// auto align on pixel surf has to automatically be on.
+				auto_align( simulated_cmd );
 
 				g_prediction.begin( g_ctx.m_local, simulated_cmd );
 				g_prediction.end( g_ctx.m_local );
@@ -404,7 +402,8 @@ void n_movement::impl_t::pixel_surf( float target_ps_velocity )
 
 void n_movement::impl_t::jump_bug( )
 {
-	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) ) {
+	[[unlikely]] if ( !( g_ctx.m_cmd->m_buttons & e_command_buttons::in_jump ) )
+	{
 		static bool ducked = false;
 
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( g_prediction.backup_data.m_flags & e_flags::fl_onground ) && !ducked ) {
@@ -415,7 +414,9 @@ void n_movement::impl_t::jump_bug( )
 
 		if ( g_prediction.backup_data.m_flags & e_flags::fl_onground && ducked )
 			ducked = false;
-	} else {
+	}
+	else
+	{
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( g_prediction.backup_data.m_flags & e_flags::fl_onground ) )
 			g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
 

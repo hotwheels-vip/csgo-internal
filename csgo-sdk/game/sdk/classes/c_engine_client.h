@@ -1,6 +1,5 @@
 #pragma once
 #include "../../../game/sdk/classes/c_angle.h"
-#include "../../../game/sdk/classes/c_angle.h"
 #include "../../../utilities/memory/virtual.h"
 
 struct player_info_t;
@@ -83,12 +82,14 @@ public:
 
 	void set_view_angles( c_angle& view_angle )
 	{
-		g_virtual.call< void >( this, 19, view_angle );
+		using fn = void( __thiscall* )( c_engine_client*, c_angle& );
+		return ( *( fn** )this )[ 19 ]( this, std::ref( view_angle ) );
 	}
 
 	void get_view_angles( c_angle& view_angle )
 	{
-		g_virtual.call< void >( this, 18, std::ref(view_angle) );
+		using fn = void( __thiscall* )( c_engine_client*, c_angle& );
+		return ( *( fn** )this )[ 18 ]( this, std::ref( view_angle ) );
 	}
 
 	unsigned int get_engine_build_number( )
