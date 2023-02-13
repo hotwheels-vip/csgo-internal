@@ -20,6 +20,7 @@ namespace n_prediction
 		void begin( c_base_entity* local, c_user_cmd* cmd );
 		void end( c_base_entity* local ) const;
 		void update( );
+		void restore_entity_to_predicted_frame( int frame );
 
 		static int get_corrected_tick_base( c_base_entity* local, c_user_cmd* cmd );
 

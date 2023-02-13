@@ -418,6 +418,9 @@ namespace ImGui
 	IMGUI_API bool BeginChild( ImGuiID id, const ImVec2& size = ImVec2( 0, 0 ), bool border = false, ImGuiWindowFlags flags = 0 );
 	IMGUI_API bool BeginChild( ImGuiID id, const ImVec2& size = ImVec2( 0, 0 ), bool border = false, ImGuiWindowFlags flags = 0,
 	                           bool show_text = false );
+	IMGUI_API bool BeginChild( const char* str_id, std::vector< const char* > subtab_names, static int* subtab_number = nullptr,
+	                           const ImVec2& size = ImVec2( 0, 0 ), bool border = false, ImGuiWindowFlags flags = 0, bool show_text = true );
+
 	IMGUI_API void EndChild( );
 
 	// Windows Utilities

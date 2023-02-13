@@ -5843,6 +5843,162 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 	return ret;
 }
 
+bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, bool border, ImGuiWindowFlags flags,
+                          const std::vector< const char* > subtab_names, static int* subtab_number, bool show_text )
+{
+	if ( show_text )
+		ImGui::SetCursorPosY( ImGui::GetCursorPos( ).y + 20.f );
+
+	ImGuiContext& g            = *GImGui;
+	ImGuiWindow* parent_window = g.CurrentWindow;
+
+	flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_ChildWindow;
+	flags |= ( parent_window->Flags & ImGuiWindowFlags_NoMove ); // Inherit the NoMove flag
+
+	// Size
+	const ImVec2 content_avail = GetContentRegionAvail( );
+	ImVec2 size                = ImFloor( size_arg );
+	const int auto_fit_axises  = ( ( size.x == 0.0f ) ? ( 1 << ImGuiAxis_X ) : 0x00 ) | ( ( size.y == 0.0f ) ? ( 1 << ImGuiAxis_Y ) : 0x00 );
+	if ( size.x <= 0.0f )
+		size.x = ImMax( content_avail.x + size.x, 4.0f ); // Arbitrary minimum child size (0.0f causing too many issues)
+	if ( size.y <= 0.0f )
+		size.y = ImMax( content_avail.y + size.y, 4.0f );
+	SetNextWindowSize( size );
+
+	// Build up name. If you need to append to a same child from multiple location in the ID stack, use BeginChild(ImGuiID id) with a stable value.
+	const char* temp_window_name;
+	if ( name )
+		ImFormatStringToTempBuffer( &temp_window_name, NULL, "%s/%s_%08X", parent_window->Name, name, id );
+	else
+		ImFormatStringToTempBuffer( &temp_window_name, NULL, "%s/%08X", parent_window->Name, id );
+
+	const float backup_border_size = g.Style.ChildBorderSize;
+	if ( !border )
+		g.Style.ChildBorderSize = 0.0f;
+	bool ret                = Begin( temp_window_name, NULL, flags );
+	g.Style.ChildBorderSize = backup_border_size;
+
+	ImGuiWindow* child_window        = g.CurrentWindow;
+	child_window->ChildId            = id;
+	child_window->AutoFitChildAxises = ( ImS8 )auto_fit_axises;
+
+	// Set the cursor to handle case where the user called SetNextWindowPos()+BeginChild() manually.
+	// While this is not really documented/defined, it seems that the expected thing to do.
+	if ( child_window->BeginCount == 1 )
+		parent_window->DC.CursorPos = child_window->Pos;
+
+	// Process navigation-in immediately so NavInit can run on first frame
+	if ( g.NavActivateId == id && !( flags & ImGuiWindowFlags_NavFlattened ) &&
+	     ( child_window->DC.NavLayersActiveMask != 0 || child_window->DC.NavHasScroll ) ) {
+		FocusWindow( child_window );
+		NavInitWindow( child_window, false );
+		SetActiveID( id + 1, child_window ); // Steal ActiveId with another arbitrary id so that key-press won't activate child item
+		g.ActiveIdSource = ImGuiInputSource_Nav;
+	}
+
+	const auto draw_position = child_window->Pos - ImVec2( 0.f, 20.f );
+
+	if ( show_text ) {
+		parent_window->DrawList->AddRectFilled(
+			draw_position, draw_position + ImVec2( child_window->Size.x, 20.f ), ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f ),
+			g.Style.WindowRounding - 2.f /* NOTE ~ float ~ liga, if u see this baby , ,, . . . Am very Sorry X D */,
+			ImDrawFlags_::ImDrawFlags_RoundCornersTop );
+
+		const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, name );
+
+		auto text_animation = ImAnimationHelper( id, ImGui::GetIO( ).DeltaTime );
+
+		ImGui::PushClipRect( child_window->Pos - ImVec2( 0.f, 20.f ),
+		                     child_window->Pos - ImVec2( 0.f, 20.f ) + child_window->Size + ImVec2( 0.f, 20.f ), false );
+		text_animation.Update( ImGui::IsMouseHoveringRect( child_window->Pos - ImVec2( 0.f, 20.f ),
+		                                                   child_window->Pos - ImVec2( 0.f, 20.f ) + child_window->Size + ImVec2( 0.f, 20.f ) )
+		                           ? 3.f
+		                           : -2.f,
+		                       1.f, 0.5f, 1.f );
+		ImGui::PopClipRect( );
+
+		const ImColor text_color = GetColorU32( ImGuiCol_Text );
+
+		parent_window->DrawList->AddText(
+			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
+			draw_position + ImVec2( ( child_window->Size.x - text_size.x ) / 2.f, ( 20.f - text_size.y ) / 2.f ),
+			ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * text_animation.AnimationData->second ), name );
+
+		RenderFadedGradientLine( parent_window->DrawList, draw_position + ImVec2( 0.f, 20.f ), ImVec2( child_window->Size.x, 1.f ),
+		                         ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ) );
+	}
+
+	if ( border ) {
+		parent_window->DrawList->AddRect(
+			child_window->Pos - ImVec2( 0.f, show_text ? 20.f : 0.f ),
+			child_window->Pos - ImVec2( 0.f, show_text ? 20.f : 0.f ) + child_window->Size + ImVec2( 0.f, show_text ? 20.f : 0.f ),
+			ImColor( 50, 50, 50, 100 ), g.Style.WindowRounding - 2.f /* NOTE ~ float ~ liga, if u see this baby , ,, . . . Am very Sorry X D */,
+			ImDrawCornerFlags_Top );
+	}
+
+	const auto subtab_vector_size = subtab_names.size( );
+
+	if ( subtab_number && subtab_vector_size != 0 ) {
+		parent_window->DrawList->AddRectFilled( child_window->Pos + ImVec2( 1.f, 0.f ),
+		                                        child_window->Pos + ImVec2( 1.f, 0.f ) + ImVec2( child_window->Size.x - 2.f, 25.f ),
+		                                        ImColor( 20 / 255.f, 20 / 255.f, 20 / 255.f ) );
+
+		parent_window->DrawList->AddRectFilled( child_window->Pos + ImVec2( 1.f, 24.f ),
+		                                        child_window->Pos + ImVec2( 1.f, 24.f ) + ImVec2( child_window->Size.x - 2.f, 1 ),
+		                                        ImColor( 30 / 255.f, 30 / 255.f, 30 / 255.f ) );
+
+		for ( int iterator = { }; iterator < subtab_vector_size; iterator++ ) {
+			if ( !( iterator < subtab_vector_size ) )
+				break;
+
+			const char* const tab_name = subtab_names[ iterator ];
+
+			const auto hashed_tab_name = ImHashStr( tab_name );
+
+			const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+				g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, tab_name );
+
+			const int tab_width    = ( child_window->Size.x / static_cast< int >( subtab_names.size( ) ) );
+			const int tab_center_x = ( tab_width * iterator ) + ( tab_width / 2 );
+
+			const auto backup_cursor_position = ImGui::GetCursorPos( );
+
+			ImGui::SetCursorPos( ImVec2( tab_center_x - ( text_size.x / 2 ), ( 25.f - text_size.y ) / 2.f ) );
+
+			const auto cursor_position = ImGui::GetCursorPos( );
+
+			const bool hovered = ImGui::IsMouseHoveringRect(
+				ImVec2( child_window->Pos.x + cursor_position.x, child_window->Pos.y + cursor_position.y ),
+				ImVec2( child_window->Pos.x + cursor_position.x + text_size.x, child_window->Pos.y + cursor_position.y + text_size.y ) );
+
+			const bool selected = iterator == *subtab_number;
+
+			auto hovered_text_animation = ImAnimationHelper( hashed_tab_name + ImHashStr( "hovered-text-animation" ), ImGui::GetIO( ).DeltaTime );
+			hovered_text_animation.Update( 2.f, hovered ? 2.f : -2.f, 0.5f );
+
+			auto selected_animation = ImAnimationHelper( hashed_tab_name + ImHashStr( "selected-animation" ), ImGui::GetIO( ).DeltaTime );
+			selected_animation.Update( 2.f, selected ? 2.f : -2.f );
+
+			TextColored( ImColor::Blend( ImColor( 1.f, 1.f, 1.f, hovered_text_animation.AnimationData->second ),
+			                             ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ] ), selected_animation.AnimationData->second ),
+			             tab_name );
+
+			RenderFadedGradientLine(
+				parent_window->DrawList,
+				child_window->Pos + ImVec2( ( ( cursor_position.x - backup_cursor_position.x ) - ( tab_width ) / 2.f ) + text_size.x, 24.f ),
+				ImVec2( tab_width - 13.f, 1.f ), ImColor( Accent[ 0 ], Accent[ 1 ], Accent[ 2 ], selected_animation.AnimationData->second ) );
+
+			if ( hovered && IsMouseClicked( ImGuiMouseButton_Left ) )
+				*subtab_number = iterator;
+		}
+
+		SetCursorPosY( GetCursorPosY( ) + 5.f );
+	}
+
+	return ret;
+}
+
 bool ImGui::BeginChild( const char* str_id, const ImVec2& size_arg, bool border, ImGuiWindowFlags extra_flags, bool show_text )
 {
 	ImGuiWindow* window = GetCurrentWindow( );
@@ -5853,6 +6009,13 @@ bool ImGui::BeginChild( ImGuiID id, const ImVec2& size_arg, bool border, ImGuiWi
 {
 	ImGuiWindow* window = GetCurrentWindow( );
 	return BeginChildEx( NULL, id, size_arg, border, extra_flags, show_text );
+}
+
+bool ImGui::BeginChild( const char* str_id, std::vector< const char* > subtab_names, static int* subtab_number, const ImVec2& size_arg, bool border,
+                        ImGuiWindowFlags extra_flags, bool show_text )
+{
+	ImGuiWindow* window = GetCurrentWindow( );
+	return BeginChildEx( str_id, window->GetID( str_id ), size_arg, border, extra_flags, subtab_names, subtab_number, show_text );
 }
 
 bool ImGui::BeginChild( ImGuiID id, const ImVec2& size_arg, bool border, ImGuiWindowFlags extra_flags )

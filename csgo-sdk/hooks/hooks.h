@@ -4,9 +4,7 @@
 #include <d3d9.h>
 
 class c_vector;
-
 class c_material;
-
 class c_animation_state;
 
 namespace n_hooks
@@ -28,12 +26,13 @@ namespace n_hooks
 		c_detour_hook m_get_vcollide{ };
 		c_detour_hook m_particle_collection_simulate{ };
 		c_detour_hook m_find_material{ };
+		c_detour_hook m_modify_eye_position{ };
+		c_detour_hook m_override_mouse_input{ };
 
+		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
 		c_detour_hook m_reset{ };
 		c_detour_hook m_end_scene{ };
-		c_detour_hook m_modify_eye_position{ };
-		c_detour_hook m_override_mouse_input{ };
 	};
 } // namespace n_hooks
 
@@ -57,11 +56,12 @@ namespace n_detoured_functions
 	void __fastcall particle_collection_simulate( void* ecx, void* edx );
 	c_material* __fastcall find_material( void* ecx, void* edx, const char* material_name, const char* texture_group, bool complain,
 	                                      const char* complain_prefix );
+	void __fastcall modify_eye_position( c_animation_state* anim_state, void* edx, c_vector& input_eye_pos );
+	void __fastcall override_mouse_input( void* thisptr, int edx, float* x, float* y );
 
 	void __fastcall lock_cursor( void* ecx, void* edx );
 	long __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters );
 	long __stdcall end_scene( IDirect3DDevice9* device );
 	long __stdcall wndproc( HWND window, unsigned int message, unsigned int wide_parameter, long long_parameter );
-	void __fastcall modify_eye_position( c_animation_state* anim_state, void* edx, c_vector& input_eye_pos );
-	void __fastcall override_mouse_input( void* thisptr, int edx, float* x, float* y );
+
 } // namespace n_detoured_functions

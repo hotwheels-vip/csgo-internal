@@ -90,19 +90,6 @@ void c_base_entity::post_think( )
 	g_interfaces.m_model_cache->end_lock( );
 }
 
-void c_base_entity::restore_entity_to_predicted_frame( int frame )
-{
-	static auto cl_predict = g_convars[ HASH_BT( "cl_predict" ) ];
-	if ( !cl_predict->get_int( ) )
-		return;
-
-	if ( !this->is_predictable( ) )
-		return;
-
-	this->restore_data( "RestoreEntityToPredictedFrame", frame, 2 /* PC_EVERYTHING */ );
-	this->on_post_restore_data( );
-}
-
 void c_base_entity::restore_data( const char* context, int slot, int type )
 {
 	static const auto restore_data_fn = reinterpret_cast< void( __thiscall* )( void*, const char*, int, int ) >(

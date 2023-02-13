@@ -86,7 +86,7 @@ void n_movement::impl_t::edge_bug( )
 		if ( m_edgebug_data.m_will_edgebug )
 			return;
 
-		g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+		g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 		g_movement.m_edgebug_data.m_starting_yaw = original_view_point.m_y;
 
@@ -166,7 +166,7 @@ void n_movement::impl_t::edge_bug( )
 		g_prediction.begin( g_ctx.m_local, g_ctx.m_cmd );
 		g_prediction.end( g_ctx.m_local );
 
-		g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+		g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 	};
 
 	// non strafed edgebugs
@@ -180,7 +180,7 @@ void n_movement::impl_t::edge_bug( )
 	}
 
 	if ( m_edgebug_data.m_will_edgebug ) {
-		g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+		g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 		if ( g_interfaces.m_global_vars_base->m_tick_count < m_edgebug_data.m_ticks_to_stop + m_edgebug_data.m_last_tick + 1 ) {
 			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_moveleft;
@@ -240,7 +240,7 @@ void n_movement::impl_t::auto_duck( )
 		return;
 	}
 
-	g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+	g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 	for ( int i = 0; i < 2; i++ ) {
 		if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground )
@@ -264,7 +264,7 @@ void n_movement::impl_t::auto_duck( )
 	g_prediction.begin( g_ctx.m_local, g_ctx.m_cmd );
 	g_prediction.end( g_ctx.m_local );
 
-	g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+	g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 	if ( !g_movement.m_autoduck_data.m_did_land_ducking )
 		return;
@@ -291,7 +291,7 @@ void n_movement::impl_t::auto_duck( )
 	g_prediction.begin( g_ctx.m_local, g_ctx.m_cmd );
 	g_prediction.end( g_ctx.m_local );
 
-	g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+	g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 	if ( g_movement.m_autoduck_data.m_did_land_ducking && g_movement.m_autoduck_data.m_did_land_standing ) {
 		if ( g_movement.m_autoduck_data.m_ducking_vert > g_movement.m_autoduck_data.m_standing_vert )
@@ -303,7 +303,7 @@ void n_movement::impl_t::auto_duck( )
 void n_movement::impl_t::pixel_surf_locking( float target_ps_velocity )
 {
 	if ( g_movement.m_pixelsurf_data.m_in_pixel_surf ) {
-		g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+		g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 		if ( !g_movement.m_pixelsurf_data.m_predicted_succesful ) {
 			if ( g_movement.m_pixelsurf_data.m_prediction_ticks < g_ctx.m_cmd->m_tick_count )
@@ -345,7 +345,7 @@ void n_movement::impl_t::pixel_surf( float target_ps_velocity )
 			if ( g_movement.m_pixelsurf_data.m_in_pixel_surf )
 				break;
 
-			g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+			g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 			int backup_flags         = g_ctx.m_local->get_flags( );
 			c_vector backup_velocity = g_ctx.m_local->get_velocity( );
@@ -384,7 +384,7 @@ void n_movement::impl_t::pixel_surf( float target_ps_velocity )
 			g_prediction.begin( g_ctx.m_local, g_ctx.m_cmd );
 			g_prediction.end( g_ctx.m_local );
 
-			g_ctx.m_local->restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+			g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 		}
 	}
 }
@@ -520,8 +520,6 @@ void n_movement::impl_t::strafe_to_yaw( c_user_cmd* cmd, c_angle& angle, const f
 	angle.m_y        = g_math.normalize_angle( angle.m_y - delta );
 }
 
-// handles strafing to edgebug
-// called on frame_stage_notify frame_start
 void n_movement::impl_t::handle_edgebug_view_point( )
 {
 	if ( !g_movement.m_edgebug_data.m_will_edgebug || !g_movement.m_edgebug_data.m_strafing )

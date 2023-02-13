@@ -152,7 +152,7 @@ void n_menu::impl_t::on_end_scene( )
 		case 1: /* visuals */ {
 			if ( ImGui::BeginChild(
 					 ( "esp" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f - 20.f ),
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
 				ImGui::EndChild( );
 			}
@@ -169,65 +169,63 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::EndChild( );
 			}
 
-			static auto backup_cursor_position = ImGui::GetCursorPos( );
-
-			ImGui::SetCursorPosY( backup_cursor_position.y - 20.f );
-
 			if ( ImGui::BeginChild(
 					 ( "glow" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true,
 					 0, true ) ) {
 				ImGui::EndChild( );
 			}
 
-			if ( ImGui::BeginChild(
-					 ( "removals & optimisations" ),
-					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ), true, 0,
-					 true ) ) {
-				ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
-				ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
-
-				ImGui::EndChild( );
-			}
-
-			ImGui::SetCursorPos( backup_cursor_position );
-
 			ImGui::SameLine( );
-			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f - 110.f /* hardcoded*/ );
+			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
-			if ( ImGui::BeginChild( ( "world" ),
+			static int other_subtab_number = 0;
+			if ( ImGui::BeginChild( ( "other" ), { "main", "effects", "removals" }, &other_subtab_number,
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-				ImGui::Checkbox( "precipitation", &GET_VARIABLE( g_variables.m_precipitation, bool ) );
-				if ( GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
-					/*ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
-					                   color_picker_alpha_flags );*/
 
-					ImGui::Combo( "weather type", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
+				switch ( other_subtab_number ) {
+				case 0: {
+					ImGui::Checkbox( "precipitation", &GET_VARIABLE( g_variables.m_precipitation, bool ) );
+					if ( GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
+						/*ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
+						                   color_picker_alpha_flags );*/
+
+						ImGui::Combo( "weather type", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
+					}
+
+					ImGui::Checkbox( "fog", &GET_VARIABLE( g_variables.m_fog, bool ) );
+					if ( GET_VARIABLE( g_variables.m_fog, bool ) ) {
+						ImGui::ColorEdit4( "##fog picker", &GET_VARIABLE( g_variables.m_fog_color, c_color ), color_picker_alpha_flags );
+
+						ImGui::SliderFloat( "start##fog", &GET_VARIABLE( g_variables.m_fog_start, float ), 0.f, 5000.f, "%.1f" );
+						ImGui::SliderFloat( "end##fog", &GET_VARIABLE( g_variables.m_fog_end, float ), 0.f, 5000.f, "%.1f" );
+					}
+					break;
 				}
+				case 1: {
+					ImGui::Checkbox( "custom smoke color", &GET_VARIABLE( g_variables.m_custom_smoke, bool ) );
+					if ( GET_VARIABLE( g_variables.m_custom_smoke, bool ) )
+						ImGui::ColorEdit4( "##custom smoke color picker", &GET_VARIABLE( g_variables.m_custom_smoke_color, c_color ),
+						                   color_picker_alpha_flags );
 
-				ImGui::Checkbox( "fog", &GET_VARIABLE( g_variables.m_fog, bool ) );
-				if ( GET_VARIABLE( g_variables.m_fog, bool ) ) {
-					ImGui::ColorEdit4( "##fog picker", &GET_VARIABLE( g_variables.m_fog_color, c_color ), color_picker_alpha_flags );
+					ImGui::Checkbox( "custom molotov color", &GET_VARIABLE( g_variables.m_custom_molotov, bool ) );
+					if ( GET_VARIABLE( g_variables.m_custom_molotov, bool ) )
+						ImGui::ColorEdit4( "##custom molotov color picker", &GET_VARIABLE( g_variables.m_custom_molotov_color, c_color ),
+						                   color_picker_alpha_flags );
 
-					ImGui::SliderFloat( "start##fog", &GET_VARIABLE( g_variables.m_fog_start, float ), 0.f, 5000.f, "%.1f" );
-					ImGui::SliderFloat( "end##fog", &GET_VARIABLE( g_variables.m_fog_end, float ), 0.f, 5000.f, "%.1f" );
+					ImGui::Checkbox( "custom blood color", &GET_VARIABLE( g_variables.m_custom_blood, bool ) );
+					if ( GET_VARIABLE( g_variables.m_custom_blood, bool ) )
+						ImGui::ColorEdit4( "##custom blood color picker", &GET_VARIABLE( g_variables.m_custom_blood_color, c_color ),
+						                   color_picker_alpha_flags );
+					break;
 				}
-
-				ImGui::Checkbox( "custom smoke color", &GET_VARIABLE( g_variables.m_custom_smoke, bool ) );
-				if ( GET_VARIABLE( g_variables.m_custom_smoke, bool ) )
-					ImGui::ColorEdit4( "##custom smoke color picker", &GET_VARIABLE( g_variables.m_custom_smoke_color, c_color ),
-					                   color_picker_alpha_flags );
-
-				ImGui::Checkbox( "custom molotov color", &GET_VARIABLE( g_variables.m_custom_molotov, bool ) );
-				if ( GET_VARIABLE( g_variables.m_custom_molotov, bool ) )
-					ImGui::ColorEdit4( "##custom molotov color picker", &GET_VARIABLE( g_variables.m_custom_molotov_color, c_color ),
-					                   color_picker_alpha_flags );
-
-				ImGui::Checkbox( "custom blood color", &GET_VARIABLE( g_variables.m_custom_blood, bool ) );
-				if ( GET_VARIABLE( g_variables.m_custom_blood, bool ) )
-					ImGui::ColorEdit4( "##custom blood color picker", &GET_VARIABLE( g_variables.m_custom_blood_color, c_color ),
-					                   color_picker_alpha_flags );
+				case 2: {
+					ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
+					ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
+					break;
+				}
+				}
 
 				ImGui::EndChild( );
 			}

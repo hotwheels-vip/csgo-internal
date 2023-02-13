@@ -367,7 +367,6 @@ public:
 	void modify_eye_position( const c_animation_state* animation_state, c_vector* position ) const;
 	void set_next_think( int think );
 	void post_think( );
-	void restore_entity_to_predicted_frame( int frame );
 	void restore_data( const char* context, int slot, int type );
 	void on_post_restore_data( );
 
