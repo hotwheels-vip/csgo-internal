@@ -165,10 +165,17 @@ void n_menu::impl_t::on_end_scene( )
 							ImGui::ColorEdit4( "##player bounding box color", &GET_VARIABLE( g_variables.m_players_box_color, c_color ),
 							                   color_picker_alpha_flags );
 
-							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+							if ( GET_VARIABLE( g_variables.m_players_box_outline, bool ) ) {
+								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
-							ImGui::ColorEdit4( "##player bounding box outline color",
-							                   &GET_VARIABLE( g_variables.m_players_box_outline_color, c_color ), color_picker_alpha_flags );
+								ImGui::ColorEdit4( "##player bounding box outline color",
+								                   &GET_VARIABLE( g_variables.m_players_box_outline_color, c_color ), color_picker_alpha_flags );
+							}
+
+							ImGui::SetCursorPosX( 26.f );
+							ImGui::Checkbox( "corner bounding box##player", &GET_VARIABLE( g_variables.m_players_box_corner, bool ) );
+							ImGui::SetCursorPosX( 26.f );
+							ImGui::Checkbox( "bounding box outline##player", &GET_VARIABLE( g_variables.m_players_box_outline, bool ) );
 						}
 
 						ImGui::Checkbox( "name##player", &GET_VARIABLE( g_variables.m_players_name, bool ) );

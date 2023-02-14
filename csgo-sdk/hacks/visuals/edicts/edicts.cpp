@@ -175,7 +175,8 @@ void n_edicts::impl_t::dropped_weapons( )
 					e_draw_type::draw_type_rect,
 					std::make_any< rect_draw_object_t >( c_vector_2d( box.m_left, box.m_top ), c_vector_2d( box.m_right, box.m_bottom ),
 				                                         GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ).get_u32( ),
-				                                         GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ).get_u32( ), false, 0.f, ImDrawFlags_::ImDrawFlags_None, 1.f,
+				                                         GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ).get_u32( ), false,
+				                                         0.f, ImDrawFlags_::ImDrawFlags_None, 1.f,
 				                                         e_rect_flags::rect_flag_inner_outline | e_rect_flags::rect_flag_outer_outline ) );
 
 			if ( GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) ) {

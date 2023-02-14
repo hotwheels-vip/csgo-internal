@@ -27,14 +27,27 @@ void n_players::impl_t::players( )
 		if ( !g_interfaces.m_engine_client->get_player_info( index, &player_info ) )
 			return;
 
-		if ( GET_VARIABLE( g_variables.m_players_box, bool ) )
-			g_render.m_draw_data.emplace_back(
-				e_draw_type::draw_type_rect,
-				std::make_any< rect_draw_object_t >( c_vector_2d( box.m_left, box.m_top ), c_vector_2d( box.m_right, box.m_bottom ),
-			                                         GET_VARIABLE( g_variables.m_players_box_color, c_color ).get_u32( ),
-			                                         GET_VARIABLE( g_variables.m_players_box_outline_color, c_color ).get_u32( ), false, 0.f,
-			                                         ImDrawFlags_::ImDrawFlags_None, 1.f,
-			                                         e_rect_flags::rect_flag_inner_outline | e_rect_flags::rect_flag_outer_outline ) );
+		if ( GET_VARIABLE( g_variables.m_players_box, bool ) ) {
+			if ( !GET_VARIABLE( g_variables.m_players_box_corner, bool ) )
+				g_render.m_draw_data.emplace_back(
+					e_draw_type::draw_type_rect,
+					std::make_any< rect_draw_object_t >( c_vector_2d( box.m_left, box.m_top ), c_vector_2d( box.m_right, box.m_bottom ),
+				                                         GET_VARIABLE( g_variables.m_players_box_color, c_color ).get_u32( ),
+				                                         GET_VARIABLE( g_variables.m_players_box_outline_color, c_color ).get_u32( ), false, 0.f,
+				                                         ImDrawFlags_::ImDrawFlags_None, 1.f,
+				                                         GET_VARIABLE( g_variables.m_players_box_outline, bool )
+				                                             ? e_rect_flags::rect_flag_inner_outline | e_rect_flags::rect_flag_outer_outline
+				                                             : e_rect_flags::rect_flag_none ) );
+			else {
+				if ( GET_VARIABLE( g_variables.m_players_box_outline, bool ) ) {
+					g_render.corner_rect( box.m_left, box.m_top, box.m_right, box.m_bottom,
+					                      c_color( GET_VARIABLE( g_variables.m_players_box_outline_color, c_color ) ).get_u32( ), 2.f );
+				}
+
+				g_render.corner_rect( box.m_left, box.m_top, box.m_right, box.m_bottom,
+				                      c_color( GET_VARIABLE( g_variables.m_players_box_color, c_color ) ).get_u32( ) );
+			}
+		}
 
 		if ( GET_VARIABLE( g_variables.m_players_name, bool ) ) {
 			std::string converted_name = player_info.m_name;

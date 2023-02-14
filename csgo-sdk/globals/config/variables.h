@@ -11,6 +11,8 @@ namespace n_variables
 		/* visuals - players */
 		ADD_VARIABLE( bool, m_players, false );
 		ADD_VARIABLE( bool, m_players_box, false );
+		ADD_VARIABLE( bool, m_players_box_corner, false );
+		ADD_VARIABLE( bool, m_players_box_outline, false );
 		ADD_VARIABLE( c_color, m_players_box_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_players_box_outline_color, c_color( 0, 0, 0, 255 ) );
 		ADD_VARIABLE( bool, m_players_name, false );

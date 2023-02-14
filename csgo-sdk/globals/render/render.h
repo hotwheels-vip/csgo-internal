@@ -115,13 +115,14 @@ namespace n_render
 
 		bool m_initialised = false;
 
-	private:
 		void text( ImDrawList* draw_list, ImFont* font, const c_vector_2d& position, const std::string& text, const unsigned int& color,
 		           const unsigned int& outline_color, e_text_flags draw_flags = e_text_flags::text_flag_dropshadow );
 
 		void rect( ImDrawList* draw_list, const c_vector_2d& min, const c_vector_2d& max, const unsigned int& color,
 		           const unsigned int& outline_color, bool filled, float rounding, int corner_rounding_flags, float thickness,
 		           unsigned int outline_flags );
+
+		void corner_rect( float x1, float y1, float x2, float y2, const unsigned int& color, float thickness = 1.f );
 	};
 } // namespace n_render
 

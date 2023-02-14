@@ -149,7 +149,7 @@ void n_render::impl_t::draw_cached_data( )
 
 bool n_render::impl_t::world_to_screen( const c_vector& origin, c_vector_2d& screen )
 {
-	const auto& world_to_screen_matrix = g_interfaces.m_engine_client->get_world_to_screen_matrix();
+	const auto& world_to_screen_matrix = g_interfaces.m_engine_client->get_world_to_screen_matrix( );
 
 	const float width = world_to_screen_matrix[ 3 ][ 0 ] * origin.m_x + world_to_screen_matrix[ 3 ][ 1 ] * origin.m_y +
 	                    world_to_screen_matrix[ 3 ][ 2 ] * origin.m_z + world_to_screen_matrix[ 3 ][ 3 ];
@@ -188,8 +188,8 @@ void n_render::impl_t::text( ImDrawList* draw_list, ImFont* font, const c_vector
 }
 
 void n_render::impl_t::rect( ImDrawList* draw_list, const c_vector_2d& min, const c_vector_2d& max, const unsigned int& color,
-                             const unsigned int& outline_color,
-                     bool filled, float rounding, int corner_rounding_flags, float thickness, unsigned int outline_flags )
+                             const unsigned int& outline_color, bool filled, float rounding, int corner_rounding_flags, float thickness,
+                             unsigned int outline_flags )
 {
 	if ( filled )
 		draw_list->AddRectFilled( ImVec2( min.m_x, min.m_y ), ImVec2( max.m_x, max.m_y ), color, rounding, corner_rounding_flags );
@@ -201,4 +201,38 @@ void n_render::impl_t::rect( ImDrawList* draw_list, const c_vector_2d& min, cons
 
 	if ( outline_flags & e_rect_flags::rect_flag_outer_outline )
 		draw_list->AddRect( ImVec2( min.m_x - 1.f, min.m_y - 1.f ), ImVec2( max.m_x + 1.f, max.m_y + 1.f ), outline_color );
+}
+
+void n_render::impl_t::corner_rect( float x1, float y1, float x2, float y2, const unsigned int& color, float thickness )
+{
+	int w = x2 - x1;
+	int h = y2 - y1;
+
+	int iw = w / 3;
+	int ih = h / 5;
+
+	this->m_draw_data.emplace_back( e_draw_type::draw_type_line,
+	                                std::make_any< line_draw_object_t >( c_vector_2d( x1, y1 ), c_vector_2d( x1 + iw, y1 ), color, thickness ) );
+
+	this->m_draw_data.emplace_back( e_draw_type::draw_type_line, std::make_any< line_draw_object_t >( c_vector_2d( x1 + w - iw, y1 ),
+	                                                                                                  c_vector_2d( x1 + w, y1 ), color, thickness ) );
+
+	this->m_draw_data.emplace_back( e_draw_type::draw_type_line,
+	                                std::make_any< line_draw_object_t >( c_vector_2d( x1, y1 ), c_vector_2d( x1, y1 + ih ), color, thickness ) );
+
+	this->m_draw_data.emplace_back( e_draw_type::draw_type_line, std::make_any< line_draw_object_t >(
+																	 c_vector_2d( x1 + w - 1, y1 ), c_vector_2d( x1 + w - 1, y1 + ih ), color, thickness ) );
+
+	this->m_draw_data.emplace_back( e_draw_type::draw_type_line,
+	                                std::make_any< line_draw_object_t >( c_vector_2d( x1, y1 + h ), c_vector_2d( x1 + iw, y1 + h ), color, thickness ) );
+
+	this->m_draw_data.emplace_back( e_draw_type::draw_type_line, std::make_any< line_draw_object_t >( c_vector_2d( x1 + w - iw, y1 + h ),
+	                                                                                                  c_vector_2d( x1 + w, y1 + h ), color, thickness ) );
+
+	this->m_draw_data.emplace_back( e_draw_type::draw_type_line,
+	                                std::make_any< line_draw_object_t >( c_vector_2d( x1, y1 + h - ih ), c_vector_2d( x1, y1 + h ), color, thickness ) );
+
+	this->m_draw_data.emplace_back(
+		e_draw_type::draw_type_line,
+		std::make_any< line_draw_object_t >( c_vector_2d( x1 + w - 1, y1 + h - ih ), c_vector_2d( x1 + w - 1, y1 + h ), color, thickness ) );
 }
