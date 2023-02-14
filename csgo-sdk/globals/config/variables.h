@@ -21,6 +21,8 @@ namespace n_variables
 		/* visuals - edicts */
 		ADD_VARIABLE( bool, m_dropped_weapons, false );
 		ADD_VARIABLE( bool, m_dropped_weapons_box, false );
+		ADD_VARIABLE( bool, m_dropped_weapons_box_corner, false );
+		ADD_VARIABLE( bool, m_dropped_weapons_box_outline, false );
 		ADD_VARIABLE( c_color, m_dropped_weapons_box_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_dropped_weapons_box_outline_color, c_color( 0, 0, 0, 255 ) );
 		ADD_VARIABLE( bool, m_dropped_weapons_name, false );
