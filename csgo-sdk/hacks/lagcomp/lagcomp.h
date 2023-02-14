@@ -3,6 +3,8 @@
 
 #include "../../game/sdk/structs/matrix_t.h"
 
+class c_base_entity;
+
 namespace n_lagcomp
 {
 	struct impl_t {
@@ -22,6 +24,9 @@ namespace n_lagcomp
 
 		void on_create_move_pre( );
 		void on_create_move_post( );
+
+		void backtrack_player( record_t* heap_record );
+		void backtrack_player( c_base_entity* player );
 	};
 } // namespace n_lagcomp
 

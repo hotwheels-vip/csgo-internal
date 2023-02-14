@@ -62,6 +62,7 @@
     <ClCompile Include="hooks\functions\modify_eye_position.cpp" />
     <ClCompile Include="hooks\functions\override_mouse_input.cpp" />
     <ClCompile Include="hacks\visuals\players\players.cpp" />
+    <ClCompile Include="hacks\aimbot\aimbot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -229,6 +230,8 @@
     <ClInclude Include="game\sdk\structs\bounding_box_t.h" />
     <ClInclude Include="game\sdk\enums\e_class_ids.h" />
     <ClInclude Include="hacks\visuals\players\players.h" />
+    <ClInclude Include="hacks\aimbot\aimbot.h" />
+    <ClInclude Include="game\sdk\enums\e_hitgroup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

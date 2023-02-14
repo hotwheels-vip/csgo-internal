@@ -3,11 +3,14 @@
 class c_user_cmd;
 class c_base_entity;
 
+#include "../hacks/lagcomp/lagcomp.h"
+
 namespace n_globals
 {
 	struct impl_t {
-		c_user_cmd* m_cmd      = nullptr;
-		c_base_entity* m_local = nullptr;
+		c_user_cmd* m_cmd                     = nullptr;
+		c_base_entity* m_local                = nullptr;
+		n_lagcomp::impl_t::record_t* m_record = nullptr;
 
 		bool m_unloading{ };
 		// fps lower then server tickrate

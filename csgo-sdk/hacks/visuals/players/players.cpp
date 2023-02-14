@@ -13,8 +13,8 @@ void n_players::impl_t::on_paint_traverse( )
 void n_players::impl_t::players( )
 {
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity || entity->is_dormant( ) || !entity->is_alive( ) || entity == g_ctx.m_local ||
-		     entity->get_team( ) == g_ctx.m_local->get_team( ) || entity->is_dormant( ) )
+		if ( !entity || entity->is_dormant( ) || !entity->is_alive( ) || entity == g_ctx.m_local || !g_ctx.m_local->is_enemy( entity ) ||
+		     entity->is_dormant( ) )
 			return;
 
 		bounding_box_t box{ };

@@ -26,25 +26,26 @@ void n_movement::impl_t::bunny_hop( )
 
 void n_movement::impl_t::on_create_move_post( )
 {
-	const auto move_type = g_prediction.backup_data.m_move_type;
-	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly ||
-	     move_type == e_move_types::move_type_observer )
-		return;
-
 	const float target_ps_velocity =
 		-g_convars[ HASH_BT( "sv_gravity" ) ]->get_float( ) * 0.5f * g_interfaces.m_global_vars_base->m_interval_per_tick;
 
 	if ( GET_VARIABLE( g_variables.m_edge_jump, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_edge_jump_key, key_bind_t ) ) )
 		this->edge_jump( );
 
+	// run this before movetype check so we can auto ladder bug up stairs(temporary)
+	if ( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) )
+		this->jump_bug( );
+
+	const auto move_type = g_prediction.backup_data.m_move_type;
+	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly ||
+	     move_type == e_move_types::move_type_observer )
+		return;
+
 	if ( GET_VARIABLE( g_variables.m_long_jump, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_long_jump_key, key_bind_t ) ) )
 		this->long_jump( );
 
 	if ( GET_VARIABLE( g_variables.m_mini_jump, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_mini_jump_key, key_bind_t ) ) )
 		this->mini_jump( );
-
-	if ( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) )
-		this->jump_bug( );
 
 	if ( GET_VARIABLE( g_variables.m_auto_align, bool ) && !( g_prediction.backup_data.m_flags & e_flags::fl_onground ||
 	                                                          this->m_pixelsurf_data.m_in_pixel_surf || this->m_edgebug_data.m_will_edgebug ) )
@@ -63,6 +64,21 @@ void n_movement::impl_t::on_create_move_post( )
 
 void n_movement::impl_t::edge_jump( )
 {
+	const auto move_type = g_prediction.backup_data.m_move_type;
+	if ( move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly || move_type == e_move_types::move_type_observer )
+		return;
+
+	// is on ladder and wont be on ladder on next tick
+	if ( move_type == e_move_types::move_type_ladder ) {
+		if ( g_ctx.m_local->get_move_type( ) != e_move_type::movetype_ladder ) {
+			if ( GET_VARIABLE( g_variables.m_edge_jump_ladder, bool ) )
+				g_ctx.m_cmd->m_buttons |= e_command_buttons::in_jump;
+		} else // remove jump flag while in ladder
+			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_jump;
+
+		return;
+	}
+
 	if ( ( g_prediction.backup_data.m_flags & e_flags::fl_onground ) && !( g_ctx.m_local->get_flags( ) & e_flags::fl_onground ) )
 		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_jump;
 }
@@ -93,6 +109,8 @@ void n_movement::impl_t::edge_bug( )
 
 		for ( int i = 0; i <= GET_VARIABLE( g_variables.m_edge_bug_ticks, int ); i++ ) {
 			c_user_cmd* simulated_cmd = new c_user_cmd( *g_ctx.m_cmd );
+
+			simulated_cmd->m_buttons |= e_command_buttons::in_bullrush;
 
 			if ( ducked ) {
 				simulated_cmd->m_buttons |= e_command_buttons::in_duck;
@@ -249,6 +267,7 @@ void n_movement::impl_t::auto_duck( )
 
 		c_user_cmd* simulated_cmd = new c_user_cmd( *g_ctx.m_cmd );
 
+		simulated_cmd->m_buttons |= e_command_buttons::in_bullrush;
 		simulated_cmd->m_buttons |= e_command_buttons::in_duck;
 
 		g_prediction.begin( g_ctx.m_local, simulated_cmd );
@@ -363,6 +382,8 @@ void n_movement::impl_t::pixel_surf( float target_ps_velocity )
 
 			for ( int i = 0; i < 12; i++ ) {
 				c_user_cmd* simulated_cmd = new c_user_cmd( *g_ctx.m_cmd );
+
+				simulated_cmd->m_buttons |= e_command_buttons::in_bullrush;
 
 				if ( prediction_type == 0 )
 					simulated_cmd->m_buttons |= e_command_buttons::in_duck;

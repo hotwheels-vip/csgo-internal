@@ -26,13 +26,11 @@ bool is_valid( n_lagcomp::impl_t::record_t rec )
 
 	float correct = 0.f;
 
-	static auto unlag_pointer = g_convars[ HASH_BT( "sv_maxunlag" ) ];
-	auto sv_maxunlag          = unlag_pointer->get_float( );
-
-	correct += net_channel->get_latency( 0 );
+	correct += net_channel->get_latency( FLOW_OUTGOING );
+	correct += net_channel->get_latency( FLOW_INCOMING );
 	correct += lerp_time( );
 
-	correct = std::clamp( correct, 0.f, sv_maxunlag );
+	correct = std::clamp( correct, 0.f, g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( ) );
 
 	const float delta_correct = std::fabsf( correct - ( g_interfaces.m_global_vars_base->m_current_time - rec.m_sim_time ) );
 
@@ -47,8 +45,7 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 	const auto max_allocation = static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
 
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || entity->get_team( ) == g_ctx.m_local->get_team( ) ||
-		     entity == g_ctx.m_local )
+		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local )
 			return;
 
 		const auto index = entity->get_index( );
@@ -73,8 +70,7 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 	} );
 
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || entity->get_team( ) == g_ctx.m_local->get_team( ) ||
-		     entity == g_ctx.m_local )
+		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local )
 			return;
 
 		const auto index = entity->get_index( );
@@ -117,8 +113,71 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 	} );
 }
 
+void n_lagcomp::impl_t::backtrack_player( record_t* heap_record )
+{
+	if ( g_ctx.m_cmd->m_tick_count == 0 )
+		return;
+
+	g_ctx.m_record = heap_record;
+
+	if ( !heap_record )
+		return;
+
+	g_ctx.m_cmd->m_tick_count = g_math.time_to_ticks( heap_record->m_sim_time + lerp_time( ) );
+}
+
+void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
+{
+	if ( g_ctx.m_cmd->m_tick_count == 0 )
+		return;
+
+	const auto max_allocation = static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
+	auto index                = player->get_index( );
+
+	auto current_fov         = 180.f;
+	record_t* closest_record = nullptr;
+
+	const auto eye_position = g_ctx.m_local->get_eye_position( false );
+
+	c_angle player_angles{ };
+	g_interfaces.m_engine_client->get_view_angles( player_angles );
+
+	if ( !m_records[ index ] )
+		return;
+
+	if ( const auto record_list = g_lagcomp.m_records[ index ] ) {
+		for ( int i = 0; i < max_allocation; i++ ) {
+			auto record = &record_list[ i ];
+
+			if ( !record_list[ i ].m_valid )
+				continue;
+
+			const auto angle = g_math.calculate_angle( eye_position, player->get_hitbox_position( 0, record_list[ i ].m_matrix ) );
+
+			if ( float calculated_fov = g_math.calculate_fov( g_ctx.m_cmd->m_view_point, angle ); calculated_fov < current_fov ) {
+				current_fov    = calculated_fov;
+				closest_record = record;
+			}
+		}
+	}
+
+	g_ctx.m_record = closest_record;
+
+	if ( !closest_record )
+		return;
+
+	// https://github.com/perilouswithadollarsign/cstrike15_src/blob/master/game/server/player_lagcompensation.cpp#L287
+
+	g_ctx.m_cmd->m_tick_count = g_math.time_to_ticks( closest_record->m_sim_time + lerp_time( ) );
+}
+
+// this code should only be ran if aimbot is off, we should never set tickcount without calculating
+// the position of the registered lag compensated tick
 void n_lagcomp::impl_t::on_create_move_post( )
 {
+	// TODO: remove this, TEMPORARY
+	return;
+
 	if ( g_ctx.m_cmd->m_tick_count == 0 )
 		return;
 
@@ -129,8 +188,7 @@ void n_lagcomp::impl_t::on_create_move_post( )
 	int best_tick           = g_ctx.m_cmd->m_tick_count;
 
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || entity->get_team( ) == g_ctx.m_local->get_team( ) ||
-		     entity == g_ctx.m_local )
+		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local )
 			return;
 
 		const auto index = entity->get_index( );
@@ -148,8 +206,7 @@ void n_lagcomp::impl_t::on_create_move_post( )
 					if ( float calculated_fov = g_math.calculate_fov( g_ctx.m_cmd->m_view_point, angle ); calculated_fov < current_fov ) {
 						current_fov = calculated_fov;
 
-						best_tick =
-							static_cast< int >( ( record.m_sim_time + lerp_time( ) ) / g_interfaces.m_global_vars_base->m_interval_per_tick );
+						best_tick = static_cast< int >( ( record.m_sim_time + lerp_time( ) ) / g_interfaces.m_global_vars_base->m_interval_per_tick );
 					}
 				}
 			}

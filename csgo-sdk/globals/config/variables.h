@@ -47,6 +47,7 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_no_crouch_cooldown, false );
 		ADD_VARIABLE( bool, m_edge_jump, false );
 		ADD_VARIABLE( key_bind_t, m_edge_jump_key, key_bind_t( 0, 1 ) );
+		ADD_VARIABLE( bool, m_edge_jump_ladder, false );
 		ADD_VARIABLE( bool, m_long_jump, false );
 		ADD_VARIABLE( key_bind_t, m_long_jump_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( bool, m_mini_jump, false );

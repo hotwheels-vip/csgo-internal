@@ -64,6 +64,7 @@
 #include "../enums/e_command_buttons.h"
 #include "../enums/e_field_types.h"
 #include "../enums/e_flags.h"
+#include "../enums/e_hitgroup.h"
 #include "../enums/e_image_format.h"
 #include "../enums/e_item_definition_index.h"
 #include "../enums/e_material_property_type.h"

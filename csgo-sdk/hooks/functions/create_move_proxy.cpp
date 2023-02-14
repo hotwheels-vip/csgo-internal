@@ -2,6 +2,7 @@
 #include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
+#include "../../hacks/aimbot/aimbot.h"
 #include "../../hacks/lagcomp/lagcomp.h"
 #include "../../hacks/misc/misc.h"
 #include "../../hacks/movement/movement.h"
@@ -41,6 +42,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		g_prediction.end( g_ctx.m_local );
 
 		g_lagcomp.on_create_move_post( );
+		g_aimbot.on_create_move_post( );
 		g_movement.on_create_move_post( );
 	}( );
 

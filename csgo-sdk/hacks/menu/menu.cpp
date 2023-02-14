@@ -162,8 +162,8 @@ void n_menu::impl_t::on_end_scene( )
 					if ( GET_VARIABLE( g_variables.m_players, bool ) ) {
 						ImGui::Checkbox( "bounding box##player", &GET_VARIABLE( g_variables.m_players_box, bool ) );
 						if ( GET_VARIABLE( g_variables.m_players_box, bool ) ) {
-							ImGui::ColorEdit4( "##player bounding box color",
-							                   &GET_VARIABLE( g_variables.m_players_box_color, c_color ), color_picker_alpha_flags );
+							ImGui::ColorEdit4( "##player bounding box color", &GET_VARIABLE( g_variables.m_players_box_color, c_color ),
+							                   color_picker_alpha_flags );
 
 							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
@@ -189,8 +189,7 @@ void n_menu::impl_t::on_end_scene( )
 							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
 							ImGui::ColorEdit4( "##dropped weapons bounding box outline color",
-							                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ),
-							                   color_picker_alpha_flags );
+							                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ), color_picker_alpha_flags );
 						}
 
 						ImGui::Checkbox( "name##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) );
@@ -212,7 +211,6 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "chams" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
-
 				ImGui::EndChild( );
 			}
 
@@ -284,6 +282,11 @@ void n_menu::impl_t::on_end_scene( )
 
 				ImGui::Checkbox( "edge jump", &GET_VARIABLE( g_variables.m_edge_jump, bool ) );
 				ImGui::Keybind( "edge jump key", &GET_VARIABLE( g_variables.m_edge_jump_key, key_bind_t ) );
+
+				if ( GET_VARIABLE( g_variables.m_edge_jump, bool ) ) {
+					ImGui::SetCursorPosX( 26.f );
+					ImGui::Checkbox( "on ladders", &GET_VARIABLE( g_variables.m_edge_jump_ladder, bool ) );
+				}
 
 				ImGui::Checkbox( "long jump", &GET_VARIABLE( g_variables.m_long_jump, bool ) );
 				ImGui::Keybind( "long jump key", &GET_VARIABLE( g_variables.m_long_jump_key, key_bind_t ) );

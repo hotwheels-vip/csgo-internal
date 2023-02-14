@@ -178,7 +178,7 @@ bool c_base_entity::get_bounding_box( bounding_box_t* box )
 
 	/* https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/game/shared/collisionproperty.h#L77 */
 	const c_vector mins = collideable->obb_mins( );
-	const c_vector maxs   = collideable->obb_maxs( );
+	const c_vector maxs = collideable->obb_maxs( );
 
 	std::array< c_vector, 8U > points = { c_vector( mins.m_x, mins.m_y, mins.m_z ), c_vector( mins.m_x, maxs.m_y, mins.m_z ),
 		                                  c_vector( maxs.m_x, maxs.m_y, mins.m_z ), c_vector( maxs.m_x, mins.m_y, mins.m_z ),
@@ -247,21 +247,41 @@ c_vector c_base_entity::get_bone_position( int bone )
 	return c_vector( );
 }
 
-c_vector c_base_entity::get_hitbox_position( int hitbox, matrix3x4_t* matrix )
+c_vector c_base_entity::get_hitbox_position( int index, float point_scale )
+{
+	if ( auto model = get_model( ) ) {
+		if ( auto studio_model = g_interfaces.m_model_info->get_studio_model( model ) ) {
+			matrix3x4_t matrix[ 128 ];
+
+			if ( setup_bones( matrix, 128, 0x100, 0.f ) ) {
+				if ( auto hitbox_set_ = studio_model->get_hitbox_set( get_hitbox_set( ) ) ) {
+					if ( auto hitbox = hitbox_set_->get_hitbox( index ) ) {
+						auto position = ( hitbox->m_bb_min + hitbox->m_bb_max ) * point_scale;
+
+						return g_math.vector_transform( position, matrix[ hitbox->m_bone ] );
+					}
+				}
+			}
+		}
+	}
+
+	return { };
+}
+
+c_vector c_base_entity::get_hitbox_position( int hitbox, matrix3x4_t* matrix, float point_scale )
 {
 	auto hdr = g_interfaces.m_model_info->get_studio_model( get_model( ) );
 	if ( !hdr )
 		return { };
 
 	auto hitbox_set = hdr->get_hitbox_set( get_hitbox_set( ) );
-	[[unlikely]] if ( !hitbox_set )
-		return { };
+	[[unlikely]] if ( !hitbox_set ) return { };
 
 	auto new_hitbox = hitbox_set->get_hitbox( hitbox );
 	if ( !new_hitbox )
 		return { };
 
-	return g_math.vector_transform( ( new_hitbox->m_bb_min + new_hitbox->m_bb_max ) * 0.5f, matrix[ new_hitbox->m_bone ] );
+	return g_math.vector_transform( ( new_hitbox->m_bb_min + new_hitbox->m_bb_max ) * point_scale, matrix[ new_hitbox->m_bone ] );
 }
 
 c_vector c_base_entity::get_eye_position( bool should_correct )
@@ -276,6 +296,17 @@ c_vector c_base_entity::get_eye_position( bool should_correct )
 	}
 
 	return out;
+}
+
+bool c_base_entity::can_see_player( c_base_entity* player )
+{
+	c_game_trace trace;
+	c_trace_filter filter( this );
+	ray_t ray( get_eye_position( false ), player->get_bone_position( e_hitgroup::hitgroup_head ) );
+
+	g_interfaces.m_engine_trace->trace_ray( ray, mask_playersolid, &filter, &trace );
+
+	return trace.did_hit( ) && trace.m_hit_entity == player;
 }
 
 c_user_cmd& c_base_entity::get_last_command( )

@@ -41,6 +41,7 @@
     <ClCompile Include="globals\config\config.cpp" />
     <ClCompile Include="globals\convars\convars.cpp" />
     <ClCompile Include="globals\math\math.cpp" />
+    <ClCompile Include="hacks\aimbot\aimbot.cpp" />
     <ClCompile Include="hacks\entity_cache\entity_cache.cpp" />
     <ClCompile Include="hacks\indicators\indicators.cpp" />
     <ClCompile Include="hacks\lagcomp\lagcomp.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="game\sdk\enums\e_convar_flag.h" />
     <ClInclude Include="game\sdk\enums\e_field_types.h" />
     <ClInclude Include="game\sdk\enums\e_flags.h" />
+    <ClInclude Include="game\sdk\enums\e_hitgroup.h" />
     <ClInclude Include="game\sdk\enums\e_image_format.h" />
     <ClInclude Include="game\sdk\enums\e_item_definition_index.h" />
     <ClInclude Include="game\sdk\enums\e_material_property_type.h" />
@@ -223,6 +225,7 @@
     <ClInclude Include="globals\globals.h" />
     <ClInclude Include="globals\macros\macros.h" />
     <ClInclude Include="globals\math\math.h" />
+    <ClInclude Include="hacks\aimbot\aimbot.h" />
     <ClInclude Include="hacks\entity_cache\entity_cache.h" />
     <ClInclude Include="hacks\indicators\indicators.h" />
     <ClInclude Include="hacks\lagcomp\lagcomp.h" />

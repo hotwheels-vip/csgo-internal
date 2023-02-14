@@ -145,20 +145,20 @@ class c_base_client;
 class c_client_networkable
 {
 public:
-	virtual c_client_unknown* get_client_unknown( )                      = 0;
-	virtual void release( )                                              = 0;
-	virtual c_base_client* get_client_class( )                           = 0;
-	virtual void notify_should_transmit( int state )                     = 0;
-	virtual void on_pre_data_changed( int update_type )                  = 0;
-	virtual void on_data_changed( int update_type )                      = 0;
-	virtual void pre_data_update( int update_type )                      = 0;
-	virtual void post_data_update( int update_type )                     = 0;
-	virtual void on_data_unchanged_in_pvs( )                             = 0;
-	virtual bool is_dormant( ) const                                     = 0;
-	virtual int get_index( ) const                                       = 0;
+	virtual c_client_unknown* get_client_unknown( )                       = 0;
+	virtual void release( )                                               = 0;
+	virtual c_base_client* get_client_class( )                            = 0;
+	virtual void notify_should_transmit( int state )                      = 0;
+	virtual void on_pre_data_changed( int update_type )                   = 0;
+	virtual void on_data_changed( int update_type )                       = 0;
+	virtual void pre_data_update( int update_type )                       = 0;
+	virtual void post_data_update( int update_type )                      = 0;
+	virtual void on_data_unchanged_in_pvs( )                              = 0;
+	virtual bool is_dormant( ) const                                      = 0;
+	virtual int get_index( ) const                                        = 0;
 	virtual void receive_message( e_class_ids class_index, bf_read& msg ) = 0;
-	virtual void* get_data_table_base_ptr( )                             = 0;
-	virtual void set_destroyed_on_recreate_entities( )                   = 0;
+	virtual void* get_data_table_base_ptr( )                              = 0;
+	virtual void set_destroyed_on_recreate_entities( )                    = 0;
 };
 
 class c_client_think_handle;
@@ -381,8 +381,11 @@ public:
 	int get_max_health( );
 
 	c_vector get_bone_position( int bone );
-	c_vector get_hitbox_position( int hitbox, matrix3x4_t* matrix );
+	c_vector get_hitbox_position( int hitbox, float point_scale = 0.5f );
+	c_vector get_hitbox_position( int hitbox, matrix3x4_t* matrix, float point_scale = 0.5f );
 	c_vector get_eye_position( bool should_correct = true );
+
+	bool can_see_player( c_base_entity* player );
 
 	c_user_cmd& get_last_command( );
 };
