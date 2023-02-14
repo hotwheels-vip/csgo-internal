@@ -81,11 +81,11 @@ void n_players::impl_t::players( )
 		}
 
 		if ( GET_VARIABLE( g_variables.m_players_skeleton, bool ) ) {
-			std::array< matrix3x4_t, 128 > matricies = { };
-			memcpy( matricies.data( ), entity->get_cached_bone_data( ).get_elements( ),
+			matrix3x4_t bone_matrix[ 128 ] { };
+			memcpy( bone_matrix, entity->get_cached_bone_data( ).get_elements( ),
 			        entity->get_cached_bone_data( ).count( ) * sizeof( matrix3x4_t ) );
 
-			if ( matricies.data( ) ) {
+			if ( bone_matrix ) {
 				const auto model = client_renderable->get_model( );
 				if ( model ) {
 					const auto studio_model = g_interfaces.m_model_info->get_studio_model( model );
@@ -94,10 +94,10 @@ void n_players::impl_t::players( )
 						c_vector child_position = { }, parent_position = { };
 						c_vector_2d child_screen_position = { }, parent_screen_position = { };
 
-						c_vector upper_direction = c_vector( matricies[ 7 ][ 0 ][ 3 ], matricies[ 7 ][ 1 ][ 3 ], matricies[ 7 ][ 2 ][ 3 ] ) -
-						                           c_vector( matricies[ 6 ][ 0 ][ 3 ], matricies[ 6 ][ 1 ][ 3 ], matricies[ 6 ][ 2 ][ 3 ] );
+						c_vector upper_direction = c_vector( bone_matrix[ 7 ][ 0 ][ 3 ], bone_matrix[ 7 ][ 1 ][ 3 ], bone_matrix[ 7 ][ 2 ][ 3 ] ) -
+						                           c_vector( bone_matrix[ 6 ][ 0 ][ 3 ], bone_matrix[ 6 ][ 1 ][ 3 ], bone_matrix[ 6 ][ 2 ][ 3 ] );
 						c_vector breast_bone =
-							c_vector( matricies[ 6 ][ 0 ][ 3 ], matricies[ 6 ][ 1 ][ 3 ], matricies[ 6 ][ 2 ][ 3 ] ) + upper_direction * 0.5f;
+							c_vector( bone_matrix[ 6 ][ 0 ][ 3 ], bone_matrix[ 6 ][ 1 ][ 3 ], bone_matrix[ 6 ][ 2 ][ 3 ] ) + upper_direction * 0.5f;
 
 						for ( int i = 0; i < studio_model->n_bones; i++ ) {
 							mstudiobone_t* bone = studio_model->get_bone( i );
@@ -110,9 +110,9 @@ void n_players::impl_t::players( )
 							if ( !( bone->m_flags & 0x00000100 /* BONE_USED_BY_HITBOX */ ) )
 								continue;
 
-							child_position  = c_vector( matricies[ i ][ 0 ][ 3 ], matricies[ i ][ 1 ][ 3 ], matricies[ i ][ 2 ][ 3 ] );
-							parent_position = c_vector( matricies[ bone->m_parent ][ 0 ][ 3 ], matricies[ bone->m_parent ][ 1 ][ 3 ],
-							                            matricies[ bone->m_parent ][ 2 ][ 3 ] );
+							child_position  = c_vector( bone_matrix[ i ][ 0 ][ 3 ], bone_matrix[ i ][ 1 ][ 3 ], bone_matrix[ i ][ 2 ][ 3 ] );
+							parent_position = c_vector( bone_matrix[ bone->m_parent ][ 0 ][ 3 ], bone_matrix[ bone->m_parent ][ 1 ][ 3 ],
+							                            bone_matrix[ bone->m_parent ][ 2 ][ 3 ] );
 
 							c_vector delta_child  = child_position - breast_bone;
 							c_vector delta_parent = parent_position - breast_bone;

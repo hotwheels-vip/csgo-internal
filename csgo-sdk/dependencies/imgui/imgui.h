@@ -3776,7 +3776,8 @@ inline void RenderFadedGradientLine( ImDrawList* draw_list, const ImVec2& positi
 	draw_list->AddRectFilledMultiColor( ImVec2( position.x, position.y ), ImVec2( position.x + size.x / 2, position.y + size.y ),
 	                                    ImColor( color.Value.x, color.Value.y, color.Value.z, color.Value.w * 0.f ),
 	                                    ImColor( color.Value.x, color.Value.y, color.Value.z, color.Value.w ),
-	                                    ImColor( color.Value.x, color.Value.y, color.Value.z, color.Value.w ), ImColor( 242, 101, 252, 0 ) );
+	                                    ImColor( color.Value.x, color.Value.y, color.Value.z, color.Value.w ),
+	                                    ImColor( color.Value.x, color.Value.y, color.Value.z, color.Value.w * 0.f ) );
 
 	draw_list->AddRectFilledMultiColor( ImVec2( position.x + size.x / 2, position.y ),
 	                                    ImVec2( ( position.x + size.x / 2 ) + size.x / 2, position.y + size.y ),
