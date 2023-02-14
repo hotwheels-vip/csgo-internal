@@ -1,7 +1,8 @@
 #pragma once
 #include "../../../globals/netvars/netvars.h"
 #include "../../../utilities/memory/virtual.h"
-#include "../structs/var_mapping.h"
+#include "../structs/var_mapping.h" /* TODO ~ move to separate files, end structures with the suffix _t */
+#include "c_utl_vector.h"
 
 enum class e_class_ids;
 
@@ -105,7 +106,7 @@ public:
 	virtual int get_body( )                                                                                                                 = 0;
 	virtual void get_color_modulation( float* color )                                                                                       = 0;
 	virtual bool lod_test( )                                                                                                                = 0;
-	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float current_time )                            = 0;
+	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float current_time )                            = 0; /* https://github.com/notgoodusename/OsirisAndExtra/blob/8fc60e752fd5af6e3e8974cd9fc204c73c0a7295/Osiris/SDK/Entity.h#L481 */
 	virtual void setup_weights( const matrix3x4_t* bone_to_world, int flex_weight_count, float* flex_weights, float* flex_delayed_weights ) = 0;
 	virtual void do_animation_events( )                                                                                                     = 0;
 	virtual void* get_pvs_notify_interface( )                                                                                               = 0;
@@ -305,6 +306,7 @@ public:
 	/* offsets */
 	NETVAR_OFFSET( unsigned int, get_index, 0x64 );
 	NETVAR_OFFSET( bool, is_dormant, 0xed );
+	NETVAR_OFFSET( c_utl_vector< matrix3x4_t >, get_cached_bone_data, 0x2914 );
 
 	const bool is_alive( )
 	{

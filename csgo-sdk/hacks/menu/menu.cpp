@@ -182,6 +182,11 @@ void n_menu::impl_t::on_end_scene( )
 						if ( GET_VARIABLE( g_variables.m_players_name, bool ) )
 							ImGui::ColorEdit4( "##player name color", &GET_VARIABLE( g_variables.m_players_name_color, c_color ),
 							                   color_picker_alpha_flags );
+
+						ImGui::Checkbox( "player skeleton", &GET_VARIABLE( g_variables.m_players_skeleton, bool ) );
+						if ( GET_VARIABLE( g_variables.m_players_skeleton, bool ) )
+							ImGui::ColorEdit4( "##player skeleton color", &GET_VARIABLE( g_variables.m_players_skeleton_color, c_color ),
+							                   color_picker_alpha_flags );
 					}
 					break;
 				}

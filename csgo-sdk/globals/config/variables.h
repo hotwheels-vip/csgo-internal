@@ -17,6 +17,8 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_players_box_outline_color, c_color( 0, 0, 0, 255 ) );
 		ADD_VARIABLE( bool, m_players_name, false );
 		ADD_VARIABLE( c_color, m_players_name_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( bool, m_players_skeleton, false );
+		ADD_VARIABLE( c_color, m_players_skeleton_color, c_color( 255, 255, 255, 255 ) );
 
 		/* visuals - edicts */
 		ADD_VARIABLE( bool, m_dropped_weapons, false );

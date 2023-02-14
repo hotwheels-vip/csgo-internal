@@ -60,6 +60,11 @@ public:
 		return m_memory[ i ];
 	}
 
+		T* get_elements( )
+	{
+		return this->m_elements;
+	}
+
 	const T& element( int i ) const
 	{
 		return m_memory[ i ];
