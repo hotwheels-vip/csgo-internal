@@ -100,9 +100,10 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 
 		record_t new_record{ };
 
-		new_record.m_player   = index;
-		new_record.m_sim_time = entity->get_simulation_time( );
-		new_record.m_valid    = is_valid( new_record );
+		new_record.m_player     = index;
+		new_record.m_sim_time   = entity->get_simulation_time( );
+		new_record.m_valid      = is_valid( new_record );
+		new_record.m_vec_origin = entity->get_abs_origin( );
 
 		if ( !entity->setup_bones( new_record.m_matrix, 128, 0x0007FF00, 0.f ) )
 			return;
@@ -152,7 +153,12 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 			if ( !record_list[ i ].m_valid )
 				continue;
 
-			const auto angle = g_math.calculate_angle( eye_position, player->get_hitbox_position( 0, record_list[ i ].m_matrix ) );
+			// https://gitlab.com/KittenPopo/csgo-2018-source/-/blob/main/game/server/player_lagcompensation.cpp#L385
+			c_vector delta = record_list[ i ].m_vec_origin - player->get_abs_origin( );
+			if ( delta.length_squared( ) > LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR )
+				return;
+
+			const auto angle = g_math.calculate_angle( eye_position, player->get_hitbox_position( hitgroup_head, record_list[ i ].m_matrix ) );
 
 			if ( float calculated_fov = g_math.calculate_fov( g_ctx.m_cmd->m_view_point, angle ); calculated_fov < current_fov ) {
 				current_fov    = calculated_fov;

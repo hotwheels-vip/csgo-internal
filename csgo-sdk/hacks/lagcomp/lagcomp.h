@@ -16,6 +16,8 @@ namespace n_lagcomp
 
 			bool m_valid{ };
 
+			c_vector m_vec_origin{ };
+
 			matrix3x4_t m_matrix[ 128 ]{ };
 		};
 

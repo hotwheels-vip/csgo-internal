@@ -136,6 +136,8 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "main" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+				ImGui::Checkbox( "enable aimbot", &GET_VARIABLE( g_variables.m_aimbot_enable, bool ) );
+				ImGui::Checkbox( "enable backtrack", &GET_VARIABLE( g_variables.m_backtrack_enable, bool ) );
 				ImGui::EndChild( );
 			}
 
@@ -199,13 +201,16 @@ void n_menu::impl_t::on_end_scene( )
 								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
 								ImGui::ColorEdit4( "##dropped weapons bounding box outline color",
-								                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ), color_picker_alpha_flags );
+								                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ),
+								                   color_picker_alpha_flags );
 							}
 
 							ImGui::SetCursorPosX( 26.f );
-							ImGui::Checkbox( "corner bounding box##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_box_corner, bool ) );
+							ImGui::Checkbox( "corner bounding box##dropped weapons",
+							                 &GET_VARIABLE( g_variables.m_dropped_weapons_box_corner, bool ) );
 							ImGui::SetCursorPosX( 26.f );
-							ImGui::Checkbox( "bounding box outline##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool ) );
+							ImGui::Checkbox( "bounding box outline##dropped weapons",
+							                 &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool ) );
 						}
 
 						ImGui::Checkbox( "name##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) );
@@ -233,6 +238,15 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+				ImGui::Checkbox( "player glow", &GET_VARIABLE( g_variables.m_glow_enable, bool ) );
+				ImGui::ColorEdit4( "player visible##player vis glow color", &GET_VARIABLE( g_variables.m_glow_vis_color, c_color ),
+				                   color_picker_alpha_flags );
+
+				ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+				ImGui::ColorEdit4( "player invisible##player invis glow color", &GET_VARIABLE( g_variables.m_glow_invis_color, c_color ),
+				                   color_picker_alpha_flags );
+
 				ImGui::EndChild( );
 			}
 
@@ -247,8 +261,8 @@ void n_menu::impl_t::on_end_scene( )
 				case 0: {
 					ImGui::Checkbox( "precipitation", &GET_VARIABLE( g_variables.m_precipitation, bool ) );
 					if ( GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
-						/*ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
-						                   color_picker_alpha_flags );*/
+						ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
+						                   color_picker_alpha_flags );
 
 						ImGui::Combo( "type##precipitation", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
 					}
@@ -393,6 +407,22 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::Checkbox( "fade alpha##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_fade_alpha, bool ) );
 
 					ImGui::SliderInt( "padding##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_padding, int ), 5, 100, "%d%%" );
+				}
+
+				ImGui::Checkbox( "keybind indicators", &GET_VARIABLE( g_variables.m_key_indicators_enable, bool ) );
+				if ( GET_VARIABLE( g_variables.m_key_indicators_enable, bool ) ) {
+					ImGui::ColorEdit4( "##keybind color", &GET_VARIABLE( g_variables.m_key_color, c_color ), color_picker_alpha_flags );
+
+					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+					ImGui::ColorEdit4( "##keybind success color", &GET_VARIABLE( g_variables.m_key_color_success, c_color ),
+					                   color_picker_alpha_flags );
+
+					ImGui::SliderInt( "position##sub indicators", &GET_VARIABLE( g_variables.m_key_indicators_position, int ), 30, g_ctx.m_height );
+
+					ImGui::MultiCombo( "displayed keybinds", g_config.get< std::vector< bool > >( g_variables.m_key_indicators ),
+					                   { "edgebug", "pixelsurf", "edgejump", "longjump", "delayhop", "minijump", "jumpbug" },
+					                   g_config.get< std::vector< bool > >( g_variables.m_key_indicators ).size( ) );
 				}
 
 				ImGui::EndChild( );

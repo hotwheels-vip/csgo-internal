@@ -127,10 +127,8 @@ void n_movement::impl_t::edge_bug( )
 				simulated_cmd->m_side_move    = 0;
 
 				// p sure these are not needed, but just making sure
-				simulated_cmd->m_buttons &= ~e_command_buttons::in_moveleft;
-				simulated_cmd->m_buttons &= ~e_command_buttons::in_moveright;
-				simulated_cmd->m_buttons &= ~e_command_buttons::in_forward;
-				simulated_cmd->m_buttons &= ~e_command_buttons::in_back;
+				simulated_cmd->m_buttons &= ~( e_command_buttons::in_jump | e_command_buttons::in_forward | e_command_buttons::in_back |
+				                               e_command_buttons::in_moveleft | e_command_buttons::in_moveright );
 			} else // strafed
 			{
 				m_edgebug_data.m_strafing = true;
@@ -202,10 +200,8 @@ void n_movement::impl_t::edge_bug( )
 		g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 		if ( g_interfaces.m_global_vars_base->m_tick_count < m_edgebug_data.m_ticks_to_stop + m_edgebug_data.m_last_tick + 1 ) {
-			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_moveleft;
-			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_moveright;
-			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_forward;
-			g_ctx.m_cmd->m_buttons &= ~e_command_buttons::in_back;
+			g_ctx.m_cmd->m_buttons &= ~( e_command_buttons::in_jump | e_command_buttons::in_forward | e_command_buttons::in_back |
+			                             e_command_buttons::in_moveleft | e_command_buttons::in_moveright );
 
 			if ( m_edgebug_data.m_strafing ) {
 				g_ctx.m_cmd->m_side_move    = m_edgebug_data.m_side_move;

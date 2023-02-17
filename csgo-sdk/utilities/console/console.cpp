@@ -2,9 +2,6 @@
 
 #include "../../globals/includes/includes.h"
 
-/* fast, lightweight logging lib */
-#include <spdlog/spdlog.h>
-
 void n_console::impl_t::on_attach( const char* window_title )
 {
 #ifdef _DEBUG
@@ -24,9 +21,4 @@ void n_console::impl_t::on_release( )
 
 	LI_FN( FreeConsole )( );
 #endif
-}
-
-void n_console::impl_t::print( const char* text )
-{
-	spdlog::info( text );
 }

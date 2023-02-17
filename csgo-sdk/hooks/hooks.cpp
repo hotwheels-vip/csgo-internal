@@ -8,7 +8,8 @@ bool n_hooks::impl_t::on_attach( )
 {
 	constexpr auto initialise_hook = []( c_detour_hook& detour_class, void* function, void* detour, const char* hook_name ) {
 		if ( !detour_class.create( function, detour ) ) {
-			g_console.print( std::vformat( "failed to hook {:s} @ {:p}", std::make_format_args( hook_name, function ) ).c_str( ) );
+			g_console.print< n_console::log_level::WARNING >(
+				std::vformat( "failed to hook {:s} @ {:p}", std::make_format_args( hook_name, function ) ).c_str( ) );
 			return false;
 		} else {
 			g_console.print( std::vformat( "{:s} hooked @ {:p}", std::make_format_args( hook_name, function ) ).c_str( ) );
@@ -17,7 +18,7 @@ bool n_hooks::impl_t::on_attach( )
 	};
 
 	if ( MH_Initialize( ) != MH_OK ) {
-		g_console.print( "failed to initialise minhook" );
+		g_console.print< n_console::log_level::WARNING >( "failed to initialise minhook" );
 		return false;
 	}
 
@@ -60,11 +61,18 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_find_material, g_virtual.get( g_interfaces.m_material_system, 84 ), &n_detoured_functions::find_material,
 	                 "CMaterialSystem::FindMaterial()" );
 
-		initialise_hook( m_modify_eye_position, g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14" ),
+	initialise_hook( m_process_movement, g_virtual.get( g_interfaces.m_game_movement, 1 ), &n_detoured_functions::process_movement,
+	                 "CGameMovement::ProcessMovement()" );
+
+	initialise_hook( m_modify_eye_position, g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14" ),
 	                 &n_detoured_functions::modify_eye_position, "CBaseAnimating::ModifyEyePos()" );
 
 	initialise_hook( m_override_mouse_input, g_virtual.get( g_interfaces.m_client_mode, 23 ), &n_detoured_functions::override_mouse_input,
 	                 ( "IClientModeShared::OverrideMouseInput()" ) );
+
+	initialise_hook( m_glow_effect_spectator,
+	                 reinterpret_cast< void* >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 EC 14 53 8B 5D 0C 56 57 85 DB 74" ) ),
+	                 &n_detoured_functions::glow_effect_spectator, "CCSPlayer::GlowEffectSpectator()" );
 
 	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 

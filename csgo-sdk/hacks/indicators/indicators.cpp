@@ -2,6 +2,7 @@
 
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
+#include "../movement/movement.h"
 
 void n_indicators::impl_t::on_paint_traverse( )
 {
@@ -12,6 +13,80 @@ void n_indicators::impl_t::on_paint_traverse( )
 
 	if ( GET_VARIABLE( g_variables.m_stamina_indicator, bool ) )
 		this->stamina( on_ground );
+
+	if ( GET_VARIABLE( g_variables.m_key_indicators_enable, bool ) )
+		this->keybind_indicators( );
+}
+
+void n_indicators::impl_t::keybind_indicators( )
+{
+	float offset = 0.f;
+
+	constexpr auto render_indicator = [ & ]( const char* indicator_name, const c_color& color, const bool active ) {
+		ImAnimationHelper indicator_animation = ImAnimationHelper( fnv1a::hash( indicator_name ), ImGui::GetIO( ).DeltaTime );
+		indicator_animation.Update( 2.f, active ? 2.f : -2.f );
+
+		if ( indicator_animation.AnimationData->second <= 0.f )
+			return;
+
+		const auto text_size = g_render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
+			g_render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, indicator_name );
+
+		g_render.m_draw_data.emplace_back(
+			e_draw_type::draw_type_text,
+			std::make_any< text_draw_object_t >(
+				g_render.m_fonts[ e_font_names::font_name_indicator_29 ],
+				c_vector_2d( ( g_ctx.m_width - text_size.x ) / 2.f,
+		                     g_ctx.m_height - offset - GET_VARIABLE( g_variables.m_key_indicators_position, int ) ),
+
+				indicator_name, color.get_u32( indicator_animation.AnimationData->second ),
+				ImColor( 0.f, 0.f, 0.f, color.base< e_color_type::color_type_a >( ) * indicator_animation.AnimationData->second ),
+				e_text_flags::text_flag_dropshadow ) );
+
+		offset -= ( text_size.y + 2 ) * indicator_animation.AnimationData->second;
+	};
+
+	if ( GET_VARIABLE( g_variables.m_edge_bug, bool ) &&
+	     g_config.get< std::vector< bool > >( g_variables.m_key_indicators )[ e_keybind_indicators::key_eb ] )
+		render_indicator( "eb",
+		                  g_movement.m_edgebug_data.m_will_edgebug ? GET_VARIABLE( g_variables.m_key_color_success, c_color )
+		                                                           : GET_VARIABLE( g_variables.m_key_color, c_color ),
+		                  g_input.check_input( &GET_VARIABLE( g_variables.m_edge_bug_key, key_bind_t ) ) );
+
+	if ( GET_VARIABLE( g_variables.m_pixel_surf, bool ) &&
+	     g_config.get< std::vector< bool > >( g_variables.m_key_indicators )[ e_keybind_indicators::key_ps ] )
+		render_indicator( "ps",
+		                  g_movement.m_pixelsurf_data.m_predicted_succesful || g_movement.m_pixelsurf_data.m_in_pixel_surf
+		                      ? GET_VARIABLE( g_variables.m_key_color_success, c_color )
+		                      : GET_VARIABLE( g_variables.m_key_color, c_color ),
+		                  g_input.check_input( &GET_VARIABLE( g_variables.m_pixel_surf_key, key_bind_t ) ) );
+
+	if ( GET_VARIABLE( g_variables.m_edge_jump, bool ) &&
+	     g_config.get< std::vector< bool > >( g_variables.m_key_indicators )[ e_keybind_indicators::key_ej ] )
+		render_indicator( "ej", GET_VARIABLE( g_variables.m_key_color, c_color ),
+		                  g_input.check_input( &GET_VARIABLE( g_variables.m_edge_jump_key, key_bind_t ) ) );
+
+	if ( GET_VARIABLE( g_variables.m_long_jump, bool ) &&
+	     g_config.get< std::vector< bool > >( g_variables.m_key_indicators )[ e_keybind_indicators::key_lj ] )
+		render_indicator( "lj", GET_VARIABLE( g_variables.m_key_color, c_color ),
+		                  g_input.check_input( &GET_VARIABLE( g_variables.m_long_jump_key, key_bind_t ) ) );
+
+	// TODO: re-add delayhop
+
+	/* if ( GET_CONFIG_BOOL( g_variables.m_delay_hop ) &&
+	     config.get< std::vector< bool > >( g_variables.m_key_indicators )[ e_keybind_indicators::key_dh ] )
+	    render_indicator( "dh", GET_VARIABLE( g_variables.m_key_color, c_color ),
+	                      g_input.check_input( &GET_VARIABLE( g_variables.m_delay_hop_key ) ) );*/
+
+	if ( GET_VARIABLE( g_variables.m_mini_jump, bool ) &&
+	     g_config.get< std::vector< bool > >( g_variables.m_key_indicators )[ e_keybind_indicators::key_mj ] )
+		render_indicator( "mj", GET_VARIABLE( g_variables.m_key_color, c_color ),
+		                  g_input.check_input( &GET_VARIABLE( g_variables.m_mini_jump_key, key_bind_t ) ) );
+
+	if ( GET_VARIABLE( g_variables.m_jump_bug, bool ) &&
+	     g_config.get< std::vector< bool > >( g_variables.m_key_indicators )[ e_keybind_indicators::key_jb ] )
+		render_indicator( "jb", GET_VARIABLE( g_variables.m_key_color, c_color ),
+		                  g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) );
 }
 
 void n_indicators::impl_t::velocity( const bool on_ground )
@@ -83,7 +158,7 @@ void n_indicators::impl_t::stamina( const bool on_ground )
 
 	const bool should_draw_take_off =
 		( !on_ground || ( this->m_indicator_data.m_take_off_time_stamina > g_interfaces.m_global_vars_base->m_current_time ) ) &&
-	                                  ( GET_VARIABLE( g_variables.m_stamina_indicator_show_pre_speed, bool ) );
+		( GET_VARIABLE( g_variables.m_stamina_indicator_show_pre_speed, bool ) );
 
 	const std::string text = std::vformat( should_draw_take_off ? "{:.1f} ({:.1f})" : "{:.1f}",
 	                                       std::make_format_args( stamina, this->m_indicator_data.m_take_off_stamina ) );
@@ -104,7 +179,7 @@ void n_indicators::impl_t::stamina( const bool on_ground )
 			e_text_flags::text_flag_dropshadow ) );
 
 	if ( this->m_indicator_data.m_tick_prev_stamina + 5 < g_interfaces.m_global_vars_base->m_tick_count ) {
-		this->m_indicator_data.m_last_stamina = stamina;
+		this->m_indicator_data.m_last_stamina      = stamina;
 		this->m_indicator_data.m_tick_prev_stamina = g_interfaces.m_global_vars_base->m_tick_count;
 	}
 

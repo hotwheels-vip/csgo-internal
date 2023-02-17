@@ -3,9 +3,15 @@
 
 #include <d3d9.h>
 
+// [\/] fw decs to prevent include errors
+
 class c_vector;
 class c_material;
 class c_animation_state;
+class c_base_entity;
+class c_move_data;
+
+enum e_glow_style;
 
 namespace n_hooks
 {
@@ -28,6 +34,8 @@ namespace n_hooks
 		c_detour_hook m_find_material{ };
 		c_detour_hook m_modify_eye_position{ };
 		c_detour_hook m_override_mouse_input{ };
+		c_detour_hook m_glow_effect_spectator{ };
+		c_detour_hook m_process_movement{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -63,5 +71,9 @@ namespace n_detoured_functions
 	long __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters );
 	long __stdcall end_scene( IDirect3DDevice9* device );
 	long __stdcall wndproc( HWND window, unsigned int message, unsigned int wide_parameter, long long_parameter );
+	bool __cdecl glow_effect_spectator( c_base_entity* player, c_base_entity* local, e_glow_style& style, c_vector& glow_color, float& alpha_start,
+	                                    float& alpha, float& time_start, float& time_target, bool& animate );
+
+	void __fastcall process_movement( void* thisptr, void* edx, c_base_entity* player, c_move_data* move_data );
 
 } // namespace n_detoured_functions

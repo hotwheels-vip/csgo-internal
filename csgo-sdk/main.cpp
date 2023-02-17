@@ -101,43 +101,43 @@ static unsigned long __stdcall on_attach( void* instance )
 
 	g_console.print( "initialising module handles" );
 	if ( !g_modules.on_attach( ) )
-		g_console.print( "failed to initialise module handles" );
+		g_console.print< n_console::log_level::WARNING >( "failed to initialise module handles" );
 	else
 		g_console.print( "initialised module handles" );
 
 	g_console.print( "initialising interfaces" );
 	if ( !g_interfaces.on_attach( ) )
-		g_console.print( "failed to initialise interfaces" );
+		g_console.print< n_console::log_level::WARNING >( "failed to initialise interfaces" );
 	else
 		g_console.print( "initialised interfaces" );
 
 	g_console.print( "initialising netvar manager" );
 	if ( !g_netvars.on_attach( ) )
-		g_console.print( "failed to initialise netvar manager" );
+		g_console.print< n_console::log_level::WARNING >( "failed to initialise netvar manager" );
 	else
 		g_console.print( "initialised netvar manager" );
 
 	g_console.print( "initialising convars" );
 	if ( !g_convars.on_attach( ) )
-		g_console.print( "failed to initialise convars" );
+		g_console.print< n_console::log_level::WARNING >( "failed to initialise convars" );
 	else
 		g_console.print( "initialised convars" );
 
 	g_console.print( "initialising input system" );
 	if ( !g_input.on_attach( ) )
-		g_console.print( "failed to initialise input system" );
+		g_console.print< n_console::log_level::WARNING >( "failed to initialise input system" );
 	else
 		g_console.print( "initialised hooks" );
 
 	g_console.print( "initialising config system" );
 	if ( !g_config.on_attach( ) )
-		g_console.print( "failed to initialise config system" );
+		g_console.print< n_console::log_level::WARNING >( "failed to initialise config system" );
 	else
 		g_console.print( "initialised config system" );
 
 	g_console.print( "initialising hooks" );
 	if ( !g_hooks.on_attach( ) )
-		g_console.print( "failed to initialise hooks" );
+		g_console.print< n_console::log_level::WARNING >( "failed to initialise hooks" );
 	else
 		g_console.print( "initialised hooks" );
 

@@ -2,11 +2,34 @@
 #include "../../game/sdk/classes/c_color.h"
 #include "config.h"
 
+// TODO ADD THIS
+enum e_player_flags {
+	player_flag_money = 0,
+	player_flag_armor,
+	player_flag_reloading,
+	player_flag_bomb,
+	player_flags_max
+};
+
+enum e_keybind_indicators {
+	key_eb = 0,
+	key_ps,
+	key_ej,
+	key_lj,
+	key_dh,
+	key_mj,
+	key_jb,
+	key_max
+};
+
 namespace n_variables
 {
 	struct impl_t {
 		/* menu */
 		ADD_VARIABLE( c_color, m_accent, c_color( 129, 99, 251, 255 ) );
+
+		ADD_VARIABLE( bool, m_aimbot_enable, false );
+		ADD_VARIABLE( bool, m_backtrack_enable, false );
 
 		/* visuals - players */
 		ADD_VARIABLE( bool, m_players, false );
@@ -19,6 +42,9 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_players_name_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_players_skeleton, false );
 		ADD_VARIABLE( c_color, m_players_skeleton_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( bool, m_glow_enable, false );
+		ADD_VARIABLE( c_color, m_glow_vis_color, c_color( 224, 175, 86, 153 ) );
+		ADD_VARIABLE( c_color, m_glow_invis_color, c_color( 114, 155, 221, 153 ) );
 
 		/* visuals - edicts */
 		ADD_VARIABLE( bool, m_dropped_weapons, false );
@@ -33,7 +59,7 @@ namespace n_variables
 		/* visuals - world */
 		ADD_VARIABLE( bool, m_precipitation, false );
 		ADD_VARIABLE( int, m_precipitation_type, 0 );
-		/*ADD_VARIABLE( c_color, m_precipitation_color, c_color( 255, 255, 255, 255 ) );*/
+		ADD_VARIABLE( c_color, m_precipitation_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_fog, false );
 		ADD_VARIABLE( float, m_fog_start, 0.f );
 		ADD_VARIABLE( float, m_fog_end, 0.f );
@@ -75,7 +101,7 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_velocity_indicator_show_pre_speed, false );
 		ADD_VARIABLE( bool, m_velocity_indicator_fade_alpha, false );
 		ADD_VARIABLE( bool, m_velocity_indicator_custom_color, false );
-		ADD_VARIABLE( int, m_velocity_indicator_padding, 5 );
+		ADD_VARIABLE( int, m_velocity_indicator_padding, 125 );
 
 		/* misc - movement - indicators */
 		ADD_VARIABLE( c_color, m_velocity_indicator_color1, c_color( 255, 255, 255, 255 ) );
@@ -89,7 +115,13 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_stamina_indicator_color1, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_stamina_indicator_color2, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_stamina_indicator_fade_alpha, false );
-		ADD_VARIABLE( int, m_stamina_indicator_padding, 5 );
+		ADD_VARIABLE( int, m_stamina_indicator_padding, 125 );
+
+		ADD_VARIABLE( c_color, m_key_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( c_color, m_key_color_success, c_color( 0, 255, 0, 255 ) );
+		ADD_VARIABLE( bool, m_key_indicators_enable, false );
+		ADD_VARIABLE( int, m_key_indicators_position, 100 );
+		ADD_VARIABLE_VECTOR( bool, e_keybind_indicators::key_max, m_key_indicators, false );
 	};
 }; // namespace n_variables
 

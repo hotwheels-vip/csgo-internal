@@ -26,3 +26,6 @@
 #define SERVER_DLL              HASH_BT( "server.dll" )
 #define SERVERBROWSER_DLL       HASH_BT( "serverbrowser.dll" )
 #define FILESYSTEM_DLL          HASH_BT( "filesystem_stdio.dll" )
+
+// csgo
+constexpr static float LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR = 64.0f * 64.0f;

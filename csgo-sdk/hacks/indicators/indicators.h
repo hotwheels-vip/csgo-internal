@@ -5,6 +5,8 @@ namespace n_indicators
 	struct impl_t {
 		void on_paint_traverse( );
 
+		void keybind_indicators( );
+
 		struct indicator_data_t {
 			void reset( )
 			{

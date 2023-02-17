@@ -63,6 +63,8 @@
     <ClCompile Include="hooks\functions\override_mouse_input.cpp" />
     <ClCompile Include="hacks\visuals\players\players.cpp" />
     <ClCompile Include="hacks\aimbot\aimbot.cpp" />
+    <ClCompile Include="hooks\functions\glow_effect_spectator.cpp" />
+    <ClCompile Include="hooks\functions\process_movement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -232,9 +234,11 @@
     <ClInclude Include="hacks\visuals\players\players.h" />
     <ClInclude Include="hacks\aimbot\aimbot.h" />
     <ClInclude Include="game\sdk\enums\e_hitgroup.h" />
+    <ClInclude Include="game\sdk\enums\e_glow_style.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
     <None Include="game\sdk\enums\e_move_type.h" />
+    <None Include="utilities\console\console.inl" />
   </ItemGroup>
 </Project>
