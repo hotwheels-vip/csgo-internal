@@ -22,7 +22,7 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 		g_edicts.reset( );
 
 	g_edicts.on_frame_stage_notify( stage );
-		g_movement.on_frame_stage_notify( stage);
+	g_movement.on_frame_stage_notify( stage );
 
 	[ & ]( ) {
 		g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {

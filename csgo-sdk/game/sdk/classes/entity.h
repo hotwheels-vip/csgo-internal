@@ -93,20 +93,21 @@ struct renderable_instance_t {
 class c_client_renderable
 {
 public:
-	virtual c_client_unknown* get_client_unknown( )                                                                                         = 0;
-	virtual c_vector& get_render_origin( )                                                                                                  = 0;
-	virtual c_angle& get_render_angles( )                                                                                                   = 0;
-	virtual bool should_draw( )                                                                                                             = 0;
-	virtual int get_render_flags( )                                                                                                         = 0;
-	virtual bool is_transparent( )                                                                                                          = 0;
-	virtual unsigned short get_shadow_handle( ) const                                                                                       = 0;
-	virtual unsigned short& render_handle( )                                                                                                = 0;
-	virtual const model_t* get_model( ) const                                                                                               = 0;
-	virtual int draw_model( int flags, const renderable_instance_t& instance )                                                              = 0;
-	virtual int get_body( )                                                                                                                 = 0;
-	virtual void get_color_modulation( float* color )                                                                                       = 0;
-	virtual bool lod_test( )                                                                                                                = 0;
-	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float current_time )                            = 0; /* https://github.com/notgoodusename/OsirisAndExtra/blob/8fc60e752fd5af6e3e8974cd9fc204c73c0a7295/Osiris/SDK/Entity.h#L481 */
+	virtual c_client_unknown* get_client_unknown( )                            = 0;
+	virtual c_vector& get_render_origin( )                                     = 0;
+	virtual c_angle& get_render_angles( )                                      = 0;
+	virtual bool should_draw( )                                                = 0;
+	virtual int get_render_flags( )                                            = 0;
+	virtual bool is_transparent( )                                             = 0;
+	virtual unsigned short get_shadow_handle( ) const                          = 0;
+	virtual unsigned short& render_handle( )                                   = 0;
+	virtual const model_t* get_model( ) const                                  = 0;
+	virtual int draw_model( int flags, const renderable_instance_t& instance ) = 0;
+	virtual int get_body( )                                                    = 0;
+	virtual void get_color_modulation( float* color )                          = 0;
+	virtual bool lod_test( )                                                   = 0;
+	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float current_time ) = 0; /* https://github.com/notgoodusename/OsirisAndExtra/blob/8fc60e752fd5af6e3e8974cd9fc204c73c0a7295/Osiris/SDK/Entity.h#L481
+	                                                                                                                   */
 	virtual void setup_weights( const matrix3x4_t* bone_to_world, int flex_weight_count, float* flex_weights, float* flex_delayed_weights ) = 0;
 	virtual void do_animation_events( )                                                                                                     = 0;
 	virtual void* get_pvs_notify_interface( )                                                                                               = 0;
@@ -238,6 +239,7 @@ public:
 	NETVAR_VARIABLE_OFFSET( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
 	NETVAR_VARIABLE_OFFSET( c_animation_state*, get_animation_state, "CCSPlayer->m_bIsScoped", -0x14 );
 	NETVAR_VARIABLE( int, get_survival_team, "CCSPlayer->m_nSurvivalTeam" );
+	NETVAR_VARIABLE( bool, is_scoped, "CCSPlayer->m_bIsScoped" );
 
 	/* DT_WeaponCSBase */
 	NETVAR_VARIABLE( bool, is_burst_mode, "CWeaponCSBase->m_bBurstMode" );

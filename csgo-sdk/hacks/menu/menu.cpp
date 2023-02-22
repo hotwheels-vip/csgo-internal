@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "../../globals/includes/includes.h"
+#include "../../globals/logger/logger.h"
 
 constexpr int color_picker_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreviewHalf |
                                          ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_NoInputs |
@@ -323,6 +324,10 @@ void n_menu::impl_t::on_end_scene( )
 
 				ImGui::Checkbox( "mini jump", &GET_VARIABLE( g_variables.m_mini_jump, bool ) );
 				ImGui::Keybind( "mini jump key", &GET_VARIABLE( g_variables.m_mini_jump_key, key_bind_t ) );
+				if ( GET_VARIABLE( g_variables.m_mini_jump, bool ) ) {
+					ImGui::SetCursorPosX( 26.f );
+					ImGui::Checkbox( "hold crouch", &GET_VARIABLE( g_variables.m_mini_jump_hold_duck, bool ) );
+				}
 
 				ImGui::Checkbox( "jump bug", &GET_VARIABLE( g_variables.m_jump_bug, bool ) );
 				ImGui::Keybind( "jump bug key", &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) );
@@ -332,8 +337,11 @@ void n_menu::impl_t::on_end_scene( )
 
 				if ( GET_VARIABLE( g_variables.m_edge_bug, bool ) ) {
 					ImGui::SliderInt( "edge bug predicted ticks", &GET_VARIABLE( g_variables.m_edge_bug_ticks, int ), 0, 32 );
+					ImGui::SliderFloat( "mouse lock scale", &GET_VARIABLE( g_variables.m_edge_bug_lock_amt, float ), 0.f, 1.f, "%.2f" );
+
 					ImGui::Checkbox( "advanced detection", &GET_VARIABLE( g_variables.m_advanced_detection, bool ) );
-					ImGui::SliderFloat( "mouse lock scale", &GET_VARIABLE( g_variables.m_edge_bug_lock_amt, float ), 0.f, 1.f );
+					if ( GET_VARIABLE( g_variables.m_advanced_detection, bool ) )
+						ImGui::SliderFloat( "max strafe delta", &GET_VARIABLE( g_variables.m_edge_bug_strafe_delta_max, float ), 0.1f, 10.f, "%.1f" );
 				}
 
 				ImGui::Checkbox( "pixel surf", &GET_VARIABLE( g_variables.m_pixel_surf, bool ) );
@@ -344,6 +352,10 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Checkbox( "no crouch cooldown", &GET_VARIABLE( g_variables.m_no_crouch_cooldown, bool ) );
 
 				ImGui::Checkbox( "auto duck", &GET_VARIABLE( g_variables.m_auto_duck, bool ) );
+				if ( GET_VARIABLE( g_variables.m_auto_duck, bool ) )
+					ImGui::SliderFloat( "duck height threshold", &GET_VARIABLE( g_variables.m_auto_duck_height_threshold, float ), 0.f, 50.f,
+					                    "%.1f" );
+
 				ImGui::EndChild( );
 			}
 
@@ -434,6 +446,27 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "game" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+				ImGui::Checkbox( "spectator list", &GET_VARIABLE( g_variables.m_spectators_list, bool ) );
+
+				ImGui::ColorEdit4( "##spectator list text color one", &GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ),
+				                   color_picker_alpha_flags );
+
+				ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+
+				ImGui::ColorEdit4( "##spectator list text color two", &GET_VARIABLE( g_variables.m_spectators_list_text_color_two, c_color ),
+				                   color_picker_alpha_flags );
+
+				ImGui::Checkbox( "practice window", &GET_VARIABLE( g_variables.m_practice_window, bool ) );
+				if ( GET_VARIABLE( g_variables.m_practice_window, bool ) ) {
+					ImGui::Text( "practice checkpoint key" );
+					ImGui::Keybind( "practice checkpoint key", &GET_VARIABLE( g_variables.m_practice_cp_key, key_bind_t ) );
+					ImGui::Text( "practice teleport key" );
+					ImGui::Keybind( "practice teleport key", &GET_VARIABLE( g_variables.m_practice_tp_key, key_bind_t ) );
+				}
+
+				// TODO: combobox between force crosshair and just draw a white dot
+				ImGui::Checkbox( "sniper crosshair", &GET_VARIABLE( g_variables.m_sniper_crosshair, bool ) );
+
 				ImGui::EndChild( );
 			}
 
@@ -471,23 +504,30 @@ void n_menu::impl_t::on_end_scene( )
 				if ( ImGui::Button( ( "create" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 					if ( !g_config.save( converted_file_name ) )
 						g_console.print( std::vformat( "failed to create {:s}", std::make_format_args( converted_file_name ) ).c_str( ) );
+					else
+						g_logger.print( std::vformat( "created config {:s}", std::make_format_args( converted_file_name ) ).c_str( ) );
 
 					converted_file_name.clear( );
 					g_config.refresh( );
 				}
 
-				if ( ImGui::Button( ( "save" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
+				if ( ImGui::Button( ( "save" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 					if ( !g_config.save( selected_config_name ) )
 						g_console.print( std::vformat( "failed to save {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+					else
+						g_logger.print( std::vformat( "saved config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+				}
 
 				if ( ImGui::Button( ( "load" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 					if ( !g_config.load( selected_config_name ) )
-						g_console.print( std::vformat( "failed to load {:s}", std::make_format_args( converted_file_name ) ).c_str( ) );
-
-					// memory.m_client_state->m_delta_tick = -1;
+						g_console.print( std::vformat( "failed to load {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+					else
+						g_logger.print( std::vformat( "loaded config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
 				}
 
 				if ( ImGui::Button( ( "remove" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
+					g_logger.print( std::vformat( "removed config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+
 					g_config.remove( this->m_selected_config );
 					this->m_selected_config = 0;
 				}
@@ -499,6 +539,11 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Text( "accent color" );
 
 				ImGui::ColorEdit4( ( "##accent color" ), &GET_VARIABLE( g_variables.m_accent, c_color ), color_picker_no_alpha_flags );
+				ImGui::Checkbox( "watermark", &GET_VARIABLE( g_variables.m_watermark, bool ) );
+#ifdef _DEBUG
+				ImGui::Checkbox( "debugger menu", &GET_VARIABLE( g_variables.m_debugger_visual, bool ) );
+#endif
+
 				ImGui::EndChild( );
 			}
 			break;

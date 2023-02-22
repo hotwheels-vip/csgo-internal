@@ -4,13 +4,6 @@
 
 void n_prediction::impl_t::update( )
 {
-	/* store globally */
-	static auto frame_rate = 1.0f;
-	frame_rate             = 0.9f * frame_rate + 0.1f * g_interfaces.m_global_vars_base->m_abs_frame_time;
-
-	// if this is true, do not run advanced prediction features
-	g_ctx.m_low_fps = frame_rate < ( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
-
 	// handle backup data
 	g_prediction.backup_data.m_flags         = g_ctx.m_local->get_flags( );
 	g_prediction.backup_data.m_move_type     = g_ctx.m_local->get_move_type( );

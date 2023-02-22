@@ -1,7 +1,9 @@
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
+#include "../../globals/logger/logger.h"
 #include "../hooks.h"
 
+#include "../../hacks/debug/debug.h"
 #include "../../hacks/indicators/indicators.h"
 #include "../../hacks/visuals/edicts/edicts.h"
 #include "../../hacks/visuals/players/players.h"
@@ -19,6 +21,15 @@ void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsi
 		g_render.clear_draw_data( );
 
 		if ( g_render.m_initialised ) {
+			g_ctx.m_low_fps = static_cast< int >( ImGui::GetIO( ).Framerate + 0.5f ) <
+			                  static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
+
+			g_logger.on_paint_traverse( );
+
+#ifdef _DEBUG
+			g_debugger.on_paint_traverse( );
+#endif
+
 			if ( g_ctx.m_local ) {
 				g_indicators.on_paint_traverse( );
 				g_edicts.on_paint_traverse( );

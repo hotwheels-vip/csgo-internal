@@ -13,6 +13,7 @@ namespace n_movement
 	struct impl_t {
 		struct edgebug_data_t {
 			edgebug_type_t m_edgebug_method{ };
+
 			bool m_will_edgebug{ };
 			bool m_will_fail{ };
 			bool m_strafing{ };

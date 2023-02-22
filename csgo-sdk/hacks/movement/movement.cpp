@@ -70,6 +70,13 @@ void n_movement::impl_t::edge_jump( )
 
 	// is on ladder and wont be on ladder on next tick
 	if ( move_type == e_move_types::move_type_ladder ) {
+		// no need to restore these since we only run it on ladders
+
+		g_prediction.begin( g_ctx.m_local, g_ctx.m_cmd );
+		g_prediction.end( g_ctx.m_local );
+		g_prediction.begin( g_ctx.m_local, g_ctx.m_cmd );
+		g_prediction.end( g_ctx.m_local );
+
 		if ( g_ctx.m_local->get_move_type( ) != e_move_type::movetype_ladder ) {
 			if ( GET_VARIABLE( g_variables.m_edge_jump_ladder, bool ) )
 				g_ctx.m_cmd->m_buttons |= e_command_buttons::in_jump;
@@ -191,7 +198,8 @@ void n_movement::impl_t::edge_bug( )
 	loop_through_ticks( edgebug_type_t::eb_ducking );
 
 	// strafed edgebugs
-	if ( GET_VARIABLE( g_variables.m_advanced_detection, bool ) && yaw_delta < 0.1f ) {
+	if ( GET_VARIABLE( g_variables.m_advanced_detection, bool ) &&
+	     yaw_delta < ( GET_VARIABLE( g_variables.m_edge_bug_strafe_delta_max, float ) / 1000.f ) ) {
 		loop_through_ticks( edgebug_type_t::eb_standing, true );
 		loop_through_ticks( edgebug_type_t::eb_ducking, true );
 	}
@@ -239,10 +247,20 @@ void n_movement::impl_t::long_jump( )
 
 void n_movement::impl_t::mini_jump( )
 {
+	static bool should_duck = false;
+
+	if ( g_prediction.backup_data.m_flags && g_ctx.m_local->get_flags( ) & e_flags::fl_onground )
+		should_duck = false;
+
 	if ( g_prediction.backup_data.m_flags & e_flags::fl_onground && !( g_ctx.m_local->get_flags( ) & e_flags::fl_onground ) ) {
 		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_jump;
 		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
+		if ( GET_VARIABLE( g_variables.m_mini_jump_hold_duck, bool ) )
+			should_duck = true;
 	}
+
+	if ( should_duck )
+		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
 }
 
 void n_movement::impl_t::auto_duck( )
@@ -310,7 +328,8 @@ void n_movement::impl_t::auto_duck( )
 	g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 	if ( g_movement.m_autoduck_data.m_did_land_ducking && g_movement.m_autoduck_data.m_did_land_standing ) {
-		if ( g_movement.m_autoduck_data.m_ducking_vert > g_movement.m_autoduck_data.m_standing_vert )
+		if ( g_movement.m_autoduck_data.m_ducking_vert >
+		     g_movement.m_autoduck_data.m_standing_vert + GET_VARIABLE( g_variables.m_auto_duck_height_threshold, float ) )
 			g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
 	} else if ( g_movement.m_autoduck_data.m_did_land_ducking && !g_movement.m_autoduck_data.m_did_land_standing )
 		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;

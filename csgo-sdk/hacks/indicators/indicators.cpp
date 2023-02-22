@@ -16,6 +16,39 @@ void n_indicators::impl_t::on_paint_traverse( )
 
 	if ( GET_VARIABLE( g_variables.m_key_indicators_enable, bool ) )
 		this->keybind_indicators( );
+
+	if ( GET_VARIABLE( g_variables.m_sniper_crosshair, bool ) )
+		this->sniper_crosshair( );
+}
+
+void n_indicators::impl_t::sniper_crosshair( )
+{
+	if ( !g_ctx.m_local->is_alive( ) )
+		return;
+
+	auto weapon_handle = g_ctx.m_local->get_weapon_handle( );
+	if ( !weapon_handle )
+		return;
+
+	const auto active_weapon =
+		reinterpret_cast< c_base_entity* >( g_interfaces.m_client_entity_list->get_client_entity_from_handle( weapon_handle ) );
+
+	if ( !active_weapon )
+		return;
+
+	if ( g_ctx.m_local->is_scoped( ) )
+		return;
+
+	auto definition_index = active_weapon->get_item_definition_index( );
+
+	if ( g_utilities.is_in< short >( definition_index, { e_item_definition_index::weapon_awp, e_item_definition_index::weapon_ssg08,
+	                                                     e_item_definition_index::weapon_scar20, e_item_definition_index::weapon_g3sg1 } ) ) {
+		g_render.m_draw_data.emplace_back( e_draw_type::draw_type_rect,
+		                                   std::make_any< rect_draw_object_t >( c_vector_2d( g_ctx.m_width / 2 - 1, g_ctx.m_height / 2 - 1 ),
+		                                                                        c_vector_2d( g_ctx.m_width / 2 + 1, g_ctx.m_height / 2 + 1 ),
+		                                                                        ImColor( 1.f, 1.f, 1.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 0.f ), true,
+		                                                                        0.f, 0, 2.f ) );
+	}
 }
 
 void n_indicators::impl_t::keybind_indicators( )

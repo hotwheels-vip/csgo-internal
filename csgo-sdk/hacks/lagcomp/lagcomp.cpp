@@ -1,6 +1,7 @@
 #include "lagcomp.h"
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
+#include "../../globals/logger/logger.h"
 #include "../entity_cache/entity_cache.h"
 
 /* TODO ~ don't use 3 entity loops for lagcomp */
@@ -181,8 +182,8 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 // the position of the registered lag compensated tick
 void n_lagcomp::impl_t::on_create_move_post( )
 {
-	// TODO: remove this, TEMPORARY
-	return;
+	if ( GET_VARIABLE( g_variables.m_aimbot_enable, bool ) )
+		return;
 
 	if ( g_ctx.m_cmd->m_tick_count == 0 )
 		return;
@@ -190,8 +191,9 @@ void n_lagcomp::impl_t::on_create_move_post( )
 	float current_fov         = 180.f;
 	const auto max_allocation = static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
 
-	const auto eye_position = g_ctx.m_local->get_eye_position( false );
-	int best_tick           = g_ctx.m_cmd->m_tick_count;
+	const auto eye_position     = g_ctx.m_local->get_eye_position( false );
+	int best_tick               = g_ctx.m_cmd->m_tick_count;
+	static int best_logged_tick = 0;
 
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
 		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local )
@@ -213,11 +215,17 @@ void n_lagcomp::impl_t::on_create_move_post( )
 						current_fov = calculated_fov;
 
 						best_tick = static_cast< int >( ( record.m_sim_time + lerp_time( ) ) / g_interfaces.m_global_vars_base->m_interval_per_tick );
+						best_logged_tick = i;
 					}
 				}
 			}
 		}
 	} );
 
+	if ( !( g_ctx.m_cmd->m_buttons & in_attack ) )
+		return;
+
 	g_ctx.m_cmd->m_tick_count = best_tick;
+
+	g_logger.print( std::format( "shot at tick {}", best_logged_tick ), "[lagcomp]", 5.0f );
 }

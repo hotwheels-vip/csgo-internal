@@ -195,9 +195,11 @@ void n_edicts::impl_t::dropped_weapons( )
 			if ( GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) ) {
 				const auto localized_name = g_interfaces.m_localize->find( weapon_data->m_hud_name );
 
-				const std::wstring w = localized_name;
+				std::wstring w = localized_name;
 				if ( w.empty( ) )
 					return;
+
+				std::transform( w.begin( ), w.end( ), w.begin( ), ::towlower );
 
 				const std::string converted_name( w.begin( ), w.end( ) );
 				if ( converted_name.empty( ) )
@@ -206,12 +208,19 @@ void n_edicts::impl_t::dropped_weapons( )
 				const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 					g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, converted_name.c_str( ) );
 
+				// 600 threshold
+				int distance_to_weapon = static_cast< int >( g_ctx.m_local->get_abs_origin( ).dist_to( entity->get_abs_origin( ) ) - 600.f );
+
+				const float alpha =
+					distance_to_weapon <= 1.f ? 1.f : std::clamp( ( distance_to_weapon <= 1.f ? 1 : distance_to_weapon ) * 200.f, 0.f, 1.f );
+
 				g_render.m_draw_data.emplace_back(
-					e_draw_type::draw_type_text, std::make_any< text_draw_object_t >(
-													 g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
-													 c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ),
-													 converted_name, GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ).get_u32( ),
-													 c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
+					e_draw_type::draw_type_text,
+					std::make_any< text_draw_object_t >(
+						g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
+						c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ), converted_name,
+						GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ).get_u32( alpha ),
+						c_color( 0.f, 0.f, 0.f, alpha ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
 			}
 		}
 	} );

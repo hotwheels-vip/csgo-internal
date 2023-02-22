@@ -5,8 +5,6 @@ namespace n_indicators
 	struct impl_t {
 		void on_paint_traverse( );
 
-		void keybind_indicators( );
-
 		struct indicator_data_t {
 			void reset( )
 			{
@@ -37,6 +35,8 @@ namespace n_indicators
 		} m_indicator_data;
 
 	private:
+		void sniper_crosshair( );
+		void keybind_indicators( );
 		void velocity( const bool on_ground );
 		void stamina( const bool on_ground );
 	};

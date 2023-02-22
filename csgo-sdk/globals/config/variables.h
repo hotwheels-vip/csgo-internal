@@ -84,18 +84,21 @@ namespace n_variables
 		ADD_VARIABLE( key_bind_t, m_long_jump_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( bool, m_mini_jump, false );
 		ADD_VARIABLE( key_bind_t, m_mini_jump_key, key_bind_t( 0, 1 ) );
+		ADD_VARIABLE( bool, m_mini_jump_hold_duck, false );
 		ADD_VARIABLE( bool, m_jump_bug, false );
 		ADD_VARIABLE( key_bind_t, m_jump_bug_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( bool, m_pixel_surf, false );
 		ADD_VARIABLE( key_bind_t, m_pixel_surf_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( bool, m_auto_align, false );
 		ADD_VARIABLE( bool, m_auto_duck, false );
+		ADD_VARIABLE( float, m_auto_duck_height_threshold, 0.f );
 
 		ADD_VARIABLE( bool, m_edge_bug, false );
 		ADD_VARIABLE( bool, m_advanced_detection, false );
 		ADD_VARIABLE( key_bind_t, m_edge_bug_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( int, m_edge_bug_ticks, 32 );
 		ADD_VARIABLE( float, m_edge_bug_lock_amt, 0.3f );
+		ADD_VARIABLE( float, m_edge_bug_strafe_delta_max, 10.0f );
 
 		ADD_VARIABLE( bool, m_velocity_indicator, false );
 		ADD_VARIABLE( bool, m_velocity_indicator_show_pre_speed, false );
@@ -122,6 +125,23 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_key_indicators_enable, false );
 		ADD_VARIABLE( int, m_key_indicators_position, 100 );
 		ADD_VARIABLE_VECTOR( bool, e_keybind_indicators::key_max, m_key_indicators, false );
+
+		/* misc - game */
+		ADD_VARIABLE( bool, m_spectators_list, false );
+		ADD_VARIABLE( c_color, m_spectators_list_text_color_one, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( c_color, m_spectators_list_text_color_two, c_color( 255, 255, 255, 255 ) );
+
+		ADD_VARIABLE( bool, m_sniper_crosshair, false );
+
+		ADD_VARIABLE( bool, m_practice_window, false );
+		ADD_VARIABLE( key_bind_t, m_practice_cp_key, key_bind_t( 0, 1 ) );
+		ADD_VARIABLE( key_bind_t, m_practice_tp_key, key_bind_t( 0, 1 ) );
+
+		/* other */
+#ifdef _DEBUG
+		ADD_VARIABLE( bool, m_debugger_visual, false );
+		ADD_VARIABLE( bool, m_watermark, true );
+#endif
 	};
 }; // namespace n_variables
 

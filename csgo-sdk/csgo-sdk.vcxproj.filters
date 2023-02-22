@@ -235,6 +235,8 @@
     <ClInclude Include="hacks\aimbot\aimbot.h" />
     <ClInclude Include="game\sdk\enums\e_hitgroup.h" />
     <ClInclude Include="game\sdk\enums\e_glow_style.h" />
+    <ClInclude Include="globals\logger\logger.h" />
+    <ClInclude Include="hacks\debug\debug.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
