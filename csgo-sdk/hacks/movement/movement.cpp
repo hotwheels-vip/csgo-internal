@@ -267,7 +267,8 @@ void n_movement::impl_t::auto_duck( )
 {
 	if ( !GET_VARIABLE( g_variables.m_auto_duck, bool ) || g_prediction.backup_data.m_flags & e_flags::fl_onground ||
 	     g_movement.m_edgebug_data.m_will_edgebug || g_movement.m_pixelsurf_data.m_in_pixel_surf ||
-	     ( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) ) ) {
+	     ( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) ) ||
+	     ( GET_VARIABLE( g_variables.m_edge_jump, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_edge_jump_key, key_bind_t ) ) ) ) {
 		g_movement.m_autoduck_data.reset( );
 
 		return;
@@ -328,8 +329,7 @@ void n_movement::impl_t::auto_duck( )
 	g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
 
 	if ( g_movement.m_autoduck_data.m_did_land_ducking && g_movement.m_autoduck_data.m_did_land_standing ) {
-		if ( g_movement.m_autoduck_data.m_ducking_vert >
-		     g_movement.m_autoduck_data.m_standing_vert + GET_VARIABLE( g_variables.m_auto_duck_height_threshold, float ) )
+		if ( g_movement.m_autoduck_data.m_ducking_vert > g_movement.m_autoduck_data.m_standing_vert )
 			g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;
 	} else if ( g_movement.m_autoduck_data.m_did_land_ducking && !g_movement.m_autoduck_data.m_did_land_standing )
 		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_duck;

@@ -21,7 +21,7 @@ void n_misc::impl_t::on_end_scene( )
 		static auto width = 0.f;
 
 		ImGui::SetNextWindowSize( ImVec2( -1, 29.f ), ImGuiCond_::ImGuiCond_Always );
-		ImGui::SetNextWindowPos( ImVec2( g_ctx.m_height - width - 5.f, 5.f ), ImGuiCond_::ImGuiCond_Always );
+		ImGui::SetNextWindowPos( ImVec2( g_ctx.m_width - width - 5.f, 5.f ), ImGuiCond_::ImGuiCond_Always );
 		ImGui::Begin( ( "hotwheels-watermark" ), 0,
 		              ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar |
 		                  ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize |
@@ -61,7 +61,7 @@ void n_misc::impl_t::on_end_scene( )
 				ImGui::SameLine( );
 			}
 
-			ImGui::Text( std::to_string( io.Framerate ).c_str( ) );
+			ImGui::Text( std::to_string( static_cast< int >( io.Framerate + 0.5f ) ).c_str( ) );
 
 			ImGui::SameLine( );
 
