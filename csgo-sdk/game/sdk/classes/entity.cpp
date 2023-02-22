@@ -239,12 +239,13 @@ int c_base_entity::get_max_health( )
 
 c_vector c_base_entity::get_bone_position( int bone )
 {
-	std::array< matrix3x4_t, 128 > out = { };
+	matrix3x4_t bone_matrix[ 128 ]{ };
+	memcpy( bone_matrix, this->get_cached_bone_data( ).get_elements( ), this->get_cached_bone_data( ).count( ) * sizeof( matrix3x4_t ) );
 
-	if ( this->setup_bones( out.data( ), out.size( ), 0x0007ff00, 0.f ) )
-		return out[ bone ][ 3 ];
+	if ( !bone_matrix )
+		return { };
 
-	return c_vector( );
+	return bone_matrix[ bone ][ 3 ];
 }
 
 c_vector c_base_entity::get_hitbox_position( int index, float point_scale )
@@ -300,13 +301,16 @@ c_vector c_base_entity::get_eye_position( bool should_correct )
 
 bool c_base_entity::can_see_player( c_base_entity* player )
 {
+	if ( !this || !player || !player->is_alive( ) || player->is_dormant( ) )
+		return false;
+
 	c_game_trace trace;
 	c_trace_filter filter( this );
-	ray_t ray( get_eye_position( false ), player->get_bone_position( e_hitgroup::hitgroup_head ) );
+	ray_t ray( get_eye_position( false ), player->get_hitbox_position( e_hitboxes::hitbox_head, player->get_cached_bone_data( ).base( ) ) );
 
-	g_interfaces.m_engine_trace->trace_ray( ray, mask_playersolid, &filter, &trace );
+	g_interfaces.m_engine_trace->trace_ray( ray, mask_shot | contents_grate, &filter, &trace );
 
-	return trace.did_hit( ) && trace.m_hit_entity == player;
+	return trace.m_hit_entity == player || trace.m_fraction > 0.97f;
 }
 
 c_user_cmd& c_base_entity::get_last_command( )

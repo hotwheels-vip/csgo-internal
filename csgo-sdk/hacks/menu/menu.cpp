@@ -187,9 +187,12 @@ void n_menu::impl_t::on_end_scene( )
 							                   color_picker_alpha_flags );
 
 						ImGui::Checkbox( "player skeleton", &GET_VARIABLE( g_variables.m_players_skeleton, bool ) );
-						if ( GET_VARIABLE( g_variables.m_players_skeleton, bool ) )
+						if ( GET_VARIABLE( g_variables.m_players_skeleton, bool ) ) {
 							ImGui::ColorEdit4( "##player skeleton color", &GET_VARIABLE( g_variables.m_players_skeleton_color, c_color ),
 							                   color_picker_alpha_flags );
+							ImGui::Combo( "skeleton type##player skeleton", &GET_VARIABLE( g_variables.m_players_skeleton_type, int ),
+							              "normal\0lag compensated" );
+						}
 					}
 					break;
 				}
@@ -352,10 +355,6 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Checkbox( "no crouch cooldown", &GET_VARIABLE( g_variables.m_no_crouch_cooldown, bool ) );
 
 				ImGui::Checkbox( "auto duck", &GET_VARIABLE( g_variables.m_auto_duck, bool ) );
-				if ( GET_VARIABLE( g_variables.m_auto_duck, bool ) )
-					ImGui::SliderFloat( "duck height threshold", &GET_VARIABLE( g_variables.m_auto_duck_height_threshold, float ), 0.f, 50.f,
-					                    "%.1f" );
-
 				ImGui::EndChild( );
 			}
 

@@ -24,6 +24,9 @@ namespace n_lagcomp
 		std::array< int, 65 > m_record_location{ };
 		std::array< record_t*, 65 > m_records{ };
 
+		float lerp_time( );
+		bool is_valid( n_lagcomp::impl_t::record_t rec );
+
 		void on_create_move_pre( );
 		void on_create_move_post( );
 

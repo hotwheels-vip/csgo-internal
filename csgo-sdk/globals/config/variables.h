@@ -42,6 +42,7 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_players_name_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_players_skeleton, false );
 		ADD_VARIABLE( c_color, m_players_skeleton_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( int, m_players_skeleton_type, 0 );
 		ADD_VARIABLE( bool, m_glow_enable, false );
 		ADD_VARIABLE( c_color, m_glow_vis_color, c_color( 224, 175, 86, 153 ) );
 		ADD_VARIABLE( c_color, m_glow_invis_color, c_color( 114, 155, 221, 153 ) );
@@ -91,7 +92,6 @@ namespace n_variables
 		ADD_VARIABLE( key_bind_t, m_pixel_surf_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( bool, m_auto_align, false );
 		ADD_VARIABLE( bool, m_auto_duck, false );
-		ADD_VARIABLE( float, m_auto_duck_height_threshold, 0.f );
 
 		ADD_VARIABLE( bool, m_edge_bug, false );
 		ADD_VARIABLE( bool, m_advanced_detection, false );

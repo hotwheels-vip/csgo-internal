@@ -4,6 +4,8 @@
 
 void n_prediction::impl_t::update( )
 {
+	g_ctx.m_max_allocations = static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
+
 	// handle backup data
 	g_prediction.backup_data.m_flags         = g_ctx.m_local->get_flags( );
 	g_prediction.backup_data.m_move_type     = g_ctx.m_local->get_move_type( );

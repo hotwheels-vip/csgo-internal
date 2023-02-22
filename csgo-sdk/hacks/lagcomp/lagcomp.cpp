@@ -6,7 +6,7 @@
 
 /* TODO ~ don't use 3 entity loops for lagcomp */
 
-float lerp_time( )
+float n_lagcomp::impl_t::lerp_time( )
 {
 	static auto *cl_updaterate = g_convars[ HASH_BT( "sv_maxupdaterate" ) ], *cl_interp_ratio = g_convars[ HASH_BT( "cl_interp_ratio" ) ],
 				*cl_interp = g_convars[ HASH_BT( "cl_interp" ) ], *sv_client_min_interp_ratio = g_convars[ HASH_BT( "sv_client_min_interp_ratio" ) ],
@@ -19,7 +19,7 @@ float lerp_time( )
 	return max( cl_interp->get_float( ), interp_ratio / cl_updaterate->get_int( ) );
 }
 
-bool is_valid( n_lagcomp::impl_t::record_t rec )
+bool n_lagcomp::impl_t::is_valid( n_lagcomp::impl_t::record_t rec )
 {
 	const auto net_channel = g_interfaces.m_engine_client->get_net_channel_info( );
 	if ( !net_channel )
@@ -43,8 +43,6 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 	if ( g_ctx.m_cmd->m_tick_count == 0 )
 		return;
 
-	const auto max_allocation = static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
-
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
 		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local )
 			return;
@@ -55,7 +53,7 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 		if ( !record_list )
 			return;
 
-		for ( int j = 0; j < max_allocation; j++ ) {
+		for ( int j = 0; j < g_ctx.m_max_allocations; j++ ) {
 			auto& record = record_list[ j ];
 
 			if ( record.m_player != index && record.m_player != -1 ) {
@@ -90,13 +88,13 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 		auto& location = this->m_record_location[ index ];
 
 		if ( !record ) {
-			this->m_records[ index ] = new record_t[ max_allocation ];
+			this->m_records[ index ] = new record_t[ g_ctx.m_max_allocations ];
 
 			location = 0;
 			record   = this->m_records[ index ];
 		}
 
-		if ( location >= max_allocation )
+		if ( location >= g_ctx.m_max_allocations )
 			location = 0;
 
 		record_t new_record{ };
@@ -133,8 +131,7 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 	if ( g_ctx.m_cmd->m_tick_count == 0 )
 		return;
 
-	const auto max_allocation = static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
-	auto index                = player->get_index( );
+	auto index = player->get_index( );
 
 	auto current_fov         = 180.f;
 	record_t* closest_record = nullptr;
@@ -148,7 +145,7 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 		return;
 
 	if ( const auto record_list = g_lagcomp.m_records[ index ] ) {
-		for ( int i = 0; i < max_allocation; i++ ) {
+		for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
 			auto record = &record_list[ i ];
 
 			if ( !record_list[ i ].m_valid )
@@ -159,7 +156,7 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 			if ( delta.length_squared( ) > LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR )
 				return;
 
-			const auto angle = g_math.calculate_angle( eye_position, player->get_hitbox_position( hitgroup_head, record_list[ i ].m_matrix ) );
+			const auto angle = g_math.calculate_angle( eye_position, player->get_hitbox_position( hitbox_head, record_list[ i ].m_matrix ) );
 
 			if ( float calculated_fov = g_math.calculate_fov( g_ctx.m_cmd->m_view_point, angle ); calculated_fov < current_fov ) {
 				current_fov    = calculated_fov;
@@ -182,14 +179,13 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 // the position of the registered lag compensated tick
 void n_lagcomp::impl_t::on_create_move_post( )
 {
-	if ( GET_VARIABLE( g_variables.m_aimbot_enable, bool ) )
+	if ( GET_VARIABLE( g_variables.m_aimbot_enable, bool ) || !GET_VARIABLE( g_variables.m_backtrack_enable, bool ) )
 		return;
 
 	if ( g_ctx.m_cmd->m_tick_count == 0 )
 		return;
 
-	float current_fov         = 180.f;
-	const auto max_allocation = static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
+	float current_fov = 180.f;
 
 	const auto eye_position     = g_ctx.m_local->get_eye_position( false );
 	int best_tick               = g_ctx.m_cmd->m_tick_count;
@@ -202,7 +198,7 @@ void n_lagcomp::impl_t::on_create_move_post( )
 		const auto index = entity->get_index( );
 
 		if ( const auto record_list = g_lagcomp.m_records[ index ] ) {
-			for ( int i = 0; i < max_allocation; i++ ) {
+			for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
 				auto record = record_list[ i ];
 
 				if ( !record.m_valid )
@@ -226,6 +222,4 @@ void n_lagcomp::impl_t::on_create_move_post( )
 		return;
 
 	g_ctx.m_cmd->m_tick_count = best_tick;
-
-	g_logger.print( std::format( "shot at tick {}", best_logged_tick ), "[lagcomp]", 5.0f );
 }

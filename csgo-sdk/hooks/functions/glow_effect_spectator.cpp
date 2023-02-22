@@ -9,8 +9,6 @@ bool __cdecl n_detoured_functions::glow_effect_spectator( c_base_entity* player,
 	const auto m_vis_color   = GET_VARIABLE( g_variables.m_glow_vis_color, c_color );
 	const auto m_invis_color = GET_VARIABLE( g_variables.m_glow_invis_color, c_color );
 
-	c_vector head_position = player->get_bone_position( e_hitgroup::hitgroup_head );
-
 	const bool can_see_player = local->can_see_player( player );
 
 	glow_color =

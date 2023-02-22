@@ -19,6 +19,8 @@ namespace n_globals
 		float m_width{ }, m_height{ };
 
 		float m_last_tick_yaw = 0.f;
+
+		int m_max_allocations = 0;
 	};
 
 } // namespace n_globals
