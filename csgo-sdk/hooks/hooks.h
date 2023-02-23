@@ -11,6 +11,8 @@ class c_animation_state;
 class c_base_entity;
 class c_move_data;
 
+struct game_event_t;
+
 enum e_glow_style;
 
 namespace n_hooks
@@ -36,6 +38,9 @@ namespace n_hooks
 		c_detour_hook m_override_mouse_input{ };
 		c_detour_hook m_glow_effect_spectator{ };
 		c_detour_hook m_process_movement{ };
+		c_detour_hook m_fire_event_intern{ };
+		c_detour_hook m_net_earliertempents{ };
+		c_detour_hook m_draw_set_color{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -66,14 +71,14 @@ namespace n_detoured_functions
 	                                      const char* complain_prefix );
 	void __fastcall modify_eye_position( c_animation_state* anim_state, void* edx, c_vector& input_eye_pos );
 	void __fastcall override_mouse_input( void* thisptr, int edx, float* x, float* y );
-
 	void __fastcall lock_cursor( void* ecx, void* edx );
 	long __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* presentation_parameters );
 	long __stdcall end_scene( IDirect3DDevice9* device );
 	long __stdcall wndproc( HWND window, unsigned int message, unsigned int wide_parameter, long long_parameter );
 	bool __cdecl glow_effect_spectator( c_base_entity* player, c_base_entity* local, e_glow_style& style, c_vector& glow_color, float& alpha_start,
 	                                    float& alpha, float& time_start, float& time_target, bool& animate );
-
 	void __fastcall process_movement( void* thisptr, void* edx, c_base_entity* player, c_move_data* move_data );
-
+	bool __fastcall fire_event_intern( void* ecx, void* edx, game_event_t* game_event );
+	void __stdcall draw_set_color( int r, int g, int b, int a );
+	bool __fastcall net_earliertempents( void* ecx, void* edx );
 } // namespace n_detoured_functions

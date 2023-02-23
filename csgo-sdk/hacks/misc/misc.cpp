@@ -262,7 +262,7 @@ void n_misc::impl_t::practice_window_think( )
 	if ( !GET_VARIABLE( g_variables.m_practice_window, bool ) )
 		return;
 
-	if ( !g_convars[ HASH_BT( "sv_cheats" ) ]->get_bool( ) )
+	if ( !g_convars[ HASH_BT( "sv_cheats" ) ]->get_bool( ) || g_interfaces.m_engine_client->is_console_visible( ) )
 		return;
 
 	const auto cp_key = GET_VARIABLE( g_variables.m_practice_cp_key, key_bind_t ).m_key;

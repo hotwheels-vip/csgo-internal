@@ -16,6 +16,8 @@ namespace n_globals
 		// fps lower then server tickrate
 		bool m_low_fps = false;
 
+		bool m_is_console_being_drawn = false;
+
 		float m_width{ }, m_height{ };
 
 		float m_last_tick_yaw = 0.f;

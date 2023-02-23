@@ -79,17 +79,17 @@ namespace n_logger
 				g_render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(
-						g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], c_vector_2d( m_x, m_y ), m_curr_noti.m_prefix,
+						g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ], c_vector_2d( m_x, m_y ), m_curr_noti.m_prefix,
 						ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z, m_curr_noti.m_color.a / 255.f ),
 						ImColor( 0.f, 0.f, 0.f, m_curr_noti.m_color.a / 255.f ), e_text_flags::text_flag_dropshadow ) );
 
-				const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-					g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, m_curr_noti.m_prefix.c_str( ) );
+				const auto text_size = g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ]->CalcTextSizeA(
+					g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ]->FontSize, FLT_MAX, 0.f, m_curr_noti.m_prefix.c_str( ) );
 
 				g_render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(
-						g_render.m_fonts[ e_font_names::font_name_verdana_11 ], c_vector_2d( m_x + text_size.x + 3, m_y ), m_curr_noti.m_text,
+						g_render.m_fonts[ e_font_names::font_name_tahoma_12 ], c_vector_2d( m_x + text_size.x + 3, m_y ), m_curr_noti.m_text,
 						ImColor( m_curr_noti.m_color.r / 255.f, m_curr_noti.m_color.g / 255.f, m_curr_noti.m_color.b / 255.f,
 				                 m_curr_noti.m_color.a / 255.f ),
 						ImColor( 0.f, 0.f, 0.f, m_curr_noti.m_color.a / 255.f ), e_text_flags::text_flag_dropshadow ) );

@@ -65,6 +65,9 @@
     <ClCompile Include="hacks\aimbot\aimbot.cpp" />
     <ClCompile Include="hooks\functions\glow_effect_spectator.cpp" />
     <ClCompile Include="hooks\functions\process_movement.cpp" />
+    <ClCompile Include="hooks\functions\fire_event_intern.cpp" />
+    <ClCompile Include="hooks\functions\net_earliertempents.cpp" />
+    <ClCompile Include="hooks\functions\draw_set_color.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -237,6 +240,7 @@
     <ClInclude Include="game\sdk\enums\e_glow_style.h" />
     <ClInclude Include="globals\logger\logger.h" />
     <ClInclude Include="hacks\debug\debug.h" />
+    <ClInclude Include="game\sdk\structs\game_event_t.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

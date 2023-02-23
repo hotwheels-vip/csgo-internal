@@ -2,13 +2,21 @@
 #include "../../game/sdk/classes/c_color.h"
 #include "config.h"
 
-// TODO ADD THIS
+// TODO: add this
 enum e_player_flags {
 	player_flag_money = 0,
 	player_flag_armor,
 	player_flag_reloading,
 	player_flag_bomb,
 	player_flags_max
+};
+
+enum e_log_types {
+	log_type_hit_enemy,
+	log_type_hit_teammate,
+	log_type_purchase,
+	log_type_votes,
+	log_type_max,
 };
 
 enum e_keybind_indicators {
@@ -138,6 +146,7 @@ namespace n_variables
 		ADD_VARIABLE( key_bind_t, m_practice_cp_key, key_bind_t( 0, 1 ) );
 		ADD_VARIABLE( key_bind_t, m_practice_tp_key, key_bind_t( 0, 1 ) );
 
+		ADD_VARIABLE_VECTOR( bool, e_log_types::log_type_max, m_log_types, false );
 		/* other */
 #ifdef _DEBUG
 		ADD_VARIABLE( bool, m_debugger_visual, false );

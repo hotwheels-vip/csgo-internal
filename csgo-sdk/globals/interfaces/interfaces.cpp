@@ -65,6 +65,9 @@ bool n_interfaces::impl_t::on_attach( )
 	if ( !( m_studio_render = static_cast< c_studio_render* >( g_modules[ STUDIORENDER_DLL ].find_interface( "VStudioRender026" ) ) ) )
 		return false;
 
+	if ( !( m_game_event_manager = static_cast< game_event_manager_t* >( g_modules[ ENGINE_DLL ].find_interface( "GAMEEVENTSMANAGER002" ) ) ) )
+		return false;
+
 	if ( !( m_key_values_system =
 	            reinterpret_cast< c_key_values_system*( __cdecl* )( ) >( g_modules[ VSTDLIB_DLL ].find_export( HASH_BT( "KeyValuesSystem" ) ) )( ) ) )
 		return false;

@@ -22,12 +22,12 @@ public:
 	template< class t = c_client_entity >
 	inline t* get( const int index )
 	{
-		return static_cast< t* >( get_client_entity( index ) );
+		return reinterpret_cast< t* >( get_client_entity( index ) );
 	}
 
 	template< class t = c_client_entity >
 	inline t* get( const unsigned int h_entity )
 	{
-		return static_cast< t* >( get_client_entity_from_handle( h_entity ) );
+		return reinterpret_cast< t* >( get_client_entity_from_handle( h_entity ) );
 	}
 };

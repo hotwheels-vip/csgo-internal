@@ -19,6 +19,69 @@ void n_indicators::impl_t::on_paint_traverse( )
 
 	if ( GET_VARIABLE( g_variables.m_sniper_crosshair, bool ) )
 		this->sniper_crosshair( );
+
+	this->fps_warning( );
+}
+
+void n_indicators::impl_t::fps_warning( )
+{
+	if ( !g_ctx.m_local || !g_interfaces.m_engine_client->is_in_game( ) )
+		return;
+
+	[ & ]( const char* fps_warning, const c_color& color, const bool active ) {
+		ImAnimationHelper fps_animation = ImAnimationHelper( HASH_RT( fps_warning ), ImGui::GetIO( ).DeltaTime );
+		fps_animation.Update( 2.f, active ? 2.f : -2.f );
+
+		if ( fps_animation.AnimationData->second <= 0.f )
+			return;
+
+		const auto text_size = g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ]->CalcTextSizeA(
+			g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ]->FontSize, FLT_MAX, 0.f, fps_warning );
+
+		// render 'LOW FPS'
+		g_render.m_draw_data.emplace_back(
+			e_draw_type::draw_type_text,
+			std::make_any< text_draw_object_t >(
+				g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ], c_vector_2d( ( g_ctx.m_width / 2 ) - ( text_size.x / 2 ), 200 ),
+				fps_warning, color.get_u32( fps_animation.AnimationData->second ),
+				ImColor( 0.f, 0.f, 0.f, color.base< e_color_type::color_type_a >( ) * fps_animation.AnimationData->second ),
+				e_text_flags::text_flag_dropshadow ) );
+
+		// render '!' to the left
+		g_render.m_draw_data.emplace_back(
+			e_draw_type::draw_type_text,
+			std::make_any< text_draw_object_t >(
+				g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ], c_vector_2d( ( g_ctx.m_width / 2 ) - text_size.x, 200 ), "!",
+				ImColor( 1.f, 0.f, 0.f, 1.f ),
+				ImColor( 0.f, 0.f, 0.f, color.base< e_color_type::color_type_a >( ) * fps_animation.AnimationData->second ),
+				e_text_flags::text_flag_dropshadow ) );
+
+		// render '!' to the right
+		g_render.m_draw_data.emplace_back(
+			e_draw_type::draw_type_text,
+			std::make_any< text_draw_object_t >(
+				g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ], c_vector_2d( ( g_ctx.m_width / 2 ) + text_size.x, 200 ), "!",
+				ImColor( 1.f, 0.f, 0.f, 1.f ),
+				ImColor( 0.f, 0.f, 0.f, color.base< e_color_type::color_type_a >( ) * fps_animation.AnimationData->second ),
+				e_text_flags::text_flag_dropshadow ) );
+
+		const std::string current_fps_text =
+			std::vformat( "current fps: {} needed fps: {}+",
+		                  std::make_format_args( static_cast< int >( ImGui::GetIO( ).Framerate + 0.5f ),
+		                                         static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick ) ) );
+
+		const auto current_fps_text_size = g_render.m_fonts[ e_font_names::font_name_tahoma_12 ]->CalcTextSizeA(
+			g_render.m_fonts[ e_font_names::font_name_tahoma_12 ]->FontSize, FLT_MAX, 0.f, current_fps_text.c_str( ) );
+
+		// render current fps and needed fps
+		g_render.m_draw_data.emplace_back(
+			e_draw_type::draw_type_text,
+			std::make_any< text_draw_object_t >(
+				g_render.m_fonts[ e_font_names::font_name_tahoma_12 ], c_vector_2d( ( g_ctx.m_width / 2 ) - ( current_fps_text_size.x / 2 ), 215 ),
+				current_fps_text, ImColor( .7f, .7f, .7f, fps_animation.AnimationData->second ),
+				ImColor( 0.f, 0.f, 0.f, color.base< e_color_type::color_type_a >( ) * fps_animation.AnimationData->second ),
+				e_text_flags::text_flag_dropshadow ) );
+	}( "LOW FPS", c_color( 1.f, 1.f, 1.f, 1.f ), g_ctx.m_low_fps );
 }
 
 void n_indicators::impl_t::sniper_crosshair( )
@@ -26,28 +89,24 @@ void n_indicators::impl_t::sniper_crosshair( )
 	if ( !g_ctx.m_local->is_alive( ) )
 		return;
 
-	auto weapon_handle = g_ctx.m_local->get_weapon_handle( );
+	auto weapon_handle = g_ctx.m_local->get_active_weapon_handle( );
 	if ( !weapon_handle )
 		return;
 
-	const auto active_weapon =
-		reinterpret_cast< c_base_entity* >( g_interfaces.m_client_entity_list->get_client_entity_from_handle( weapon_handle ) );
+	const auto active_weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( weapon_handle );
 
 	if ( !active_weapon )
 		return;
 
-	if ( g_ctx.m_local->is_scoped( ) )
-		return;
-
-	auto definition_index = active_weapon->get_item_definition_index( );
+	const auto definition_index = active_weapon->get_item_definition_index( );
 
 	if ( g_utilities.is_in< short >( definition_index, { e_item_definition_index::weapon_awp, e_item_definition_index::weapon_ssg08,
 	                                                     e_item_definition_index::weapon_scar20, e_item_definition_index::weapon_g3sg1 } ) ) {
-		g_render.m_draw_data.emplace_back( e_draw_type::draw_type_rect,
-		                                   std::make_any< rect_draw_object_t >( c_vector_2d( g_ctx.m_width / 2 - 1, g_ctx.m_height / 2 - 1 ),
-		                                                                        c_vector_2d( g_ctx.m_width / 2 + 1, g_ctx.m_height / 2 + 1 ),
-		                                                                        ImColor( 1.f, 1.f, 1.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 0.f ), true,
-		                                                                        0.f, 0, 2.f ) );
+		g_render.m_draw_data.emplace_back(
+			e_draw_type::draw_type_rect, std::make_any< rect_draw_object_t >( c_vector_2d( ( g_ctx.m_width / 2 ) - 2, ( g_ctx.m_height / 2 ) - 2 ),
+		                                                                      c_vector_2d( ( g_ctx.m_width / 2 ) + 2, ( g_ctx.m_height / 2 ) + 2 ),
+		                                                                      ImColor( 1.f, 1.f, 1.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 0.f ), true, 0.f,
+		                                                                      ImDrawFlags_::ImDrawFlags_None, 4.f, e_rect_flags::rect_flag_none ) );
 	}
 }
 

@@ -26,15 +26,15 @@ c_base_entity* n_aimbot::impl_t::find_closest_player( )
 	return closest_player;
 }
 
+bool n_aimbot::impl_t::can_aimbot( )
+{
+	return GET_VARIABLE( g_variables.m_aimbot_enable, bool ) && g_ctx.m_cmd->m_tick_count != 0 && g_ctx.m_cmd->m_buttons & in_attack &&
+	       g_utilities.is_weapon_valid( );
+}
+
 void n_aimbot::impl_t::on_create_move_post( )
 {
-	if ( !GET_VARIABLE( g_variables.m_aimbot_enable, bool ) )
-		return;
-
-	if ( g_ctx.m_cmd->m_tick_count == 0 )
-		return;
-
-	if ( !( g_ctx.m_cmd->m_buttons & in_attack ) )
+	if ( !can_aimbot( ) )
 		return;
 
 	auto entity = find_closest_player( );

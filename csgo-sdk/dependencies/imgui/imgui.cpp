@@ -5949,7 +5949,7 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 		                                        child_window->Pos + ImVec2( 1.f, 24.f ) + ImVec2( child_window->Size.x - 2.f, 1 ),
 		                                        ImColor( 30 / 255.f, 30 / 255.f, 30 / 255.f ) );
 
-		for ( int iterator = { }; iterator < subtab_vector_size; iterator++ ) {
+		for ( std::size_t iterator = { }; iterator < subtab_vector_size; iterator++ ) {
 			if ( !( iterator < subtab_vector_size ) )
 				break;
 

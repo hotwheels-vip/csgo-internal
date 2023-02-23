@@ -467,6 +467,10 @@ void n_menu::impl_t::on_end_scene( )
 				// TODO: combobox between force crosshair and just draw a white dot
 				ImGui::Checkbox( "sniper crosshair", &GET_VARIABLE( g_variables.m_sniper_crosshair, bool ) );
 
+				ImGui::MultiCombo( "displayed logs", g_config.get< std::vector< bool > >( g_variables.m_log_types ),
+				                   { "damage", "team damage", "purchase", "votes" },
+				                   g_config.get< std::vector< bool > >( g_variables.m_log_types ).size( ) );
+
 				ImGui::EndChild( );
 			}
 

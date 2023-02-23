@@ -1,8 +1,27 @@
 #pragma once
+#include "../../../globals/macros/macros.h"
 #include "../classes/c_angle.h"
 
 class c_net_channel;
-class c_event_info;
+class c_event_info
+{
+public:
+	enum {
+		EVENT_INDEX_BITS    = 8,
+		EVENT_DATA_LEN_BITS = 11,
+		MAX_EVENT_DATA      = 192,
+	};
+
+	short m_class_id;
+	PAD( 0x2 );
+	float m_fire_delay;
+	const void* m_send_table;
+	const void* m_client_class;
+	int m_packed;
+	int m_flags;
+	int m_filter[ 8 ];
+	c_event_info* m_next;
+};
 
 class c_client_state
 {

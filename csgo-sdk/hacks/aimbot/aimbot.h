@@ -20,6 +20,8 @@ namespace n_aimbot
 
 		// TODO: add this, use code from hw-sdk
 		float hitchance( c_base_entity* player, c_vector angles, int hit_group );
+
+		bool can_aimbot( );
 	};
 } // namespace n_aimbot
 

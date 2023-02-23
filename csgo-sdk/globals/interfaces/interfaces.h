@@ -28,6 +28,7 @@ class c_weapon_system;
 class c_client_state;
 
 struct IDirect3DDevice9;
+struct game_event_manager_t;
 
 namespace n_interfaces
 {
@@ -48,21 +49,21 @@ namespace n_interfaces
 		c_model_render* m_model_render             = nullptr;
 		c_model_cache* m_model_cache               = nullptr;
 		void* m_engine_sound                       = nullptr;
-		c_surface* m_surface                   = nullptr;
+		c_surface* m_surface                       = nullptr;
 		c_game_types* m_game_types                 = nullptr;
 		c_localize* m_localize                     = nullptr;
 		c_panel* m_panel                           = nullptr;
 		c_physics_collison* m_physics_collison     = nullptr;
 		c_studio_render* m_studio_render           = nullptr;
-
-		c_key_values_system* m_key_values_system = nullptr;
-		c_global_vars_base* m_global_vars_base   = nullptr;
-		void* m_client_mode                      = nullptr;
-		c_weapon_system* m_weapon_system         = nullptr;
-		c_client_state* m_client_state           = nullptr;
-		c_input* m_input                         = nullptr;
-		c_move_helper* m_move_helper             = nullptr;
-		IDirect3DDevice9* m_direct_device        = nullptr;
+		game_event_manager_t* m_game_event_manager = nullptr;
+		c_key_values_system* m_key_values_system   = nullptr;
+		c_global_vars_base* m_global_vars_base     = nullptr;
+		void* m_client_mode                        = nullptr;
+		c_weapon_system* m_weapon_system           = nullptr;
+		c_client_state* m_client_state             = nullptr;
+		c_input* m_input                           = nullptr;
+		c_move_helper* m_move_helper               = nullptr;
+		IDirect3DDevice9* m_direct_device          = nullptr;
 	};
 } // namespace n_interfaces
 

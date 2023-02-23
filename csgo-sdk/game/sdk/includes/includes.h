@@ -48,6 +48,7 @@
 #include "../structs/bounding_box_t.h"
 #include "../structs/data_map_t.h"
 #include "../structs/data_variant_t.h"
+#include "../structs/game_event_t.h"
 #include "../structs/matrix_t.h"
 #include "../structs/mstudiobone_t.h"
 #include "../structs/player_info_t.h"

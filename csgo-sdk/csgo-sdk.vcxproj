@@ -52,9 +52,11 @@
     <ClCompile Include="hooks\detour_hook\c_detour_hook.cpp" />
     <ClCompile Include="hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="hooks\functions\create_move_proxy.cpp" />
+    <ClCompile Include="hooks\functions\draw_set_color.cpp" />
     <ClCompile Include="hooks\functions\emit_sound.cpp" />
     <ClCompile Include="hooks\functions\end_scene.cpp" />
     <ClCompile Include="hooks\functions\find_material.cpp" />
+    <ClCompile Include="hooks\functions\fire_event_intern.cpp" />
     <ClCompile Include="hooks\functions\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\functions\get_vcollide.cpp" />
     <ClCompile Include="hooks\functions\glow_effect_spectator.cpp" />
@@ -62,6 +64,7 @@
     <ClCompile Include="hooks\functions\level_shutdown.cpp" />
     <ClCompile Include="hooks\functions\lock_cursor.cpp" />
     <ClCompile Include="hooks\functions\modify_eye_position.cpp" />
+    <ClCompile Include="hooks\functions\net_earliertempents.cpp" />
     <ClCompile Include="hooks\functions\on_add_entity.cpp" />
     <ClCompile Include="hooks\functions\on_remove_entity.cpp" />
     <ClCompile Include="hooks\functions\override_mouse_input.cpp" />
@@ -210,6 +213,7 @@
     <ClInclude Include="game\sdk\structs\bounding_box_t.h" />
     <ClInclude Include="game\sdk\structs\data_map_t.h" />
     <ClInclude Include="game\sdk\structs\data_variant_t.h" />
+    <ClInclude Include="game\sdk\structs\game_event_t.h" />
     <ClInclude Include="game\sdk\structs\interface_node_t.h" />
     <ClInclude Include="game\sdk\structs\matrix_t.h" />
     <ClInclude Include="game\sdk\structs\mstudiobone_t.h" />

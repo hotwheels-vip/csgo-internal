@@ -41,8 +41,6 @@ namespace n_debugger
 				offset -= ( text_size.y + 2 ) * debug_animation.AnimationData->second;
 			};
 
-			render_debug( "fps < rate", c_color( 1.f, 0.f, 0.f, 1.f ), g_ctx.m_low_fps );
-
 			std::stringstream ss_eb;
 			ss_eb << "eb: duck: " << g_movement.m_edgebug_data.m_edgebug_method << " | delta: " << g_movement.m_edgebug_data.m_yaw_delta;
 

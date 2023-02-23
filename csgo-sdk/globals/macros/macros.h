@@ -27,6 +27,17 @@
 #define SERVERBROWSER_DLL       HASH_BT( "serverbrowser.dll" )
 #define FILESYSTEM_DLL          HASH_BT( "filesystem_stdio.dll" )
 
+#define EVENT_DEBUG_ID_INIT     42
+#define EVENT_DEBUG_ID_SHUTDOWN 13
+
+#define COMBINE( lhs, rhs ) lhs##rhs
+#define CONCAT( lhs, rhs )  COMBINE( lhs, rhs )
+#define PAD( size )                                                                                                                                  \
+private:                                                                                                                                             \
+	std::uint8_t CONCAT( pad, __COUNTER__ )[ size ];                                                                                                 \
+                                                                                                                                                     \
+public:
+
 // csgo
 constexpr static float LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR = 64.0f * 64.0f;
 inline static const char* FILTERED_KEY_NAMES[]                  = {

@@ -25,6 +25,15 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 	g_movement.on_frame_stage_notify( stage );
 
 	if ( stage == net_update_end ) {
+		for ( auto m_event = g_interfaces.m_client_state->m_events; m_event; m_event = m_event->m_next ) {
+			if ( m_event->m_class_id )
+				break;
+
+			m_event->m_fire_delay = 0.f;
+		}
+
+		g_interfaces.m_engine_client->fire_events( );
+
 		[ & ]( ) {
 			g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
 				if ( !entity || !g_ctx.m_local->is_alive( ) || entity->is_dormant( ) || g_ctx.m_local == entity ||

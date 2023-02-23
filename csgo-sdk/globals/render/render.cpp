@@ -77,6 +77,15 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 			m_fonts[ e_font_names::font_name_indicator_29 ] =
 				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 29.f );
 
+			ImFontConfig tahoma_font_config = { };
+			tahoma_font_config.FontBuilderFlags =
+				ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
+
+			m_fonts[ e_font_names::font_name_tahoma_12 ] =
+				io.Fonts->AddFontFromMemoryCompressedTTF( tahoma_compressed_data, tahoma_compressed_size, 12.f, &tahoma_font_config );
+			m_fonts[ e_font_names::font_name_tahoma_bd_12 ] =
+				io.Fonts->AddFontFromMemoryCompressedTTF( tahoma_bold_compressed_data, tahoma_bold_compressed_size, 12.f, &tahoma_font_config );
+
 			ImGuiFreeType::BuildFontAtlas( io.Fonts, 0x0 );
 		}( );
 
@@ -220,17 +229,19 @@ void n_render::impl_t::corner_rect( float x1, float y1, float x2, float y2, cons
 	this->m_draw_data.emplace_back( e_draw_type::draw_type_line,
 	                                std::make_any< line_draw_object_t >( c_vector_2d( x1, y1 ), c_vector_2d( x1, y1 + ih ), color, thickness ) );
 
+	this->m_draw_data.emplace_back(
+		e_draw_type::draw_type_line,
+		std::make_any< line_draw_object_t >( c_vector_2d( x1 + w - 1, y1 ), c_vector_2d( x1 + w - 1, y1 + ih ), color, thickness ) );
+
 	this->m_draw_data.emplace_back( e_draw_type::draw_type_line, std::make_any< line_draw_object_t >(
-																	 c_vector_2d( x1 + w - 1, y1 ), c_vector_2d( x1 + w - 1, y1 + ih ), color, thickness ) );
+																	 c_vector_2d( x1, y1 + h ), c_vector_2d( x1 + iw, y1 + h ), color, thickness ) );
 
-	this->m_draw_data.emplace_back( e_draw_type::draw_type_line,
-	                                std::make_any< line_draw_object_t >( c_vector_2d( x1, y1 + h ), c_vector_2d( x1 + iw, y1 + h ), color, thickness ) );
+	this->m_draw_data.emplace_back(
+		e_draw_type::draw_type_line,
+		std::make_any< line_draw_object_t >( c_vector_2d( x1 + w - iw, y1 + h ), c_vector_2d( x1 + w, y1 + h ), color, thickness ) );
 
-	this->m_draw_data.emplace_back( e_draw_type::draw_type_line, std::make_any< line_draw_object_t >( c_vector_2d( x1 + w - iw, y1 + h ),
-	                                                                                                  c_vector_2d( x1 + w, y1 + h ), color, thickness ) );
-
-	this->m_draw_data.emplace_back( e_draw_type::draw_type_line,
-	                                std::make_any< line_draw_object_t >( c_vector_2d( x1, y1 + h - ih ), c_vector_2d( x1, y1 + h ), color, thickness ) );
+	this->m_draw_data.emplace_back( e_draw_type::draw_type_line, std::make_any< line_draw_object_t >( c_vector_2d( x1, y1 + h - ih ),
+	                                                                                                  c_vector_2d( x1, y1 + h ), color, thickness ) );
 
 	this->m_draw_data.emplace_back(
 		e_draw_type::draw_type_line,

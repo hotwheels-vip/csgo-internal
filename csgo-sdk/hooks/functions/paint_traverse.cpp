@@ -14,6 +14,13 @@ void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsi
 
 	const unsigned int panel_hash = HASH_RT( g_interfaces.m_panel->get_panel_name( panel ) );
 
+	if ( panel_hash == HASH_BT( "GameConsole" ) || panel_hash == HASH_BT( "CompletionList" ) ) {
+		g_ctx.m_is_console_being_drawn = true;
+		original( ecx, edx, panel, force_repaint, force );
+		g_ctx.m_is_console_being_drawn = false;
+		return;
+	}
+
 	original( ecx, edx, panel, force_repaint, force );
 
 	switch ( panel_hash ) {

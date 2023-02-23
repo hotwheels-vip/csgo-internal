@@ -1,10 +1,16 @@
 #pragma once
+#include <array>
 #include <initializer_list>
+#include <string>
 #include <xutility>
 
 namespace n_utilities
 {
 	struct impl_t {
+		std::array< std::string, 8 > m_hit_groups = { "body", "head", "chest", "stomach", "left arm", "right arm", "left leg", "right leg" };
+
+		bool is_weapon_valid( );
+
 		int create_thread( unsigned long __stdcall function( void* ), void* parameter );
 		template< typename T >
 		// is V inside lst, example of usage:

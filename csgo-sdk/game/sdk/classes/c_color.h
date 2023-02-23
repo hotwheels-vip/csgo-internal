@@ -13,6 +13,11 @@ struct c_unsigned_char_color {
 		: r{ red }, g{ green }, b{ blue }, a{ alpha }
 	{
 	}
+
+	constexpr static c_unsigned_char_color console_text_color( )
+	{
+		return c_unsigned_char_color( 180, 180, 180, 255 );
+	}
 };
 
 enum e_color_type {

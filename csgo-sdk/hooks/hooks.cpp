@@ -70,9 +70,11 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_override_mouse_input, g_virtual.get( g_interfaces.m_client_mode, 23 ), &n_detoured_functions::override_mouse_input,
 	                 ( "IClientModeShared::OverrideMouseInput()" ) );
 
-	initialise_hook( m_glow_effect_spectator,
-	                 reinterpret_cast< void* >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 EC 14 53 8B 5D 0C 56 57 85 DB 74" ) ),
+	initialise_hook( m_glow_effect_spectator, g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 EC 14 53 8B 5D 0C 56 57 85 DB 74" ),
 	                 &n_detoured_functions::glow_effect_spectator, "CCSPlayer::GlowEffectSpectator()" );
+
+	initialise_hook( m_fire_event_intern, g_virtual.get( g_interfaces.m_game_event_manager, 9 ), &n_detoured_functions::fire_event_intern,
+	                 "CGameEventManager::FireEventIntern()" );
 
 	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 
@@ -80,6 +82,12 @@ bool n_hooks::impl_t::on_attach( )
 
 	initialise_hook( m_end_scene, g_virtual.get( g_interfaces.m_direct_device, 42 ), &n_detoured_functions::end_scene,
 	                 "IDirect3DDevice9::EndScene()" );
+
+	initialise_hook( m_draw_set_color, g_virtual.get( g_interfaces.m_surface, 15 ), &n_detoured_functions::draw_set_color,
+	                 ( "ISurface::DrawSetColor()" ) );
+
+	initialise_hook( m_net_earliertempents, g_virtual.get( g_convars[ HASH_BT( "net_earliertempents" ) ], 13 ),
+	                 &n_detoured_functions::net_earliertempents, ( "net_earliertempents::GetBool()" ) );
 
 	if ( g_interfaces.m_engine_client->is_in_game( ) )
 		g_interfaces.m_client_state->m_delta_tick = -1;

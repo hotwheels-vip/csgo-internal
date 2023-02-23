@@ -1,6 +1,10 @@
 #pragma once
 #include "../../../game/sdk/classes/c_angle.h"
+#include "../../../globals/macros/macros.h"
 #include "../../../utilities/memory/virtual.h"
+#include "../../../utilities/modules/modules.h"
+
+#include <vadefs.h>
 
 struct player_info_t;
 struct view_matrix_t;
@@ -15,9 +19,19 @@ public:
 		return g_virtual.call< bool >( this, 8, index, info );
 	}
 
+	int get_player_for_user_id( int uid )
+	{
+		return g_virtual.call< int >( this, 9, uid );
+	}
+
 	int get_local_player( )
 	{
 		return g_virtual.call< int >( this, 12 );
+	}
+
+	bool is_console_visible( )
+	{
+		return g_virtual.call< bool >( this, 11 );
 	}
 
 	int get_max_clients( )
@@ -115,5 +129,15 @@ public:
 	void client_cmd_unrestricted( const char* cmd_string, bool from_console_or_keybind = false )
 	{
 		g_virtual.call< void >( this, 114, cmd_string, from_console_or_keybind );
+	}
+
+	void fire_events( )
+	{
+		static auto fire_events_address = reinterpret_cast< std::uintptr_t >(
+			g_modules[ ENGINE_DLL ].find_pattern( "e9 ? ? ? ? cc cc cc cc cc cc cc cc cc cc cc 8b 0d ? ? ? ? 8d 89" ) );
+
+		using fire_events_type = void( __cdecl* )( );
+
+		reinterpret_cast< fire_events_type >( fire_events_address )( );
 	}
 };
