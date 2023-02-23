@@ -1,7 +1,7 @@
 #pragma once
-#include <array>
-
 #include "../../game/sdk/structs/matrix_t.h"
+#include <array>
+#include <optional>
 
 class c_base_entity;
 
@@ -27,8 +27,10 @@ namespace n_lagcomp
 		float lerp_time( );
 		bool is_valid( n_lagcomp::impl_t::record_t rec );
 
-		void on_create_move_pre( );
+		void on_frame_stage_notify( );
 		void on_create_move_post( );
+
+		std::optional< n_lagcomp::impl_t::record_t > oldest_record( const int ent_index );
 
 		void backtrack_player( record_t* heap_record );
 		void backtrack_player( c_base_entity* player );

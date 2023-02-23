@@ -16,7 +16,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	c_user_cmd* cmd                   = g_interfaces.m_input->get_user_cmd( sequence_number );
 	c_verified_user_cmd* verified_cmd = g_interfaces.m_input->get_verified_cmd( sequence_number );
 
-	if ( !cmd || !verified_cmd )
+	if ( !cmd || !verified_cmd || !cmd->m_command_number )
 		return;
 
 	g_ctx.m_cmd = cmd;
@@ -35,14 +35,15 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			return;
 		}
 		g_movement.on_create_move_pre( );
-		g_lagcomp.on_create_move_pre( );
 		g_misc.on_create_move_pre( );
 
 		g_prediction.begin( g_ctx.m_local, cmd );
-		g_prediction.end( g_ctx.m_local );
 
 		g_lagcomp.on_create_move_post( );
 		g_aimbot.on_create_move_post( );
+
+		g_prediction.end( g_ctx.m_local );
+
 		g_movement.on_create_move_post( );
 	}( );
 

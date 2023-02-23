@@ -80,67 +80,137 @@ void n_players::impl_t::players( )
 			                                         c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
 		}
 
-		if ( GET_VARIABLE( g_variables.m_players_skeleton, bool ) ) {
-			matrix3x4_t bone_matrix[ 128 ]{ };
-			memcpy( bone_matrix, entity->get_cached_bone_data( ).get_elements( ), entity->get_cached_bone_data( ).count( ) * sizeof( matrix3x4_t ) );
+		[ & ]( const bool draw_skeleton ) {
+			if ( !draw_skeleton )
+				return;
 
-			if ( bone_matrix ) {
-				const auto model = client_renderable->get_model( );
-				if ( model ) {
-					const auto studio_model = g_interfaces.m_model_info->get_studio_model( model );
+			if ( GET_VARIABLE( g_variables.m_players_skeleton_type, int ) == 1 && GET_VARIABLE( g_variables.m_backtrack_enable, bool ) ) {
+				auto record = g_lagcomp.oldest_record( entity->get_index( ) );
 
-					if ( studio_model ) {
-						c_vector child_position = { }, parent_position = { };
-						c_vector_2d child_screen_position = { }, parent_screen_position = { };
+				if ( !record.has_value( ) )
+					return;
 
-						c_vector upper_direction = c_vector( bone_matrix[ 7 ][ 0 ][ 3 ], bone_matrix[ 7 ][ 1 ][ 3 ], bone_matrix[ 7 ][ 2 ][ 3 ] ) -
-						                           c_vector( bone_matrix[ 6 ][ 0 ][ 3 ], bone_matrix[ 6 ][ 1 ][ 3 ], bone_matrix[ 6 ][ 2 ][ 3 ] );
-						c_vector breast_bone =
-							c_vector( bone_matrix[ 6 ][ 0 ][ 3 ], bone_matrix[ 6 ][ 1 ][ 3 ], bone_matrix[ 6 ][ 2 ][ 3 ] ) + upper_direction * 0.5f;
+				auto bone_matrix = record.value( ).m_matrix;
 
-						for ( int i = 0; i < studio_model->n_bones; i++ ) {
-							mstudiobone_t* bone = studio_model->get_bone( i );
-							if ( !bone )
-								continue;
+				if ( bone_matrix ) {
+					const auto model = client_renderable->get_model( );
+					if ( model ) {
+						const auto studio_model = g_interfaces.m_model_info->get_studio_model( model );
 
-							if ( bone->m_parent == -1 )
-								continue;
+						if ( studio_model ) {
+							c_vector child_position = { }, parent_position = { };
+							c_vector_2d child_screen_position = { }, parent_screen_position = { };
 
-							if ( !( bone->m_flags & 0x00000100 /* BONE_USED_BY_HITBOX */ ) )
-								continue;
+							c_vector upper_direction =
+								c_vector( bone_matrix[ 7 ][ 0 ][ 3 ], bone_matrix[ 7 ][ 1 ][ 3 ], bone_matrix[ 7 ][ 2 ][ 3 ] ) -
+								c_vector( bone_matrix[ 6 ][ 0 ][ 3 ], bone_matrix[ 6 ][ 1 ][ 3 ], bone_matrix[ 6 ][ 2 ][ 3 ] );
+							c_vector breast_bone = c_vector( bone_matrix[ 6 ][ 0 ][ 3 ], bone_matrix[ 6 ][ 1 ][ 3 ], bone_matrix[ 6 ][ 2 ][ 3 ] ) +
+							                       upper_direction * 0.5f;
 
-							child_position  = c_vector( bone_matrix[ i ][ 0 ][ 3 ], bone_matrix[ i ][ 1 ][ 3 ], bone_matrix[ i ][ 2 ][ 3 ] );
-							parent_position = c_vector( bone_matrix[ bone->m_parent ][ 0 ][ 3 ], bone_matrix[ bone->m_parent ][ 1 ][ 3 ],
-							                            bone_matrix[ bone->m_parent ][ 2 ][ 3 ] );
+							for ( int i = 0; i < studio_model->n_bones; i++ ) {
+								mstudiobone_t* bone = studio_model->get_bone( i );
+								if ( !bone )
+									continue;
 
-							c_vector delta_child  = child_position - breast_bone;
-							c_vector delta_parent = parent_position - breast_bone;
+								if ( bone->m_parent == -1 )
+									continue;
 
-							if ( delta_parent.length( ) < 9.0f && delta_child.length( ) < 9.0f )
-								parent_position = breast_bone;
+								if ( !( bone->m_flags & 0x00000100 /* BONE_USED_BY_HITBOX */ ) )
+									continue;
 
-							if ( i == 5 )
-								child_position = breast_bone;
+								child_position  = c_vector( bone_matrix[ i ][ 0 ][ 3 ], bone_matrix[ i ][ 1 ][ 3 ], bone_matrix[ i ][ 2 ][ 3 ] );
+								parent_position = c_vector( bone_matrix[ bone->m_parent ][ 0 ][ 3 ], bone_matrix[ bone->m_parent ][ 1 ][ 3 ],
+								                            bone_matrix[ bone->m_parent ][ 2 ][ 3 ] );
 
-							if ( fabs( delta_child.m_z ) < 5.0f && delta_parent.length( ) < 5.0f && delta_child.length( ) < 5.0f || i == 6 )
-								continue;
+								c_vector delta_child  = child_position - breast_bone;
+								c_vector delta_parent = parent_position - breast_bone;
 
-							if ( g_render.world_to_screen( child_position, child_screen_position ) &&
-							     g_render.world_to_screen( parent_position, parent_screen_position ) ) {
-								g_render.m_draw_data.emplace_back(
-									e_draw_type::draw_type_line,
-									std::make_any< line_draw_object_t >( child_screen_position, parent_screen_position,
-								                                         GET_VARIABLE( g_variables.m_players_skeleton_color, c_color ).get_u32( ),
-								                                         1.f ) );
+								if ( delta_parent.length( ) < 9.0f && delta_child.length( ) < 9.0f )
+									parent_position = breast_bone;
+
+								if ( i == 5 )
+									child_position = breast_bone;
+
+								if ( fabs( delta_child.m_z ) < 5.0f && delta_parent.length( ) < 5.0f && delta_child.length( ) < 5.0f || i == 6 )
+									continue;
+
+								if ( g_render.world_to_screen( child_position, child_screen_position ) &&
+								     g_render.world_to_screen( parent_position, parent_screen_position ) ) {
+									g_render.m_draw_data.emplace_back(
+										e_draw_type::draw_type_line,
+										std::make_any< line_draw_object_t >( child_screen_position, parent_screen_position,
+									                                         GET_VARIABLE( g_variables.m_players_skeleton_color, c_color ).get_u32( ),
+									                                         1.f ) );
+								}
+							}
+						}
+					}
+				}
+
+			} else {
+				matrix3x4_t bone_matrix[ 128 ]{ };
+
+				memcpy( bone_matrix, entity->get_cached_bone_data( ).get_elements( ),
+				        entity->get_cached_bone_data( ).count( ) * sizeof( matrix3x4_t ) );
+
+				if ( bone_matrix ) {
+					const auto model = client_renderable->get_model( );
+					if ( model ) {
+						const auto studio_model = g_interfaces.m_model_info->get_studio_model( model );
+
+						if ( studio_model ) {
+							c_vector child_position = { }, parent_position = { };
+							c_vector_2d child_screen_position = { }, parent_screen_position = { };
+
+							c_vector upper_direction =
+								c_vector( bone_matrix[ 7 ][ 0 ][ 3 ], bone_matrix[ 7 ][ 1 ][ 3 ], bone_matrix[ 7 ][ 2 ][ 3 ] ) -
+								c_vector( bone_matrix[ 6 ][ 0 ][ 3 ], bone_matrix[ 6 ][ 1 ][ 3 ], bone_matrix[ 6 ][ 2 ][ 3 ] );
+							c_vector breast_bone = c_vector( bone_matrix[ 6 ][ 0 ][ 3 ], bone_matrix[ 6 ][ 1 ][ 3 ], bone_matrix[ 6 ][ 2 ][ 3 ] ) +
+							                       upper_direction * 0.5f;
+
+							for ( int i = 0; i < studio_model->n_bones; i++ ) {
+								mstudiobone_t* bone = studio_model->get_bone( i );
+								if ( !bone )
+									continue;
+
+								if ( bone->m_parent == -1 )
+									continue;
+
+								if ( !( bone->m_flags & 0x00000100 /* BONE_USED_BY_HITBOX */ ) )
+									continue;
+
+								child_position  = c_vector( bone_matrix[ i ][ 0 ][ 3 ], bone_matrix[ i ][ 1 ][ 3 ], bone_matrix[ i ][ 2 ][ 3 ] );
+								parent_position = c_vector( bone_matrix[ bone->m_parent ][ 0 ][ 3 ], bone_matrix[ bone->m_parent ][ 1 ][ 3 ],
+								                            bone_matrix[ bone->m_parent ][ 2 ][ 3 ] );
+
+								c_vector delta_child  = child_position - breast_bone;
+								c_vector delta_parent = parent_position - breast_bone;
+
+								if ( delta_parent.length( ) < 9.0f && delta_child.length( ) < 9.0f )
+									parent_position = breast_bone;
+
+								if ( i == 5 )
+									child_position = breast_bone;
+
+								if ( fabs( delta_child.m_z ) < 5.0f && delta_parent.length( ) < 5.0f && delta_child.length( ) < 5.0f || i == 6 )
+									continue;
+
+								if ( g_render.world_to_screen( child_position, child_screen_position ) &&
+								     g_render.world_to_screen( parent_position, parent_screen_position ) ) {
+									g_render.m_draw_data.emplace_back(
+										e_draw_type::draw_type_line,
+										std::make_any< line_draw_object_t >( child_screen_position, parent_screen_position,
+									                                         GET_VARIABLE( g_variables.m_players_skeleton_color, c_color ).get_u32( ),
+									                                         1.f ) );
+								}
 							}
 						}
 					}
 				}
 			}
-		}
+		}( GET_VARIABLE( g_variables.m_players_skeleton, bool ) );
 
-#ifdef _DEBUG
-		if ( GET_VARIABLE( g_variables.m_debugger_visual, bool ) ) {
+		if ( GET_VARIABLE( g_variables.m_players_backtrack_trail, bool ) ) {
 			if ( const auto record_list = g_lagcomp.m_records[ index ] ) {
 				for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
 					auto record = record_list[ i ];
@@ -148,23 +218,17 @@ void n_players::impl_t::players( )
 					if ( !record.m_valid )
 						continue;
 
-					const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_11 ]->CalcTextSizeA(
-						g_render.m_fonts[ e_font_names::font_name_verdana_11 ]->FontSize, FLT_MAX, 0.f, "x" );
-
 					c_vector_2d out{ };
 
-					if ( !g_render.world_to_screen( entity->get_hitbox_position( 0, record.m_matrix ), out ) )
+					if ( !g_render.world_to_screen( entity->get_hitbox_position( hitbox_head, record.m_matrix ), out ) )
 						continue;
 
 					g_render.m_draw_data.emplace_back(
-						e_draw_type::draw_type_text,
-						std::make_any< text_draw_object_t >( g_render.m_fonts[ e_font_names::font_name_verdana_11 ],
-					                                         c_vector_2d( out.m_x - text_size.x * 0.5f, out.m_y - text_size.y ), "x",
-					                                         GET_VARIABLE( g_variables.m_players_name_color, c_color ).get_u32( ),
-					                                         c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
+						e_draw_type::draw_type_rect,
+						std::make_any< rect_draw_object_t >( out, c_vector_2d( out.m_x + 1, out.m_y + 1 ), ImColor( 1.f, 1.f, 1.f, 1.f ), ImColor( ),
+					                                         true, 0.f, ImDrawFlags_::ImDrawFlags_None, 4.f, e_rect_flags::rect_flag_none ) );
 				}
 			}
 		}
-#endif
 	} );
 }

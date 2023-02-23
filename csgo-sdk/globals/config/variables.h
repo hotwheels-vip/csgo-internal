@@ -46,6 +46,7 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_glow_enable, false );
 		ADD_VARIABLE( c_color, m_glow_vis_color, c_color( 224, 175, 86, 153 ) );
 		ADD_VARIABLE( c_color, m_glow_invis_color, c_color( 114, 155, 221, 153 ) );
+		ADD_VARIABLE( bool, m_players_backtrack_trail, false );
 
 		/* visuals - edicts */
 		ADD_VARIABLE( bool, m_dropped_weapons, false );

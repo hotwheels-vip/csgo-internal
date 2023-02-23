@@ -4,7 +4,7 @@
 
 void n_prediction::impl_t::update( )
 {
-	g_ctx.m_max_allocations = static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
+	g_ctx.m_max_allocations = g_math.time_to_ticks( g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( ) );
 
 	// handle backup data
 	g_prediction.backup_data.m_flags         = g_ctx.m_local->get_flags( );

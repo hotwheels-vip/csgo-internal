@@ -27,18 +27,18 @@ bool n_lagcomp::impl_t::is_valid( n_lagcomp::impl_t::record_t rec )
 
 	float correct = 0.f;
 
+	correct += lerp_time( );
 	correct += net_channel->get_latency( FLOW_OUTGOING );
 	correct += net_channel->get_latency( FLOW_INCOMING );
-	correct += lerp_time( );
 
 	correct = std::clamp( correct, 0.f, g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( ) );
 
-	const float delta_correct = std::fabsf( correct - ( g_interfaces.m_global_vars_base->m_current_time - rec.m_sim_time ) );
+	const float delta_correct = std::fabsf( correct - ( g_math.ticks_to_time( g_ctx.m_local->get_tick_base( ) ) - rec.m_sim_time ) );
 
 	return delta_correct <= 0.2f;
 }
 
-void n_lagcomp::impl_t::on_create_move_pre( )
+void n_lagcomp::impl_t::on_frame_stage_notify( )
 {
 	if ( g_ctx.m_cmd->m_tick_count == 0 )
 		return;
@@ -69,12 +69,12 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 	} );
 
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local )
+		if ( !entity )
 			return;
 
 		const auto index = entity->get_index( );
 
-		if ( !entity ) {
+		if ( !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local ) {
 			if ( this->m_records[ index ] ) {
 				delete[] this->m_records[ index ];
 
@@ -104,7 +104,7 @@ void n_lagcomp::impl_t::on_create_move_pre( )
 		new_record.m_valid      = is_valid( new_record );
 		new_record.m_vec_origin = entity->get_abs_origin( );
 
-		if ( !entity->setup_bones( new_record.m_matrix, 128, 0x0007FF00, 0.f ) )
+		if ( !entity->setup_bones( new_record.m_matrix, 128, 0x00000100 /*BONE_USED_BY_HITBOX*/, g_interfaces.m_global_vars_base->m_current_time ) )
 			return;
 
 		memcpy( &record[ location ], &new_record, sizeof( record_t ) );
@@ -123,8 +123,7 @@ void n_lagcomp::impl_t::backtrack_player( record_t* heap_record )
 	if ( !heap_record )
 		return;
 
-	g_ctx.m_cmd->m_tick_count =
-		static_cast< int >( ( heap_record->m_sim_time + lerp_time( ) ) / g_interfaces.m_global_vars_base->m_interval_per_tick );
+	g_ctx.m_cmd->m_tick_count = g_math.time_to_ticks( heap_record->m_sim_time + lerp_time( ) );
 }
 
 void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
@@ -168,8 +167,28 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 
 	// https://github.com/perilouswithadollarsign/cstrike15_src/blob/master/game/server/player_lagcompensation.cpp#L287
 
-	g_ctx.m_cmd->m_tick_count =
-		static_cast< int >( ( closest_record->m_sim_time + lerp_time( ) ) / g_interfaces.m_global_vars_base->m_interval_per_tick );
+	g_ctx.m_cmd->m_tick_count = g_math.time_to_ticks( closest_record->m_sim_time + lerp_time( ) );
+}
+
+std::optional< n_lagcomp::impl_t::record_t > n_lagcomp::impl_t::oldest_record( const int index )
+{
+	if ( !g_lagcomp.m_records[ index ] )
+		return std::nullopt;
+
+	int last_valid_heap_record   = 0;
+	float lowest_simulation_time = FLT_MAX;
+
+	for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
+		auto current_record = &g_lagcomp.m_records[ index ][ i ];
+
+		if ( !current_record || !current_record->m_valid || current_record->m_sim_time > lowest_simulation_time )
+			continue;
+
+		last_valid_heap_record = i;
+		lowest_simulation_time = current_record->m_sim_time;
+	}
+
+	return std::make_optional( g_lagcomp.m_records[ index ][ last_valid_heap_record ] );
 }
 
 // this code should only be ran if aimbot is off, we should never set tickcount without calculating
@@ -207,7 +226,7 @@ void n_lagcomp::impl_t::on_create_move_post( )
 					if ( float calculated_fov = g_math.calculate_fov( g_ctx.m_cmd->m_view_point, angle ); calculated_fov < current_fov ) {
 						current_fov = calculated_fov;
 
-						best_tick = static_cast< int >( ( record.m_sim_time + lerp_time( ) ) / g_interfaces.m_global_vars_base->m_interval_per_tick );
+						best_tick        = g_math.time_to_ticks( record.m_sim_time + lerp_time( ) );
 						best_logged_tick = i;
 					}
 				}

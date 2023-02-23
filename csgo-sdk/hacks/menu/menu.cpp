@@ -193,6 +193,7 @@ void n_menu::impl_t::on_end_scene( )
 							ImGui::Combo( "skeleton type##player skeleton", &GET_VARIABLE( g_variables.m_players_skeleton_type, int ),
 							              "normal\0lag compensated" );
 						}
+						ImGui::Checkbox( "lag compensated trail", &GET_VARIABLE( g_variables.m_players_backtrack_trail, bool ) );
 					}
 					break;
 				}
