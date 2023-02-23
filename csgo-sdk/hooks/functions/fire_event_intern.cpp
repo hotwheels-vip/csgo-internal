@@ -20,11 +20,13 @@ bool __fastcall n_detoured_functions::fire_event_intern( void* ecx, void* edx, g
 	[ & ]( ) {
 		int m_attacker{ }, m_victim{ }, m_group{ }, m_health{ }, m_damage{ };
 		std::string m_name{ };
+		c_base_entity* m_attacker_ent{ };
 
 		switch ( hashed_event ) {
 		case HASH_BT( "player_hurt" ):
-			m_attacker = g_interfaces.m_engine_client->get_player_for_user_id( game_event->get_int( "attacker" ) );
-			m_victim   = g_interfaces.m_engine_client->get_player_for_user_id( game_event->get_int( "userid" ) );
+			m_attacker     = g_interfaces.m_engine_client->get_player_for_user_id( game_event->get_int( "attacker" ) );
+			m_victim       = g_interfaces.m_engine_client->get_player_for_user_id( game_event->get_int( "userid" ) );
+			m_attacker_ent = g_interfaces.m_client_entity_list->get< c_base_entity >( m_attacker );
 
 			if ( m_attacker < 1 || m_attacker > 64 || m_victim < 1 || m_victim > 64 )
 				return;
@@ -49,10 +51,16 @@ bool __fastcall n_detoured_functions::fire_event_intern( void* ecx, void* edx, g
 			m_health = game_event->get_int( "health" );
 
 			if ( g_config.get< std::vector< bool > >( g_variables.m_log_types )[ e_log_types::log_type_hit_enemy ] ) {
-				std::string out =
-					std::vformat( "hit {} for {} in the {}\n", std::make_format_args( m_name, m_damage, g_utilities.m_hit_groups[ m_group ] ) );
+				g_logger.print(
+					std::vformat( "hit {} for {} in the {}\n", std::make_format_args( m_name, m_damage, g_utilities.m_hit_groups[ m_group ] ) ),
+					"[damage]" );
 
-				g_logger.print( out, "[damage]" );
+				const std::string out =
+					std::vformat( "hit {} | dealt: {}hp | hitgroup: {} | {} health remaining | backtrack: {} ticks\n",
+				                  std::make_format_args( m_name, m_damage, g_utilities.m_hit_groups[ m_group ], m_health,
+				                                         g_ctx.m_record ? g_math.time_to_ticks( std::fabsf( m_attacker_ent->get_simulation_time( ) -
+				                                                                                            g_ctx.m_record->m_sim_time ) )
+				                                                        : 0 ) );
 
 				g_interfaces.m_convar->console_color_printf( accent_color, "[damage] " );
 				g_interfaces.m_convar->console_color_printf( c_unsigned_char_color::console_text_color( ), out.c_str( ) );
