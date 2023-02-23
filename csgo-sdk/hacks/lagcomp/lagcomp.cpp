@@ -123,7 +123,8 @@ void n_lagcomp::impl_t::backtrack_player( record_t* heap_record )
 	if ( !heap_record )
 		return;
 
-	g_ctx.m_cmd->m_tick_count = g_math.time_to_ticks( heap_record->m_sim_time + lerp_time( ) );
+	g_ctx.m_cmd->m_tick_count =
+		static_cast< int >( ( heap_record->m_sim_time + lerp_time( ) ) / g_interfaces.m_global_vars_base->m_interval_per_tick );
 }
 
 void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
@@ -151,11 +152,6 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 			if ( !record_list[ i ].m_valid )
 				continue;
 
-			// https://gitlab.com/KittenPopo/csgo-2018-source/-/blob/main/game/server/player_lagcompensation.cpp#L385
-			c_vector delta = record_list[ i ].m_vec_origin - player->get_abs_origin( );
-			if ( delta.length_squared( ) > LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR )
-				return;
-
 			const auto angle = g_math.calculate_angle( eye_position, player->get_hitbox_position( hitbox_head, record_list[ i ].m_matrix ) );
 
 			if ( float calculated_fov = g_math.calculate_fov( g_ctx.m_cmd->m_view_point, angle ); calculated_fov < current_fov ) {
@@ -172,7 +168,8 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 
 	// https://github.com/perilouswithadollarsign/cstrike15_src/blob/master/game/server/player_lagcompensation.cpp#L287
 
-	g_ctx.m_cmd->m_tick_count = g_math.time_to_ticks( closest_record->m_sim_time + lerp_time( ) );
+	g_ctx.m_cmd->m_tick_count =
+		static_cast< int >( ( closest_record->m_sim_time + lerp_time( ) ) / g_interfaces.m_global_vars_base->m_interval_per_tick );
 }
 
 // this code should only be ran if aimbot is off, we should never set tickcount without calculating

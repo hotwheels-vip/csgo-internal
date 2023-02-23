@@ -141,40 +141,29 @@ void n_players::impl_t::players( )
 
 #ifdef _DEBUG
 		if ( GET_VARIABLE( g_variables.m_debugger_visual, bool ) ) {
-			matrix3x4_t bone_matrix[ 128 ]{ };
-			memcpy( bone_matrix, entity->get_cached_bone_data( ).get_elements( ), entity->get_cached_bone_data( ).count( ) * sizeof( matrix3x4_t ) );
+			if ( const auto record_list = g_lagcomp.m_records[ index ] ) {
+				for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
+					auto record = record_list[ i ];
 
-			// if ( const auto record_list = g_lagcomp.m_records[ index ] ) {
-			//	for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
-			//		auto record = record_list[ i ];
-			//
-			//		if ( !record.m_valid )
-			//			continue;
-
-			if ( bone_matrix ) {
-				for ( int j = 0; j < 19; j++ ) {
-					// entity->get_hitbox_position( j, record.m_matrix )
-
-					const std::string hitbox_index = std::to_string( j );
+					if ( !record.m_valid )
+						continue;
 
 					const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_11 ]->CalcTextSizeA(
-						g_render.m_fonts[ e_font_names::font_name_verdana_11 ]->FontSize, FLT_MAX, 0.f, hitbox_index.c_str( ) );
+						g_render.m_fonts[ e_font_names::font_name_verdana_11 ]->FontSize, FLT_MAX, 0.f, "x" );
 
 					c_vector_2d out{ };
 
-					if ( !g_render.world_to_screen( entity->get_hitbox_position( j, bone_matrix ), out ) )
+					if ( !g_render.world_to_screen( entity->get_hitbox_position( 0, record.m_matrix ), out ) )
 						continue;
 
 					g_render.m_draw_data.emplace_back(
 						e_draw_type::draw_type_text,
 						std::make_any< text_draw_object_t >( g_render.m_fonts[ e_font_names::font_name_verdana_11 ],
-					                                         c_vector_2d( out.m_x - text_size.x * 0.5f, out.m_y - text_size.y ), hitbox_index,
+					                                         c_vector_2d( out.m_x - text_size.x * 0.5f, out.m_y - text_size.y ), "x",
 					                                         GET_VARIABLE( g_variables.m_players_name_color, c_color ).get_u32( ),
 					                                         c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
 				}
 			}
-			//	}
-			//}
 		}
 #endif
 	} );
