@@ -76,6 +76,26 @@ float n_math::impl_t::calculate_fov( const c_angle& view_point, const c_angle& a
 	return rad2deg( acos( forward_aim_angles.dot_product( forward_angles ) / forward_aim_angles.length_squared( ) ) );
 }
 
+c_vector n_math::impl_t::vector_angle( const c_vector vector )
+{
+	c_vector ret{ };
+	if ( vector.m_x == 0.0f && vector.m_y == 0.0f ) {
+		ret.m_x = ( vector.m_z > 0.0f ) ? 270.0f : 90.0f;
+		ret.m_y = 0.0f;
+	} else {
+		ret.m_x = rad2deg( std::atan2f( -vector.m_z, vector.length_2d( ) ) );
+		ret.m_y = rad2deg( std::atan2f( vector.m_y, vector.m_x ) );
+
+		if ( ret.m_y < 0.0f )
+			ret.m_y += 360.0f;
+
+		if ( ret.m_x < 0.0f )
+			ret.m_x += 360.0f;
+	}
+	ret.m_z = 0.0f;
+	return ret;
+}
+
 void n_math::impl_t::vector_angles( const c_vector& forward, c_angle& view )
 {
 	float pitch{ }, yaw{ };

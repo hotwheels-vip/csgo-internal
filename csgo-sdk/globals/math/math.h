@@ -28,6 +28,8 @@ namespace n_math
 
 		float calculate_fov( const c_angle& view_point, const c_angle& aim_angle );
 
+		c_vector vector_angle( const c_vector vector );
+
 		void vector_angles( const c_vector& forward, c_angle& view );
 
 		c_vector vector_transform( const c_vector& transform, const matrix3x4_t& matrix );

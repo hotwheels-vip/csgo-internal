@@ -26,6 +26,7 @@
 #define SERVER_DLL              HASH_BT( "server.dll" )
 #define SERVERBROWSER_DLL       HASH_BT( "serverbrowser.dll" )
 #define FILESYSTEM_DLL          HASH_BT( "filesystem_stdio.dll" )
+#define PANORAMA_DLL            HASH_BT( "panorama.dll" )
 
 #define EVENT_DEBUG_ID_INIT     42
 #define EVENT_DEBUG_ID_SHUTDOWN 13

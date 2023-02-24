@@ -1,5 +1,6 @@
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/logger/logger.h"
+#include "../../hacks/misc/scaleform/scaleform.h"
 #include "../hooks.h"
 
 bool __fastcall n_detoured_functions::fire_event_intern( void* ecx, void* edx, game_event_t* game_event )
@@ -23,6 +24,12 @@ bool __fastcall n_detoured_functions::fire_event_intern( void* ecx, void* edx, g
 		c_base_entity* m_attacker_ent{ };
 
 		switch ( hashed_event ) {
+		case HASH_BT( "round_end" ):
+			g_scaleform.m_should_update_winpanel = true;
+			break;
+		case HASH_BT( "player_death" ):
+			g_scaleform.m_should_update_deathnotices = true;
+			break;
 		case HASH_BT( "player_hurt" ):
 			m_attacker     = g_interfaces.m_engine_client->get_player_for_user_id( game_event->get_int( "attacker" ) );
 			m_victim       = g_interfaces.m_engine_client->get_player_for_user_id( game_event->get_int( "userid" ) );

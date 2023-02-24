@@ -14,13 +14,20 @@ namespace n_misc
 			c_angle saved_angles    = { };
 			c_vector saved_position = { };
 		} practice;
+
 		void on_create_move_pre( );
+
 		void on_end_scene( );
+
+		void on_paint_traverse( );
 
 	private:
 		void practice_window_think( );
 		void disable_post_processing( );
 		void remove_panorama_blur( );
+
+		void draw_spectator_list( );
+		void draw_spectating_local( );
 	};
 } // namespace n_misc
 

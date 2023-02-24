@@ -5,6 +5,7 @@
 
 #include "../../hacks/debug/debug.h"
 #include "../../hacks/indicators/indicators.h"
+#include "../../hacks/misc/misc.h"
 #include "../../hacks/visuals/edicts/edicts.h"
 #include "../../hacks/visuals/players/players.h"
 
@@ -30,6 +31,8 @@ void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsi
 		if ( g_render.m_initialised ) {
 			g_ctx.m_low_fps = static_cast< int >( ImGui::GetIO( ).Framerate + 0.5f ) <
 			                  static_cast< int >( 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick );
+
+			g_misc.on_paint_traverse( );
 
 			g_logger.on_paint_traverse( );
 

@@ -348,15 +348,7 @@ void n_movement::impl_t::pixel_surf_locking( float target_ps_velocity )
 			g_ctx.m_cmd->m_side_move    = g_movement.m_pixelsurf_data.m_simulated_cmd->m_side_move;
 			g_ctx.m_cmd->m_forward_move = g_movement.m_pixelsurf_data.m_simulated_cmd->m_forward_move;
 
-			const c_vector movement = { g_ctx.m_cmd->m_forward_move, g_ctx.m_cmd->m_side_move, 0 };
-			c_angle movement_angle{ };
-			g_math.vector_angles( movement, movement_angle );
-
-			const float rotation =
-				deg2rad( g_ctx.m_cmd->m_view_point.m_y - g_movement.m_pixelsurf_data.m_simulated_cmd->m_view_point.m_y + movement_angle.m_y );
-
-			g_ctx.m_cmd->m_forward_move = std::cosf( rotation ) * movement.length_2d( );
-			g_ctx.m_cmd->m_side_move    = std::sinf( rotation ) * movement.length_2d( );
+			g_movement.rotate_movement( g_ctx.m_cmd, g_movement.m_pixelsurf_data.m_simulated_cmd->m_view_point );
 		}
 
 		if ( g_movement.m_pixelsurf_data.m_should_duck )
@@ -464,16 +456,19 @@ void n_movement::impl_t::jump_bug( )
 	}
 }
 
-void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, const c_angle& ang )
+void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, c_angle& angle )
 {
-	c_vector vec_move = c_vector( cmd->m_forward_move, cmd->m_side_move, 0.f );
+	if ( angle.m_x == 0 && angle.m_y == 0 && angle.m_z == 0 )
+		g_interfaces.m_engine_client->get_view_angles( angle );
 
-	const float speed = vec_move.length_2d( );
+	const c_vector movement = { cmd->m_forward_move, cmd->m_side_move, 0 };
 
-	const float rotation = deg2rad( cmd->m_view_point.m_y - ang.m_y );
+	const c_vector angle_movement = g_math.vector_angle( movement );
 
-	cmd->m_forward_move = std::cosf( rotation ) * speed;
-	cmd->m_side_move    = std::sinf( rotation ) * speed;
+	const float rotation = deg2rad( cmd->m_view_point.m_y - angle.m_y + angle_movement.m_y );
+
+	cmd->m_forward_move = std::cosf( rotation ) * movement.length_2d( );
+	cmd->m_side_move    = std::sinf( rotation ) * movement.length_2d( );
 }
 
 void n_movement::impl_t::auto_align( c_user_cmd* cmd )
@@ -573,6 +568,11 @@ void n_movement::impl_t::strafe_to_yaw( c_user_cmd* cmd, c_angle& angle, const f
 void n_movement::impl_t::on_frame_stage_notify( int stage )
 {
 	if ( !g_movement.m_edgebug_data.m_will_edgebug || !g_movement.m_edgebug_data.m_strafing || stage != e_client_frame_stage::start )
+		return;
+
+	const auto move_type = g_prediction.backup_data.m_move_type;
+	if ( move_type == e_move_types::move_type_ladder || move_type == e_move_types::move_type_noclip || move_type == e_move_types::move_type_fly ||
+	     move_type == e_move_types::move_type_observer )
 		return;
 
 	float final_yaw{ };

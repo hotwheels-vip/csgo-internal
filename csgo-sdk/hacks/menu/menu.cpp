@@ -448,28 +448,27 @@ void n_menu::impl_t::on_end_scene( )
 					 true, 0, true ) ) {
 				ImGui::Checkbox( "spectator list", &GET_VARIABLE( g_variables.m_spectators_list, bool ) );
 
-				ImGui::ColorEdit4( "##spectator list text color one", &GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ),
-				                   color_picker_alpha_flags );
+				if ( GET_VARIABLE( g_variables.m_spectators_list, bool ) ) {
+					ImGui::ColorEdit4( "##spectator list text color one", &GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ),
+					                   color_picker_alpha_flags );
 
-				ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+					if ( GET_VARIABLE( g_variables.m_spectators_list_type, int ) == 0 ) {
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
-				ImGui::ColorEdit4( "##spectator list text color two", &GET_VARIABLE( g_variables.m_spectators_list_text_color_two, c_color ),
-				                   color_picker_alpha_flags );
+						ImGui::ColorEdit4( "##spectator list text color two", &GET_VARIABLE( g_variables.m_spectators_list_text_color_two, c_color ),
+						                   color_picker_alpha_flags );
+					}
 
-				ImGui::Checkbox( "practice window", &GET_VARIABLE( g_variables.m_practice_window, bool ) );
-				if ( GET_VARIABLE( g_variables.m_practice_window, bool ) ) {
-					ImGui::Text( "practice checkpoint key" );
-					ImGui::Keybind( "practice checkpoint key", &GET_VARIABLE( g_variables.m_practice_cp_key, key_bind_t ) );
-					ImGui::Text( "practice teleport key" );
-					ImGui::Keybind( "practice teleport key", &GET_VARIABLE( g_variables.m_practice_tp_key, key_bind_t ) );
+					ImGui::Combo( "listed players", &GET_VARIABLE( g_variables.m_spectators_list_type, int ), "all spectators\0local spectators" );
 				}
-
 				// TODO: combobox between force crosshair and just draw a white dot
 				ImGui::Checkbox( "sniper crosshair", &GET_VARIABLE( g_variables.m_sniper_crosshair, bool ) );
 
 				ImGui::MultiCombo( "displayed logs", g_config.get< std::vector< bool > >( g_variables.m_log_types ),
 				                   { "damage", "team damage", "purchase", "votes" },
 				                   g_config.get< std::vector< bool > >( g_variables.m_log_types ).size( ) );
+
+				ImGui::Checkbox( "scaleform", &GET_VARIABLE( g_variables.m_scaleform, bool ) );
 
 				ImGui::EndChild( );
 			}
@@ -478,11 +477,28 @@ void n_menu::impl_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			if ( ImGui::BeginChild( ( "exploits" ),
-			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2 ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
 				ImGui::EndChild( );
 			}
-			break;
+			ImGui::SameLine( );
+			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
+
+			static int other_subtab_number = 0;
+			if ( ImGui::BeginChild( ( "offline" ),
+			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+			                        true, 0, true ) ) {
+				ImGui::Checkbox( "practice window", &GET_VARIABLE( g_variables.m_practice_window, bool ) );
+				if ( GET_VARIABLE( g_variables.m_practice_window, bool ) ) {
+					ImGui::Text( "practice checkpoint key" );
+					ImGui::Keybind( "practice checkpoint key", &GET_VARIABLE( g_variables.m_practice_cp_key, key_bind_t ) );
+					ImGui::Text( "practice teleport key" );
+					ImGui::Keybind( "practice teleport key", &GET_VARIABLE( g_variables.m_practice_tp_key, key_bind_t ) );
+				}
+
+				ImGui::EndChild( );
+				break;
+			}
 		}
 		case 5: /* settings */
 		{

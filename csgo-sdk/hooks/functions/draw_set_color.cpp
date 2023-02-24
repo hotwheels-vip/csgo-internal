@@ -1,5 +1,6 @@
 #include "../../globals/globals.h"
 #include "../../globals/interfaces/interfaces.h"
+#include "../../utilities/console/console.h"
 #include "../hooks.h"
 
 void __stdcall n_detoured_functions::draw_set_color( int r, int g, int b, int a )

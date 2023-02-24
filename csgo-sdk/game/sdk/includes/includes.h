@@ -45,6 +45,9 @@
 #include "../classes/c_weapon_system.h"
 #include "../classes/entity.h"
 
+// panorama
+#include "../classes/panorama/c_panoramauiengine.h"
+
 #include "../structs/bounding_box_t.h"
 #include "../structs/data_map_t.h"
 #include "../structs/data_variant_t.h"
@@ -73,6 +76,7 @@
 #include "../enums/e_material_var_flags.h"
 #include "../enums/e_move_type.h"
 #include "../enums/e_move_types.h"
+#include "../enums/e_obs_mode.h"
 #include "../enums/e_preview_image_ret_val.h"
 #include "../enums/e_send_prop_type.h"
 #include "../enums/e_weapon_type.h"

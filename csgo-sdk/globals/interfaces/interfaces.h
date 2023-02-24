@@ -21,7 +21,7 @@ class c_localize;
 class c_panel;
 class c_physics_collison;
 class c_studio_render;
-
+class c_panoramauiengine;
 class c_key_values_system;
 class c_global_vars_base;
 class c_weapon_system;
@@ -64,6 +64,7 @@ namespace n_interfaces
 		c_input* m_input                           = nullptr;
 		c_move_helper* m_move_helper               = nullptr;
 		IDirect3DDevice9* m_direct_device          = nullptr;
+		c_panoramauiengine* m_panorama             = nullptr;
 	};
 } // namespace n_interfaces
 

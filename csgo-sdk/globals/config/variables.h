@@ -139,6 +139,8 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_spectators_list, false );
 		ADD_VARIABLE( c_color, m_spectators_list_text_color_one, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_spectators_list_text_color_two, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( int, m_spectators_list_type, 0 );
+		ADD_VARIABLE( bool, m_scaleform, false );
 
 		ADD_VARIABLE( bool, m_sniper_crosshair, false );
 

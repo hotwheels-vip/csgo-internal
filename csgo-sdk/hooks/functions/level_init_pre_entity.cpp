@@ -3,6 +3,7 @@
 #include "../hooks.h"
 
 #include "../../hacks/entity_cache/entity_cache.h"
+#include "../../hacks/misc/scaleform/scaleform.h"
 #include "../../hacks/visuals/edicts/edicts.h"
 
 void __stdcall n_detoured_functions::level_init_pre_entity( const char* map_name )
@@ -15,6 +16,9 @@ void __stdcall n_detoured_functions::level_init_pre_entity( const char* map_name
 	const float rate = 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick;
 	g_convars[ HASH_BT( "cl_updaterate" ) ]->set_value( rate );
 	g_convars[ HASH_BT( "cl_cmdrate" ) ]->set_value( rate );
+
+	// MOVE TO POST ENTITY
+	g_scaleform.on_level_init( );
 
 	return original( map_name );
 }

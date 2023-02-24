@@ -68,6 +68,7 @@
     <ClCompile Include="hooks\functions\fire_event_intern.cpp" />
     <ClCompile Include="hooks\functions\net_earliertempents.cpp" />
     <ClCompile Include="hooks\functions\draw_set_color.cpp" />
+    <ClCompile Include="hacks\misc\scaleform\scaleform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -241,6 +242,12 @@
     <ClInclude Include="globals\logger\logger.h" />
     <ClInclude Include="hacks\debug\debug.h" />
     <ClInclude Include="game\sdk\structs\game_event_t.h" />
+    <ClInclude Include="game\sdk\enums\e_obs_mode.h" />
+    <ClInclude Include="game\sdk\classes\panorama\panorama.h" />
+    <ClInclude Include="game\sdk\classes\panorama\c_uipanel.h" />
+    <ClInclude Include="game\sdk\classes\panorama\c_uievent.h" />
+    <ClInclude Include="game\sdk\classes\panorama\c_panoramauiengine.h" />
+    <ClInclude Include="hacks\misc\scaleform\scaleform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

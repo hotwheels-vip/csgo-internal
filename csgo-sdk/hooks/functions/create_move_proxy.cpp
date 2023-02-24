@@ -5,6 +5,7 @@
 #include "../../hacks/aimbot/aimbot.h"
 #include "../../hacks/lagcomp/lagcomp.h"
 #include "../../hacks/misc/misc.h"
+#include "../../hacks/misc/scaleform/scaleform.h"
 #include "../../hacks/movement/movement.h"
 #include "../../hacks/prediction/prediction.h"
 
@@ -26,6 +27,8 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	g_ctx.m_local = local;
 
 	g_prediction.update( );
+
+	g_scaleform.on_createmove( );
 
 	[ & ]( ) {
 		if ( !g_ctx.m_local || !g_ctx.m_local->is_alive( ) || !g_ctx.m_cmd || g_ctx.m_local->get_observer_mode( ) == 1 /*DEATH_CAM*/ ) {

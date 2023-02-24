@@ -29,7 +29,7 @@ namespace n_logger
 		void on_paint_traverse( )
 		{
 			// you can change this if u want
-			int m_x = 10, m_y = 5, m_size = 15;
+			int m_x = 10, m_y = g_ctx.m_last_spectators_y, m_size = 15;
 
 			float m_time_left{ };
 

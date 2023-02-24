@@ -1,0 +1,11 @@
+#pragma once
+
+enum e_obs_mode : int {
+	OBS_MODE_NONE = 0,
+	OBS_MODE_DEATHCAM,
+	OBS_MODE_FREEZECAM,
+	OBS_MODE_FIXED,
+	OBS_MODE_IN_EYE,
+	OBS_MODE_CHASE,
+	OBS_MODE_ROAMING
+};
