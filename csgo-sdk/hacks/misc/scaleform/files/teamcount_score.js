@@ -2,6 +2,7 @@ R"(
 // Teamcount (only score style)
 var hudTeamCounter = contextPanel.FindChildTraverse('HudTeamCounter');
 hudTeamCounter.style.height = '100%';
+
 var aliveTextT = hudTeamCounter.FindChildTraverse('AliveTextT');
 var aliveTextCT = hudTeamCounter.FindChildTraverse('AliveTextCT');
 
@@ -17,14 +18,23 @@ aliveTextT.style.letterSpacing = '0px';
 aliveTextCT.style.marginBottom = '-2px';
 aliveTextT.style.marginBottom = '-2px';
 
-aliveTextT.style.textShadow = '2px 1px 1px 0.0 #000000';
-aliveTextCT.style.textShadow = '2px 1px 1px 0.0 #000000';
+aliveTextCT.style.marginTop = '-1px';
+aliveTextT.style.marginTop = '-1px';
+
+aliveTextT.style.textShadow = '1px 1px 1px 2.0 #000000';
+aliveTextCT.style.textShadow = '1px 1px 1px 2.0 #000000';
 
 aliveTextT.style.fontFamily = 'Stratum2';
 aliveTextCT.style.fontFamily = 'Stratum2';
 
 aliveTextT.style.color = '#483a2a';
 aliveTextCT.style.color = '#454b51';
+
+aliveTextT.style.opacity = '0.57';
+aliveTextCT.style.opacity = '0.57';
+
+aliveTextCT.style.horizontalAlign = 'center';
+aliveTextT.style.horizontalAlign = 'center';
 
 var winsT = hudTeamCounter.FindChildTraverse('ScoreT');
 var winsCT = hudTeamCounter.FindChildTraverse('ScoreCT');
@@ -50,7 +60,9 @@ timer.style.verticalAlign = 'middle';
 timer.style.textAlign = 'center';
 timer.style.fontWeight = 'bold';
 timer.style.fontSize = '28px';
-timer.style.letterSpacing = '-2px';
+timer.style.letterSpacing = '-2.5px';
+timer.style.width = '100%';
+timer.style.height = '100%';
 //timer.style.color = 'white';
 timer.style.S2MixBlendMode = 'SRGBadditive';
 for (var tAlive of contextPanel.FindChildTraverse('HudTeamCounter').FindChildrenWithClassTraverse('TeamCounter__AliveT')) {
