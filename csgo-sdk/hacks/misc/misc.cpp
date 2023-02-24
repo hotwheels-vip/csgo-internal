@@ -155,10 +155,8 @@ void n_misc::impl_t::on_end_scene( )
 	}( GET_VARIABLE( g_variables.m_practice_window, bool ) );
 
 	[ & ]( bool can_draw_spectator_list, int type ) {
-		if ( !can_draw_spectator_list && type != 0 /*list all spectated players*/ )
-			return;
-
-		draw_spectator_list( );
+		if ( type == 0 && can_draw_spectator_list )
+			draw_spectator_list( );
 	}( GET_VARIABLE( g_variables.m_spectators_list, bool ), GET_VARIABLE( g_variables.m_spectators_list_type, int ) );
 }
 
@@ -234,7 +232,7 @@ void n_misc::impl_t::draw_spectating_local( )
 		case e_obs_mode::OBS_MODE_FREEZECAM:
 			return "freezecam";
 		case e_obs_mode::OBS_MODE_IN_EYE:
-			return "in eye";
+			return "first person";
 		case e_obs_mode::OBS_MODE_CHASE:
 			return "3rd person";
 		case e_obs_mode::OBS_MODE_ROAMING:

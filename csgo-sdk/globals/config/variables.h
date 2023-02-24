@@ -46,8 +46,17 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_players_box_outline, false );
 		ADD_VARIABLE( c_color, m_players_box_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( c_color, m_players_box_outline_color, c_color( 0, 0, 0, 255 ) );
+		ADD_VARIABLE( bool, m_players_health_bar, false );
+		ADD_VARIABLE( bool, m_players_health_bar_custom_color, false );
+		ADD_VARIABLE( c_color, m_players_health_bar_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_players_name, false );
 		ADD_VARIABLE( c_color, m_players_name_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( bool, m_weapon_name, false );
+		ADD_VARIABLE( c_color, m_weapon_name_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( bool, m_weapon_icon, false );
+		ADD_VARIABLE( c_color, m_weapon_icon_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( bool, m_player_ammo_bar, false );
+		ADD_VARIABLE( c_color, m_player_ammo_bar_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_players_skeleton, false );
 		ADD_VARIABLE( c_color, m_players_skeleton_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( int, m_players_skeleton_type, 0 );
@@ -55,6 +64,7 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_glow_vis_color, c_color( 224, 175, 86, 153 ) );
 		ADD_VARIABLE( c_color, m_glow_invis_color, c_color( 114, 155, 221, 153 ) );
 		ADD_VARIABLE( bool, m_players_backtrack_trail, false );
+
 
 		/* visuals - edicts */
 		ADD_VARIABLE( bool, m_dropped_weapons, false );

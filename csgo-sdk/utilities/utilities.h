@@ -11,6 +11,8 @@ namespace n_utilities
 
 		bool is_weapon_valid( );
 
+		const char8_t* get_weapon_icon( short item_definition_index );
+
 		int create_thread( unsigned long __stdcall function( void* ), void* parameter );
 		template< typename T >
 		// is V inside lst, example of usage:

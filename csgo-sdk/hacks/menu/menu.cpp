@@ -187,6 +187,29 @@ void n_menu::impl_t::on_end_scene( )
 							ImGui::ColorEdit4( "##player name color", &GET_VARIABLE( g_variables.m_players_name_color, c_color ),
 							                   color_picker_alpha_flags );
 
+						ImGui::Checkbox( "health bar##player", &GET_VARIABLE( g_variables.m_players_health_bar, bool ) );
+						if ( GET_VARIABLE( g_variables.m_players_health_bar, bool ) ) {
+							ImGui::SetCursorPosX( 26.f );
+							ImGui::Checkbox( "custom health bar color", &GET_VARIABLE( g_variables.m_players_health_bar_custom_color, bool ) );
+							ImGui::ColorEdit4( "##health bar color", &GET_VARIABLE( g_variables.m_players_health_bar_color, c_color ),
+							                   color_picker_alpha_flags );
+						}
+
+						ImGui::Checkbox( "weapon name##player", &GET_VARIABLE( g_variables.m_weapon_name, bool ) );
+						if ( GET_VARIABLE( g_variables.m_weapon_name, bool ) )
+							ImGui::ColorEdit4( "##weapon name color", &GET_VARIABLE( g_variables.m_weapon_name_color, c_color ),
+							                   color_picker_alpha_flags );
+
+						ImGui::Checkbox( "weapon icon##player", &GET_VARIABLE( g_variables.m_weapon_icon, bool ) );
+						if ( GET_VARIABLE( g_variables.m_weapon_icon, bool ) )
+							ImGui::ColorEdit4( "##weapon icon color", &GET_VARIABLE( g_variables.m_weapon_icon_color, c_color ),
+							                   color_picker_alpha_flags );
+
+						ImGui::Checkbox( "weapon ammo bar##player", &GET_VARIABLE( g_variables.m_player_ammo_bar, bool ) );
+						if ( GET_VARIABLE( g_variables.m_player_ammo_bar, bool ) )
+							ImGui::ColorEdit4( "##weapon icon color", &GET_VARIABLE( g_variables.m_player_ammo_bar_color, c_color ),
+							                   color_picker_alpha_flags );
+
 						ImGui::Checkbox( "player skeleton", &GET_VARIABLE( g_variables.m_players_skeleton, bool ) );
 						if ( GET_VARIABLE( g_variables.m_players_skeleton, bool ) ) {
 							ImGui::ColorEdit4( "##player skeleton color", &GET_VARIABLE( g_variables.m_players_skeleton_color, c_color ),

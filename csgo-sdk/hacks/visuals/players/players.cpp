@@ -39,6 +39,8 @@ void n_players::impl_t::players( )
 		if ( !g_interfaces.m_engine_client->get_player_info( index, &player_info ) )
 			return;
 
+		float padding[ e_padding_direction::padding_direction_max ] = { 0.f, 0.f, 0.f, 0.f };
+
 		if ( GET_VARIABLE( g_variables.m_players_box, bool ) ) {
 			if ( !GET_VARIABLE( g_variables.m_players_box_corner, bool ) )
 				g_render.m_draw_data.emplace_back(
@@ -78,6 +80,133 @@ void n_players::impl_t::players( )
 			                                         c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ),
 			                                         converted_name, GET_VARIABLE( g_variables.m_players_name_color, c_color ).get_u32( ),
 			                                         c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
+		}
+
+		const auto active_weapon = reinterpret_cast< c_base_entity* >(
+			g_interfaces.m_client_entity_list->get_client_entity_from_handle( entity->get_active_weapon_handle( ) ) );
+		if ( active_weapon )
+			this->m_backup_player_data[ index ].m_active_weapon = active_weapon;
+
+		if ( this->m_backup_player_data[ index ].m_active_weapon ) {
+			const auto item_definition_index = this->m_backup_player_data[ index ].m_active_weapon->get_item_definition_index( );
+			const auto weapon_data           = g_interfaces.m_weapon_system->get_weapon_data( item_definition_index );
+
+			if ( weapon_data )
+				this->m_backup_player_data[ index ].m_weapon_data = weapon_data;
+
+			if ( this->m_backup_player_data[ index ].m_weapon_data ) {
+				[ & ]( ) {
+					if ( GET_VARIABLE( g_variables.m_player_ammo_bar, bool ) ) {
+						if ( !this->m_backup_player_data[ index ].m_weapon_data->is_gun( ) )
+							return;
+
+						const float ammo = static_cast< float >( this->m_backup_player_data[ index ].m_active_weapon->get_ammo( ) );
+
+						if ( this->m_backup_player_data[ index ].m_ammo > ammo )
+							this->m_backup_player_data[ index ].m_ammo -= ( 2.f * g_interfaces.m_global_vars_base->m_frame_time );
+						else
+							this->m_backup_player_data[ index ].m_ammo = ammo;
+
+						const int max_ammo = this->m_backup_player_data[ index ].m_weapon_data->m_max_clip1;
+
+						float factor = this->m_backup_player_data[ index ].m_ammo / static_cast< float >( max_ammo );
+						factor       = std::clamp< float >( factor, 0.f, 1.f );
+
+						g_render.m_draw_data.emplace_back(
+							e_draw_type::draw_type_rect,
+							std::make_any< rect_draw_object_t >( c_vector_2d( box.m_left, box.m_bottom + 3.f ),
+						                                         c_vector_2d( box.m_left + box.m_width, box.m_bottom + 5.f ),
+						                                         ImColor( 0.f, 0.f, 0.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 1.f ), false, 0.f,
+						                                         ImDrawFlags_::ImDrawFlags_None, 1.f, rect_flag_outer_outline ) );
+
+						g_render.m_draw_data.emplace_back(
+							e_draw_type::draw_type_rect,
+							std::make_any< rect_draw_object_t >(
+								c_vector_2d( box.m_left, box.m_bottom + 3.f ), c_vector_2d( box.m_left + box.m_width * factor, box.m_bottom + 5.f ),
+								GET_VARIABLE( g_variables.m_player_ammo_bar_color, c_color ).get_u32( 1.f ), ImColor( 0.f, 0.f, 0.f, 1.f ), false,
+								0.f, ImDrawFlags_::ImDrawFlags_None, 1.f, rect_flag_outer_outline ) );
+
+						padding[ e_padding_direction::padding_direction_bottom ] += 6.f;
+					};
+				}( );
+
+				[ & ]( ) {
+					if ( GET_VARIABLE( g_variables.m_weapon_name, bool ) ) {
+						const auto localized_name = g_interfaces.m_localize->find( this->m_backup_player_data[ index ].m_weapon_data->m_hud_name );
+
+						std::wstring w = localized_name;
+						if ( w.empty( ) )
+							return;
+
+						std::transform( w.begin( ), w.end( ), w.begin( ), ::towlower );
+
+						const std::string converted_name( w.begin( ), w.end( ) );
+						if ( converted_name.empty( ) )
+							return;
+
+						const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+							g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, converted_name.c_str( ) );
+
+						g_render.m_draw_data.emplace_back(
+							e_draw_type::draw_type_text,
+							std::make_any< text_draw_object_t >(
+								g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
+								c_vector_2d( box.m_left + ( box.m_width - text_size.x ) / 2,
+						                     box.m_bottom + 2 + padding[ e_padding_direction::padding_direction_bottom ] ),
+								converted_name, GET_VARIABLE( g_variables.m_weapon_name_color, c_color ).get_u32( 1.f ),
+								ImColor( 0.f, 0.f, 0.f, 1.f ), text_flag_dropshadow ) );
+
+						padding[ e_padding_direction::padding_direction_bottom ] += ( text_size.y + 1.f );
+					}
+				}( );
+
+				if ( GET_VARIABLE( g_variables.m_weapon_icon, bool ) ) {
+					if ( !( item_definition_index == e_item_definition_index::weapon_shield ||
+					        item_definition_index == e_item_definition_index::weapon_breachcharge ||
+					        item_definition_index == e_item_definition_index::weapon_bumpmine ) ) {
+						const auto text      = reinterpret_cast< const char* >( g_utilities.get_weapon_icon( item_definition_index ) );
+						const auto text_size = g_render.m_fonts[ e_font_names::font_name_icon_12 ]->CalcTextSizeA(
+							g_render.m_fonts[ e_font_names::font_name_icon_12 ]->FontSize, FLT_MAX, 0.f, text );
+
+						g_render.m_draw_data.emplace_back(
+							e_draw_type::draw_type_text,
+							std::make_any< text_draw_object_t >(
+								g_render.m_fonts[ e_font_names::font_name_icon_12 ],
+								c_vector_2d( box.m_left + ( box.m_width - text_size.x ) / 2,
+						                     box.m_bottom + 2 + padding[ e_padding_direction::padding_direction_bottom ] ),
+								text, GET_VARIABLE( g_variables.m_weapon_icon_color, c_color ).get_u32( 1.f ), ImColor( 0.f, 0.f, 0.f, 1.f ),
+								text_flag_dropshadow ) );
+					}
+				}
+			}
+		}
+
+		if ( GET_VARIABLE( g_variables.m_players_health_bar, bool ) ) {
+			if ( this->m_backup_player_data[ index ].m_health > entity->get_health( ) )
+				this->m_backup_player_data[ index ].m_health -=
+					( 100.f *
+				      g_interfaces.m_global_vars_base->m_frame_time ) /* NOTE ~ float ~ cannot use the variable delta_time as it is too slow. */;
+			else
+				this->m_backup_player_data[ index ].m_health = entity->get_health( );
+
+			const float factor = static_cast< float >( this->m_backup_player_data[ index ].m_health ) / entity->get_max_health( );
+			const float hue    = ( factor * 120.f ) / 360.f;
+
+			g_render.m_draw_data.emplace_back( e_draw_type::draw_type_rect,
+			                                   std::make_any< rect_draw_object_t >( c_vector_2d( box.m_left - 5.f, box.m_bottom - box.m_height ),
+			                                                                        c_vector_2d( box.m_left - 3.f, box.m_bottom ),
+			                                                                        ImColor( 0.f, 0.f, 0.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 1.f ),
+			                                                                        false, 0.f, ImDrawFlags_::ImDrawFlags_None, 1.f,
+			                                                                        e_rect_flags::rect_flag_outer_outline ) );
+
+			g_render.m_draw_data.emplace_back(
+				e_draw_type::draw_type_rect,
+				std::make_any< rect_draw_object_t >(
+					c_vector_2d( box.m_left - 5.f, box.m_bottom - ( box.m_height * factor ) ), c_vector_2d( box.m_left - 3.f, box.m_bottom ),
+					GET_VARIABLE( g_variables.m_players_health_bar_custom_color, bool )
+						? GET_VARIABLE( g_variables.m_players_health_bar_color, c_color ).get_u32( 1.f )
+						: c_color::from_hsb( hue, 1.f, 1.f, 1.f ).get_u32( ),
+					ImColor( 0.f, 0.f, 0.f, 1.f ), false, 0.f, ImDrawFlags_::ImDrawFlags_None, 1.f, e_rect_flags::rect_flag_outer_outline ) );
 		}
 
 		[ & ]( const bool draw_skeleton ) {

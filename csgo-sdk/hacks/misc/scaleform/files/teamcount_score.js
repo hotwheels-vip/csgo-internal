@@ -51,20 +51,20 @@ winsT.style.S2MixBlendMode = 'SRGBadditive';
 winsCT.style.S2MixBlendMode = 'SRGBadditive';
 
 var timer = hudTeamCounter.FindChildTraverse('TimerText');
-timer.style.fontFamily = 'Stratum2 Bold Monodigit';
+//timer.style.fontFamily = 'Stratum2 Bold Monodigit';
 //timer.style.marginLeft = '-2px';
 timer.style.marginTop = '-3px';
 timer.style.marginBottom = '4px';
-timer.style.horizontalAlign = 'middle';
-timer.style.verticalAlign = 'middle';
-timer.style.textAlign = 'center';
-timer.style.fontWeight = 'bold';
-timer.style.fontSize = '28px';
-timer.style.letterSpacing = '-2.5px';
 timer.style.width = '100%';
 timer.style.height = '100%';
+timer.style.opacity = '1';
+timer.style.fontSize = '28px';
+timer.style.fontWeight = 'bold';
+timer.style.verticalAlign = 'center';
+timer.style.fontFamily = 'Stratum2';
+timer.style.letterSpacing = '0px';
 //timer.style.color = 'white';
-timer.style.S2MixBlendMode = 'SRGBadditive';
+//timer.style.S2MixBlendMode = 'SRGBadditive';
 for (var tAlive of contextPanel.FindChildTraverse('HudTeamCounter').FindChildrenWithClassTraverse('TeamCounter__AliveT')) {
     tAlive.style.backgroundImage = 'url("file://{images}/hud/t.png")';
 }
