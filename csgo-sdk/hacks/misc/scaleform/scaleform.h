@@ -27,7 +27,7 @@ namespace n_scaleform
 			void do_teamcounter( );
 			void do_winpanel( );
 			void do_deathnotices( );
-			void do_alerts( );
+			void do_teamcounter_score( );
 			void do_alert_text( );
 		} panorama_elements;
 
@@ -45,9 +45,10 @@ namespace n_scaleform
 		float m_hud_alpha_hex;
 		c_ui_engine* m_uiengine;
 
-		bool m_should_force_update        = false;
-		bool m_should_update_winpanel     = false;
-		bool m_should_update_deathnotices = false;
+		bool m_should_force_update            = false;
+		bool m_should_update_winpanel         = false;
+		bool m_should_update_deathnotices     = false;
+		bool m_should_update_teamcount_avatar = false;
 
 		int m_curr_hud_color{ };
 		float m_curr_hud_opacity{ };

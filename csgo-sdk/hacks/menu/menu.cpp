@@ -1,6 +1,7 @@
 #include "menu.h"
 #include "../../globals/includes/includes.h"
 #include "../../globals/logger/logger.h"
+#include "../misc/scaleform/scaleform.h"
 
 constexpr int color_picker_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreviewHalf |
                                          ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_NoInputs |
@@ -469,6 +470,8 @@ void n_menu::impl_t::on_end_scene( )
 				                   g_config.get< std::vector< bool > >( g_variables.m_log_types ).size( ) );
 
 				ImGui::Checkbox( "scaleform", &GET_VARIABLE( g_variables.m_scaleform, bool ) );
+				if ( ImGui::Button( "force hud update" ) )
+					g_scaleform.m_should_force_update = true;
 
 				ImGui::EndChild( );
 			}
@@ -477,28 +480,11 @@ void n_menu::impl_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			if ( ImGui::BeginChild( ( "exploits" ),
-			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2 ) - background_height - 20.f ),
-			                        true, 0, true ) ) {
-				ImGui::EndChild( );
-			}
-			ImGui::SameLine( );
-			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
-
-			static int other_subtab_number = 0;
-			if ( ImGui::BeginChild( ( "offline" ),
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-				ImGui::Checkbox( "practice window", &GET_VARIABLE( g_variables.m_practice_window, bool ) );
-				if ( GET_VARIABLE( g_variables.m_practice_window, bool ) ) {
-					ImGui::Text( "practice checkpoint key" );
-					ImGui::Keybind( "practice checkpoint key", &GET_VARIABLE( g_variables.m_practice_cp_key, key_bind_t ) );
-					ImGui::Text( "practice teleport key" );
-					ImGui::Keybind( "practice teleport key", &GET_VARIABLE( g_variables.m_practice_tp_key, key_bind_t ) );
-				}
-
 				ImGui::EndChild( );
-				break;
 			}
+			break;
 		}
 		case 5: /* settings */
 		{

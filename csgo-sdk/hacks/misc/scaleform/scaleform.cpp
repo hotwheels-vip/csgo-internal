@@ -1,6 +1,26 @@
 #include "scaleform.h"
 #include "../../../globals/config/config.h"
 
+constexpr const char* deathnotices =
+#include "files/deathnotices.js"
+	;
+
+constexpr const char* alerts =
+#include "files/alerts.js"
+	;
+
+constexpr const char* teamcount_avatar =
+#include "files/teamcount_avatar.js"
+	;
+
+constexpr const char* teamcount_score =
+#include "files/teamcount_score.js"
+	;
+
+constexpr const char* weapon_select =
+#include "files/weapon_select.js"
+	;
+
 c_uipanel* n_scaleform::impl_t::panorama_functions_t::get_panel_from( c_uipanel* panel, uint32_t _hash )
 {
 	auto itr       = panel;
@@ -139,10 +159,9 @@ a_h_icon.style.backgroundSize = '100% 100%';
 a_h_icon.style.overflow = 'noclip';
 a_h_icon.style.width = '19px';
 a_h_icon.style.height = '18px';
-// add back (fuck msvc)
-//h_icon.style.washColor = '{0}';
-//a_icon.style.washColor = '{0}';
-//a_h_icon.style.washColor = '{0}';
+h_icon.style.washColor = '#ffffff';
+a_icon.style.washColor = '#ffffff';
+a_h_icon.style.washColor = '#ffffff';
 for (var i = 0; i < 2; i++) {
     var ha_label = ha_texts[i].Children()[0];
     ha_label.style.textOverflow = 'noclip';
@@ -155,7 +174,7 @@ h_bar.style.backgroundColor = 'transparent';
 a_bar.style.borderWidth = '0px';
 a_bar.style.backgroundColor = 'transparent';
 a_bar.style.washColor = '#ffffff';
-//a_bar.Children()[0].style.washColorFast = '{0}'; add back (fuck msvc)
+a_bar.Children()[0].style.washColorFast = '#FFFFFF';
 a_bar.Children()[0].style.backgroundColor = '#ffffff';
 h_bar.style.backgroundImage = 'url("https://media.discordapp.net/attachments/963223061337886780/990907908575363112/1.png")';
 a_bar.style.backgroundImage = 'url("https://media.discordapp.net/attachments/963223061337886780/990907908575363112/1.png")';
@@ -200,7 +219,7 @@ void n_scaleform::impl_t::panorama_elements_t::do_weaponpanel( )
             wpn.style.marginRight = '0px';
             wpn.style.paddingRight = '-2px';
             wpn_bg.style.backgroundColor = 'transparent';
-            wpn_bg.style.backgroundImage = 'url("https://media.discordapp.net/attachments/729103430441893958/1005692266964328498/g_scaleform.m_weapon_panel_bg.png")';
+            wpn_bg.style.backgroundImage = 'url("https://media.discordapp.net/attachments/729103430441893958/1005692266964328498/weapon_panel_bg.png")';
             wpn_bg.style.backgroundSize = '100% 100%';
             wpn_solid.style.backgroundColor = 'transparent';
             wpn_gradient.style.backgroundColor = 'transparent';
@@ -212,7 +231,6 @@ void n_scaleform::impl_t::panorama_elements_t::do_weaponselection( )
 {
 	static int last_holding_weapon{ };
 
-	// crasher fixer.
 	if ( !g_ctx.m_local )
 		return;
 
@@ -229,50 +247,7 @@ void n_scaleform::impl_t::panorama_elements_t::do_weaponselection( )
 	if ( !g_scaleform.m_should_force_update && last_holding_weapon == active_weapon->get_item_definition_index( ) )
 		return;
 
-	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel,
-	                                    std::format( R"(
-            var weapon_selection_bg = $.GetContextPanel().FindChildrenWithClassTraverse('weapon-row-background');
-            var weapon_selection = $.GetContextPanel().FindChildrenWithClassTraverse('weapon-row');
-            var weapon_selection_number = $.GetContextPanel().FindChildrenWithClassTraverse('weapon-row-number');
-            for (var j = 0; j < 9; j++) {0}
-                for (rarity of $.GetContextPanel().FindChildrenWithClassTraverse("weapon-selection-item--rarity-" + (j == 8 ? 99 : j))) {0}
-                     if (j == 0)
-                         rarity.Children()[0].Children()[0].style.imgShadow = '0px 0px 0px 0 transparent';
-                     for (name of rarity.GetParent().GetParent().FindChildrenWithClassTraverse('weapon-selection-item-name-text')) {0}
-                        name.style.textShadowFast = '0px 0px transparent';
-                        name.style.fontWeight = 'bold';
-                        if (name.text == "Zeus x27")
-                           name.style.color = '#FFFFFF';
-                        else
-                            name.style.color = j == 0 ? '#FFFFFF' :
-                                   j == 1 ? '#b0c3d9' :
-                                   j == 2 ? '#5e98d9' :
-                                   j == 3 ? '#4b69ff' :
-                                   j == 4 ? '#8847ff' :
-                                   j == 5 ? '#d32ce6' :
-                                   j == 6 ? '#eb4b4b' :
-                                   j == 7 ? '#e4ae39' :
-                                   '#ffd700';
-                     {2}
-                {2}
-            {2}
-            for (var i = 0; i < 8; i++) {0}
-                if (weapon_selection[i] != undefined && weapon_selection[i].IsSizeValid()) {0}
-                    weapon_selection_bg[i].style.backgroundColor = 'transparent';
-                    weapon_selection_bg[i].style.backgroundImage = 'url("https://media.discordapp.net/attachments/963223061337886780/990683924957110322/weapon.png")';
-                    weapon_selection_bg[i].style.backgroundSize = '100% 100%';
-                    weapon_selection_bg[i].style.width = '320px';
-                    weapon_selection_bg[i].style.horizontalAlign = 'right';
-                    weapon_selection[i].style.height = '80px';
-                    weapon_selection_number[i].style.marginTop = '-28px';
-                    weapon_selection_number[i].style.textShadowFast = '0px 0px transparent';
-                    weapon_selection_bg[i].style.opacity = '0.55'; //'{1}';
-                {2}
-            {2}
-        )",
-	                                                 ( "{" ), g_scaleform.m_hud_alpha_hex, ( "}" ) )
-	                                        .c_str( ),
-	                                    ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
+	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, weapon_select, ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
 
 	last_holding_weapon = active_weapon->get_item_definition_index( );
 }
@@ -435,48 +410,17 @@ void n_scaleform::impl_t::panorama_elements_t::do_deathnotices( )
 	if ( !g_scaleform.m_should_force_update && !g_scaleform.m_should_update_deathnotices )
 		return;
 
-	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, ( R"(
-            var deathnotices = $.GetContextPanel().FindChildrenWithClassTraverse('DeathNotice');
-            var deathnotice_container = $.GetContextPanel().FindChildTraverse('VisibleNotices').GetParent();
-            deathnotice_container.style.paddingRight = '4px';
-            for (var deathnotice of deathnotices) {
-                  var deathnotice_border = deathnotice.Children()[0];
-                  var deathnotice_bg = deathnotice_border.Children()[0];
-                  var deathnotice_gradient = deathnotice_border.Children()[1];
-                  var deathnotice_content = deathnotice.Children()[1];
-                  deathnotice_gradient.style.opacity = '1';
-                  deathnotice_gradient.SetImage('https://media.discordapp.net/attachments/942563827290079274/995613884167749722/1.png');
-                  deathnotice_border.style.borderWidth = '0px';
-                  deathnotice_border.style.borderRadius = '0px';
-                  deathnotice.style.height = '39px';
-                  deathnotice.style.margin = '0px 0px -1px 0px';
-                  var is_killer = deathnotice.BHasClass('DeathNotice_Killer');
-                  var is_victim = deathnotice.BHasClass('DeathNotice_Victim');
-                  var is_suicide = deathnotice.BHasClass('DeathNoticeSuicide');
-                  deathnotice_bg.style.backgroundColor = 'transparent';
-                  deathnotice_bg.style.opacity = is_suicide ? '0' : '1';
-                  deathnotice_bg.style.backgroundImage = !is_suicide && is_victim ? 'url("https://media.discordapp.net/attachments/942563827290079274/995613884352303155/1.png")' :
-                                                                       !is_suicide && is_killer ? 'url("https://media.discordapp.net/attachments/729103430441893958/1007468786410070177/126.png")' :
-                                                                       'none';
-                  deathnotice_bg.style.backgroundSize = '100% 100%';
-                  deathnotice_content.style.height = '100%';
-                  deathnotice_content.style.S2MixBlendMode = 'SRGBadditive';
-      
-                  for (var content of deathnotice_content.Children()) {
-                        if (content.paneltype == 'Label') {
-                            content.style.S2MixBlendMode = 'SRGBadditive';
-                            content.style.fontWeight = 'bold';
-                            content.style.fontSize = '20px';
-                            content.style.textShadowFast = '0px 0px transparent';
-                            content.style.opacity = '1';
-                        }
-                  }
-            }
-        )" ),
-	                                    ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
+	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, deathnotices, "panorama/layout/hud/hud.xml", 8, 10, false, false );
 
-	// XD
 	g_scaleform.m_should_update_deathnotices = false;
+}
+
+void n_scaleform::impl_t::panorama_elements_t::do_teamcounter_score( )
+{
+	if ( !g_scaleform.m_should_force_update )
+		return;
+
+	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, teamcount_score, ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
 }
 
 void n_scaleform::impl_t::panorama_elements_t::do_alert_text( )
@@ -484,18 +428,17 @@ void n_scaleform::impl_t::panorama_elements_t::do_alert_text( )
 	if ( !g_scaleform.m_should_force_update )
 		return;
 
-	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, ( R"(
-            for(var alert of $.GetContextPanel().FindChildrenWithClassTraverse('AlertText')) {
-                 alert.style.backgroundColor = 'gradient(linear, 100% 0%, 0% 0%, from(transparent), color-stop(0.45, #00000077), to(#00000077))';
-                 alert.style.textShadow = '1px 1px 2px black';
-                 alert.style.fontWeight = 'light';
-                 alert.style.fontSize = '23px';
-                 alert.style.letterSpacing = '0px';
-                 alert.style.paddingLeft = '27px';
-                 alert.style.paddingBottom = '0px';
-            }
-        )" ),
-	                                    ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
+	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, alerts, ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
+}
+
+void n_scaleform::impl_t::panorama_elements_t::do_teamcounter( )
+{
+	if ( !g_scaleform.m_should_force_update && !g_scaleform.m_should_update_teamcount_avatar )
+		return;
+
+	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, teamcount_avatar, ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
+
+	g_scaleform.m_should_update_teamcount_avatar = false;
 }
 #pragma endregion
 
@@ -541,6 +484,9 @@ void n_scaleform::impl_t::panorama_elements_t::modify_all( )
 	g_scaleform.m_curr_hud_color   = g_convars[ HASH_BT( "cl_hud_color" ) ]->get_int( );
 	g_scaleform.m_curr_hud_opacity = g_convars[ HASH_BT( "cl_hud_background_alpha" ) ]->get_float( );
 
+	if ( g_scaleform.m_should_force_update )
+		g_convars[ HASH_BT( "cl_showloadout" ) ]->set_value( 1 );
+
 	// update the current hud color value
 	g_scaleform.m_hud_color_hex = g_scaleform.m_curr_hud_color == 0    ? ( "#e8e8e8" )
 	                              : g_scaleform.m_curr_hud_color == 1  ? ( "#ffffff" )
@@ -558,6 +504,9 @@ void n_scaleform::impl_t::panorama_elements_t::modify_all( )
 	// update the current hud alpha hex value
 	g_scaleform.m_hud_alpha_hex = g_scaleform.m_curr_hud_opacity;
 
+	if ( !g_scaleform.m_hud_panel )
+		return;
+
 	/* elements */
 	do_radar( );
 	do_healtharmor( );
@@ -566,6 +515,9 @@ void n_scaleform::impl_t::panorama_elements_t::modify_all( )
 	do_moneypanel( );
 	do_winpanel( );
 	do_alert_text( );
+	do_deathnotices( );
+	do_teamcounter( );
+	do_teamcounter_score( );
 	/* elements */
 
 	// don't update multiple times

@@ -69,6 +69,7 @@
     <ClCompile Include="hooks\functions\net_earliertempents.cpp" />
     <ClCompile Include="hooks\functions\draw_set_color.cpp" />
     <ClCompile Include="hacks\misc\scaleform\scaleform.cpp" />
+    <ClCompile Include="hooks\functions\level_init_post_entity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -253,5 +254,10 @@
     <None Include=".clang-format" />
     <None Include="game\sdk\enums\e_move_type.h" />
     <None Include="utilities\console\console.inl" />
+    <None Include="hacks\misc\scaleform\files\deathnotices.js" />
+    <None Include="hacks\misc\scaleform\files\teamcount_avatar.js" />
+    <None Include="hacks\misc\scaleform\files\alerts.js" />
+    <None Include="hacks\misc\scaleform\files\teamcount_score.js" />
+    <None Include="hacks\misc\scaleform\files\weapon_select.js" />
   </ItemGroup>
 </Project>

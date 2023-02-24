@@ -41,6 +41,7 @@ namespace n_hooks
 		c_detour_hook m_fire_event_intern{ };
 		c_detour_hook m_net_earliertempents{ };
 		c_detour_hook m_draw_set_color{ };
+		c_detour_hook m_level_init_post_entity{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -64,6 +65,7 @@ namespace n_detoured_functions
 	void __fastcall on_add_entity( void* ecx, void* edx, void* handle_entity, unsigned int entity_handle );
 	void __fastcall on_remove_entity( void* ecx, void* edx, void* handle_entity, unsigned int entity_handle );
 	void __stdcall level_init_pre_entity( const char* map_name );
+	void __fastcall level_init_post_entity( void* ecx, void* edx );
 	void __fastcall level_shutdown( void* thisptr );
 	void* __fastcall get_vcollide( void* ecx, void* edx, int model_index );
 	void __fastcall particle_collection_simulate( void* ecx, void* edx );

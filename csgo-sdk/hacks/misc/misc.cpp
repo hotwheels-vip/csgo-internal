@@ -220,9 +220,10 @@ void n_misc::impl_t::draw_spectating_local( )
 
 	if ( !g_ctx.m_local || !g_interfaces.m_engine_client->is_in_game( ) || !GET_VARIABLE( g_variables.m_spectators_list, bool ) ||
 	     GET_VARIABLE( g_variables.m_spectators_list_type, int ) != 1 /*list local spectators*/ ) {
-		if ( !spectator_data.empty( ) )
+		if ( !spectator_data.empty( ) ) {
+			g_ctx.m_last_spectators_y = 5;
 			spectator_data.clear( );
-
+		}
 		return;
 	}
 
@@ -268,6 +269,11 @@ void n_misc::impl_t::draw_spectating_local( )
 		                                                                            get_player_spec_type( entity->get_observer_mode( ) ) ) ),
 		                            GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ) } );
 	} );
+
+	if ( spectator_data.empty( ) ) {
+		g_ctx.m_last_spectators_y = 5;
+		return;
+	}
 
 	for ( const auto& data : spectator_data ) {
 		g_render.m_draw_data.emplace_back( e_draw_type::draw_type_text,

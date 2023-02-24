@@ -24,6 +24,11 @@ bool __fastcall n_detoured_functions::fire_event_intern( void* ecx, void* edx, g
 		c_base_entity* m_attacker_ent{ };
 
 		switch ( hashed_event ) {
+		case HASH_BT( "bot_takeover" ):
+		case HASH_BT( "switch_team" ):
+		case HASH_BT( "round_start" ):
+			g_scaleform.m_should_update_teamcount_avatar = true;
+			break;
 		case HASH_BT( "round_end" ):
 			g_scaleform.m_should_update_winpanel = true;
 			break;

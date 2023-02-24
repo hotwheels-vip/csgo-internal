@@ -348,7 +348,15 @@ void n_movement::impl_t::pixel_surf_locking( float target_ps_velocity )
 			g_ctx.m_cmd->m_side_move    = g_movement.m_pixelsurf_data.m_simulated_cmd->m_side_move;
 			g_ctx.m_cmd->m_forward_move = g_movement.m_pixelsurf_data.m_simulated_cmd->m_forward_move;
 
-			g_movement.rotate_movement( g_ctx.m_cmd, g_movement.m_pixelsurf_data.m_simulated_cmd->m_view_point );
+			const c_vector movement = { g_ctx.m_cmd->m_forward_move, g_ctx.m_cmd->m_side_move, 0 };
+			c_angle movement_angle{ };
+			g_math.vector_angles( movement, movement_angle );
+
+			const float rotation =
+				deg2rad( g_ctx.m_cmd->m_view_point.m_y - g_movement.m_pixelsurf_data.m_simulated_cmd->m_view_point.m_y + movement_angle.m_y );
+
+			g_ctx.m_cmd->m_forward_move = std::cosf( rotation ) * movement.length_2d( );
+			g_ctx.m_cmd->m_side_move    = std::sinf( rotation ) * movement.length_2d( );
 		}
 
 		if ( g_movement.m_pixelsurf_data.m_should_duck )
@@ -461,14 +469,14 @@ void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, c_angle& angle )
 	if ( angle.m_x == 0 && angle.m_y == 0 && angle.m_z == 0 )
 		g_interfaces.m_engine_client->get_view_angles( angle );
 
-	const c_vector movement = { cmd->m_forward_move, cmd->m_side_move, 0 };
+	c_vector vec_move = c_vector( cmd->m_forward_move, cmd->m_side_move, 0.f );
 
-	const c_vector angle_movement = g_math.vector_angle( movement );
+	const float speed = vec_move.length_2d( );
 
-	const float rotation = deg2rad( cmd->m_view_point.m_y - angle.m_y + angle_movement.m_y );
+	const float rotation = deg2rad( cmd->m_view_point.m_y - angle.m_y );
 
-	cmd->m_forward_move = std::cosf( rotation ) * movement.length_2d( );
-	cmd->m_side_move    = std::sinf( rotation ) * movement.length_2d( );
+	cmd->m_forward_move = std::cosf( rotation ) * speed;
+	cmd->m_side_move    = std::sinf( rotation ) * speed;
 }
 
 void n_movement::impl_t::auto_align( c_user_cmd* cmd )

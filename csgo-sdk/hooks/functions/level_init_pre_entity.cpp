@@ -17,8 +17,5 @@ void __stdcall n_detoured_functions::level_init_pre_entity( const char* map_name
 	g_convars[ HASH_BT( "cl_updaterate" ) ]->set_value( rate );
 	g_convars[ HASH_BT( "cl_cmdrate" ) ]->set_value( rate );
 
-	// MOVE TO POST ENTITY
-	g_scaleform.on_level_init( );
-
 	return original( map_name );
 }

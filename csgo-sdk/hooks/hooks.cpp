@@ -80,6 +80,9 @@ bool n_hooks::impl_t::on_attach( )
 
 	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );
 
+	initialise_hook( m_level_init_post_entity, g_virtual.get( g_interfaces.m_base_client, 6 ), &n_detoured_functions::level_init_post_entity,
+	                 "CHLClient::LevelInitPostEntity()" );
+
 	initialise_hook( m_end_scene, g_virtual.get( g_interfaces.m_direct_device, 42 ), &n_detoured_functions::end_scene,
 	                 "IDirect3DDevice9::EndScene()" );
 
