@@ -1,6 +1,7 @@
 #include "interfaces.h"
 
 #include "../../globals/includes/includes.h"
+#include "../../hacks/misc/scaleform/scaleform.h"
 #include "../../utilities/memory/virtual.h"
 
 bool n_interfaces::impl_t::on_attach( )
@@ -114,6 +115,10 @@ bool n_interfaces::impl_t::on_attach( )
 	else
 		g_console.print(
 			std::vformat( "found IDirect3DDevice9 @ {:p}", std::make_format_args( reinterpret_cast< void* >( m_direct_device ) ) ).c_str( ) );
+
+	if ( !( g_scaleform.compare_extension = reinterpret_cast< decltype( g_scaleform.compare_extension ) >(
+				g_modules[ PANORAMA_DLL ].find_pattern( "55 8B EC 53 57 8B 7D 08 85" ) ) ) )
+		g_console.print( "FAILED TO FIND COMPARE_EXTENSION" );
 
 	return true;
 }

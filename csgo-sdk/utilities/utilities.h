@@ -7,7 +7,9 @@
 namespace n_utilities
 {
 	struct impl_t {
-		std::array< std::string, 8 > m_hit_groups = { "body", "head", "chest", "stomach", "left arm", "right arm", "left leg", "right leg" };
+		std::array< std::string, 9 > m_hit_groups = {
+			"body", "head", "chest", "stomach", "left arm", "right arm", "left leg", "right leg", "unknown"
+		};
 
 		bool is_weapon_valid( );
 

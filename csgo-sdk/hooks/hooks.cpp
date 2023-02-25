@@ -89,6 +89,10 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_draw_set_color, g_virtual.get( g_interfaces.m_surface, 15 ), &n_detoured_functions::draw_set_color,
 	                 ( "ISurface::DrawSetColor()" ) );
 
+	initialise_hook( m_set_image_data_r8g8b8a8,
+	                 g_modules[ PANORAMA_DLL ].find_pattern( "55 8B EC 83 E4 F8 81 ? ? ? ? ? 53 56 57 8B F9 8B ? ? ? ? ? 8B" ),
+	                 &n_detoured_functions::set_image_data_r8g8b8a8, ( "CImageData::SetImageDataR8G8B8A8()" ) );
+
 	initialise_hook( m_net_earliertempents, g_virtual.get( g_convars[ HASH_BT( "net_earliertempents" ) ], 13 ),
 	                 &n_detoured_functions::net_earliertempents, ( "net_earliertempents::GetBool()" ) );
 

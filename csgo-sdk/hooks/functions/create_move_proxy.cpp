@@ -17,7 +17,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 	c_user_cmd* cmd                   = g_interfaces.m_input->get_user_cmd( sequence_number );
 	c_verified_user_cmd* verified_cmd = g_interfaces.m_input->get_verified_cmd( sequence_number );
 
-	if ( !cmd || !verified_cmd || !cmd->m_command_number )
+	if ( !cmd || !verified_cmd || !cmd->m_command_number || cmd->m_tick_count == 0 )
 		return;
 
 	g_ctx.m_cmd = cmd;

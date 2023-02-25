@@ -19,6 +19,11 @@ void n_math::impl_t::sin_cos( float radians, float* sine, float* cosine ) const
 	*cosine = cosf( radians );
 }
 
+c_vector n_math::impl_t::interpolate_vector( const c_vector from, const c_vector to, const float percentage )
+{
+	return to * percentage + from * ( 1.f - percentage );
+}
+
 std::int32_t n_math::impl_t::time_to_ticks( float time )
 {
 	return static_cast< std::int32_t >( 0.5f + time / g_interfaces.m_global_vars_base->m_interval_per_tick );

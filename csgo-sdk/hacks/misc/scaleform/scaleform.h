@@ -4,11 +4,17 @@
 
 #include <cstdint>
 
-// creds patoke
+template< auto V >
+struct ct_data {
+	constexpr static auto value = V;
+};
 
+// creds patoke
 namespace n_scaleform
 {
 	struct impl_t {
+		char*( CDECL* compare_extension )( const char* lhs, const char* rhs );
+
 		struct panorama_functions_t {
 			c_uipanel* get_panel_from( c_uipanel* panel, uint32_t _hash );
 			c_uipanel* get_panel( uint32_t _hash );
@@ -33,6 +39,8 @@ namespace n_scaleform
 
 		void on_level_init( );
 		void on_createmove( );
+
+		bool get_replacement_icon( const char* name, const uint8_t*& data, size_t& len, int& w, int& h );
 
 		c_uipanel* m_hud_panel;
 		c_uipanel* m_menu_panel;

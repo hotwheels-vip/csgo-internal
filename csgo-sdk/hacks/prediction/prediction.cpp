@@ -144,6 +144,10 @@ void n_prediction::impl_t::update_button_state( c_base_entity* local, c_user_cmd
 
 void n_prediction::impl_t::restore_entity_to_predicted_frame( int frame )
 {
+	// sanity
+	if ( g_ctx.m_local->get_observer_mode( ) > 0 )
+		return;
+
 	static auto cl_predict = g_convars[ HASH_BT( "cl_predict" ) ];
 	if ( !cl_predict->get_int( ) )
 		return;

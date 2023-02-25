@@ -38,13 +38,75 @@ bool n_lagcomp::impl_t::is_valid( n_lagcomp::impl_t::record_t rec )
 	return delta_correct <= 0.2f;
 }
 
+// creds dex
+bool n_lagcomp::impl_t::generate_lerped_lag_matrix( const int ent_index, matrix3x4_t* out )
+{
+	auto entity = g_interfaces.m_client_entity_list->get< c_base_entity >( ent_index );
+	if ( !entity )
+		return false;
+
+	if ( !entity->is_valid_enemy( ) )
+		return false;
+
+	const auto& record_list = this->m_records[ ent_index ];
+	if ( !record_list )
+		return false;
+
+	auto nci = g_interfaces.m_engine_client->get_net_channel_info( );
+	if ( !nci )
+		return false;
+
+	auto unlag = g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( );
+
+	for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
+		auto record = &record_list[ i ];
+
+		bool end = i + 1 == g_ctx.m_max_allocations;
+
+		auto next_record = &record_list[ i + 1 ];
+
+		if ( record && record->m_valid && ( !end && next_record ) ) {
+			if ( record->m_vec_origin.dist_to( entity->get_abs_origin( ) ) < 1.f )
+				return false;
+
+			c_vector next   = end ? entity->get_abs_origin( ) : next_record->m_vec_origin;
+			float time_next = end ? entity->get_simulation_time( ) : next_record->m_sim_time;
+
+			float total_latency = nci->get_avg_latency( FLOW_OUTGOING ) + nci->get_avg_latency( FLOW_INCOMING );
+			total_latency       = std::clamp( total_latency, 0.f, unlag );
+
+			float correct    = total_latency + lerp_time( );
+			float time_delta = time_next - record->m_sim_time;
+			float add        = end ? 1.f : time_delta;
+			float deadtime   = record->m_sim_time + correct + add;
+
+			float curtime = g_interfaces.m_global_vars_base->m_current_time;
+			float delta   = deadtime - curtime;
+
+			float mul     = 1.f / add;
+			c_vector lerp = g_math.interpolate_vector( next, record->m_vec_origin, std::clamp( delta * mul, 0.f, 1.f ) );
+
+			matrix3x4_t ret[ 128 ];
+
+			std::memcpy( ret, record->m_matrix, sizeof( ret ) );
+
+			for ( size_t i{ }; i < 128; ++i ) {
+				c_vector matrix_delta = record->m_matrix[ i ].get_origin( ) - record->m_vec_origin;
+				ret[ i ].set_origin( matrix_delta + lerp );
+			}
+
+			std::memcpy( out, ret, sizeof( ret ) );
+
+			return true;
+		}
+	}
+	return false;
+}
+
 void n_lagcomp::impl_t::on_frame_stage_notify( )
 {
-	if ( g_ctx.m_cmd->m_tick_count == 0 )
-		return;
-
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local )
+		if ( !entity->is_valid_enemy( ) )
 			return;
 
 		const auto index = entity->get_index( );
@@ -115,9 +177,6 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 
 void n_lagcomp::impl_t::backtrack_player( record_t* heap_record )
 {
-	if ( g_ctx.m_cmd->m_tick_count == 0 )
-		return;
-
 	g_ctx.m_record = heap_record;
 
 	if ( !heap_record )
@@ -128,9 +187,6 @@ void n_lagcomp::impl_t::backtrack_player( record_t* heap_record )
 
 void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 {
-	if ( g_ctx.m_cmd->m_tick_count == 0 )
-		return;
-
 	auto index = player->get_index( );
 
 	auto current_fov         = 180.f;
@@ -196,9 +252,6 @@ std::optional< n_lagcomp::impl_t::record_t > n_lagcomp::impl_t::oldest_record( c
 void n_lagcomp::impl_t::on_create_move_post( )
 {
 	if ( GET_VARIABLE( g_variables.m_aimbot_enable, bool ) || !GET_VARIABLE( g_variables.m_backtrack_enable, bool ) )
-		return;
-
-	if ( g_ctx.m_cmd->m_tick_count == 0 )
 		return;
 
 	float current_fov = 180.f;

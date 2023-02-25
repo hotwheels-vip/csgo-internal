@@ -8,12 +8,6 @@
 
 int n_utilities::impl_t::create_thread( unsigned long __stdcall function( void* ), void* parameter )
 {
-	/* void* handle = LI_FN( CreateThread )( nullptr, 0, function, parameter, 0, nullptr );
-	if ( !handle )
-	    return 0;
-
-	LI_FN( CloseHandle )( handle ); */
-
 	std::thread( function, parameter ).detach( );
 
 	return 1;
@@ -171,7 +165,10 @@ const char8_t* n_utilities::impl_t::get_weapon_icon( short item_definition_index
 	case weapon_knife_skeleton:
 		return u8"\uE20D";
 	default:
-		return u8"\u003F";
+		g_console.print(
+			std::vformat( "! get_weapon_icon failed to find icon index: {} !", std::make_format_args( item_definition_index ) ).c_str( ) );
+
+		return u8"";
 	}
 }
 

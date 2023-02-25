@@ -79,6 +79,8 @@ void n_edicts::impl_t::on_paint_traverse( )
 {
 	if ( GET_VARIABLE( g_variables.m_dropped_weapons, bool ) )
 		this->dropped_weapons( );
+	if ( GET_VARIABLE( g_variables.m_thrown_objects_icon, bool ) || GET_VARIABLE( g_variables.m_thrown_objects_name, bool ) )
+		this->projectiles( );
 }
 
 void n_edicts::impl_t::reset( )
@@ -124,6 +126,100 @@ void n_edicts::impl_t::reset( )
 void* n_edicts::impl_t::get_precipitation_collideable( )
 {
 	return &precipitation_collideable;
+}
+
+void n_edicts::impl_t::projectiles( )
+{
+	if ( !g_ctx.m_local )
+		return;
+
+	// so it doesnt get called a bunch of times
+	const auto should_draw_icon = GET_VARIABLE( g_variables.m_thrown_objects_icon, bool );
+	const auto should_draw_name = GET_VARIABLE( g_variables.m_thrown_objects_name, bool );
+
+	ImColor icon_color = GET_VARIABLE( g_variables.m_thrown_objects_icon_color, c_color ).get_u32( 1.f );
+	ImColor name_color = GET_VARIABLE( g_variables.m_thrown_objects_name_color, c_color ).get_u32( 1.f );
+
+	g_entity_cache.enumerate( e_enumeration_type::type_edicts, [ & ]( c_base_entity* entity ) {
+		if ( !entity || entity == g_ctx.m_local || entity->is_dormant( ) )
+			return;
+
+		const auto client_renderable = entity->get_client_renderable( );
+		if ( !client_renderable )
+			return;
+
+		const auto client_unknown = client_renderable->get_client_unknown( );
+		if ( !client_unknown )
+			return;
+
+		const auto client_networkable = client_unknown->get_client_networkable( );
+		if ( !client_networkable )
+			return;
+
+		const auto client_class = client_networkable->get_client_class( );
+		if ( !client_class )
+			return;
+
+		const auto class_id = client_class->m_class_id;
+
+		auto model = entity->get_model( );
+
+		if ( !model )
+			return;
+
+		auto model_name = g_interfaces.m_model_info->get_model_name( model );
+
+		if ( !model_name )
+			return;
+
+		const std::string name = model->m_name;
+
+		if ( name.find( "thrown" ) != std::string::npos || class_id == e_class_ids::c_base_cs_grenade_projectile ||
+		     class_id == e_class_ids::c_decoy_projectile || class_id == e_class_ids::c_molotov_projectile ||
+		     class_id == e_class_ids::c_snowball_projectile ) {
+			c_vector_2d out{ };
+
+			if ( !g_render.world_to_screen( entity->get_abs_origin( ), out ) || out.is_zero( ) )
+				return;
+
+			auto projectile_icon = [ & ]( const int char_icon_index, const std::string name ) -> void {
+				const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_12 ]->CalcTextSizeA(
+					g_render.m_fonts[ e_font_names::font_name_verdana_12 ]->FontSize, FLT_MAX, 0.f, name.c_str( ) );
+
+				if ( should_draw_name )
+					g_render.m_draw_data.emplace_back(
+						e_draw_type::draw_type_text,
+						std::make_any< text_draw_object_t >( g_render.m_fonts[ e_font_names::font_name_verdana_12 ],
+					                                         c_vector_2d( out.m_x - ( text_size.x / 2 ), out.m_y - 15 ), name, name_color,
+					                                         c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
+
+				auto icon = reinterpret_cast< const char* >( g_utilities.get_weapon_icon( char_icon_index ) );
+
+				const auto icon_size = g_render.m_fonts[ e_font_names::font_name_icon_12 ]->CalcTextSizeA(
+					g_render.m_fonts[ e_font_names::font_name_icon_12 ]->FontSize, FLT_MAX, 0.f, icon );
+				if ( should_draw_icon )
+					g_render.m_draw_data.emplace_back( e_draw_type::draw_type_text,
+					                                   std::make_any< text_draw_object_t >( g_render.m_fonts[ e_font_names::font_name_icon_12 ], out,
+					                                                                        icon, icon_color, ImColor( 0.f, 0.f, 0.f, 1.f ),
+					                                                                        text_flag_dropshadow ) );
+			};
+
+			// couldnt think of better method, although i know this is retarded.
+
+			if ( name.find( "flashbang" ) != std::string::npos )
+				projectile_icon( weapon_flashbang, "flashbang" );
+			else if ( name.find( "smokegrenade" ) != std::string::npos )
+				projectile_icon( weapon_smokegrenade, "smoke grenade" );
+			else if ( name.find( "incendiarygrenade" ) != std::string::npos )
+				projectile_icon( weapon_incgrenade, "incendiary grenade" );
+			else if ( name.find( "molotov" ) != std::string::npos )
+				projectile_icon( weapon_molotov, "molotov" );
+			else if ( name.find( "fraggrenade" ) != std::string::npos )
+				projectile_icon( weapon_hegrenade, "high explosive grenade" );
+			else if ( name.find( "decoy" ) != std::string::npos )
+				projectile_icon( weapon_decoy, "decoy" );
+		}
+	} );
 }
 
 void n_edicts::impl_t::dropped_weapons( )

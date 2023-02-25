@@ -263,9 +263,10 @@ void n_misc::impl_t::draw_spectating_local( )
 		if ( spectating_info.m_is_hltv )
 			return;
 
-		spectator_data.push_back( { std::vformat( "{} | {}", std::make_format_args( std::string( spectating_info.m_name ).substr( 0, 12 ),
-		                                                                            get_player_spec_type( entity->get_observer_mode( ) ) ) ),
-		                            GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ) } );
+		spectator_data.push_back(
+			{ std::vformat( "{} | {}", std::make_format_args( std::string( spectating_info.m_name ).substr( 0, 12 ).append( "..." ),
+		                                                      get_player_spec_type( entity->get_observer_mode( ) ) ) ),
+		      GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ) } );
 	} );
 
 	if ( spectator_data.empty( ) ) {

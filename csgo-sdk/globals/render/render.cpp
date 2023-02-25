@@ -62,6 +62,12 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_compressed_data, verdana_compressed_size, 11.f, &verdana_font_config );
 			m_fonts[ e_font_names::font_name_verdana_bd_11 ] =
 				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 11.f, &verdana_font_config );
+
+			m_fonts[ e_font_names::font_name_verdana_12 ] =
+				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_compressed_data, verdana_compressed_size, 12.f, &verdana_font_config );
+			m_fonts[ e_font_names::font_name_verdana_bd_12 ] =
+				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 12.f, &verdana_font_config );
+
 			m_fonts[ e_font_names::font_name_smallest_pixel_10 ] =
 				io.Fonts->AddFontFromMemoryCompressedTTF( smallest_pixel_compressed_data, smallest_pixel_compressed_size, 10.f );
 

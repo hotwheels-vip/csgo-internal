@@ -22,6 +22,8 @@ namespace n_math
 
 		void sin_cos( float radians, float* sine, float* cosine ) const;
 
+		c_vector interpolate_vector( const c_vector from, const c_vector to, const float percentage );
+
 		void angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right = nullptr, c_vector* up = nullptr );
 
 		c_angle calculate_angle( const c_vector& start, const c_vector& end );

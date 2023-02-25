@@ -90,6 +90,11 @@ void c_base_entity::post_think( )
 	g_interfaces.m_model_cache->end_lock( );
 }
 
+const bool c_base_entity::is_valid_enemy( )
+{
+	return this && this->is_alive( ) && !this->is_dormant( ) && this->is_player( ) && this != g_ctx.m_local && this->is_enemy( g_ctx.m_local );
+}
+
 void c_base_entity::restore_data( const char* context, int slot, int type )
 {
 	static const auto restore_data_fn = reinterpret_cast< void( __thiscall* )( void*, const char*, int, int ) >(

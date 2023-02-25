@@ -26,6 +26,10 @@ void n_movement::impl_t::bunny_hop( )
 
 void n_movement::impl_t::on_create_move_post( )
 {
+	// if in any type of obs mode dont run movement features
+	if ( g_ctx.m_local->get_observer_mode( ) > 0 )
+		return;
+
 	const float target_ps_velocity =
 		-g_convars[ HASH_BT( "sv_gravity" ) ]->get_float( ) * 0.5f * g_interfaces.m_global_vars_base->m_interval_per_tick;
 
@@ -406,7 +410,7 @@ void n_movement::impl_t::pixel_surf( float target_ps_velocity )
 					simulated_cmd->m_buttons &= ~e_command_buttons::in_duck;
 
 				// auto align on pixel surf has to automatically be on.
-				auto_align( simulated_cmd );
+				// auto_align( simulated_cmd );
 
 				g_prediction.begin( g_ctx.m_local, simulated_cmd );
 				g_prediction.end( g_ctx.m_local );

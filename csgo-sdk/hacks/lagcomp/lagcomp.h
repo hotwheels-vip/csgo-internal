@@ -31,6 +31,7 @@ namespace n_lagcomp
 		void on_create_move_post( );
 
 		std::optional< n_lagcomp::impl_t::record_t > oldest_record( const int ent_index );
+		bool generate_lerped_lag_matrix( const int ent_index, matrix3x4_t* out );
 
 		void backtrack_player( record_t* heap_record );
 		void backtrack_player( c_base_entity* player );

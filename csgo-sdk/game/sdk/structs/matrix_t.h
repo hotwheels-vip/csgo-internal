@@ -62,6 +62,10 @@ struct matrix3x4_t {
 		this->data[ 1 ][ 3 ] = origin.m_y;
 		this->data[ 2 ][ 3 ] = origin.m_z;
 	}
+	constexpr c_vector get_origin( )
+	{
+		return { this->data[ 0 ][ 3 ], this->data[ 1 ][ 3 ], this->data[ 2 ][ 3 ] };
+	}
 
 	constexpr void invalidate( )
 	{

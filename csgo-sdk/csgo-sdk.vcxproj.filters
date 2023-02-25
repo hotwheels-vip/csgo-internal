@@ -70,6 +70,7 @@
     <ClCompile Include="hooks\functions\draw_set_color.cpp" />
     <ClCompile Include="hacks\misc\scaleform\scaleform.cpp" />
     <ClCompile Include="hooks\functions\level_init_post_entity.cpp" />
+    <ClCompile Include="hooks\functions\set_image_data_r8g8b8a8.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -249,6 +250,9 @@
     <ClInclude Include="game\sdk\classes\panorama\c_uievent.h" />
     <ClInclude Include="game\sdk\classes\panorama\c_panoramauiengine.h" />
     <ClInclude Include="hacks\misc\scaleform\scaleform.h" />
+    <ClInclude Include="game\sdk\structs\fmt_str_n_t.h" />
+    <ClInclude Include="utilities\data\data.h" />
+    <ClInclude Include="hacks\visuals\players\chams\chams.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

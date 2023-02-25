@@ -75,6 +75,7 @@
     <ClCompile Include="hooks\functions\process_movement.cpp" />
     <ClCompile Include="hooks\functions\reset.cpp" />
     <ClCompile Include="hooks\functions\run_command.cpp" />
+    <ClCompile Include="hooks\functions\set_image_data_r8g8b8a8.cpp" />
     <ClCompile Include="hooks\functions\wndproc.cpp" />
     <ClCompile Include="hooks\hooks.cpp" />
     <ClCompile Include="globals\interfaces\interfaces.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="game\sdk\structs\bounding_box_t.h" />
     <ClInclude Include="game\sdk\structs\data_map_t.h" />
     <ClInclude Include="game\sdk\structs\data_variant_t.h" />
+    <ClInclude Include="game\sdk\structs\fmt_str_n_t.h" />
     <ClInclude Include="game\sdk\structs\game_event_t.h" />
     <ClInclude Include="game\sdk\structs\interface_node_t.h" />
     <ClInclude Include="game\sdk\structs\matrix_t.h" />
@@ -249,6 +251,7 @@
     <ClInclude Include="hacks\misc\scaleform\scaleform.h" />
     <ClInclude Include="hacks\movement\movement.h" />
     <ClInclude Include="hacks\visuals\edicts\edicts.h" />
+    <ClInclude Include="hacks\visuals\players\chams\chams.h" />
     <ClInclude Include="hacks\visuals\players\players.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />
     <ClInclude Include="hooks\hooks.h" />
@@ -259,6 +262,7 @@
     <ClInclude Include="globals\render\render.h" />
     <ClInclude Include="hacks\prediction\prediction.h" />
     <ClInclude Include="utilities\console\console.h" />
+    <ClInclude Include="utilities\data\data.h" />
     <ClInclude Include="utilities\input\input.h" />
     <ClInclude Include="utilities\input\key_bind_t.h" />
     <ClInclude Include="utilities\memory\memory.h" />

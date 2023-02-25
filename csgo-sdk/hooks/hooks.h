@@ -1,7 +1,9 @@
 #pragma once
 #include "detour_hook/c_detour_hook.h"
 
+#include <cstdint>
 #include <d3d9.h>
+#include <stdint.h>
 
 // [\/] fw decs to prevent include errors
 
@@ -12,6 +14,7 @@ class c_base_entity;
 class c_move_data;
 
 struct game_event_t;
+struct fmt_str_n_t;
 
 enum e_glow_style;
 
@@ -42,6 +45,7 @@ namespace n_hooks
 		c_detour_hook m_net_earliertempents{ };
 		c_detour_hook m_draw_set_color{ };
 		c_detour_hook m_level_init_post_entity{ };
+		c_detour_hook m_set_image_data_r8g8b8a8{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -83,4 +87,7 @@ namespace n_detoured_functions
 	bool __fastcall fire_event_intern( void* ecx, void* edx, game_event_t* game_event );
 	void __stdcall draw_set_color( int r, int g, int b, int a );
 	bool __fastcall net_earliertempents( void* ecx, void* edx );
+	bool __fastcall set_image_data_r8g8b8a8( void* ecx, void* edx, const uint8_t* data, uint32_t len, const char* filename, int w, int h, void* arg1,
+	                                         int arg2 );
+
 } // namespace n_detoured_functions

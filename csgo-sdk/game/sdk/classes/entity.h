@@ -106,8 +106,11 @@ public:
 	virtual int get_body( )                                                    = 0;
 	virtual void get_color_modulation( float* color )                          = 0;
 	virtual bool lod_test( )                                                   = 0;
-	virtual bool setup_bones( matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask, float current_time ) = 0; /* https://github.com/notgoodusename/OsirisAndExtra/blob/8fc60e752fd5af6e3e8974cd9fc204c73c0a7295/Osiris/SDK/Entity.h#L481
-	                                                                                                                   */
+	virtual bool setup_bones(
+		matrix3x4_t* bone_to_world_out, int max_bones, int bone_mask,
+		float
+			current_time ) = 0; /* https://github.com/notgoodusename/OsirisAndExtra/blob/8fc60e752fd5af6e3e8974cd9fc204c73c0a7295/Osiris/SDK/Entity.h#L481
+	                             */
 	virtual void setup_weights( const matrix3x4_t* bone_to_world, int flex_weight_count, float* flex_weights, float* flex_delayed_weights ) = 0;
 	virtual void do_animation_events( )                                                                                                     = 0;
 	virtual void* get_pvs_notify_interface( )                                                                                               = 0;
@@ -314,6 +317,8 @@ public:
 	{
 		return ( this->get_life_state( ) == 0 /* LIFE_ALIVE */ );
 	}
+
+	const bool is_valid_enemy( );
 
 	const int is_max_health( )
 	{

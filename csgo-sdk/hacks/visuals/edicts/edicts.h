@@ -9,6 +9,8 @@ namespace n_edicts
 		void reset( ); /* AAAAAA */
 		void* get_precipitation_collideable( );
 
+		void projectiles( );
+
 		bool m_created = false;
 		int m_timer    = -1;
 

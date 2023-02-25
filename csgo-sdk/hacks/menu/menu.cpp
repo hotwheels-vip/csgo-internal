@@ -248,6 +248,14 @@ void n_menu::impl_t::on_end_scene( )
 							                   color_picker_alpha_flags );
 					}
 
+					ImGui::Checkbox( "thrown objects name", &GET_VARIABLE( g_variables.m_thrown_objects_name, bool ) );
+					if ( GET_VARIABLE( g_variables.m_thrown_objects_name, bool ) )
+						ImGui::ColorEdit4( "##thrown objects name color", &GET_VARIABLE( g_variables.m_thrown_objects_name_color, c_color ),
+						                   color_picker_alpha_flags );
+					ImGui::Checkbox( "thrown objects icon", &GET_VARIABLE( g_variables.m_thrown_objects_icon, bool ) );
+					if ( GET_VARIABLE( g_variables.m_thrown_objects_icon, bool ) )
+						ImGui::ColorEdit4( "##thrown objects icon color", &GET_VARIABLE( g_variables.m_thrown_objects_icon_color, c_color ),
+						                   color_picker_alpha_flags );
 					break;
 				}
 				}
