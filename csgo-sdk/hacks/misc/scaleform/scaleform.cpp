@@ -24,6 +24,10 @@ constexpr const char* weapon_select =
 #include "files/weapon_select.js"
 	;
 
+constexpr const char* health_and_ammo =
+#include "files/health_and_ammo.js"
+	;
+
 c_uipanel* n_scaleform::impl_t::panorama_functions_t::get_panel_from( c_uipanel* panel, uint32_t _hash )
 {
 	auto itr       = panel;
@@ -100,101 +104,7 @@ void n_scaleform::impl_t::panorama_elements_t::do_healtharmor( )
 	if ( !g_scaleform.m_should_force_update && g_scaleform.m_last_hud_color == g_scaleform.m_curr_hud_color )
 		return;
 
-	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, ( R"(
-var ha = $.GetContextPanel().FindChildTraverse('HudHealthArmor');
-var ha_bg = ha.FindChildTraverse('HudHealthArmorBG');
-var ha_icons = ha.FindChildrenWithClassTraverse('hud-HA-icon-container');
-var ha_texts = ha.FindChildrenWithClassTraverse('hud-HA-text');
-var h_bar = ha.FindChildTraverse('HealthBar');
-var a_bar = ha.FindChildTraverse('ArmorBar');
-var h_bg = ha.FindChildTraverse('HudHealthBG');
-var a_bg = ha.FindChildTraverse('HudArmorBG');
-var h_icon = ha_icons[0].Children()[0];
-var a_icon = ha_icons[1].Children()[1];
-var a_h_icon = ha_icons[1].Children()[2];
-var ha_main = ha.FindChildrenWithClassTraverse('hud-HA-main')[0];
-ha_main.style.marginLeft = '-4px';
-ha.FindChildrenWithClassTraverse('hud-HA-health-label')[0].style.S2MixBlendMode = 'SRGBadditive';
-ha.FindChildrenWithClassTraverse('hud-HA-armor-label')[0].style.S2MixBlendMode = 'SRGBadditive';
-ha.style.marginLeft = '-1px';
-ha.style.height = '53px';
-ha_bg.style.width = '528px';
-ha_bg.style.height = '100%';
-ha_bg.style.backgroundColor = 'transparent';
-ha_bg.style.flowChildren = 'left';
-ha_bg.style.backgroundImage = 'url("https://media.discordapp.net/attachments/729103430441893958/1005692446832861255/big_nr_bg.png")';
-ha_bg.style.backgroundSize = '100% 103%';
-ha_bg.style.transform = 'scaleX(-1)';
-h_bg.style.backgroundImage = 'url("https://media.discordapp.net/attachments/729103430441893958/1005692447134846986/big_r_bg.png")';
-h_bg.style.transform = 'scaleX(-1)';
-h_bg.style.backgroundSize = '100% 100%';
-h_bg.style.backgroundColor = 'transparent';
-h_bg.style.opacity = '0'; // make diff opacity and red when in critical
-a_bg.style.backgroundColor = 'transparent';
-ha_texts[0].style.paddingTop = '0px';
-ha_texts[1].style.paddingTop = '-1px';
-ha_texts[1].style.marginLeft = '-2px';
-ha_texts[1].style.textAlign = 'left';
-ha_icons[1].style.marginLeft = '-2px';
-h_icon.SetImage('none');
-h_icon.style.S2MixBlendMode = 'SRGBadditive';
-h_icon.style.washColor = 'transparent';
-h_icon.style.backgroundImage = 'url("https://media.discordapp.net/attachments/729103430441893958/1005731011440693309/17.png")';
-h_icon.style.backgroundSize = '100% 100%';
-h_icon.style.opacity = '1';
-h_icon.style.overflow = 'noclip';
-h_icon.style.width = '20px';
-h_icon.style.height = '20px';
-a_icon.SetImage('none');
-a_icon.style.S2MixBlendMode = 'SRGBadditive';
-a_icon.style.washColor = 'transparent';
-a_icon.style.backgroundImage = 'url("https://media.discordapp.net/attachments/729103430441893958/1005731011725889536/19.png")';
-a_icon.style.backgroundSize = '100% 100%';
-a_icon.style.opacity = '1';
-a_icon.style.overflow = 'noclip';
-a_icon.style.width = '20px';
-a_icon.style.height = '21px';
-a_h_icon.style.marginTop = '-4px';
-a_h_icon.style.opacity = '0.7';
-a_h_icon.SetImage('none');
-a_h_icon.style.backgroundImage = 'url("file://{images}/icons/ui/helmet.svg")';
-a_h_icon.style.backgroundSize = '100% 100%';
-a_h_icon.style.overflow = 'noclip';
-a_h_icon.style.width = '19px';
-a_h_icon.style.height = '18px';
-h_icon.style.washColor = '#ffffff';
-a_icon.style.washColor = '#ffffff';
-a_h_icon.style.washColor = '#ffffff';
-for (var i = 0; i < 2; i++) {
-    var ha_label = ha_texts[i].Children()[0];
-    ha_label.style.textOverflow = 'noclip';
-    ha_label.style.fontSize = '44px';
-    ha_label.style.S2MixBlendMode = 'SRGBadditive';
-    ha_icons[i].style.paddingTop = '6px';
-}
-h_bar.style.borderWidth = '0px';
-h_bar.style.backgroundColor = 'transparent';
-a_bar.style.borderWidth = '0px';
-a_bar.style.backgroundColor = 'transparent';
-//a_bar.style.washColor = '#ffffff';
-a_bar.Children()[0].style.washColorFast = '#FFFFFF';
-a_bar.Children()[0].style.backgroundColor = '#ffffff';
-h_bar.style.backgroundImage = 'url("https://media.discordapp.net/attachments/963223061337886780/990907908575363112/1.png")';
-a_bar.style.backgroundImage = 'url("https://media.discordapp.net/attachments/963223061337886780/990907908575363112/1.png")';
-h_bar.style.backgroundSize = '100% 100%';
-a_bar.style.backgroundSize = '100% 100%';
-h_bar.style.x = '106px';
-h_bar.style.y = '30px';
-a_bar.style.x = '106px';
-a_bar.style.y = '30px';
-h_bar.style.width = '84px';
-h_bar.style.height = '15px';
-a_bar.style.width = '84px';
-a_bar.style.height = '15px';
-h_bar.style.padding = '2px 2px 2px 2px';
-a_bar.style.padding = '2px 2px 2px 2px';
-        )" ),
-	                                    ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
+	g_scaleform.m_uiengine->run_script( g_scaleform.m_hud_panel, health_and_ammo, ( "panorama/layout/hud/hud.xml" ), 8, 10, false, false );
 }
 
 void n_scaleform::impl_t::panorama_elements_t::do_weaponpanel( )
@@ -707,8 +617,8 @@ bool n_scaleform::impl_t::get_replacement_icon( const char* name, const uint8_t*
 	case ct_data< hash_data( icon_awp_name, sizeof( icon_awp_name ) - 1 ) >::value:
 		data = icon_awp;
 		len  = sizeof( icon_awp );
-		w    = icon_awp_w;
-		h    = icon_awp_h;
+		w    = 1; // icon_awp_w;
+		h    = 1; // icon_awp_h;
 		return true;
 		break;
 	case ct_data< hash_data( icon_ak47_name, sizeof( icon_ak47_name ) - 1 ) >::value:

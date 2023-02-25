@@ -263,5 +263,6 @@
     <None Include="hacks\misc\scaleform\files\alerts.js" />
     <None Include="hacks\misc\scaleform\files\teamcount_score.js" />
     <None Include="hacks\misc\scaleform\files\weapon_select.js" />
+    <None Include="hacks\misc\scaleform\files\health_and_ammo.js" />
   </ItemGroup>
 </Project>

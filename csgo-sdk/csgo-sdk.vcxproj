@@ -277,6 +277,7 @@
     <None Include="game\sdk\enums\e_move_type.h" />
     <None Include="hacks\misc\scaleform\files\alerts.js" />
     <None Include="hacks\misc\scaleform\files\deathnotices.js" />
+    <None Include="hacks\misc\scaleform\files\health_and_ammo.js" />
     <None Include="hacks\misc\scaleform\files\teamcount_avatar.js" />
     <None Include="hacks\misc\scaleform\files\teamcount_score.js" />
     <None Include="hacks\misc\scaleform\files\weapon_select.js" />

@@ -7,16 +7,14 @@ for (var dnBackground of contextPanel.FindChildrenWithClassTraverse('DeathNotice
 	dnBackground.style.borderRadius = '3px';
 	dnBackground.style.height = '100%';
 	dnBackground.style.width = '100%';
+	dnBackground.style.paddingTop = "0px";
 	//dnBackground.style.height = '36px';
 }
 
 for (var dnBackgroundg of contextPanel.FindChildrenWithClassTraverse('DeathNoticeBG')) {
-	//dnBackgroundg.style.backgroundImage = 'url("https://images2.imgbox.com/49/45/mrwub2K0_o.png")';
+	dnBackgroundg.style.backgroundImage = 'url("https://cdn.discordapp.com/attachments/755851390496145548/1078939820497305660/1.png")';
 	dnBackgroundg.style.backgroundSize = '100% 100%';
-	dnBackgroundg.style.height = '100%';
-	dnBackgroundg.style.width = '100%';
-	dnBackgroundg.style.backgroundColor = 'gradient( linear, 0% 0%, 0% 0%, from( #000000CC ), color-stop( 1, #00000000 ) , color-stop( 1, #00000000), color-stop( 1, #00000000 ), to( #00000000 ) )';
-	dnBackgroundg.style.opacity = '0.65';
+	dnBackgroundg.style.backgroundColor = '#00000000';
 }
 
 for (var dnBackgroundgradient of contextPanel.FindChildrenWithClassTraverse('DeathNoticeBGGradient')) {
@@ -25,23 +23,18 @@ for (var dnBackgroundgradient of contextPanel.FindChildrenWithClassTraverse('Dea
 	dnBackgroundgradient.opacity = '0.76';
 	dnBackgroundgradient.verticalAlign = 'center';
 }
-//DeathNoticeContent 
-for (var content of contextPanel.FindChildrenWithClassTraverse('DeathNoticeWipeContainer')) {
-	content.padding = '6px 10px 3px 10px';
-	content.S2MixBlendMode = 'SRGBadditive';
-	content.fontSize = '40px';
-}
 
 for (var dnIcon of contextPanel.FindChildrenWithClassTraverse('DeathNoticeIcon')) {
 	if (dnIcon.id === "Weapon") {
 		dnIcon.style.verticalAlign = 'top';
-		dnIcon.style.transform = 'translateY(5px)';
-		dnIcon.style.margin = '-2px 4px 0px 5px';         
-		dnIcon.style.uiScale = "51%";
+		dnIcon.style.transform = 'translateY(5px)';   
+		dnIcon.style.uiScale = "60%";
+		dnIcon.style.margin = '-4px 3px 15px 6px';
 	} else {
 		dnIcon.style.height = '20px';
 		dnIcon.style.verticalAlign = 'top';
 		dnIcon.style.transform = 'translateY(0px) scaleY(.8) scaleX(.8)';
+		dnIcon.style.margin = '-1px 1px 0px 2px'; 
 		dnIcon.style.uiScale = "100%";
 	}
 }
@@ -61,8 +54,8 @@ for (var deathnotice of contextPanel.FindChildrenWithClassTraverse('DeathNotice'
 	deathnotice.FindChildTraverse('ThroughSmokeIcon').style.visibility = 'collapse';
 	deathnotice.FindChildTraverse('AttackerBlindIcon').style.visibility = 'collapse';
 	deathnotice.FindChildTraverse('Domination').style.visibility = 'collapse';
-	// ---------------- REMOVALS ----------------
-	deathnotice.style.margin = '0px';
+
+	deathnotice.style.margin = '0px -8px 0px 20px';
 
 	if (deathnotice.BHasClass('DeathNotice_Killer')) {
 		for (var killer of contextPanel.FindChildTraverse('HudDeathNotice').FindChildrenWithClassTraverse('DeathNotice_Killer')) {

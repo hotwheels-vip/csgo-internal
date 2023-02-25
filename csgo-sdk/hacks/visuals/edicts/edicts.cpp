@@ -183,13 +183,13 @@ void n_edicts::impl_t::projectiles( )
 				return;
 
 			auto projectile_icon = [ & ]( const int char_icon_index, const std::string name ) -> void {
-				const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_12 ]->CalcTextSizeA(
-					g_render.m_fonts[ e_font_names::font_name_verdana_12 ]->FontSize, FLT_MAX, 0.f, name.c_str( ) );
+				const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_11 ]->CalcTextSizeA(
+					g_render.m_fonts[ e_font_names::font_name_verdana_11 ]->FontSize, FLT_MAX, 0.f, name.c_str( ) );
 
 				if ( should_draw_name )
 					g_render.m_draw_data.emplace_back(
 						e_draw_type::draw_type_text,
-						std::make_any< text_draw_object_t >( g_render.m_fonts[ e_font_names::font_name_verdana_12 ],
+						std::make_any< text_draw_object_t >( g_render.m_fonts[ e_font_names::font_name_verdana_11 ],
 					                                         c_vector_2d( out.m_x - ( text_size.x / 2 ), out.m_y - 15 ), name, name_color,
 					                                         c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
 

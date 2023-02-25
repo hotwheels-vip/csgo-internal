@@ -504,6 +504,23 @@ void n_menu::impl_t::on_end_scene( )
 				if ( ImGui::Button( "force hud update" ) )
 					g_scaleform.m_should_force_update = true;
 
+#ifdef _DEBUG
+
+				static int ctx_panel = 0;
+				static char buffer[ 1024 * 16 ];
+				// ImGui::InputTextMultiline( "panorama debug text##panorama debug", buffer, IM_ARRAYSIZE( buffer ) );
+				//  ^ this does not work for some reason. code for it is fucked and i dont feel like fixing
+				ImGui::InputText( "panorama script text", buffer, IM_ARRAYSIZE( buffer ) );
+
+				ImGui::Combo( "context panel#panel", &ctx_panel, "CSGOHud\0CSGOMainMenu" );
+
+				if ( ImGui::Button( "run panorama script" ) )
+					g_scaleform.m_uiengine->run_script( ctx_panel == 0 ? g_scaleform.m_hud_panel : g_scaleform.m_menu_panel, buffer,
+					                                    ctx_panel == 0 ? "panorama/layout/hud/hud.xml" : "panorama/layout/mainmenu.xml", 8, 10, false,
+					                                    false );
+
+#endif
+
 				ImGui::EndChild( );
 			}
 
