@@ -2,6 +2,7 @@
 #include "../hooks.h"
 
 #include "../../globals/config/variables.h"
+#include "../../globals/globals.h"
 #include "../../globals/interfaces/interfaces.h"
 #include "../../hacks/lagcomp/lagcomp.h"
 #include <fstream>
@@ -36,14 +37,15 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
             }
         })#";
 
-		animated_wireframe = g_interfaces.m_material_system->find_material( "animated_wireframe" );
+		animated_wireframe = g_interfaces.m_material_system->find_material( "debug/debugdrawflat" );
 		animated_wireframe->increment_reference_count( );
 	};
 
 	const auto backtrack_color   = GET_VARIABLE( g_variables.m_player_lag_chams_color, c_color );
 	const bool should_draw_chams = GET_VARIABLE( g_variables.m_player_lag_chams, bool );
 
-	if ( !context || !custom_bone_to_world || !g_interfaces.m_engine_client->is_connected_safe( ) || !should_draw_chams )
+	if ( !context || !custom_bone_to_world || !g_interfaces.m_engine_client->is_connected_safe( ) || !should_draw_chams ||
+	     g_ctx.m_is_glow_being_drawn )
 		return original( ecx, edx, context, state, info, custom_bone_to_world );
 
 	if ( info.model ) {
@@ -57,17 +59,19 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 		if ( player->is_valid_enemy( ) && mdl.find( "player" ) != std::string::npos && info.entity_index > 0 && info.entity_index < 64 ) {
 			auto oldest_record = g_lagcomp.oldest_record( info.entity_index );
 
-			if ( matrix3x4_t arr[ 128 ]; oldest_record.has_value( ) && g_lagcomp.generate_lerped_lag_matrix( info.entity_index, arr ) ) {
-				animated_wireframe->color_modulate( backtrack_color[ 0 ], backtrack_color[ 1 ], backtrack_color[ 2 ] );
+			if ( const auto distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
+			     oldest_record.has_value( ) && distance > 1.f && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
+				// sorry
+				animated_wireframe->color_modulate( backtrack_color[ 0 ] / 255, backtrack_color[ 1 ] / 255, backtrack_color[ 2 ] / 255 );
 				animated_wireframe->alpha_modulate( backtrack_color[ 3 ] );
 
-				animated_wireframe->set_material_var_flag( material_var_nofog, true );
+				// animated_wireframe->set_material_var_flag( material_var_nofog, true );
 				animated_wireframe->set_material_var_flag( material_var_ignorez, true );
-				animated_wireframe->set_material_var_flag( material_var_znearer, true );
+				// animated_wireframe->set_material_var_flag( material_var_znearer, true );
 
 				g_interfaces.m_model_render->forced_material_override( animated_wireframe );
 
-				original( g_interfaces.m_model_render, edx, context, state, info, arr );
+				original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix );
 
 				g_interfaces.m_model_render->forced_material_override( nullptr );
 			}
