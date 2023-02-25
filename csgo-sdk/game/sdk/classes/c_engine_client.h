@@ -49,6 +49,11 @@ public:
 		return g_virtual.call< bool >( this, 27 );
 	}
 
+	bool is_connected_safe( )
+	{
+		return is_connected( ) && is_in_game( ) && !is_playing_demo( );
+	}
+
 	void* get_bsp_tree_query( )
 	{
 		return g_virtual.call< void* >( this, 43 );

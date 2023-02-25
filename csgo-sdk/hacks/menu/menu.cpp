@@ -269,6 +269,9 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "chams" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+				ImGui::Checkbox( "lag compensated chams", &GET_VARIABLE( g_variables.m_player_lag_chams, bool ) );
+				ImGui::ColorEdit4( "lag compensated chams color##lagcomp chams color", &GET_VARIABLE( g_variables.m_player_lag_chams_color, c_color ),
+				                   color_picker_alpha_flags );
 				ImGui::EndChild( );
 			}
 
