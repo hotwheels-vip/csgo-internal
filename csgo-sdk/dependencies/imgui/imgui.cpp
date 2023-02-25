@@ -5925,9 +5925,6 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
 			draw_position + ImVec2( ( child_window->Size.x - text_size.x ) / 2.f, ( 20.f - text_size.y ) / 2.f ),
 			ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * text_animation.AnimationData->second ), name );
-
-		RenderFadedGradientLine( parent_window->DrawList, draw_position + ImVec2( 0.f, 20.f ), ImVec2( child_window->Size.x, 1.f ),
-		                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
 	}
 
 	if ( border ) {
@@ -5941,15 +5938,19 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 	const auto subtab_vector_size = subtab_names.size( );
 
 	if ( subtab_number && subtab_vector_size != 0 ) {
-		parent_window->DrawList->AddRectFilled( child_window->Pos + ImVec2( 1.f, 0.f ),
-		                                        child_window->Pos + ImVec2( 1.f, 0.f ) + ImVec2( child_window->Size.x - 2.f, 25.f ),
+		parent_window->DrawList->PushClipRect( child_window->Pos, child_window->Pos + child_window->Size );
+
+		parent_window->DrawList->AddRectFilled( child_window->Pos + ImVec2( 1.f, -child_window->Scroll.y ),
+		                                        child_window->Pos + ImVec2( 1.f, -child_window->Scroll.y ) +
+		                                            ImVec2( child_window->Size.x - 2.f, 25.f ),
 		                                        ImColor( 20 / 255.f, 20 / 255.f, 20 / 255.f ) );
 
-		parent_window->DrawList->AddRectFilled( child_window->Pos + ImVec2( 1.f, 24.f ),
-		                                        child_window->Pos + ImVec2( 1.f, 24.f ) + ImVec2( child_window->Size.x - 2.f, 1 ),
+		parent_window->DrawList->AddRectFilled( child_window->Pos + ImVec2( 1.f, 24.f ) + ImVec2( 0.f, -child_window->Scroll.y ),
+		                                        child_window->Pos + ImVec2( 1.f, 24.f ) + ImVec2( 0.f, -child_window->Scroll.y ) +
+		                                            ImVec2( child_window->Size.x - 2.f, 1 ),
 		                                        ImColor( 30 / 255.f, 30 / 255.f, 30 / 255.f ) );
 
-		for ( std::size_t iterator = { }; iterator < subtab_vector_size; iterator++ ) {
+		for ( unsigned int iterator = { }; iterator < subtab_vector_size; iterator++ ) {
 			if ( !( iterator < subtab_vector_size ) )
 				break;
 
@@ -5962,8 +5963,6 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 
 			const int tab_width    = ( child_window->Size.x / static_cast< int >( subtab_names.size( ) ) );
 			const int tab_center_x = ( tab_width * iterator ) + ( tab_width / 2 );
-
-			const auto backup_cursor_position = ImGui::GetCursorPos( );
 
 			ImGui::SetCursorPos( ImVec2( tab_center_x - ( text_size.x / 2 ), ( 25.f - text_size.y ) / 2.f ) );
 
@@ -5988,7 +5987,8 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 
 			RenderFadedGradientLine(
 				parent_window->DrawList,
-				ImVec2( child_window->Pos.x + ( tab_center_x - tab_width / 2.f ), child_window->Pos.y + cursor_position.y + text_size.y + 6.f ),
+				ImVec2( child_window->Pos.x + ( tab_center_x - tab_width / 2.f ),
+			            child_window->Pos.y + ( ImGui::GetCursorPos( ).y - child_window->Scroll.y ) - 2.f ),
 				ImVec2( tab_width, 1.f ),
 				ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z, selected_animation.AnimationData->second ) );
 
@@ -5996,7 +5996,14 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 				*subtab_number = iterator;
 		}
 
+		parent_window->DrawList->PopClipRect( );
+
 		SetCursorPosY( GetCursorPosY( ) + 5.f );
+	}
+
+	if ( show_text ) {
+		RenderFadedGradientLine( parent_window->DrawList, draw_position + ImVec2( 0.f, 20.f ), ImVec2( child_window->Size.x, 1.f ),
+		                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
 	}
 
 	return ret;
