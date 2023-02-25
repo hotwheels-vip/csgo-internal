@@ -14,7 +14,8 @@ class c_base_entity;
 class c_move_data;
 
 struct game_event_t;
-struct fmt_str_n_t;
+struct model_render_info_t;
+struct matrix3x4_t;
 
 enum e_glow_style;
 
@@ -46,6 +47,7 @@ namespace n_hooks
 		c_detour_hook m_draw_set_color{ };
 		c_detour_hook m_level_init_post_entity{ };
 		c_detour_hook m_set_image_data_r8g8b8a8{ };
+		c_detour_hook m_draw_model_execute{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -89,5 +91,6 @@ namespace n_detoured_functions
 	bool __fastcall net_earliertempents( void* ecx, void* edx );
 	bool __fastcall set_image_data_r8g8b8a8( void* ecx, void* edx, const uint8_t* data, uint32_t len, const char* filename, int w, int h, void* arg1,
 	                                         int arg2 );
-
+	void __fastcall draw_model_execute( void* ecx, void* edx, void* context, void* state, model_render_info_t& info,
+	                                    matrix3x4_t* custom_bone_to_world );
 } // namespace n_detoured_functions

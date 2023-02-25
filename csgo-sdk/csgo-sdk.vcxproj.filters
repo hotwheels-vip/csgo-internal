@@ -71,6 +71,7 @@
     <ClCompile Include="hacks\misc\scaleform\scaleform.cpp" />
     <ClCompile Include="hooks\functions\level_init_post_entity.cpp" />
     <ClCompile Include="hooks\functions\set_image_data_r8g8b8a8.cpp" />
+    <ClCompile Include="hooks\functions\draw_model_execute.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -253,6 +254,7 @@
     <ClInclude Include="game\sdk\structs\fmt_str_n_t.h" />
     <ClInclude Include="utilities\data\data.h" />
     <ClInclude Include="hacks\visuals\players\chams\chams.h" />
+    <ClInclude Include="game\sdk\structs\model_render_info_t.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

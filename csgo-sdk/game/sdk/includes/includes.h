@@ -54,6 +54,7 @@
 #include "../structs/fmt_str_n_t.h"
 #include "../structs/game_event_t.h"
 #include "../structs/matrix_t.h"
+#include "../structs/model_render_info_t.h"
 #include "../structs/mstudiobone_t.h"
 #include "../structs/player_info_t.h"
 #include "../structs/recv_prop_t.h"
