@@ -87,7 +87,10 @@ bool n_hooks::impl_t::on_attach( )
 	                 "IDirect3DDevice9::EndScene()" );
 
 	initialise_hook( m_draw_set_color, g_virtual.get( g_interfaces.m_surface, 15 ), &n_detoured_functions::draw_set_color,
-	                 ( "ISurface::DrawSetColor()" ) );
+	                 "ISurface::DrawSetColor()" );
+
+	initialise_hook( m_draw_model_execute, g_virtual.get( g_interfaces.m_model_render, 21 ), &n_detoured_functions::draw_model_execute,
+	                 "CModelRender::DrawModelExecute()" );
 
 	initialise_hook( m_set_image_data_r8g8b8a8,
 	                 g_modules[ PANORAMA_DLL ].find_pattern( "55 8B EC 83 E4 F8 81 ? ? ? ? ? 53 56 57 8B F9 8B ? ? ? ? ? 8B" ),

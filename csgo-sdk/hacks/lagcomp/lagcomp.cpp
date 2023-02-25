@@ -60,6 +60,8 @@ bool n_lagcomp::impl_t::generate_lerped_lag_matrix( const int ent_index, matrix3
 
 	for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
 		auto record = &record_list[ i ];
+		if ( !record )
+			continue;
 
 		bool end = i + 1 == g_ctx.m_max_allocations;
 

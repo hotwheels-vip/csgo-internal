@@ -35,6 +35,9 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
                 }
             }
         })#";
+
+		animated_wireframe = g_interfaces.m_material_system->find_material( "animated_wireframe" );
+		animated_wireframe->increment_reference_count( );
 	};
 
 	const auto backtrack_color   = GET_VARIABLE( g_variables.m_player_lag_chams_color, c_color );
@@ -52,23 +55,21 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 		//		make separate chams func
 
 		if ( player->is_valid_enemy( ) && mdl.find( "player" ) != std::string::npos && info.entity_index > 0 && info.entity_index < 64 ) {
-			auto last_record = g_lagcomp.oldest_record( info.entity_index );
-			if ( last_record.has_value( ) ) {
+			auto oldest_record = g_lagcomp.oldest_record( info.entity_index );
 
-				matrix3x4_t arr[ 128 ];
-				if ( g_lagcomp.generate_lerped_lag_matrix( info.entity_index, arr ) )
+			if ( matrix3x4_t arr[ 128 ]; oldest_record.has_value( ) && g_lagcomp.generate_lerped_lag_matrix( info.entity_index, arr ) ) {
 				animated_wireframe->color_modulate( backtrack_color[ 0 ], backtrack_color[ 1 ], backtrack_color[ 2 ] );
 				animated_wireframe->alpha_modulate( backtrack_color[ 3 ] );
 
 				animated_wireframe->set_material_var_flag( material_var_nofog, true );
 				animated_wireframe->set_material_var_flag( material_var_ignorez, true );
-				// animated_wireframe->set_material_var_flag( material_var_, true );
-				//
-				// g_interfaces.m_model_render->forced_material_override( material_btrack );
-				//
-				// ofunc( interfaces::model_render, ctx, state, info, records[ info.entity_index ].back( ).matrix );
-				//
-				// g_interfaces.m_model_render->forced_material_override( nullptr );
+				animated_wireframe->set_material_var_flag( material_var_znearer, true );
+
+				g_interfaces.m_model_render->forced_material_override( animated_wireframe );
+
+				original( g_interfaces.m_model_render, edx, context, state, info, arr );
+
+				g_interfaces.m_model_render->forced_material_override( nullptr );
 			}
 		}
 	}
