@@ -1,6 +1,7 @@
 #include "../../game/sdk/includes/includes.h"
 #include "../hooks.h"
 
+#include "../../dependencies/imgui/imgui.h"
 #include "../../globals/config/variables.h"
 #include "../../globals/globals.h"
 #include "../../globals/interfaces/interfaces.h"
@@ -44,8 +45,9 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 	const auto backtrack_color   = GET_VARIABLE( g_variables.m_player_lag_chams_color, c_color );
 	const bool should_draw_chams = GET_VARIABLE( g_variables.m_player_lag_chams, bool );
 
-	if ( !context || !custom_bone_to_world || !g_interfaces.m_engine_client->is_connected_safe( ) || !should_draw_chams ||
-	     g_ctx.m_is_glow_being_drawn )
+	if ( !context || !custom_bone_to_world || !g_interfaces.m_engine_client->is_connected_safe( ) || !g_ctx.m_local || !should_draw_chams ||
+	     g_ctx.m_is_glow_being_drawn || strstr( info.model->m_name, "player/contactshadow" ) ||
+	     g_interfaces.m_model_render->is_forced_material_override( ) )
 		return original( ecx, edx, context, state, info, custom_bone_to_world );
 
 	if ( info.model ) {
@@ -60,20 +62,27 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 			auto oldest_record = g_lagcomp.oldest_record( info.entity_index );
 
 			if ( const auto distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
-			     oldest_record.has_value( ) && distance > 1.f && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
-				// sorry
-				animated_wireframe->color_modulate( backtrack_color[ 0 ] / 255, backtrack_color[ 1 ] / 255, backtrack_color[ 2 ] / 255 );
-				animated_wireframe->alpha_modulate( backtrack_color[ 3 ] );
+			     oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
+				ImAnimationHelper alpha_animation = ImAnimationHelper( HASH_RT( mdl.c_str( ) ), ImGui::GetIO( ).DeltaTime );
+				alpha_animation.Update( 4.f, distance > 3.f ? 2.f : -2.f );
 
-				// animated_wireframe->set_material_var_flag( material_var_nofog, true );
-				animated_wireframe->set_material_var_flag( material_var_ignorez, true );
-				// animated_wireframe->set_material_var_flag( material_var_znearer, true );
+				if ( alpha_animation.AnimationData->second > 0.f ) {
+					// sorry
+					animated_wireframe->color_modulate( backtrack_color.base< color_type_r >( ), backtrack_color.base< color_type_g >( ),
+					                                    backtrack_color.base< color_type_b >( ) );
+					animated_wireframe->alpha_modulate( backtrack_color.base< color_type_a >( ) * alpha_animation.AnimationData->second );
 
-				g_interfaces.m_model_render->forced_material_override( animated_wireframe );
+					// animated_wireframe->set_material_var_flag( material_var_nofog, true );
+					animated_wireframe->set_material_var_flag( material_var_ignorez, true );
+					// animated_wireframe->set_material_var_flag( material_var_znearer, true );
 
-				original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix );
+					g_interfaces.m_model_render->forced_material_override( animated_wireframe );
 
-				g_interfaces.m_model_render->forced_material_override( nullptr );
+					original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix );
+
+					g_interfaces.m_model_render->forced_material_override( nullptr );
+				} else
+					return original( ecx, edx, context, state, info, custom_bone_to_world );
 			}
 		}
 	}

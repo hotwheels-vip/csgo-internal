@@ -225,6 +225,9 @@ void n_lagcomp::impl_t::backtrack_player( c_base_entity* player )
 
 	// https://github.com/perilouswithadollarsign/cstrike15_src/blob/master/game/server/player_lagcompensation.cpp#L287
 
+	// maybe no? lol
+	player->set_abs_origin( closest_record->m_vec_origin );
+
 	g_ctx.m_cmd->m_tick_count = g_math.time_to_ticks( closest_record->m_sim_time + lerp_time( ) );
 }
 

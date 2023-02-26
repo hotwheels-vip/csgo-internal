@@ -92,7 +92,10 @@ void c_base_entity::post_think( )
 
 const bool c_base_entity::is_valid_enemy( )
 {
-	return this && this->is_alive( ) && !this->is_dormant( ) && this->is_player( ) && this != g_ctx.m_local && this->is_enemy( g_ctx.m_local );
+	if ( !this || !g_ctx.m_local )
+		return false;
+
+	return this->is_alive( ) && !this->is_dormant( ) && this->is_player( ) && this != g_ctx.m_local && this->is_enemy( g_ctx.m_local );
 }
 
 void c_base_entity::restore_data( const char* context, int slot, int type )
@@ -150,6 +153,9 @@ bool c_base_entity::can_shoot( )
 
 bool c_base_entity::is_enemy( c_base_entity* entity )
 {
+	if ( !entity )
+		return false;
+
 	if ( g_interfaces.m_game_types->get_current_game_type( ) == 6 /* GAMETYPE_FREEFORALL */ )
 		return ( this->get_survival_team( ) != entity->get_survival_team( ) );
 
