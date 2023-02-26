@@ -87,20 +87,28 @@ void n_edicts::impl_t::reset( )
 {
 	if ( m_created ) {
 		g_entity_cache.enumerate( e_enumeration_type::type_edicts, [ & ]( c_base_entity* entity ) {
-			if ( !entity )
+			if ( !entity || entity->is_dormant( ) )
 				return;
 
-			auto client_class = entity->get_client_networkable( )->get_client_class( );
+			const auto client_renderable = entity->get_client_renderable( );
+			if ( !client_renderable )
+				return;
+
+			const auto client_unknown = client_renderable->get_client_unknown( );
+			if ( !client_unknown )
+				return;
+
+			const auto client_networkable = client_unknown->get_client_networkable( );
+			if ( !client_networkable )
+				return;
+
+			const auto client_class = client_networkable->get_client_class( );
 			if ( !client_class )
 				return;
 
-			if ( static_cast< int >( client_class->m_class_id ) == 138 /* cprecipitation class id */ ) {
-				const auto networkable = entity->get_client_networkable( );
-				if ( !networkable )
-					return;
-
-				networkable->pre_data_update( 0 );
-				networkable->on_pre_data_changed( 0 );
+			if ( client_class->m_class_id == e_class_ids::c_precipitation ) {
+				client_networkable->pre_data_update( 0 );
+				client_networkable->on_pre_data_changed( 0 );
 
 				*( int* )( ( uintptr_t )entity + 0xA00 ) = -1;
 
@@ -111,9 +119,9 @@ void n_edicts::impl_t::reset( )
 				collideable->obb_mins( ) = c_vector{ 0, 0, 0 };
 				collideable->obb_maxs( ) = c_vector{ 0, 0, 0 };
 
-				networkable->on_data_changed( 0 );
-				networkable->post_data_update( 0 );
-				networkable->release( );
+				client_networkable->on_data_changed( 0 );
+				client_networkable->post_data_update( 0 );
+				client_networkable->release( );
 			}
 		} );
 
@@ -128,6 +136,7 @@ void* n_edicts::impl_t::get_precipitation_collideable( )
 	return &precipitation_collideable;
 }
 
+/* todo ~ move the projectiles ent loop into the same one as dropeed_weapons as there is no point having two ent loops */
 void n_edicts::impl_t::projectiles( )
 {
 	if ( !g_ctx.m_local )
@@ -383,20 +392,24 @@ void n_edicts::impl_t::precipitation( )
 		if ( !rain_networkable )
 			return;
 
-		c_client_unknown* rain_unknown = ( ( c_client_renderable* )rain_networkable )->get_client_unknown( );
-		if ( !rain_unknown )
-			return;
-
-		c_base_entity* entity = rain_unknown->get_base_entity( );
+		const auto entity = g_interfaces.m_client_entity_list->get< c_base_entity >( 2048 - 1 );
 		if ( !entity )
 			return;
 
-		const auto networkable = entity->get_client_networkable( );
-		if ( !networkable )
+		const auto client_renderable = entity->get_client_renderable( );
+		if ( !client_renderable )
 			return;
 
-		networkable->pre_data_update( 0 );
-		networkable->on_pre_data_changed( 0 );
+		const auto client_unknown = client_renderable->get_client_unknown( );
+		if ( !client_unknown )
+			return;
+
+		const auto client_networkable = client_unknown->get_client_networkable( );
+		if ( !client_networkable )
+			return;
+
+		client_networkable->pre_data_update( 0 );
+		client_networkable->on_pre_data_changed( 0 );
 		entity->get_index( ) = -1;
 
 		*( int* )( ( uintptr_t )entity + 0xA00 ) = weather_type;
@@ -412,8 +425,8 @@ void n_edicts::impl_t::precipitation( )
 
 		entity->get_model_index( ) = -1;
 
-		networkable->on_data_changed( 0 );
-		networkable->post_data_update( 0 );
+		client_networkable->on_data_changed( 0 );
+		client_networkable->post_data_update( 0 );
 
 		m_created = true;
 	}
@@ -425,7 +438,15 @@ void n_edicts::impl_t::fog( )
 		if ( !entity || entity->is_dormant( ) )
 			return;
 
-		const auto client_networkable = entity->get_client_networkable( );
+		const auto client_renderable = entity->get_client_renderable( );
+		if ( !client_renderable )
+			return;
+
+		const auto client_unknown = client_renderable->get_client_unknown( );
+		if ( !client_unknown )
+			return;
+
+		const auto client_networkable = client_unknown->get_client_networkable( );
 		if ( !client_networkable )
 			return;
 

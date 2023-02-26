@@ -49,8 +49,6 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		g_prediction.end( g_ctx.m_local );
 
 		g_movement.on_create_move_post( );
-
-		g_console.print( std::vformat( "move_collide -> {:d}", std::make_format_args( g_ctx.m_local->get_move_collide( ) ) ).c_str( ) );
 	}( );
 
 	cmd->m_view_point.normalize( );
