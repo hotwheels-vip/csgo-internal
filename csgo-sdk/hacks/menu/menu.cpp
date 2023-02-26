@@ -596,8 +596,8 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Text( "accent color" );
 
 				ImGui::ColorEdit4( ( "##accent color" ), &GET_VARIABLE( g_variables.m_accent, c_color ), color_picker_no_alpha_flags );
-				ImGui::Checkbox( "watermark", &GET_VARIABLE( g_variables.m_watermark, bool ) );
 #ifdef _DEBUG
+				ImGui::Checkbox( "watermark", &GET_VARIABLE( g_variables.m_watermark, bool ) );
 				ImGui::Checkbox( "debugger menu", &GET_VARIABLE( g_variables.m_debugger_visual, bool ) );
 #endif
 

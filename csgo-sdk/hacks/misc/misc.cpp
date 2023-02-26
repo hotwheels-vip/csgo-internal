@@ -20,6 +20,7 @@ void n_misc::impl_t::on_paint_traverse( )
 
 void n_misc::impl_t::on_end_scene( )
 {
+#ifdef _DEBUG
 	[ & ]( const bool can_draw_watermark ) {
 		if ( !can_draw_watermark )
 			return;
@@ -80,6 +81,7 @@ void n_misc::impl_t::on_end_scene( )
 		}
 		ImGui::End( );
 	}( GET_VARIABLE( g_variables.m_watermark, bool ) );
+#endif
 
 	// functions that require player to be ingame
 	if ( !g_ctx.m_local || !g_interfaces.m_engine_client->is_in_game( ) || g_ctx.m_local->get_observer_mode( ) == 1 /*DEATH_CAM*/ )
@@ -98,7 +100,7 @@ void n_misc::impl_t::on_end_scene( )
 		constexpr auto background_height = 25.f;
 		constexpr auto title_text        = "practice";
 		const auto title_text_size       = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-				  g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
+            g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
 
 		ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 25.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
 		ImGui::Begin( ( "hotwheels-practice-window-ui" ), 0,
