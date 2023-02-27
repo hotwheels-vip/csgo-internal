@@ -64,7 +64,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 			if ( const auto distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
 			     oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
 				ImAnimationHelper alpha_animation = ImAnimationHelper( HASH_RT( mdl.c_str( ) ), ImGui::GetIO( ).DeltaTime );
-				alpha_animation.Update( 4.f, distance > 3.f ? 2.f : -2.f );
+				alpha_animation.Update( 2.f, distance > 3.f ? 2.f : -2.f );
 
 				if ( alpha_animation.AnimationData->second > 0.f ) {
 					// sorry

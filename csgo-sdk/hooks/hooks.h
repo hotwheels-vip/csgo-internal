@@ -48,6 +48,7 @@ namespace n_hooks
 		c_detour_hook m_level_init_post_entity{ };
 		c_detour_hook m_set_image_data_r8g8b8a8{ };
 		c_detour_hook m_draw_model_execute{ };
+		c_detour_hook m_list_leaves_in_box{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -93,4 +94,5 @@ namespace n_detoured_functions
 	                                         int arg2 );
 	void __fastcall draw_model_execute( void* ecx, void* edx, void* context, void* state, model_render_info_t& info,
 	                                    matrix3x4_t* custom_bone_to_world );
+	int __fastcall list_leaves_in_box( void* ecx, void* edx, const c_vector& mins, const c_vector& maxs, unsigned short* list, int list_max );
 } // namespace n_detoured_functions

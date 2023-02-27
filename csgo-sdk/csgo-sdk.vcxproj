@@ -42,6 +42,7 @@
     <ClCompile Include="globals\convars\convars.cpp" />
     <ClCompile Include="globals\math\math.cpp" />
     <ClCompile Include="hacks\aimbot\aimbot.cpp" />
+    <ClCompile Include="hacks\animations\animations.cpp" />
     <ClCompile Include="hacks\entity_cache\entity_cache.cpp" />
     <ClCompile Include="hacks\indicators\indicators.cpp" />
     <ClCompile Include="hacks\lagcomp\lagcomp.cpp" />
@@ -65,6 +66,7 @@
     <ClCompile Include="hooks\functions\level_init_post_entity.cpp" />
     <ClCompile Include="hooks\functions\level_init_pre_entity.cpp" />
     <ClCompile Include="hooks\functions\level_shutdown.cpp" />
+    <ClCompile Include="hooks\functions\list_leaves_in_box.cpp" />
     <ClCompile Include="hooks\functions\lock_cursor.cpp" />
     <ClCompile Include="hooks\functions\modify_eye_position.cpp" />
     <ClCompile Include="hooks\functions\net_earliertempents.cpp" />
@@ -232,6 +234,7 @@
     <ClInclude Include="game\sdk\structs\player_info_t.h" />
     <ClInclude Include="game\sdk\structs\recv_table_t.h" />
     <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
+    <ClInclude Include="game\sdk\structs\renderable_info_t.h" />
     <ClInclude Include="game\sdk\structs\studiohdr_t.h" />
     <ClInclude Include="game\sdk\structs\texture_t.h" />
     <ClInclude Include="game\sdk\structs\type_description_t.h" />
@@ -245,6 +248,7 @@
     <ClInclude Include="globals\macros\macros.h" />
     <ClInclude Include="globals\math\math.h" />
     <ClInclude Include="hacks\aimbot\aimbot.h" />
+    <ClInclude Include="hacks\animations\animations.h" />
     <ClInclude Include="hacks\debug\debug.h" />
     <ClInclude Include="hacks\entity_cache\entity_cache.h" />
     <ClInclude Include="hacks\indicators\indicators.h" />

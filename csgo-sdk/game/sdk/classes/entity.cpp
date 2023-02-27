@@ -90,6 +90,15 @@ void c_base_entity::post_think( )
 	g_interfaces.m_model_cache->end_lock( );
 }
 
+// any player, including teammates
+const bool c_base_entity::is_valid_player( )
+{
+	if ( !this || !g_ctx.m_local )
+		return false;
+
+	return this->is_alive( ) && !this->is_dormant( ) && this->is_player( ) && this != g_ctx.m_local;
+}
+
 const bool c_base_entity::is_valid_enemy( )
 {
 	if ( !this || !g_ctx.m_local )

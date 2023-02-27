@@ -319,7 +319,8 @@ public:
 	ADD_DATAFIELD( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
 	ADD_DATAFIELD( const matrix3x4_t, get_coordinate_frame, this->get_data_desc_map( ), "m_rgflCoordinateFrame" );
 	ADD_DATAFIELD( int, get_move_type, this->get_prediction_desc_map( ), "m_MoveType" );
-	ADD_DATAFIELD( int, get_move_collide, this->get_prediction_desc_map( ), "m_MoveCollide" ); /* movetype + 1, this datamap var aint right i dont thinker */
+	ADD_DATAFIELD( int, get_move_collide, this->get_prediction_desc_map( ),
+	               "m_MoveCollide" ); /* movetype + 1, this datamap var aint right i dont thinker */
 	ADD_DATAFIELD( float, get_stamina, this->get_prediction_desc_map( ), "m_flStamina" );
 	ADD_DATAFIELD( bool, is_reloading, this->get_prediction_desc_map( ), "m_bInReload" );
 
@@ -334,6 +335,8 @@ public:
 	}
 
 	const bool is_valid_enemy( );
+
+	const bool is_valid_player( );
 
 	const int is_max_health( )
 	{

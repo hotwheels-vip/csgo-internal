@@ -99,6 +99,9 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_net_earliertempents, g_virtual.get( g_convars[ HASH_BT( "net_earliertempents" ) ], 13 ),
 	                 &n_detoured_functions::net_earliertempents, ( "net_earliertempents::GetBool()" ) );
 
+	initialise_hook( m_list_leaves_in_box, g_modules[ ENGINE_DLL ].find_pattern( "55 8B EC 83 EC ? 8B 4D ? 8D 55" ),
+	                 &n_detoured_functions::list_leaves_in_box, "CEngineBSPTree::ListLeavesInBox()" );
+
 	if ( g_interfaces.m_engine_client->is_in_game( ) )
 		g_interfaces.m_client_state->m_delta_tick = -1;
 

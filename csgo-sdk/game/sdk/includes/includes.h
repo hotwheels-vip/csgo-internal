@@ -59,6 +59,7 @@
 #include "../structs/player_info_t.h"
 #include "../structs/recv_prop_t.h"
 #include "../structs/recv_table_t.h"
+#include "../structs/renderable_info_t.h"
 #include "../structs/studiohdr_t.h"
 #include "../structs/texture_t.h"
 #include "../structs/type_description_t.h"

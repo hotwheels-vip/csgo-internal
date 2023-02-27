@@ -72,6 +72,8 @@
     <ClCompile Include="hooks\functions\level_init_post_entity.cpp" />
     <ClCompile Include="hooks\functions\set_image_data_r8g8b8a8.cpp" />
     <ClCompile Include="hooks\functions\draw_model_execute.cpp" />
+    <ClCompile Include="hooks\functions\list_leaves_in_box.cpp" />
+    <ClCompile Include="hacks\animations\animations.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -255,6 +257,8 @@
     <ClInclude Include="utilities\data\data.h" />
     <ClInclude Include="hacks\visuals\players\chams\chams.h" />
     <ClInclude Include="game\sdk\structs\model_render_info_t.h" />
+    <ClInclude Include="hacks\animations\animations.h" />
+    <ClInclude Include="game\sdk\structs\renderable_info_t.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
