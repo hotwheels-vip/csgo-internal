@@ -272,6 +272,8 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Checkbox( "lag compensated chams", &GET_VARIABLE( g_variables.m_player_lag_chams, bool ) );
 				ImGui::ColorEdit4( "lag compensated chams color##lagcomp chams color", &GET_VARIABLE( g_variables.m_player_lag_chams_color, c_color ),
 				                   color_picker_alpha_flags );
+				ImGui::Combo( "lag compensated chams type", &GET_VARIABLE( g_variables.m_player_lag_chams_type, int ),
+				              "oldest record\0all records\0aimbot target record" );
 				ImGui::EndChild( );
 			}
 

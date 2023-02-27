@@ -69,7 +69,7 @@ void n_misc::impl_t::on_end_scene( )
 				ImGui::SameLine( );
 			}
 
-			ImGui::Text( std::to_string( static_cast< int >( io.Framerate + 0.5f ) ).c_str( ) );
+			ImGui::Text( std::to_string( g_utilities.get_average_fps( io ) ).c_str( ) );
 
 			ImGui::SameLine( );
 
@@ -100,7 +100,7 @@ void n_misc::impl_t::on_end_scene( )
 		constexpr auto background_height = 25.f;
 		constexpr auto title_text        = "practice";
 		const auto title_text_size       = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-            g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
+				  g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
 
 		ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 25.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
 		ImGui::Begin( ( "hotwheels-practice-window-ui" ), 0,

@@ -59,34 +59,99 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 		//		make separate chams func
 
 		if ( player->is_valid_enemy( ) && mdl.find( "player" ) != std::string::npos && info.entity_index > 0 && info.entity_index < 64 ) {
-			auto oldest_record = g_lagcomp.oldest_record( info.entity_index );
+			auto oldest_record    = g_lagcomp.oldest_record( info.entity_index );
+			static float distance = 0.f;
+			switch ( GET_VARIABLE( g_variables.m_player_lag_chams_type, int ) ) {
+			case 0: // oldest record
 
-			if ( const auto distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
-			     oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
-				ImAnimationHelper alpha_animation = ImAnimationHelper( HASH_RT( mdl.c_str( ) ), ImGui::GetIO( ).DeltaTime );
-				alpha_animation.Update( 2.f, distance > 3.f ? 2.f : -2.f );
+				if ( distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
+				     oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
+					ImAnimationHelper alpha_animation = ImAnimationHelper( HASH_RT( mdl.c_str( ) ), ImGui::GetIO( ).DeltaTime );
+					alpha_animation.Update( 2.f, distance > 3.f ? 2.f : -2.f );
 
-				if ( alpha_animation.AnimationData->second > 0.f ) {
-					// sorry
-					animated_wireframe->color_modulate( backtrack_color.base< color_type_r >( ), backtrack_color.base< color_type_g >( ),
-					                                    backtrack_color.base< color_type_b >( ) );
-					animated_wireframe->alpha_modulate( backtrack_color.base< color_type_a >( ) * alpha_animation.AnimationData->second );
+					if ( alpha_animation.AnimationData->second > 0.f ) {
+						// sorry
+						animated_wireframe->color_modulate( backtrack_color.base< color_type_r >( ), backtrack_color.base< color_type_g >( ),
+						                                    backtrack_color.base< color_type_b >( ) );
+						animated_wireframe->alpha_modulate( backtrack_color.base< color_type_a >( ) * alpha_animation.AnimationData->second );
 
-					// animated_wireframe->set_material_var_flag( material_var_nofog, true );
-					animated_wireframe->set_material_var_flag( material_var_ignorez, true );
-					// animated_wireframe->set_material_var_flag( material_var_znearer, true );
+						animated_wireframe->set_material_var_flag( material_var_nofog, true );
+						animated_wireframe->set_material_var_flag( material_var_ignorez, true );
+						// animated_wireframe->set_material_var_flag( material_var_znearer, true );
 
-					g_interfaces.m_model_render->forced_material_override( animated_wireframe );
+						g_interfaces.m_model_render->forced_material_override( animated_wireframe );
 
-					original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix );
+						original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix );
 
-					g_interfaces.m_model_render->forced_material_override( nullptr );
-				} else
-					return original( ecx, edx, context, state, info, custom_bone_to_world );
+						g_interfaces.m_model_render->forced_material_override( nullptr );
+					} else
+						return original( ecx, edx, context, state, info, custom_bone_to_world );
+				}
+				break;
+			case 1: // all records
+				distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
+
+				if ( const auto record_list = g_lagcomp.m_records[ info.entity_index ];
+				     record_list && oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
+					for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
+						if ( !record_list[ i ].m_valid )
+							continue;
+						ImAnimationHelper alpha_animation = ImAnimationHelper( HASH_RT( mdl.c_str( ) ), ImGui::GetIO( ).DeltaTime );
+						alpha_animation.Update( 2.f, distance > 3.f ? 2.f : -2.f );
+
+						if ( alpha_animation.AnimationData->second > 0.f ) {
+							// sorry
+							animated_wireframe->color_modulate( backtrack_color.base< color_type_r >( ), backtrack_color.base< color_type_g >( ),
+							                                    backtrack_color.base< color_type_b >( ) );
+							animated_wireframe->alpha_modulate( backtrack_color.base< color_type_a >( ) * alpha_animation.AnimationData->second );
+
+							animated_wireframe->set_material_var_flag( material_var_nofog, true );
+							animated_wireframe->set_material_var_flag( material_var_ignorez, true );
+							// animated_wireframe->set_material_var_flag( material_var_znearer, true );
+
+							g_interfaces.m_model_render->forced_material_override( animated_wireframe );
+
+							original( g_interfaces.m_model_render, edx, context, state, info, record_list[ i ].m_matrix );
+
+							g_interfaces.m_model_render->forced_material_override( nullptr );
+						} else
+							return original( ecx, edx, context, state, info, custom_bone_to_world );
+					}
+				}
+				break;
+			case 2: // aimbot targeted record
+				if ( !( g_ctx.m_cmd->m_buttons & in_attack ) )
+					break;
+
+				if ( g_ctx.m_record ) {
+					if ( distance = g_ctx.m_record->m_vec_origin.dist_to( player->get_abs_origin( ) );
+					     distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
+						ImAnimationHelper alpha_animation = ImAnimationHelper( HASH_RT( mdl.c_str( ) ), ImGui::GetIO( ).DeltaTime );
+						alpha_animation.Update( 2.f, distance > 3.f ? 2.f : -2.f );
+
+						if ( alpha_animation.AnimationData->second > 0.f ) {
+							// sorry
+							animated_wireframe->color_modulate( backtrack_color.base< color_type_r >( ), backtrack_color.base< color_type_g >( ),
+							                                    backtrack_color.base< color_type_b >( ) );
+							animated_wireframe->alpha_modulate( backtrack_color.base< color_type_a >( ) * alpha_animation.AnimationData->second );
+
+							animated_wireframe->set_material_var_flag( material_var_nofog, true );
+							animated_wireframe->set_material_var_flag( material_var_ignorez, true );
+							// animated_wireframe->set_material_var_flag( material_var_znearer, true );
+
+							g_interfaces.m_model_render->forced_material_override( animated_wireframe );
+
+							original( g_interfaces.m_model_render, edx, context, state, info, g_ctx.m_record->m_matrix );
+
+							g_interfaces.m_model_render->forced_material_override( nullptr );
+						} else
+							return original( ecx, edx, context, state, info, custom_bone_to_world );
+					}
+				}
 			}
 		}
-	}
 
-	original( ecx, edx, context, state, info, custom_bone_to_world );
-	g_interfaces.m_model_render->forced_material_override( nullptr );
+		original( ecx, edx, context, state, info, custom_bone_to_world );
+		g_interfaces.m_model_render->forced_material_override( nullptr );
+	}
 }

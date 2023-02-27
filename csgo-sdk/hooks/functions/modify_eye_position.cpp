@@ -6,7 +6,7 @@ void __fastcall n_detoured_functions::modify_eye_position( c_animation_state* an
 {
 	static auto original = g_hooks.m_modify_eye_position.get_original< void( __thiscall* )( void*, std::reference_wrapper< const c_vector > ) >( );
 
-	if ( !anim_state || !anim_state->m_entity )
+	if ( !g_ctx.m_local || !anim_state || !anim_state->m_entity || g_ctx.m_local != anim_state->m_entity )
 		return original( anim_state, input_eye_pos );
 
 	static auto calc_view_return_address = reinterpret_cast< void* >( g_modules[ CLIENT_DLL ].find_pattern( "8B ? ? ? ? ? 30 ? ? ? ? C0 ? 50 " ) );

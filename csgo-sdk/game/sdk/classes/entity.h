@@ -244,6 +244,7 @@ public:
 	NETVAR_VARIABLE( int, get_team, "CBaseEntity->m_iTeamNum" );
 	NETVAR_VARIABLE( c_vector, get_origin, "CBaseEntity->m_vecOrigin" );
 	NETVAR_VARIABLE( float, get_simulation_time, "CBaseEntity->m_flSimulationTime" );
+	NETVAR_VARIABLE_OFFSET( float, get_old_simulation_time, "CBaseEntity->m_flSimulationTime", 0x4 );
 	NETVAR_VARIABLE( bool, is_predictable, "CBaseEntity->m_bPredictable" );
 	NETVAR_VARIABLE( int, get_model_index, "CBaseEntity->m_nModelIndex" );
 	NETVAR_VARIABLE( unsigned int, get_owner_entity_handle, "CBaseEntity->m_hOwnerEntity" );

@@ -67,6 +67,7 @@ namespace n_variables
 
 		/* visuals - chams*/
 		ADD_VARIABLE( bool, m_player_lag_chams, false );
+		ADD_VARIABLE( int, m_player_lag_chams_type, 0 );
 		ADD_VARIABLE( c_color, m_player_lag_chams_color, c_color( 114, 155, 221, 153 ) );
 
 		/* visuals - edicts */

@@ -2,6 +2,7 @@
 #include "../../globals/includes/includes.h"
 #include "../hooks.h"
 
+#include "../../hacks/debug/debug.h"
 #include "../../hacks/entity_cache/entity_cache.h"
 #include "../../hacks/movement/movement.h"
 #include "../../hacks/visuals/edicts/edicts.h"
@@ -23,7 +24,9 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 
 	g_edicts.on_frame_stage_notify( stage );
 	g_movement.on_frame_stage_notify( stage );
-
+#ifdef _DEBUG
+	g_debugger.on_frame_stage_notify( stage );
+#endif
 	if ( stage == net_update_end ) {
 		for ( auto m_event = g_interfaces.m_client_state->m_events; m_event; m_event = m_event->m_next ) {
 			if ( m_event->m_class_id )

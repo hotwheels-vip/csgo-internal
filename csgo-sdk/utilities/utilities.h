@@ -4,6 +4,8 @@
 #include <string>
 #include <xutility>
 
+struct ImGuiIO;
+
 namespace n_utilities
 {
 	struct impl_t {
@@ -14,6 +16,8 @@ namespace n_utilities
 		bool is_weapon_valid( );
 
 		const char8_t* get_weapon_icon( short item_definition_index );
+
+		int get_average_fps( ImGuiIO );
 
 		int create_thread( unsigned long __stdcall function( void* ), void* parameter );
 		template< typename T >

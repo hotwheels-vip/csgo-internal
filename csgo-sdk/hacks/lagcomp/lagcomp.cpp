@@ -161,6 +161,10 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 		if ( location >= g_ctx.m_max_allocations )
 			location = 0;
 
+		// data changed
+		if ( entity->get_old_simulation_time( ) == entity->get_simulation_time( ) )
+			return;
+
 		record_t new_record{ };
 
 		new_record.m_player     = index;

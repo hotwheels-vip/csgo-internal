@@ -13,6 +13,18 @@ int n_utilities::impl_t::create_thread( unsigned long __stdcall function( void* 
 	return 1;
 }
 
+int n_utilities::impl_t::get_average_fps( ImGuiIO io )
+{
+	static int average_fps = static_cast< int >( io.Framerate + 0.5f );
+
+	if ( static float last_checked = g_interfaces.m_global_vars_base->m_real_time;
+	     fabs( last_checked - g_interfaces.m_global_vars_base->m_real_time ) > 2.0f ) {
+		average_fps  = static_cast< int >( io.Framerate + 0.5f );
+		last_checked = g_interfaces.m_global_vars_base->m_real_time;
+	}
+	return average_fps;
+}
+
 const char8_t* n_utilities::impl_t::get_weapon_icon( short item_definition_index )
 {
 	switch ( item_definition_index ) {
