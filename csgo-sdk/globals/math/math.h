@@ -39,6 +39,18 @@ namespace n_math
 		std::int32_t time_to_ticks( float time );
 
 		float ticks_to_time( std::int32_t ticks );
+
+		template< typename T >
+		constexpr T divide_if_less( T num, T div )
+		{
+			return ( num >= div ? div : num ) / div;
+		};
+
+		template< typename T >
+		constexpr T divide_if_more( T num, T div )
+		{
+			return ( num < div ? div : num ) / div;
+		};
 	};
 } // namespace n_math
 

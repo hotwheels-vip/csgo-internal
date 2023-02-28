@@ -279,35 +279,33 @@ void n_edicts::impl_t::dropped_weapons( )
 				return;
 
 			// get distance to weapon and subtract by our threshold(600 units)
-			int distance_to_weapon_alpha = static_cast< int >( g_ctx.m_local->get_abs_origin( ).dist_to( entity->get_abs_origin( ) ) - 600.f );
-			// prevent division by 0
-			if ( distance_to_weapon_alpha > 0 ) {
-				// divide by our arbitery 255 number to scale alpha
-				distance_to_weapon_alpha /= 255;
-				// reverse number so it decreases and doesnt increase over distance
-				distance_to_weapon_alpha *= -1;
-			} else
-				distance_to_weapon_alpha = 0;
+			float distance_to_weapon_alpha = static_cast< float >( g_ctx.m_local->get_abs_origin( ).dist_to( entity->get_abs_origin( ) ) - 600.f );
+
+			distance_to_weapon_alpha = g_math.divide_if_less< float >( distance_to_weapon_alpha, 250.f );
 
 			if ( GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) ) {
 				if ( !GET_VARIABLE( g_variables.m_dropped_weapons_box_corner, bool ) ) {
 					g_render.m_draw_data.emplace_back(
 						e_draw_type::draw_type_rect,
-						std::make_any< rect_draw_object_t >( c_vector_2d( box.m_left, box.m_top ), c_vector_2d( box.m_right, box.m_bottom ),
-					                                         GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ).get_u32( ),
-					                                         GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ).get_u32( ),
-					                                         false, 0.f, ImDrawFlags_::ImDrawFlags_None, 1.f,
-					                                         GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool )
-					                                             ? e_rect_flags::rect_flag_inner_outline | e_rect_flags::rect_flag_outer_outline
-					                                             : e_rect_flags::rect_flag_none ) );
+						std::make_any< rect_draw_object_t >(
+							c_vector_2d( box.m_left, box.m_top ), c_vector_2d( box.m_right, box.m_bottom ),
+							GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ).get_u32( 1.f - distance_to_weapon_alpha ),
+							GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ).get_u32( 1.f - distance_to_weapon_alpha ), false,
+							0.f, ImDrawFlags_::ImDrawFlags_None, 1.f,
+							GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool )
+								? e_rect_flags::rect_flag_inner_outline | e_rect_flags::rect_flag_outer_outline
+								: e_rect_flags::rect_flag_none ) );
 				} else {
 					if ( GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool ) ) {
 						g_render.corner_rect( box.m_left, box.m_top, box.m_right, box.m_bottom,
-						                      c_color( GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ) ).get_u32( ), 2.f );
+						                      c_color( GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ) )
+						                          .get_u32( 1.f - distance_to_weapon_alpha ),
+						                      2.f );
 					}
 
-					g_render.corner_rect( box.m_left, box.m_top, box.m_right, box.m_bottom,
-					                      c_color( GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ) ).get_u32( ) );
+					g_render.corner_rect(
+						box.m_left, box.m_top, box.m_right, box.m_bottom,
+						c_color( GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ) ).get_u32( 1.f - distance_to_weapon_alpha ) );
 				}
 			}
 
@@ -332,8 +330,8 @@ void n_edicts::impl_t::dropped_weapons( )
 					std::make_any< text_draw_object_t >(
 						g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
 						c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ), converted_name,
-						GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ).get_u32( distance_to_weapon_alpha ),
-						c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( distance_to_weapon_alpha ), e_text_flags::text_flag_dropshadow ) );
+						GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ).get_u32( 1.f - distance_to_weapon_alpha ),
+						c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( 1.f - distance_to_weapon_alpha ), e_text_flags::text_flag_dropshadow ) );
 			}
 		}
 	} );

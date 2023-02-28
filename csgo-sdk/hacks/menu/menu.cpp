@@ -236,6 +236,9 @@ void n_menu::impl_t::on_end_scene( )
 						ImGui::Checkbox( "bounding box##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) );
 						if ( GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) ) {
 							if ( GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool ) ) {
+								ImGui::ColorEdit4( "##dropped weapons bounding box color",
+								                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ), color_picker_alpha_flags );
+
 								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
 								ImGui::ColorEdit4( "##dropped weapons bounding box outline color",
@@ -278,7 +281,6 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "chams" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
-
 				ImGui::Checkbox( "visible chams", &GET_VARIABLE( g_variables.m_player_visible_chams, bool ) );
 				if ( GET_VARIABLE( g_variables.m_player_visible_chams, bool ) ) {
 					ImGui::ColorEdit4( "visible chams color##visible chams color", &GET_VARIABLE( g_variables.m_player_visible_chams_color, c_color ),
@@ -289,8 +291,8 @@ void n_menu::impl_t::on_end_scene( )
 
 				ImGui::Checkbox( "invisible chams", &GET_VARIABLE( g_variables.m_player_invisible_chams, bool ) );
 				if ( GET_VARIABLE( g_variables.m_player_invisible_chams, bool ) ) {
-					ImGui::ColorEdit4( "invisible chams color##invisible chams color", &GET_VARIABLE( g_variables.m_player_invisible_chams_color, c_color ),
-					                   color_picker_alpha_flags );
+					ImGui::ColorEdit4( "invisible chams color##invisible chams color",
+					                   &GET_VARIABLE( g_variables.m_player_invisible_chams_color, c_color ), color_picker_alpha_flags );
 
 					ImGui::Combo( "invisible chams material", &GET_VARIABLE( g_variables.m_player_invisible_chams_material, int ), chams_materials );
 				}
@@ -343,8 +345,8 @@ void n_menu::impl_t::on_end_scene( )
 					if ( GET_VARIABLE( g_variables.m_fog, bool ) ) {
 						ImGui::ColorEdit4( "##fog picker", &GET_VARIABLE( g_variables.m_fog_color, c_color ), color_picker_alpha_flags );
 
-						ImGui::SliderFloat( "start##fog", &GET_VARIABLE( g_variables.m_fog_start, float ), 0.f, 5000.f, "%.1f" );
-						ImGui::SliderFloat( "end##fog", &GET_VARIABLE( g_variables.m_fog_end, float ), 0.f, 5000.f, "%.1f" );
+						ImGui::SliderFloat( "start##fog", &GET_VARIABLE( g_variables.m_fog_start, float ), 0.f, 5000.f, "%d u" );
+						ImGui::SliderFloat( "end##fog", &GET_VARIABLE( g_variables.m_fog_end, float ), 0.f, 5000.f, "%d u" );
 					}
 
 					ImGui::Checkbox( "custom smoke color", &GET_VARIABLE( g_variables.m_custom_smoke, bool ) );
@@ -531,6 +533,14 @@ void n_menu::impl_t::on_end_scene( )
 				// TODO: combobox between force crosshair and just draw a white dot
 				ImGui::Checkbox( "sniper crosshair", &GET_VARIABLE( g_variables.m_sniper_crosshair, bool ) );
 
+				ImGui::Checkbox( "practice window", &GET_VARIABLE( g_variables.m_practice_window, bool ) );
+
+				if ( GET_VARIABLE( g_variables.m_practice_window, bool ) ) {
+					ImGui::Text( "practice checkpoint key" );
+					ImGui::Keybind( "practice cp key", &GET_VARIABLE( g_variables.m_practice_cp_key, key_bind_t ) );
+					ImGui::Text( "practice teleport key" );
+					ImGui::Keybind( "practice tp key", &GET_VARIABLE( g_variables.m_practice_tp_key, key_bind_t ) );
+				}
 				ImGui::MultiCombo( "displayed logs", g_config.get< std::vector< bool > >( g_variables.m_log_types ),
 				                   { "damage", "team damage", "purchase", "votes" },
 				                   g_config.get< std::vector< bool > >( g_variables.m_log_types ).size( ) );
