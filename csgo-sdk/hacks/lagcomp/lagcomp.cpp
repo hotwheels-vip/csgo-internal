@@ -107,6 +107,26 @@ bool n_lagcomp::impl_t::generate_lerped_lag_matrix( const int ent_index, matrix3
 
 void n_lagcomp::impl_t::on_frame_stage_notify( )
 {
+	// check for bad entities and remove their records
+	// cannot do this with entity cache function, since if i call entity->get_index() its gonna crash.
+	// so we loop again and get index through actual iterator
+
+	for ( int i = 0; i < g_interfaces.m_global_vars_base->m_max_clients; i++ ) {
+		auto entity = g_interfaces.m_client_entity_list->get< c_base_entity >( i );
+	
+		const auto& record_list = this->m_records[ i ];
+	
+		if ( !entity->is_valid_enemy( ) && record_list ) {
+			for ( int j = 0; j < g_ctx.m_max_allocations; j++ ) {
+				delete[] this->m_records[ i ];
+	
+				this->m_records[ i ] = nullptr;
+	
+				break;
+			}
+		}
+	}
+
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
 		if ( !entity->is_valid_enemy( ) )
 			return;

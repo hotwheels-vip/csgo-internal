@@ -148,9 +148,9 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 		static float distance = 0.f;
 
 		switch ( GET_VARIABLE( g_variables.m_player_lag_chams_type, int ) ) {
-			if ( !should_draw_lag )
-				break;
 		case 0: // oldest record
+			if ( !should_draw_lag || !oldest_record.has_value( ) )
+				break;
 
 			if ( distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
 			     oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
@@ -176,6 +176,9 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 			}
 			break;
 		case 1: // all records
+			if ( !should_draw_lag || !oldest_record.has_value( ) )
+				break;
+
 			distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
 
 			if ( const auto record_list = g_lagcomp.m_records[ info.entity_index ];
@@ -206,7 +209,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 			}
 			break;
 		case 2: // aimbot targeted record
-			if ( !g_ctx.m_record )
+			if ( !g_ctx.m_record || !should_draw_lag || !oldest_record.has_value( ) )
 				break;
 
 			if ( distance = g_ctx.m_record->m_vec_origin.dist_to( player->get_abs_origin( ) ); distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
