@@ -26,6 +26,7 @@ class c_key_values_system;
 class c_global_vars_base;
 class c_weapon_system;
 class c_client_state;
+class c_engine_sound;
 
 struct IDirect3DDevice9;
 struct game_event_manager_t;
@@ -48,7 +49,7 @@ namespace n_interfaces
 		c_prediction* m_prediction                 = nullptr;
 		c_model_render* m_model_render             = nullptr;
 		c_model_cache* m_model_cache               = nullptr;
-		void* m_engine_sound                       = nullptr;
+		c_engine_sound* m_engine_sound             = nullptr;
 		c_surface* m_surface                       = nullptr;
 		c_game_types* m_game_types                 = nullptr;
 		c_localize* m_localize                     = nullptr;

@@ -394,6 +394,8 @@ public:
 		return reinterpret_cast< var_mapping* >( reinterpret_cast< std::uintptr_t >( this ) + 0x24 );
 	};
 
+	void invalidate_bone_cache( );
+
 	void modify_eye_position( const c_animation_state* animation_state, c_vector* position ) const;
 	void set_next_think( int think );
 	void post_think( );

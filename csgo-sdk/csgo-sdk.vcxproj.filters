@@ -74,6 +74,7 @@
     <ClCompile Include="hooks\functions\draw_model_execute.cpp" />
     <ClCompile Include="hooks\functions\list_leaves_in_box.cpp" />
     <ClCompile Include="hacks\animations\animations.cpp" />
+    <ClCompile Include="hacks\visuals\players\dormancy\dormancy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -259,6 +260,8 @@
     <ClInclude Include="game\sdk\structs\model_render_info_t.h" />
     <ClInclude Include="hacks\animations\animations.h" />
     <ClInclude Include="game\sdk\structs\renderable_info_t.h" />
+    <ClInclude Include="hacks\visuals\players\dormancy\dormancy.h" />
+    <ClInclude Include="game\sdk\classes\c_engine_sound.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

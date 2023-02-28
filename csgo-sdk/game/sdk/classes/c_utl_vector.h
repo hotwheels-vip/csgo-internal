@@ -60,7 +60,7 @@ public:
 		return m_memory[ i ];
 	}
 
-		T* get_elements( )
+	T* get_elements( )
 	{
 		return this->m_elements;
 	}
@@ -83,6 +83,15 @@ public:
 	int& size( )
 	{
 		return m_size;
+	}
+
+	void remove_all( )
+	{
+		for ( int i = m_size; --i >= 0; ) {
+			destruct< T >( &element( i ) );
+		}
+
+		m_size = 0;
 	}
 
 protected:

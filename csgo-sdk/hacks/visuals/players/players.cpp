@@ -12,7 +12,7 @@ void n_players::impl_t::on_paint_traverse( )
 
 void n_players::impl_t::players( )
 {
-	const float delta_time = ( 1.f / 0.4f ) * g_interfaces.m_global_vars_base->m_frame_time;
+	const float delta_time = ( 0.7f / 0.5f ) * g_interfaces.m_global_vars_base->m_frame_time;
 
 	c_angle view_angles = { };
 	g_interfaces.m_engine_client->get_view_angles( view_angles );

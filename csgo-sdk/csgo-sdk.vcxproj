@@ -50,6 +50,7 @@
     <ClCompile Include="hacks\misc\scaleform\scaleform.cpp" />
     <ClCompile Include="hacks\movement\movement.cpp" />
     <ClCompile Include="hacks\visuals\edicts\edicts.cpp" />
+    <ClCompile Include="hacks\visuals\players\dormancy\dormancy.cpp" />
     <ClCompile Include="hacks\visuals\players\players.cpp" />
     <ClCompile Include="hooks\detour_hook\c_detour_hook.cpp" />
     <ClCompile Include="hooks\functions\alloc_key_values_memory.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="game\datatypes\recv_var_proxy_fn.h" />
     <ClInclude Include="game\sdk\classes\c_animation_state.h" />
     <ClInclude Include="game\sdk\classes\c_color.h" />
+    <ClInclude Include="game\sdk\classes\c_engine_sound.h" />
     <ClInclude Include="game\sdk\classes\c_game_movement.h" />
     <ClInclude Include="game\sdk\classes\c_game_types.h" />
     <ClInclude Include="game\sdk\classes\c_input.h" />
@@ -258,6 +260,7 @@
     <ClInclude Include="hacks\movement\movement.h" />
     <ClInclude Include="hacks\visuals\edicts\edicts.h" />
     <ClInclude Include="hacks\visuals\players\chams\chams.h" />
+    <ClInclude Include="hacks\visuals\players\dormancy\dormancy.h" />
     <ClInclude Include="hacks\visuals\players\players.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />
     <ClInclude Include="hooks\hooks.h" />

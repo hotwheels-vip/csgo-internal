@@ -23,6 +23,11 @@ namespace n_players
 			float m_ammo                   = 1.f;
 		} m_backup_player_data[ 64 ];
 
+		auto& get_fading_alpha( const int i ) const
+		{
+			return m_fading_alpha[ i ];
+		}
+
 	private:
 		float m_fading_alpha[ 64 ] = { };
 

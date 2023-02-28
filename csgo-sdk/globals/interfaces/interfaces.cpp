@@ -45,7 +45,7 @@ bool n_interfaces::impl_t::on_attach( )
 	if ( !( m_model_cache = static_cast< c_model_cache* >( g_modules[ DATACACHE_DLL ].find_interface( "MDLCache004" ) ) ) )
 		return false;
 
-	if ( !( m_engine_sound = g_modules[ ENGINE_DLL ].find_interface( "IEngineSoundClient003" ) ) )
+	if ( !( m_engine_sound = static_cast< c_engine_sound* >( g_modules[ ENGINE_DLL ].find_interface( "IEngineSoundClient003" ) ) ) )
 		return false;
 
 	if ( !( m_surface = static_cast< c_surface* >( g_modules[ VGUI_DLL ].find_interface( "VGUI_Surface031" ) ) ) )
