@@ -33,7 +33,7 @@ bool n_lagcomp::impl_t::is_valid( n_lagcomp::impl_t::record_t rec )
 
 	correct = std::clamp( correct, 0.f, g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( ) );
 
-	const float delta_correct = std::fabsf( correct - ( g_math.ticks_to_time( g_ctx.m_local->get_tick_base( ) ) - rec.m_sim_time ) );
+	const float delta_correct = std::fabsf( correct - ( g_interfaces.m_global_vars_base->m_current_time - rec.m_sim_time ) );
 
 	return delta_correct <= 0.2f;
 }
@@ -107,26 +107,6 @@ bool n_lagcomp::impl_t::generate_lerped_lag_matrix( const int ent_index, matrix3
 
 void n_lagcomp::impl_t::on_frame_stage_notify( )
 {
-	// check for bad entities and remove their records
-	// cannot do this with entity cache function, since if i call entity->get_index() its gonna crash.
-	// so we loop again and get index through actual iterator
-	//
-	for ( int i = 0; i < g_interfaces.m_global_vars_base->m_max_clients; i++ ) {
-		auto entity = g_interfaces.m_client_entity_list->get< c_base_entity >( i );
-
-		const auto& record_list = this->m_records[ i ];
-
-		if ( !entity->is_valid_enemy( ) && record_list ) {
-			for ( int j = 0; j < g_ctx.m_max_allocations; j++ ) {
-				delete[] this->m_records[ i ];
-
-				this->m_records[ i ] = nullptr;
-
-				break;
-			}
-		}
-	}
-
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
 		if ( !entity->is_valid_enemy( ) )
 			return;
@@ -192,7 +172,7 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 		new_record.m_valid      = is_valid( new_record );
 		new_record.m_vec_origin = entity->get_abs_origin( );
 
-		if ( !entity->setup_bones( new_record.m_matrix, 128, 0x00000100 /*BONE_USED_BY_HITBOX*/, g_interfaces.m_global_vars_base->m_current_time ) )
+		if ( !entity->setup_bones( new_record.m_matrix, 128, 256 /*BONE_USED_BY_HITBOX*/, g_interfaces.m_global_vars_base->m_current_time ) )
 			return;
 
 		memcpy( &record[ location ], &new_record, sizeof( record_t ) );

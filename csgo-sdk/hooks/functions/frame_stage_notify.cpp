@@ -38,9 +38,6 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 		g_interfaces.m_engine_client->fire_events( );
 
 		[ & ]( ) {
-			if ( g_ctx.m_local->get_observer_mode( ) != e_obs_mode::OBS_MODE_NONE )
-				return;
-
 			g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
 				if ( !entity->is_valid_enemy( ) )
 					return;

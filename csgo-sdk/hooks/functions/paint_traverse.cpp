@@ -44,9 +44,10 @@ void __fastcall n_detoured_functions::paint_traverse( void* ecx, void* edx, unsi
 			if ( g_ctx.m_local ) {
 				g_indicators.on_paint_traverse( );
 				g_edicts.on_paint_traverse( );
-				g_dormancy.start( );
+				// temp removed
+				// g_dormancy.start( );
 				g_players.on_paint_traverse( );
-				g_dormancy.finish( );
+				// g_dormancy.finish( );
 			} else
 				g_indicators.m_indicator_data.reset( );
 		}

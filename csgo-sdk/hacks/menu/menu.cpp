@@ -641,6 +641,15 @@ void n_menu::impl_t::on_end_scene( )
 #ifdef _DEBUG
 				ImGui::Checkbox( "watermark", &GET_VARIABLE( g_variables.m_watermark, bool ) );
 				ImGui::Checkbox( "debugger menu", &GET_VARIABLE( g_variables.m_debugger_visual, bool ) );
+
+				// THIS IS FOR TESTING PURPOSES
+
+				static char cmd[ 32 ];
+				ImGui::InputText( "convar", cmd, IM_ARRAYSIZE( cmd ) );
+				static char cmd_val[ 32 ];
+				ImGui::InputText( "convar value", cmd_val, IM_ARRAYSIZE( cmd_val ) );
+				if ( ImGui::Button( "set convar value" ) )
+					g_convars[ HASH_RT( cmd ) ]->set_value( atoi( cmd_val ) );
 #endif
 
 				ImGui::EndChild( );
