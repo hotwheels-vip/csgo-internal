@@ -12,6 +12,13 @@ namespace n_globals
 		c_base_entity* m_local                = nullptr;
 		n_lagcomp::impl_t::record_t* m_record = nullptr;
 
+		// STILL TODO.
+		struct {
+			int m_lag_layer_amt   = 0;
+			int m_vis_layer_amt   = 0;
+			int m_invis_layer_amt = 0;
+		} m_chams;
+
 		bool m_unloading{ };
 
 		// fps lower then server tickrate

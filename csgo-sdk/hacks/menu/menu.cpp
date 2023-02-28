@@ -12,6 +12,8 @@ constexpr int color_picker_no_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiC
                                             ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoDragDrop |
                                             ImGuiColorEditFlags_PickerHueBar | ImGuiColorEditFlags_NoBorder;
 
+constexpr static const auto chams_materials = "flat\0textured\0metallic\0glow";
+
 void n_menu::impl_t::on_end_scene( )
 {
 	ImGui::GetStyle( ).Colors[ ImGuiCol_::ImGuiCol_Accent ] = GET_VARIABLE( g_variables.m_accent, c_color ).get_vec4( );
@@ -218,6 +220,13 @@ void n_menu::impl_t::on_end_scene( )
 							              "normal\0lag compensated" );
 						}
 						ImGui::Checkbox( "lag compensated trail", &GET_VARIABLE( g_variables.m_players_backtrack_trail, bool ) );
+						ImGui::Checkbox( ( "out of fov arrows" ), &GET_VARIABLE( g_variables.m_out_of_fov_arrows, bool ) );
+						if ( GET_VARIABLE( g_variables.m_out_of_fov_arrows, bool ) ) {
+							ImGui::ColorEdit4( ( "##out of fov arrows color" ), &GET_VARIABLE( g_variables.m_out_of_fov_arrows_color, c_color ),
+							                   color_picker_alpha_flags );
+							ImGui::SliderFloat( "arrows size", &GET_VARIABLE( g_variables.m_out_of_fov_arrows_size, float ), 0.1f, 50.f, "%.1f px" );
+							ImGui::SliderInt( "arrows distance", &GET_VARIABLE( g_variables.m_out_of_fov_arrows_distance, int ), 10, 500, "%d px" );
+						}
 					}
 					break;
 				}
@@ -269,13 +278,34 @@ void n_menu::impl_t::on_end_scene( )
 			if ( ImGui::BeginChild(
 					 ( "chams" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
 					 true, 0, true ) ) {
+
+				ImGui::Checkbox( "visible chams", &GET_VARIABLE( g_variables.m_player_visible_chams, bool ) );
+				if ( GET_VARIABLE( g_variables.m_player_visible_chams, bool ) ) {
+					ImGui::ColorEdit4( "visible chams color##visible chams color", &GET_VARIABLE( g_variables.m_player_visible_chams_color, c_color ),
+					                   color_picker_alpha_flags );
+
+					ImGui::Combo( "visible chams material", &GET_VARIABLE( g_variables.m_player_visible_chams_material, int ), chams_materials );
+				}
+
+				ImGui::Checkbox( "invisible chams", &GET_VARIABLE( g_variables.m_player_invisible_chams, bool ) );
+				if ( GET_VARIABLE( g_variables.m_player_invisible_chams, bool ) ) {
+					ImGui::ColorEdit4( "invisible chams color##invisible chams color", &GET_VARIABLE( g_variables.m_player_invisible_chams_color, c_color ),
+					                   color_picker_alpha_flags );
+
+					ImGui::Combo( "invisible chams material", &GET_VARIABLE( g_variables.m_player_invisible_chams_material, int ), chams_materials );
+				}
+
 				ImGui::Checkbox( "lag compensated chams", &GET_VARIABLE( g_variables.m_player_lag_chams, bool ) );
-				ImGui::ColorEdit4( "lag compensated chams color##lagcomp chams color", &GET_VARIABLE( g_variables.m_player_lag_chams_color, c_color ),
-				                   color_picker_alpha_flags );
-				ImGui::Combo( "lag compensated chams type", &GET_VARIABLE( g_variables.m_player_lag_chams_type, int ),
-				              "oldest record\0all records\0aimbot target record" );
-				ImGui::EndChild( );
+				if ( GET_VARIABLE( g_variables.m_player_lag_chams, bool ) ) {
+					ImGui::ColorEdit4( "lag compensated chams color##lagcomp chams color",
+					                   &GET_VARIABLE( g_variables.m_player_lag_chams_color, c_color ), color_picker_alpha_flags );
+					ImGui::Checkbox( "lag compensated chams xqz", &GET_VARIABLE( g_variables.m_player_lag_chams_xqz, bool ) );
+					ImGui::Combo( "lag compensated chams material", &GET_VARIABLE( g_variables.m_player_lag_chams_material, int ), chams_materials );
+					ImGui::Combo( "lag compensated chams type", &GET_VARIABLE( g_variables.m_player_lag_chams_type, int ),
+					              "oldest record\0all records\0aimbot target record" );
+				}
 			}
+			ImGui::EndChild( );
 
 			if ( ImGui::BeginChild(
 					 ( "glow" ), ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),

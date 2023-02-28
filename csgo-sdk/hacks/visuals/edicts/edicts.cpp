@@ -90,7 +90,7 @@ void n_edicts::impl_t::reset( )
 			if ( !entity )
 				return;
 
-				const auto client_renderable = entity->get_client_renderable( );
+			const auto client_renderable = entity->get_client_renderable( );
 			if ( !client_renderable )
 				return;
 
@@ -278,6 +278,17 @@ void n_edicts::impl_t::dropped_weapons( )
 			if ( !entity->get_bounding_box( &box ) )
 				return;
 
+			// get distance to weapon and subtract by our threshold(600 units)
+			int distance_to_weapon_alpha = static_cast< int >( g_ctx.m_local->get_abs_origin( ).dist_to( entity->get_abs_origin( ) ) - 600.f );
+			// prevent division by 0
+			if ( distance_to_weapon_alpha > 0 ) {
+				// divide by our arbitery 255 number to scale alpha
+				distance_to_weapon_alpha /= 255;
+				// reverse number so it decreases and doesnt increase over distance
+				distance_to_weapon_alpha *= -1;
+			} else
+				distance_to_weapon_alpha = 0;
+
 			if ( GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) ) {
 				if ( !GET_VARIABLE( g_variables.m_dropped_weapons_box_corner, bool ) ) {
 					g_render.m_draw_data.emplace_back(
@@ -316,19 +327,13 @@ void n_edicts::impl_t::dropped_weapons( )
 				const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 					g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, converted_name.c_str( ) );
 
-				// 600 threshold
-				int distance_to_weapon = static_cast< int >( g_ctx.m_local->get_abs_origin( ).dist_to( entity->get_abs_origin( ) ) - 600.f );
-
-				const float alpha =
-					distance_to_weapon <= 1.f ? 1.f : std::clamp( ( distance_to_weapon <= 1.f ? 1 : distance_to_weapon ) * 200.f, 0.f, 1.f );
-
 				g_render.m_draw_data.emplace_back(
 					e_draw_type::draw_type_text,
 					std::make_any< text_draw_object_t >(
 						g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ],
 						c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ), converted_name,
-						GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ).get_u32( alpha ),
-						c_color( 0.f, 0.f, 0.f, alpha ).get_u32( ), e_text_flags::text_flag_dropshadow ) );
+						GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ).get_u32( distance_to_weapon_alpha ),
+						c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( distance_to_weapon_alpha ), e_text_flags::text_flag_dropshadow ) );
 			}
 		}
 	} );

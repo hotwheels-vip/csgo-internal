@@ -64,10 +64,30 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_glow_vis_color, c_color( 224, 175, 86, 153 ) );
 		ADD_VARIABLE( c_color, m_glow_invis_color, c_color( 114, 155, 221, 153 ) );
 		ADD_VARIABLE( bool, m_players_backtrack_trail, false );
+		ADD_VARIABLE( bool, m_out_of_fov_arrows, false );
+		ADD_VARIABLE( c_color, m_out_of_fov_arrows_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( float, m_out_of_fov_arrows_size, 20.f );
+		ADD_VARIABLE( int, m_out_of_fov_arrows_distance, 200 );
 
 		/* visuals - chams*/
+
+		// TODO ADD OVERLAYS USING g_ctx.m_chams.m_vis_layer_amt
+
+		// vis
+		ADD_VARIABLE( bool, m_player_visible_chams, false );
+		ADD_VARIABLE( int, m_player_visible_chams_material, 0 );
+		ADD_VARIABLE( c_color, m_player_visible_chams_color, c_color( 114, 0, 221, 153 ) );
+
+		// invis
+		ADD_VARIABLE( bool, m_player_invisible_chams, false );
+		ADD_VARIABLE( int, m_player_invisible_chams_material, 0 );
+		ADD_VARIABLE( c_color, m_player_invisible_chams_color, c_color( 0, 200, 221, 153 ) );
+
+		// lag
 		ADD_VARIABLE( bool, m_player_lag_chams, false );
+		ADD_VARIABLE( bool, m_player_lag_chams_xqz, false );
 		ADD_VARIABLE( int, m_player_lag_chams_type, 0 );
+		ADD_VARIABLE( int, m_player_lag_chams_material, 0 );
 		ADD_VARIABLE( c_color, m_player_lag_chams_color, c_color( 114, 155, 221, 153 ) );
 
 		/* visuals - edicts */

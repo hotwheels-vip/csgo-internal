@@ -29,6 +29,11 @@ public:
 		return g_virtual.call< int >( this, 12 );
 	}
 
+	bool cull_box( const c_vector& mins, const c_vector& max )
+	{
+		return g_virtual.call< bool >( this, 34, std::cref( mins ), std::cref( max ) );
+	}
+
 	bool is_console_visible( )
 	{
 		return g_virtual.call< bool >( this, 11 );

@@ -32,6 +32,7 @@ enum e_draw_type {
 	draw_type_text,
 	draw_type_line,
 	draw_type_rect,
+	draw_type_triangle,
 	draw_type_max
 };
 
@@ -45,6 +46,12 @@ enum e_rect_flags {
 	rect_flag_none          = 0,
 	rect_flag_inner_outline = 1,
 	rect_flag_outer_outline = 2
+};
+
+enum e_triangle_flags {
+	triangle_flag_none    = 0,
+	triangle_flag_outline = 1,
+	triangle_flag_filled  = 2
 };
 
 struct draw_object_t {
@@ -80,6 +87,16 @@ struct rect_draw_object_t {
 	int m_corner_rounding_flags  = 0;
 	float m_thickness            = 1.f;
 	unsigned int m_outline_flags = e_rect_flags::rect_flag_none;
+};
+
+struct triangle_draw_object_t {
+	c_vector_2d m_first          = { };
+	c_vector_2d m_second         = { };
+	c_vector_2d m_third          = { };
+	unsigned int m_color         = { };
+	unsigned int m_draw_flags    = e_triangle_flags::triangle_flag_none;
+	unsigned int m_outline_color = { };
+	float m_thickness            = 0.f;
 };
 
 namespace n_render

@@ -63,8 +63,7 @@ timer.style.fontWeight = 'bold';
 timer.style.verticalAlign = 'center';
 timer.style.fontFamily = 'Stratum2';
 timer.style.letterSpacing = '0px';
-//timer.style.color = 'white';
-//timer.style.S2MixBlendMode = 'SRGBadditive';
+timer.style.S2MixBlendMode = 'SRGBadditive';
 for (var tAlive of contextPanel.FindChildTraverse('HudTeamCounter').FindChildrenWithClassTraverse('TeamCounter__AliveT')) {
     tAlive.style.backgroundImage = 'url("file://{images}/hud/t.png")';
 }

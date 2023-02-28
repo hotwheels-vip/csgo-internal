@@ -151,6 +151,21 @@ void n_render::impl_t::draw_cached_data( )
 			            obj.m_thickness, obj.m_outline_flags );
 			break;
 		}
+		case e_draw_type::draw_type_triangle: {
+			const auto& obj = std::any_cast< triangle_draw_object_t >( data.m_obj );
+
+			if ( obj.m_draw_flags & e_triangle_flags::triangle_flag_filled )
+				draw_list->AddTriangleFilled( ImVec2( obj.m_first.m_x, obj.m_first.m_y ), ImVec2( obj.m_second.m_x, obj.m_second.m_y ),
+				                              ImVec2( obj.m_third.m_x, obj.m_third.m_y ), obj.m_color );
+			else
+				draw_list->AddTriangle( ImVec2( obj.m_first.m_x, obj.m_first.m_y ), ImVec2( obj.m_second.m_x, obj.m_second.m_y ),
+				                        ImVec2( obj.m_third.m_x, obj.m_third.m_y ), obj.m_color, obj.m_thickness );
+
+			if ( obj.m_draw_flags & e_triangle_flags::triangle_flag_outline )
+				draw_list->AddTriangle( ImVec2( obj.m_first.m_x, obj.m_first.m_y ), ImVec2( obj.m_second.m_x, obj.m_second.m_y ),
+				                        ImVec2( obj.m_third.m_x, obj.m_third.m_y ), obj.m_outline_color, obj.m_thickness + 1.0f );
+			break;
+		}
 		default:
 			break;
 		}

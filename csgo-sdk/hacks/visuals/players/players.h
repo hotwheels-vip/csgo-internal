@@ -24,6 +24,8 @@ namespace n_players
 		} m_backup_player_data[ 64 ];
 
 	private:
+		float m_fading_alpha[ 64 ] = { };
+
 		void players( );
 	};
 } // namespace n_players
