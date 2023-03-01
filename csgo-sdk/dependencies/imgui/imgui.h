@@ -663,6 +663,7 @@ namespace ImGui
 	IMGUI_API void Bullet( ); // draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(),
 	                          // same distance that TreeNode() uses
 	IMGUI_API void CustomSeparator( const char* label );
+	IMGUI_API void OptionPopup( const char* str_id, const std::function< void( ) >& function, const ImVec2& window_size );
 
 	// Widgets: Images
 	// - Read about ImTextureID here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples

@@ -541,9 +541,10 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::Text( "practice teleport key" );
 					ImGui::Keybind( "practice tp key", &GET_VARIABLE( g_variables.m_practice_tp_key, key_bind_t ) );
 				}
-				ImGui::MultiCombo( "displayed logs", g_config.get< std::vector< bool > >( g_variables.m_log_types ),
+
+				ImGui::MultiCombo( "displayed logs", GET_VARIABLE( g_variables.m_log_types, std::vector< bool > ),
 				                   { "damage", "team damage", "purchase", "votes" },
-				                   g_config.get< std::vector< bool > >( g_variables.m_log_types ).size( ) );
+				                   GET_VARIABLE( g_variables.m_log_types, std::vector< bool > ).size( ) );
 
 				ImGui::Checkbox( "scaleform", &GET_VARIABLE( g_variables.m_scaleform, bool ) );
 				if ( ImGui::Button( "force hud update" ) )

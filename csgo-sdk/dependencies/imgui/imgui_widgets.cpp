@@ -1415,6 +1415,16 @@ void ImGui::CustomSeparator( const char* label )
 	ImGui::SetCursorPosY( cursor_position.y + text_size.y + 10.f );
 }
 
+void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& function, const ImVec2& window_size )
+{
+	ImGui::SetNextWindowSize( window_size );
+
+	if ( ImGui::BeginPopup( str_id ) ) {
+		function( );
+		ImGui::EndPopup( );
+	}
+}
+
 //-------------------------------------------------------------------------
 // [SECTION] Widgets: Low-level Layout helpers
 //-------------------------------------------------------------------------
