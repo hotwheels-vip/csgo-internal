@@ -248,10 +248,13 @@ public:
 	NETVAR_VARIABLE( bool, is_predictable, "CBaseEntity->m_bPredictable" );
 	NETVAR_VARIABLE( int, get_model_index, "CBaseEntity->m_nModelIndex" );
 	NETVAR_VARIABLE( unsigned int, get_owner_entity_handle, "CBaseEntity->m_hOwnerEntity" );
+	NETVAR_VARIABLE( int, get_effects, "CBaseEntity->m_fEffects" );
 
 	/* DT_BaseAnimating */
 	NETVAR_VARIABLE( int, get_sequence, "CBaseAnimating->m_nSequence" );
 	NETVAR_VARIABLE( int, get_hitbox_set, "CBaseAnimating->m_nHitboxSet" );
+	NETVAR_VARIABLE_OFFSET( int, get_bone_mask, "CBaseAnimating->m_nForceBone", 0x14 );
+	NETVAR_VARIABLE_OFFSET( int, get_previous_bone_mask, "CBaseAnimating->m_nForceBone", 0xF );
 
 	/* DT_CSPlayer */
 	NETVAR_VARIABLE_OFFSET( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
@@ -415,7 +418,9 @@ public:
 	c_vector get_hitbox_position( int hitbox, matrix3x4_t* matrix, float point_scale = 0.5f );
 	c_vector get_eye_position( bool should_correct = true );
 
-	bool can_see_player( c_base_entity* player );
+	bool setup_bones_uninterpolated( matrix3x4_t* bone, int max_bones, int bone_mask, float cur_time );
 
+	bool can_see_player( c_base_entity* player );
+	bool can_see_matrix( c_base_entity* player, matrix3x4_t* matrix );
 	c_user_cmd& get_last_command( );
 };

@@ -369,6 +369,9 @@ void n_menu::impl_t::on_end_scene( )
 				case 1: {
 					ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
 					ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
+#ifdef _DEBUG
+					ImGui::Checkbox( "disable interp", &GET_VARIABLE( g_variables.m_disable_interp, bool ) );
+#endif
 					break;
 				}
 				}

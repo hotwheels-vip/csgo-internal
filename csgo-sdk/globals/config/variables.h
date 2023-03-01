@@ -192,6 +192,7 @@ namespace n_variables
 #ifdef _DEBUG
 		ADD_VARIABLE( bool, m_debugger_visual, false );
 		ADD_VARIABLE( bool, m_watermark, true );
+		ADD_VARIABLE( bool, m_disable_interp, false );
 #endif
 	};
 }; // namespace n_variables

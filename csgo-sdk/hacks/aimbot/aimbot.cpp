@@ -44,15 +44,16 @@ void n_aimbot::impl_t::on_create_move_post( )
 
 	const auto eye_position = g_ctx.m_local->get_eye_position( false );
 
-	// TODO: autowalls
-	if ( !g_ctx.m_local->can_see_player( entity ) )
-		return;
-
-	if ( GET_VARIABLE( g_variables.m_backtrack_enable, bool ) )
+	if ( GET_VARIABLE( g_variables.m_backtrack_enable, bool ) ) {
 		g_lagcomp.backtrack_player( entity );
-	else // sanity
+		if ( !g_ctx.m_local->can_see_player( entity ) && !g_ctx.m_local->can_see_matrix( entity, g_ctx.m_record->m_matrix ) )
+			return;
+	} else {
+		// sanity
 		g_ctx.m_record = nullptr;
-
+		if ( !g_ctx.m_local->can_see_player( entity ) )
+			return;
+	}
 	c_angle angles_to_head{ };
 
 	// if valid record, recalculate to matrix hitbox pos

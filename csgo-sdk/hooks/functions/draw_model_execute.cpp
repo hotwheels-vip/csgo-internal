@@ -36,7 +36,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 	static auto original = g_hooks.m_draw_model_execute.get_original< decltype( &n_detoured_functions::draw_model_execute ) >( );
 
 	// static auto glow_material = g_interfaces.m_material_system->find_material( "dev/glow_color", TEXTURE_GROUP_OTHER );
-	// 
+	//
 	// if ( static bool found_glow_material_alpha = false; glow_material ) {
 	// 	static auto var = glow_material->find_var( "$translucent", &found_glow_material_alpha );
 	// 	if ( found_glow_material_alpha )
@@ -160,7 +160,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 
 					g_interfaces.m_model_render->forced_material_override( lag_material );
 
-					original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix );
+					original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix_interpolated );
 
 					g_interfaces.m_model_render->forced_material_override( nullptr );
 				}
@@ -192,7 +192,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 
 						g_interfaces.m_model_render->forced_material_override( lag_material );
 
-						original( g_interfaces.m_model_render, edx, context, state, info, record_list[ i ].m_matrix );
+						original( g_interfaces.m_model_render, edx, context, state, info, record_list[ i ].m_matrix_interpolated );
 
 						g_interfaces.m_model_render->forced_material_override( nullptr );
 					}
@@ -219,7 +219,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 
 					g_interfaces.m_model_render->forced_material_override( lag_material );
 
-					original( g_interfaces.m_model_render, edx, context, state, info, g_ctx.m_record->m_matrix );
+					original( g_interfaces.m_model_render, edx, context, state, info, g_ctx.m_record->m_matrix_interpolated );
 
 					g_interfaces.m_model_render->forced_material_override( nullptr );
 				}

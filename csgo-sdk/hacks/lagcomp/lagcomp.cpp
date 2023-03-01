@@ -178,12 +178,23 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 		new_record.m_valid      = is_valid( new_record );
 		new_record.m_vec_origin = entity->get_abs_origin( );
 
-		if ( !entity->setup_bones( new_record.m_matrix, 128, 256 /*BONE_USED_BY_HITBOX*/, g_interfaces.m_global_vars_base->m_current_time ) )
+		auto saved_origin = entity->get_abs_origin( );
+
+		// https://www.unknowncheats.me/forum/2119412-post11.html
+		entity->set_abs_origin( entity->get_origin( ) );
+		// entity->invalidate_bone_cache( );
+
+		if ( !entity->setup_bones_uninterpolated( new_record.m_matrix, 128, 256 /*BONE_USED_BY_HITBOX*/, 0.f ) ||
+		     !entity->setup_bones( new_record.m_matrix_interpolated, 128, 256, g_interfaces.m_global_vars_base->m_current_time ) ) {
+			entity->set_abs_origin( saved_origin );
 			return;
+		}
 
 		memcpy( &record[ location ], &new_record, sizeof( record_t ) );
 
 		location++;
+
+		entity->set_abs_origin( saved_origin );
 	} );
 }
 
