@@ -19,9 +19,6 @@ namespace n_lagcomp
 			c_vector m_vec_origin{ };
 
 			matrix3x4_t m_matrix[ 128 ]{ };
-
-			// used for chams.
-			matrix3x4_t m_matrix_interpolated[ 128 ]{ };
 		};
 
 		std::array< int, 65 > m_record_location{ };

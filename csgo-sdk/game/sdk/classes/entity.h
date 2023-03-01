@@ -418,8 +418,6 @@ public:
 	c_vector get_hitbox_position( int hitbox, matrix3x4_t* matrix, float point_scale = 0.5f );
 	c_vector get_eye_position( bool should_correct = true );
 
-	bool setup_bones_uninterpolated( matrix3x4_t* bone, int max_bones, int bone_mask, float cur_time );
-
 	bool can_see_player( c_base_entity* player );
 	bool can_see_matrix( c_base_entity* player, matrix3x4_t* matrix );
 	c_user_cmd& get_last_command( );

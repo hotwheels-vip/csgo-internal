@@ -276,40 +276,6 @@ c_vector c_base_entity::get_bone_position( int bone )
 	return bone_matrix[ bone ][ 3 ];
 }
 
-bool c_base_entity::setup_bones_uninterpolated( matrix3x4_t* bone, int max_bones, int bone_mask, float m_cur_time )
-{
-	if ( !this || !this->is_alive( ) || is_dormant( ) )
-		return false;
-
-	const float cur_time = g_interfaces.m_global_vars_base->m_current_time;
-	const int frame_time = g_interfaces.m_global_vars_base->m_frame_time;
-
-	g_interfaces.m_global_vars_base->m_frame_time   = g_interfaces.m_global_vars_base->m_interval_per_tick;
-	g_interfaces.m_global_vars_base->m_current_time = m_cur_time;
-
-	get_bone_mask( )          = 0;
-	get_previous_bone_mask( ) = 0;
-
-	// wont bother figuring all of this out
-	*reinterpret_cast< int* >( reinterpret_cast< uintptr_t >( this ) + 0xA24 ) |= 0xA;
-	*reinterpret_cast< int* >( reinterpret_cast< uintptr_t >( this ) + 0xA28 ) &= ~0xAu;
-	*reinterpret_cast< int* >( reinterpret_cast< uintptr_t >( this ) + 0xA2C ) |= g_interfaces.m_global_vars_base->m_frame_count;
-	*reinterpret_cast< int* >( reinterpret_cast< uintptr_t >( this ) + 0xA68 )  = 0;
-	*reinterpret_cast< int* >( reinterpret_cast< uintptr_t >( this ) + 0x2690 ) = 0;
-	*reinterpret_cast< int* >( reinterpret_cast< uintptr_t >( this ) + 0x2924 ) = -8388609;
-
-	get_effects( ) |= 8;
-
-	auto out = setup_bones( bone, max_bones, bone_mask, m_cur_time );
-
-	get_effects( ) &= ~8;
-
-	g_interfaces.m_global_vars_base->m_frame_time   = frame_time;
-	g_interfaces.m_global_vars_base->m_current_time = cur_time;
-
-	return out;
-}
-
 c_vector c_base_entity::get_hitbox_position( int index, float point_scale )
 {
 	if ( auto model = get_model( ) ) {

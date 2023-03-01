@@ -182,10 +182,9 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 
 		// https://www.unknowncheats.me/forum/2119412-post11.html
 		entity->set_abs_origin( entity->get_origin( ) );
-		// entity->invalidate_bone_cache( );
+		entity->invalidate_bone_cache( );
 
-		if ( !entity->setup_bones_uninterpolated( new_record.m_matrix, 128, 256 /*BONE_USED_BY_HITBOX*/, 0.f ) ||
-		     !entity->setup_bones( new_record.m_matrix_interpolated, 128, 256, g_interfaces.m_global_vars_base->m_current_time ) ) {
+		if ( !entity->setup_bones( new_record.m_matrix, 128, 256 /*BONE_USED_BY_HITBOX*/, 0.f ) ) {
 			entity->set_abs_origin( saved_origin );
 			return;
 		}

@@ -160,7 +160,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 
 					g_interfaces.m_model_render->forced_material_override( lag_material );
 
-					original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix_interpolated );
+					original( g_interfaces.m_model_render, edx, context, state, info, oldest_record.value( ).m_matrix );
 
 					g_interfaces.m_model_render->forced_material_override( nullptr );
 				}
@@ -192,7 +192,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 
 						g_interfaces.m_model_render->forced_material_override( lag_material );
 
-						original( g_interfaces.m_model_render, edx, context, state, info, record_list[ i ].m_matrix_interpolated );
+						original( g_interfaces.m_model_render, edx, context, state, info, record_list[ i ].m_matrix );
 
 						g_interfaces.m_model_render->forced_material_override( nullptr );
 					}
@@ -219,7 +219,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 
 					g_interfaces.m_model_render->forced_material_override( lag_material );
 
-					original( g_interfaces.m_model_render, edx, context, state, info, g_ctx.m_record->m_matrix_interpolated );
+					original( g_interfaces.m_model_render, edx, context, state, info, g_ctx.m_record->m_matrix );
 
 					g_interfaces.m_model_render->forced_material_override( nullptr );
 				}
