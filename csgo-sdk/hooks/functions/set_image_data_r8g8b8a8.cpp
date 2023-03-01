@@ -51,10 +51,9 @@ bool __fastcall n_detoured_functions::set_image_data_r8g8b8a8( void* ecx, void* 
 
 		if ( g_scaleform.get_replacement_icon( copy, replacement_data, replacement_size, replacement_w, replacement_h ) ) {
 			arg2 = 6;
-			g_console.print( std::format( "!! replaced {}\n", copy ).c_str( ) );
 			return original( ecx, edx, replacement_data, replacement_size, filename, replacement_w, replacement_h, arg1, arg2 );
 		} else {
-			g_console.print( std::format( "!! didn't replace {}\n", copy ).c_str( ) );
+			g_console.print( std::format( "!! didn't replace {}", copy ).c_str( ) );
 		}
 	}
 

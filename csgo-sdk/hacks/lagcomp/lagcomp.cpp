@@ -108,10 +108,16 @@ bool n_lagcomp::impl_t::generate_lerped_lag_matrix( const int ent_index, matrix3
 void n_lagcomp::impl_t::on_frame_stage_notify( )
 {
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity->is_valid_enemy( ) )
+		if ( !entity )
 			return;
-
 		const auto index = entity->get_index( );
+
+		if ( !entity->is_valid_enemy( ) ) {
+			if ( this->m_records[ index ] )
+				this->m_records[ index ] = nullptr;
+
+			return;
+		}
 
 		const auto& record_list = this->m_records[ index ];
 		if ( !record_list )

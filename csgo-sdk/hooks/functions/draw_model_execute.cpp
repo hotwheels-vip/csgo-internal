@@ -16,7 +16,7 @@ c_material* return_material( const int mat_index )
 	case 0:
 		return g_interfaces.m_material_system->find_material( "debug/debugdrawflat" );
 	case 1:
-		return g_interfaces.m_material_system->find_material( "mat_textured", TEXTURE_GROUP_MODEL );
+		return g_interfaces.m_material_system->find_material( "debug/debugambientcube", TEXTURE_GROUP_MODEL );
 	case 2:
 		return g_interfaces.m_material_system->find_material( "mat_metallic", TEXTURE_GROUP_MODEL );
 	case 3:
@@ -34,6 +34,14 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
                                                           matrix3x4_t* custom_bone_to_world )
 {
 	static auto original = g_hooks.m_draw_model_execute.get_original< decltype( &n_detoured_functions::draw_model_execute ) >( );
+
+	// static auto glow_material = g_interfaces.m_material_system->find_material( "dev/glow_color", TEXTURE_GROUP_OTHER );
+	// 
+	// if ( static bool found_glow_material_alpha = false; glow_material ) {
+	// 	static auto var = glow_material->find_var( "$translucent", &found_glow_material_alpha );
+	// 	if ( found_glow_material_alpha )
+	// 		var->set_int( 0 );
+	// }
 
 	// [!] TEMPORARY [!]
 	// todo - use key values for materials, dont create actual vmt files itself
@@ -60,23 +68,6 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 			"$rimlight"     "1"
 			"$rimlightexponent"  "2"
 			"$rimlightboost"     ".2"	
-			"$reflectivity" "[1 1 1]"
-        }
-		)#";
-
-		// textured vis = mat_textured.vmt
-		std::ofstream( "csgo/materials/mat_textured.vmt" ) << R"#("UnlitGeneric" 
-		{
-			"$basetexture" "vgui/white"
-			"$ignorez"      "0"
-			"$envmap"       ""
-			"$nofog"        "1"
-			"$model"        "1"
-			"$nocull"       "0"
-			"$selfillum"    "1"
-			"$halflambert"  "1"
-			"$znearer"      "0"
-			"$flat"         "1"
 			"$reflectivity" "[1 1 1]"
         }
 		)#";
