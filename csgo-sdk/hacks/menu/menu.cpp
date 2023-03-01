@@ -197,6 +197,14 @@ void n_menu::impl_t::on_end_scene( )
 							                   color_picker_alpha_flags );
 						}
 
+						ImGui::Checkbox( "health number##player", &GET_VARIABLE( g_variables.m_players_health_text, bool ) );
+						// TODO add more types
+						if ( GET_VARIABLE( g_variables.m_players_health_text, bool ) ) {
+							ImGui::Checkbox( "health number suffix", &GET_VARIABLE( g_variables.m_players_health_suffix, bool ) );
+							ImGui::Combo( "health number style", &GET_VARIABLE( g_variables.m_players_health_text_style, int ),
+							              "standalone bottom\0follow health bar" );
+						}
+
 						ImGui::Checkbox( "weapon name##player", &GET_VARIABLE( g_variables.m_weapon_name, bool ) );
 						if ( GET_VARIABLE( g_variables.m_weapon_name, bool ) )
 							ImGui::ColorEdit4( "##weapon name color", &GET_VARIABLE( g_variables.m_weapon_name_color, c_color ),

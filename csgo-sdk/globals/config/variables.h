@@ -48,6 +48,9 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_players_box_outline_color, c_color( 0, 0, 0, 255 ) );
 		ADD_VARIABLE( bool, m_players_health_bar, false );
 		ADD_VARIABLE( bool, m_players_health_bar_custom_color, false );
+		ADD_VARIABLE( bool, m_players_health_text, false );
+		ADD_VARIABLE( bool, m_players_health_suffix, false );
+		ADD_VARIABLE( int, m_players_health_text_style, 0 );
 		ADD_VARIABLE( c_color, m_players_health_bar_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_players_name, false );
 		ADD_VARIABLE( c_color, m_players_name_color, c_color( 255, 255, 255, 255 ) );
