@@ -9,7 +9,7 @@ bool _fastcall n_detoured_functions::net_earliertempents( void* ecx, void* edx )
 {
 	static auto original = g_hooks.m_net_earliertempents.get_original< decltype( &n_detoured_functions::net_earliertempents ) >( );
 
-	static auto cl_readpackets = reinterpret_cast< void* >( g_modules[ ENGINE_DLL ].find_pattern( "53 8A D9 8B 0D ? ? ? ? 56 57 8B B9 ? ? ? ? " ) );
+	static auto cl_readpackets = reinterpret_cast< void* >( g_modules[ ENGINE_DLL ].find_pattern( "53 8A D9 8B 0D ? ? ? ? 56 57 8B B9 ? ? ? ?" ) );
 
 	if ( _ReturnAddress( ) == cl_readpackets )
 		return true;
