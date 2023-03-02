@@ -262,6 +262,7 @@
     <ClInclude Include="game\sdk\structs\renderable_info_t.h" />
     <ClInclude Include="hacks\visuals\players\dormancy\dormancy.h" />
     <ClInclude Include="game\sdk\classes\c_engine_sound.h" />
+    <ClInclude Include="game\sdk\classes\c_csgo_hud_radar.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

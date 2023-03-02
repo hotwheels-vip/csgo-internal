@@ -2,6 +2,8 @@
 #include "../../globals/logger/logger.h"
 #include "../../hacks/misc/scaleform/scaleform.h"
 #include "../hooks.h"
+#include "../../hacks/visuals/players/dormancy/dormancy.h"
+#include "../../hacks/visuals/players/players.h"
 
 bool __fastcall n_detoured_functions::fire_event_intern( void* ecx, void* edx, game_event_t* game_event )
 {
@@ -24,10 +26,23 @@ bool __fastcall n_detoured_functions::fire_event_intern( void* ecx, void* edx, g
 		c_base_entity* m_attacker_ent{ };
 
 		switch ( hashed_event ) {
+		case HASH_BT( "game_newmawp" ):
+			g_scaleform.m_should_force_update = true;
+			for ( int i = 0; i < 64; i++ ) {
+				g_players.m_stored_cur_time[ i ] = 0.f;
+				g_players.m_fading_alpha[ i ] = 0.f;
+				g_dormancy.m_sound_players[ i ].reset( );
+			}
+			break;
 		case HASH_BT( "bot_takeover" ):
 		case HASH_BT( "switch_team" ):
 		case HASH_BT( "round_start" ):
 			g_scaleform.m_should_update_teamcount_avatar = true;
+			for ( int i = 0; i < 64; i++ ) {
+				g_players.m_stored_cur_time[ i ] = 0.f;
+				g_players.m_fading_alpha[ i ]    = 0.f;
+				g_dormancy.m_sound_players[ i ].reset( );
+			}
 			break;
 		case HASH_BT( "round_end" ):
 			g_scaleform.m_should_update_winpanel = true;
@@ -41,23 +56,23 @@ bool __fastcall n_detoured_functions::fire_event_intern( void* ecx, void* edx, g
 			m_attacker_ent = g_interfaces.m_client_entity_list->get< c_base_entity >( m_attacker );
 
 			if ( m_attacker < 1 || m_attacker > 64 || m_victim < 1 || m_victim > 64 )
-				return;
+				break;
 			else if ( m_attacker != g_interfaces.m_engine_client->get_local_player( ) ||
 			          m_victim == g_interfaces.m_engine_client->get_local_player( ) )
-				return;
+				break;
 
 			m_group = game_event->get_int( "hitgroup" );
 
 			if ( m_group == hitgroup_gear )
-				return;
+				break;
 
 			auto m_target = g_interfaces.m_client_entity_list->get< c_base_entity* >( m_victim );
 			if ( !m_target )
-				return;
+				break;
 
 			player_info_t info;
 			if ( !g_interfaces.m_engine_client->get_player_info( m_victim, &info ) )
-				return;
+				break;
 			m_name   = std::string( info.m_name ).substr( 0, 24 );
 			m_damage = game_event->get_int( "dmg_health" );
 			m_health = game_event->get_int( "health" );

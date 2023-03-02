@@ -144,7 +144,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 				break;
 
 			if ( distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
-			     oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
+			     oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR && oldest_record.value( ).m_valid ) {
 				ImAnimationHelper alpha_animation = ImAnimationHelper( HASH_RT( mdl.c_str( ) ), ImGui::GetIO( ).DeltaTime );
 				alpha_animation.Update( 2.f, distance > 3.f ? 2.f : -2.f );
 
@@ -172,8 +172,9 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 
 			distance = oldest_record.value( ).m_vec_origin.dist_to( player->get_abs_origin( ) );
 
-			if ( const auto record_list = g_lagcomp.m_records[ info.entity_index ];
-			     record_list && oldest_record.has_value( ) && distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR ) {
+			if ( const auto record_list = g_lagcomp.m_records[ info.entity_index ]; record_list && oldest_record.has_value( ) &&
+			                                                                        distance < LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR &&
+			                                                                        oldest_record.value( ).m_valid ) {
 				for ( int i = 0; i < g_ctx.m_max_allocations; i++ ) {
 					if ( !record_list[ i ].m_valid )
 						continue;
@@ -229,6 +230,7 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 		if ( should_draw_invis ) {
 			invis_material->color_modulate( invisible_color.base< color_type_r >( ), invisible_color.base< color_type_g >( ),
 			                                invisible_color.base< color_type_b >( ) );
+
 			invis_material->alpha_modulate( invisible_color.base< color_type_a >( ) );
 
 			invis_material->set_material_var_flag( material_var_nofog, true );

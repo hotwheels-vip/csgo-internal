@@ -113,8 +113,11 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 		const auto index = entity->get_index( );
 
 		if ( !entity->is_valid_enemy( ) ) {
-			if ( this->m_records[ index ] )
-				this->m_records[ index ] = nullptr;
+			if ( this->m_records[ index ] ) {
+				delete[] this->m_records[ index ];
+				this->m_records[ index ]         = nullptr;
+				this->m_record_location[ index ] = 0;
+			}
 
 			return;
 		}
@@ -143,16 +146,6 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 			return;
 
 		const auto index = entity->get_index( );
-
-		if ( !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local ) {
-			if ( this->m_records[ index ] ) {
-				delete[] this->m_records[ index ];
-
-				this->m_records[ index ] = nullptr;
-			}
-
-			return;
-		}
 
 		auto record    = this->m_records[ index ];
 		auto& location = this->m_record_location[ index ];

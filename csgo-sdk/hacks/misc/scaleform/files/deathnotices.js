@@ -28,7 +28,7 @@ for (var dnIcon of contextPanel.FindChildrenWithClassTraverse('DeathNoticeIcon')
 	if (dnIcon.id === "Weapon") {
 		dnIcon.style.verticalAlign = 'top';
 		dnIcon.style.transform = 'translateY(5px)';   
-		dnIcon.style.uiScale = "60%";
+		dnIcon.style.uiScale = "70%";
 		dnIcon.style.margin = '-4px 3px 15px 6px';
 	} else {
 		dnIcon.style.height = '20px';
@@ -55,7 +55,7 @@ for (var deathnotice of contextPanel.FindChildrenWithClassTraverse('DeathNotice'
 	deathnotice.FindChildTraverse('AttackerBlindIcon').style.visibility = 'collapse';
 	deathnotice.FindChildTraverse('Domination').style.visibility = 'collapse';
 
-	deathnotice.style.margin = '0px -8px 0px 20px';
+	deathnotice.style.margin = '0px -8px 0px 18px';
 
 	if (deathnotice.BHasClass('DeathNotice_Killer')) {
 		for (var killer of contextPanel.FindChildTraverse('HudDeathNotice').FindChildrenWithClassTraverse('DeathNotice_Killer')) {

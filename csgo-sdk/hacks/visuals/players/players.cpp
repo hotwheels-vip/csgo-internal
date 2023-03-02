@@ -1,8 +1,10 @@
 #pragma once
 #include "players.h"
+#include "../../../game/sdk/classes/c_csgo_hud_radar.h"
 #include "../../../game/sdk/includes/includes.h"
 #include "../../../globals/includes/includes.h"
 #include "../../entity_cache/entity_cache.h"
+#include "dormancy/dormancy.h"
 
 void n_players::impl_t::on_paint_traverse( )
 {
@@ -12,6 +14,24 @@ void n_players::impl_t::on_paint_traverse( )
 
 void n_players::impl_t::players( )
 {
+	// dormancy-related
+	static DWORD radar_base{ };
+	static c_csgo_hud_radar* hud_radar{ };
+
+	[]( ) {
+		g_dormancy.think( );
+
+		// gonna be used later on.
+
+		// static auto find_hud_element_ptr = reinterpret_cast< DWORD( __thiscall* )( void*, const char* ) >(
+		// 	g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 53 8B 5D 08 56 57 8B F9 33 F6 39 77 28" ) );
+		//
+		// static auto hud_ptr = *reinterpret_cast< DWORD** >( g_modules[ CLIENT_DLL ].find_pattern( "81 25 ? ? ? ? ? ? ? ? 8B 01" ) + 0x2 );
+		//
+		// radar_base = find_hud_element_ptr( hud_ptr, "CCSGO_HudRadar" );
+		// hud_radar  = reinterpret_cast< c_csgo_hud_radar* >( radar_base - 0x14 );
+	}( );
+
 	const float delta_time = ( 0.7f / 0.5f ) * g_interfaces.m_global_vars_base->m_frame_time;
 
 	c_angle view_angles = { };
@@ -22,16 +42,35 @@ void n_players::impl_t::players( )
 	const auto display_size = ImGui::GetIO( ).DisplaySize;
 
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity || entity == g_ctx.m_local || !g_ctx.m_local->is_enemy( entity ) )
+		if ( !entity || entity == g_ctx.m_local || !g_ctx.m_local->is_enemy( entity ) || !entity->is_alive( ) )
 			return;
 
+		const auto index = entity->get_index( );
+
+		bool valid_dormant       = false;
+		const auto backup_flags  = entity->get_flags( );
+		const auto backup_origin = entity->get_abs_origin( );
+
+		if ( entity->is_dormant( ) )
+			valid_dormant = g_dormancy.adjust_player_sound( entity );
+		else
+			g_dormancy.m_sound_players[ index ].reset( true, entity->get_abs_origin( ), entity->get_flags( ) );
+
+		if ( entity->is_dormant( ) ) {
+			if ( entity->get_abs_origin( ).is_zero( ) )
+				this->m_fading_alpha[ index ] = 0;
+			else if ( !valid_dormant && this->m_fading_alpha[ index ] > 0.f &&
+			          g_interfaces.m_global_vars_base->m_current_time - m_stored_cur_time[ index ] > 2.f )
+				this->m_fading_alpha[ index ] -= delta_time;
+			else if ( valid_dormant && this->m_fading_alpha[ index ] < 1.f )
+				this->m_fading_alpha[ index ] += delta_time;
+		} else if ( this->m_fading_alpha[ index ] < 1.f ) {
+			m_stored_cur_time[ index ] = g_interfaces.m_global_vars_base->m_current_time;
+			this->m_fading_alpha[ index ] += delta_time;
+		}
 		const auto collideable = entity->get_collideable( );
 		if ( !collideable )
 			return;
-
-		const int index = entity->get_index( );
-
-		entity->is_dormant( ) || !entity->is_alive( ) ? this->m_fading_alpha[ index ] -= delta_time : this->m_fading_alpha[ index ] += delta_time;
 
 		if ( this->m_fading_alpha[ index ] >= 1.0f )
 			this->m_fading_alpha[ index ] = 1.0f;
@@ -103,7 +142,13 @@ void n_players::impl_t::players( )
 		if ( GET_VARIABLE( g_variables.m_players_health_suffix, bool ) )
 			hp_text.append( "hp" );
 
-		const float factor = static_cast< float >( this->m_backup_player_data[ index ].m_health ) / entity->get_max_health( );
+		if ( this->m_backup_player_data[ index ].m_animated_health > entity->get_health( ) )
+			this->m_backup_player_data[ index ].m_animated_health -=
+				( 100.f * g_interfaces.m_global_vars_base->m_frame_time ) /* NOTE ~ float ~ cannot use the variable delta_time as it is too slow. */;
+		else
+			this->m_backup_player_data[ index ].m_animated_health = entity->get_health( );
+
+		const float factor = static_cast< float >( this->m_backup_player_data[ index ].m_animated_health ) / entity->get_max_health( );
 		const float hue    = ( factor * 120.f ) / 360.f;
 
 		float padding[ e_padding_direction::padding_direction_max ] = { 0.f, 0.f, 0.f, 0.f };
@@ -271,13 +316,6 @@ void n_players::impl_t::players( )
 		}
 
 		if ( GET_VARIABLE( g_variables.m_players_health_bar, bool ) ) {
-			if ( this->m_backup_player_data[ index ].m_health > entity->get_health( ) )
-				this->m_backup_player_data[ index ].m_health -=
-					( 100.f *
-				      g_interfaces.m_global_vars_base->m_frame_time ) /* NOTE ~ float ~ cannot use the variable delta_time as it is too slow. */;
-			else
-				this->m_backup_player_data[ index ].m_health = entity->get_health( );
-
 			g_render.m_draw_data.emplace_back(
 				e_draw_type::draw_type_rect,
 				std::make_any< rect_draw_object_t >(
@@ -410,6 +448,13 @@ void n_players::impl_t::players( )
 					                                                                        4.f, e_rect_flags::rect_flag_none ) );
 				}
 			}
+		}
+
+		// restore
+
+		if ( entity->is_dormant( ) ) {
+			entity->get_flags( ) = backup_flags;
+			entity->set_abs_origin( backup_origin );
 		}
 	} );
 }

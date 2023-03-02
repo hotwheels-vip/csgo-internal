@@ -19,18 +19,14 @@ namespace n_players
 		struct {
 			c_base_entity* m_active_weapon = nullptr;
 			c_weapon_data* m_weapon_data   = nullptr;
-			float m_health                 = 1.f;
+			float m_animated_health        = 1.f;
 			float m_ammo                   = 1.f;
 		} m_backup_player_data[ 64 ];
 
-		auto& get_fading_alpha( const int i ) const
-		{
-			return m_fading_alpha[ i ];
-		}
+		float m_fading_alpha[ 64 ]    = { };
+		float m_stored_cur_time[ 64 ] = { };
 
 	private:
-		float m_fading_alpha[ 64 ] = { };
-
 		void players( );
 	};
 } // namespace n_players

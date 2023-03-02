@@ -249,6 +249,7 @@ public:
 	NETVAR_VARIABLE( int, get_model_index, "CBaseEntity->m_nModelIndex" );
 	NETVAR_VARIABLE( unsigned int, get_owner_entity_handle, "CBaseEntity->m_hOwnerEntity" );
 	NETVAR_VARIABLE( int, get_effects, "CBaseEntity->m_fEffects" );
+	NETVAR_VARIABLE( int, is_spotted, "CBaseEntity->m_bSpotted" );
 
 	/* DT_BaseAnimating */
 	NETVAR_VARIABLE( int, get_sequence, "CBaseAnimating->m_nSequence" );

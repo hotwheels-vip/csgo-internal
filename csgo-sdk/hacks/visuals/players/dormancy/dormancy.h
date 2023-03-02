@@ -17,36 +17,35 @@ namespace n_dormancy
 		struct entity_sound_t {
 			void override_info( sound_info_t& sound )
 			{
-				m_index        = sound.m_sound_source;
-				m_origin       = *sound.m_origin;
-				m_receive_time = GetTickCount64( );
+				m_abs_origin   = *sound.m_origin;
+				m_receive_time = g_interfaces.m_global_vars_base->m_real_time;
 			}
 
-			int m_index             = 0;
-			int m_receive_time      = 0;
-			c_vector m_origin       = { };
-			int m_flags             = 0;
-			c_base_entity* m_player = nullptr;
-			c_vector m_abs_origin   = c_vector( 0, 0, 0 );
-			bool m_dormant          = false;
+			void reset( bool store_data = false, const c_vector& origin = c_vector( 0, 0, 0 ), int flags = 0 )
+			{
+				if ( store_data ) {
+					m_receive_time = g_interfaces.m_global_vars_base->m_real_time;
+					m_abs_origin   = origin;
+					m_flags        = flags;
+				} else {
+					m_receive_time = 0.0f;
+					m_abs_origin   = c_vector( 0, 0, 0 );
+					m_flags        = 0;
+				}
+			}
+
+			int m_receive_time    = 0;
+			int m_flags           = 0;
+			c_vector m_abs_origin = c_vector( 0, 0, 0 );
 		} m_sound_players[ 65 ];
 
-		void start( );
-		void finish( );
-
-	private:
-		void adjust_player_begin( c_base_entity* player );
-		void adjust_player_finish( );
-
+		void think( );
+		bool adjust_player_sound( c_base_entity* player );
 		void setup_adjust_player( c_base_entity* player, sound_info_t& sound );
-
 		bool is_valid_sound( sound_info_t& sound );
 
 		c_utl_vector< sound_info_t > m_vec_sound_buffer{ };
 		c_utl_vector< sound_info_t > m_cur_sound_list{ };
-
-		// sorry
-		std::vector< entity_sound_t > m_array_restore_players{ };
 	};
 } // namespace n_dormancy
 
