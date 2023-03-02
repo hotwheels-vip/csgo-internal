@@ -89,8 +89,8 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 
 			static const ImWchar icon_ranges[] = { 0xe005, 0xf8ff, 0 };
 
-			m_fonts[ e_font_names::font_name_icon_14 ] =
-				io.Fonts->AddFontFromMemoryCompressedTTF( icon_font_compressed_data, icon_font_compressed_size, 14.f, 0, icon_ranges );
+			m_fonts[ e_font_names::font_name_icon_13 ] =
+				io.Fonts->AddFontFromMemoryCompressedTTF( icon_font_compressed_data, icon_font_compressed_size, 13.f, 0, icon_ranges );
 
 			ImGuiFreeType::BuildFontAtlas( io.Fonts, 0x0 );
 		}( );

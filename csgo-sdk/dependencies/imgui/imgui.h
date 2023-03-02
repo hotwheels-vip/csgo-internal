@@ -661,7 +661,6 @@ namespace ImGui
 	IMGUI_API bool RadioButton( const char* label, int* v, int v_button ); // shortcut to handle the above pattern when value is an integer
 	IMGUI_API void ProgressBar( float fraction, const ImVec2& size_arg = ImVec2( -FLT_MIN, 0 ), const char* overlay = NULL );
 	IMGUI_API void Bullet( ); // draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(),
-	                          // same distance that TreeNode() uses
 	IMGUI_API void OptionPopup( const char* str_id, const std::function< void( ) >& function, const ImVec2& window_size );
 
 	// Widgets: Images
@@ -764,12 +763,13 @@ namespace ImGui
 	IMGUI_API bool SliderFloat4( const char* label, float v[ 4 ], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0 );
 	IMGUI_API bool SliderAngle( const char* label, float* v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f,
 	                            const char* format = "%.0f deg", ImGuiSliderFlags flags = 0 );
-	IMGUI_API bool SliderInt( const char* label, int* v, int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0 );
+	IMGUI_API bool SliderInt( const char* label, int* v, int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0,
+	                          bool underneath_checkbox = true );
 	IMGUI_API bool SliderInt2( const char* label, int v[ 2 ], int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0 );
 	IMGUI_API bool SliderInt3( const char* label, int v[ 3 ], int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0 );
 	IMGUI_API bool SliderInt4( const char* label, int v[ 4 ], int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0 );
 	IMGUI_API bool SliderScalar( const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max,
-	                             const char* format = NULL, ImGuiSliderFlags flags = 0 );
+	                             const char* format = NULL, ImGuiSliderFlags flags = 0, bool underneath_checkbox = true );
 	IMGUI_API bool SliderScalarN( const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_min, const void* p_max,
 	                              const char* format = NULL, ImGuiSliderFlags flags = 0 );
 	IMGUI_API bool VSliderFloat( const char* label, const ImVec2& size, float* v, float v_min, float v_max, const char* format = "%.3f",

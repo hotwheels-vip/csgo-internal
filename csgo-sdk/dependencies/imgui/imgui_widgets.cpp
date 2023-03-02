@@ -1397,10 +1397,6 @@ constexpr const char* cog_icon = "\xef\x80\x93";
 
 void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& function, const ImVec2& window_size )
 {
-	ImGuiWindow* window = GetCurrentWindow( );
-	if ( window->SkipItems )
-		return;
-
 	ImGuiContext& g         = *GImGui;
 	const ImGuiStyle& style = g.Style;
 
@@ -1410,18 +1406,21 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 
 	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
-	SameLine( GetContentRegionAvail( ).x - 17.f -
-	          g_render.m_fonts[ e_font_names::font_name_icon_14 ]
-	              ->CalcTextSizeA( g_render.m_fonts[ e_font_names::font_name_icon_14 ]->FontSize, 0.f, FLT_MAX, cog_icon )
-	              .x );
+	[ & ]( ) {
+		const ImVec2 position = GetWindowPos( );
 
-	PushFont( g_render.m_fonts[ e_font_names::font_name_icon_14 ] );
-	Text( cog_icon );
-	PopFont( );
+		GetWindowDrawList( )->AddText(
+			g_render.m_fonts[ e_font_names::font_name_icon_13 ], g_render.m_fonts[ e_font_names::font_name_icon_13 ]->FontSize,
+			ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ), IM_COL32_WHITE,
+		                           cog_icon );
 
-	const bool hovered = IsItemHovered( );
-	if ( hovered && IsMouseClicked( ImGuiMouseButton_Right ) )
-		OpenPopup( str_id );
+		const bool hovered = IsMouseHoveringRect( ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ),
+		                                          ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 21.f ) +
+		                                              ImVec2( 15.f, text_size.y + 3.f ),
+		                                          false );
+		if ( hovered && IsMouseClicked( ImGuiMouseButton_Right ) )
+			OpenPopup( str_id );
+	}( );
 
 	SetNextWindowSize( window_size );
 
@@ -1430,22 +1429,19 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 
 		const ImVec2 position = GetWindowPos( ), size = GetWindowSize( );
 
-		auto text_animation = ImAnimationHelper( hashed_str_id, ImGui::GetIO( ).DeltaTime );
+		auto text_animation = ImAnimationHelper( hashed_str_id, GetIO( ).DeltaTime );
 
 		PushClipRect( ImVec2( position ), ImVec2( position.x + size.x, position.y + 20.f ), false );
 
 		draw_list->AddRectFilled( ImVec2( position ), ImVec2( position.x + size.x, position.y + 20.f ), ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f ),
-		                          g.Style.WindowRounding - 2.f, ImDrawFlags_::ImDrawFlags_RoundCornersTop );
+		                          g.Style.WindowRounding - 2.f, ImDrawFlags_RoundCornersTop );
 
 		PopClipRect( );
 
 		PushClipRect( position, position + size, false );
 		draw_list->AddRect( position, position + size, ImColor( 50, 50, 50, 100 ), g.Style.WindowRounding - 2.f );
 
-		text_animation.Update( ImGui::IsMouseHoveringRect( position, position + size )
-		                           ? 3.f
-		                           : -2.f,
-		                       1.f, 0.5f, 1.f );
+		text_animation.Update( IsMouseHoveringRect( position, position + size ) ? 3.f : -2.f, 1.f, 0.5f, 1.f );
 
 		PopClipRect( );
 
@@ -1454,7 +1450,8 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 		draw_list->AddText(
 			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
 			position + ImVec2( ( size.x - text_size.x ) / 2.f, ( 20.f - text_size.y ) / 2.f ),
-			ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * text_animation.AnimationData->second ), str_id );
+			ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * text_animation.AnimationData->second ),
+			str_id );
 
 		RenderFadedGradientLine( draw_list, position + ImVec2( 0.f, 20.f ), ImVec2( size.x, 1.f ),
 		                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
@@ -3571,7 +3568,7 @@ bool ImGui::SliderBehavior( const ImRect& bb, ImGuiID id, ImGuiDataType data_typ
 // Note: p_data, p_min and p_max are _pointers_ to a memory address holding the data. For a slider, they are all required.
 // Read code of e.g. SliderFloat(), SliderInt() etc. or examples in 'Demo->Widgets->Data Types' to understand how to use this function directly.
 bool ImGui::SliderScalar( const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format,
-                          ImGuiSliderFlags flags )
+                          ImGuiSliderFlags flags, bool underneath_checkbox )
 {
 	SetNextItemWidth( -1 );
 
@@ -3582,11 +3579,11 @@ bool ImGui::SliderScalar( const char* label, ImGuiDataType data_type, void* p_da
 	ImGuiContext& g         = *GImGui;
 	const ImGuiStyle& style = g.Style;
 	const ImGuiID id        = window->GetID( label );
-	const float w           = CalcItemWidth( ) - 10.f;
+	const float w           = underneath_checkbox ? CalcItemWidth( ) - 10.f : CalcItemWidth( );
 	const float h           = GetFrameHeight( ) - 2.f;
 
 	const ImVec2 label_size = CalcTextSize( label, NULL, true );
-	const ImRect frame_bb( ImVec2( window->DC.CursorPos.x + 2.f, window->DC.CursorPos.y ) +
+	const ImRect frame_bb( ImVec2( underneath_checkbox ? window->DC.CursorPos.x + 2.f : window->DC.CursorPos.x - 16.f, window->DC.CursorPos.y ) +
 	                           ImVec2( label_size.x > 0.0f ? style.ItemInnerSpacing.x + h + 3.f : 0.0f, label_size.x > 0.0f ? label_size.y : 0.0f ),
 	                       window->DC.CursorPos + ImVec2( w, ( label_size.x > 0.0f ? label_size.y : 0.0f ) + h ) );
 	const ImRect total_bb( window->DC.CursorPos, frame_bb.Max - ImVec2( ( label_size.x > 0.0f ? style.ItemInnerSpacing.x + h : 0.0f ), 0.0f ) );
@@ -3650,11 +3647,11 @@ bool ImGui::SliderScalar( const char* label, ImGuiDataType data_type, void* p_da
 	}
 
 	if ( active_value_data == active_value.end( ) ) {
-		active_value.insert( { id, floorf( ( float )percent / 100.f * ( frame_bb.Max.x - frame_bb.Min.x ) ) } );
+		active_value.insert( { id, std::floorf( ( float )percent / 100.f * ( frame_bb.Max.x - frame_bb.Min.x ) ) } );
 		active_value_data = active_value.find( id );
 	}
 
-	active_value_data->second = floorf( ( float )percent / 100.f * ( frame_bb.Max.x - frame_bb.Min.x ) );
+	active_value_data->second = std::floorf( ( float )percent / 100.f * ( frame_bb.Max.x - frame_bb.Min.x ) );
 
 	if ( old_value_data->second != active_value_data->second ) {
 		if ( old_value_data->second < active_value_data->second )
@@ -3756,9 +3753,9 @@ bool ImGui::SliderAngle( const char* label, float* v_rad, float v_degrees_min, f
 	return value_changed;
 }
 
-bool ImGui::SliderInt( const char* label, int* v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags )
+bool ImGui::SliderInt( const char* label, int* v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags, bool underneath_checkbox )
 {
-	return SliderScalar( label, ImGuiDataType_S32, v, &v_min, &v_max, format, flags );
+	return SliderScalar( label, ImGuiDataType_S32, v, &v_min, &v_max, format, flags, underneath_checkbox );
 }
 
 bool ImGui::SliderInt2( const char* label, int v[ 2 ], int v_min, int v_max, const char* format, ImGuiSliderFlags flags )

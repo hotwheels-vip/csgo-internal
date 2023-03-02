@@ -351,10 +351,10 @@ void n_menu::impl_t::on_end_scene( )
 
 					ImGui::Checkbox( "fog", &GET_VARIABLE( g_variables.m_fog, bool ) );
 					if ( GET_VARIABLE( g_variables.m_fog, bool ) ) {
-						ImGui::ColorEdit4( "##fog picker", &GET_VARIABLE( g_variables.m_fog_color, c_color ), color_picker_alpha_flags );
+						ImGui::ColorEdit4( "##fog color picker", &GET_VARIABLE( g_variables.m_fog_color, c_color ), color_picker_alpha_flags );
 
-						ImGui::SliderFloat( "start##fog", &GET_VARIABLE( g_variables.m_fog_start, float ), 0.f, 5000.f, "%d u" );
-						ImGui::SliderFloat( "end##fog", &GET_VARIABLE( g_variables.m_fog_end, float ), 0.f, 5000.f, "%d u" );
+						ImGui::SliderFloat( "start##fog", &GET_VARIABLE( g_variables.m_fog_start, float ), 0.f, 5000.f, "%.0f u" );
+						ImGui::SliderFloat( "end##fog", &GET_VARIABLE( g_variables.m_fog_end, float ), 0.f, 5000.f, "%.0f u" );
 					}
 
 					ImGui::Checkbox( "custom smoke color", &GET_VARIABLE( g_variables.m_custom_smoke, bool ) );
@@ -449,57 +449,73 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Checkbox( "velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator, bool ) );
 				if ( GET_VARIABLE( g_variables.m_velocity_indicator, bool ) ) {
 					if ( GET_VARIABLE( g_variables.m_velocity_indicator_custom_color, bool ) ) {
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 20.f );
+
 						ImGui::ColorEdit4( "##velocity indicator color 1", &GET_VARIABLE( g_variables.m_velocity_indicator_color1, c_color ),
 						                   color_picker_alpha_flags );
 
-						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 45.f );
 
 						ImGui::ColorEdit4( "##velocity indicator color 2", &GET_VARIABLE( g_variables.m_velocity_indicator_color2, c_color ),
 						                   color_picker_alpha_flags );
 					} else {
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 20.f );
+
 						ImGui::ColorEdit4( "##velocity indicator color 3", &GET_VARIABLE( g_variables.m_velocity_indicator_color3, c_color ),
 						                   color_picker_alpha_flags );
 
-						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 45.f );
 
 						ImGui::ColorEdit4( "##velocity indicator color 4", &GET_VARIABLE( g_variables.m_velocity_indicator_color4, c_color ),
 						                   color_picker_alpha_flags );
 
-						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 50.f );
+						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 70.f );
 
 						ImGui::ColorEdit4( "##velocity indicator color 5", &GET_VARIABLE( g_variables.m_velocity_indicator_color5, c_color ),
 						                   color_picker_alpha_flags );
 					}
 
-					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "show pre speed##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_show_pre_speed, bool ) );
+					ImGui::OptionPopup(
+						"velocity indicator settings",
+						[ & ]( ) {
+							ImGui::Checkbox( "show pre speed##velocity indicator",
+						                     &GET_VARIABLE( g_variables.m_velocity_indicator_show_pre_speed, bool ) );
 
-					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "fade alpha##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_fade_alpha, bool ) );
+							ImGui::Checkbox( "fade alpha##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_fade_alpha, bool ) );
 
-					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "custom color##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_custom_color, bool ) );
+							ImGui::Checkbox( "custom color##velocity indicator",
+						                     &GET_VARIABLE( g_variables.m_velocity_indicator_custom_color, bool ) );
 
-					ImGui::SliderInt( "padding##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_padding, int ), 5, 100, "%d%%" );
+							ImGui::SliderInt( "padding##velocity indicator", &GET_VARIABLE( g_variables.m_velocity_indicator_padding, int ), 5, 100,
+						                      "%d%%", 0, false );
+						},
+						ImVec2( 200.f, -1 ) );
 				}
 
 				ImGui::Checkbox( "stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator, bool ) );
 				if ( GET_VARIABLE( g_variables.m_stamina_indicator, bool ) ) {
+					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 20.f );
+
 					ImGui::ColorEdit4( "##stamina indicator color 1", &GET_VARIABLE( g_variables.m_stamina_indicator_color1, c_color ),
 					                   color_picker_alpha_flags );
 
-					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+					ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 45.f );
 
 					ImGui::ColorEdit4( "##stamina indicator color 2", &GET_VARIABLE( g_variables.m_stamina_indicator_color2, c_color ),
 					                   color_picker_alpha_flags );
 
-					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "show pre speed##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_show_pre_speed, bool ) );
+					ImGui::OptionPopup(
+						"stamina indicator settings",
+						[ & ]( ) {
+							ImGui::Checkbox( "show pre speed##stamina indicator",
+						                     &GET_VARIABLE( g_variables.m_stamina_indicator_show_pre_speed, bool ) );
 
-					ImGui::SetCursorPosX( 26.f );
-					ImGui::Checkbox( "fade alpha##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_fade_alpha, bool ) );
+							ImGui::Checkbox( "fade alpha##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_fade_alpha, bool ) );
 
-					ImGui::SliderInt( "padding##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_padding, int ), 5, 100, "%d%%" );
+							ImGui::SliderInt( "padding##stamina indicator", &GET_VARIABLE( g_variables.m_stamina_indicator_padding, int ), 5, 100,
+						                      "%d%%", 0, false );
+						},
+						ImVec2( 200.f, -1 ) );
 				}
 
 				ImGui::Checkbox( "keybind indicators", &GET_VARIABLE( g_variables.m_key_indicators_enable, bool ) );
