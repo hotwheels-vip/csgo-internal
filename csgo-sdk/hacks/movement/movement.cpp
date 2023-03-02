@@ -485,7 +485,7 @@ void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, c_angle& angle )
 
 void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 {
-	const c_vector origin   = g_ctx.m_local->get_origin( );
+	const c_vector origin   = g_ctx.m_local->get_abs_origin( );
 	const c_vector velocity = g_ctx.m_local->get_velocity( );
 
 	constexpr static float distance_till_adjust = 0.03125f;
@@ -510,10 +510,10 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 		trace_t trace{ };
 		c_trace_filter filter( g_ctx.m_local );
 
-		c_vector trace_dir = g_ctx.m_local->get_abs_origin( ) + c_vector( trace_additive * direct_dir.m_x, trace_additive * direct_dir.m_y, 0.f );
+		c_vector trace_dir = origin + c_vector( trace_additive * direct_dir.m_x, trace_additive * direct_dir.m_y, 0.f );
 
-		ray_t ray( g_ctx.m_local->get_abs_origin( ), trace_dir );
-		g_interfaces.m_engine_trace->trace_ray( ray, 0xFFFFFFFF /*MASK_ALL*/, &filter, &trace );
+		ray_t ray( origin, trace_dir );
+		g_interfaces.m_engine_trace->trace_ray( ray, mask_playersolid, &filter, &trace );
 
 		if ( trace.did_hit( ) && !trace.m_hit_entity->is_player( ) ) {
 			out_trace = trace;
@@ -524,7 +524,7 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 	};
 
 	constexpr auto has_to_align = []( const c_vector& origin ) -> bool {
-		constexpr float distance_to_stop = 0.00200f;
+		constexpr static float distance_to_stop = 0.00750f;
 
 		const c_vector_2d remainder1 = c_vector_2d( 1.f - ( origin.m_x - floor( origin.m_x ) ), 1.f - ( origin.m_y - floor( origin.m_y ) ) );
 		const c_vector_2d remainder2 = c_vector_2d( ( origin.m_x - floor( origin.m_x ) ), ( origin.m_y - floor( origin.m_y ) ) );
@@ -538,13 +538,14 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 	if ( this->m_pixelsurf_data.m_predicted_succesful )
 		return;
 
-	if ( velocity.length_2d( ) == 0.f || g_ctx.m_local->get_flags( ) & e_flags::fl_onground || !has_to_align( origin ) )
+	// arbitrary minimum velocity number
+	if ( velocity.length_2d( ) < 5.f || g_ctx.m_local->get_flags( ) & e_flags::fl_onground || !has_to_align( origin ) )
 		return;
 
 	trace_t hit_trace{ };
 	bool is_valid = get_colliding_wall( hit_trace );
 
-	if ( !is_valid )
+	if ( !is_valid || hit_trace.m_plane.m_normal.m_z != 0.f /*slope check*/ )
 		return;
 
 	float gain_fraction = cmd->m_buttons & e_command_buttons::in_duck ? 4.6775f : 4.5500f;
