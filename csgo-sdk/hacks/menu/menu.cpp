@@ -436,6 +436,7 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Checkbox( "no crouch cooldown", &GET_VARIABLE( g_variables.m_no_crouch_cooldown, bool ) );
 
 				ImGui::Checkbox( "auto duck", &GET_VARIABLE( g_variables.m_auto_duck, bool ) );
+
 				ImGui::EndChild( );
 			}
 

@@ -70,10 +70,10 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 			icon_font_config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_LightHinting |
 			                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome |
 			                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
-			constexpr ImWchar icon_ranges[] = { 0xE000, 0xF8FF, 0 };
 
+			constexpr ImWchar weapon_icon_ranges[]     = { 0xe000, 0xf8ff, 0 };
 			m_fonts[ e_font_names::font_name_icon_12 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
-				weapon_icons_compressed_data, weapon_icons_compressed_size, 12.f, &icon_font_config, icon_ranges );
+				weapon_icons_compressed_data, weapon_icons_compressed_size, 12.f, &icon_font_config, weapon_icon_ranges );
 
 			m_fonts[ e_font_names::font_name_indicator_29 ] =
 				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 29.f );
@@ -86,6 +86,11 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 				io.Fonts->AddFontFromMemoryCompressedTTF( tahoma_compressed_data, tahoma_compressed_size, 12.f, &tahoma_font_config );
 			m_fonts[ e_font_names::font_name_tahoma_bd_12 ] =
 				io.Fonts->AddFontFromMemoryCompressedTTF( tahoma_bold_compressed_data, tahoma_bold_compressed_size, 12.f, &tahoma_font_config );
+
+			static const ImWchar icon_ranges[] = { 0xe005, 0xf8ff, 0 };
+
+			m_fonts[ e_font_names::font_name_icon_14 ] =
+				io.Fonts->AddFontFromMemoryCompressedTTF( icon_font_compressed_data, icon_font_compressed_size, 14.f, 0, icon_ranges );
 
 			ImGuiFreeType::BuildFontAtlas( io.Fonts, 0x0 );
 		}( );

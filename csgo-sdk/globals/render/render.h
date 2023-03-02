@@ -24,6 +24,7 @@ enum e_font_names {
 	font_name_indicator_29,
 	font_name_tahoma_12,
 	font_name_tahoma_bd_12,
+	font_name_icon_14,
 	font_name_max
 };
 

@@ -1415,13 +1415,76 @@ void ImGui::CustomSeparator( const char* label )
 	ImGui::SetCursorPosY( cursor_position.y + text_size.y + 10.f );
 }
 
+constexpr const char* cog_icon = "\xef\x80\x93";
+
 void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& function, const ImVec2& window_size )
 {
-	ImGui::SetNextWindowSize( window_size );
+	ImGuiWindow* window = GetCurrentWindow( );
+	if ( window->SkipItems )
+		return;
 
-	if ( ImGui::BeginPopup( str_id ) ) {
+	ImGuiContext& g         = *GImGui;
+	const ImGuiStyle& style = g.Style;
+
+	const auto hashed_str_id = ImHashStr( str_id );
+	const auto text_size     = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+        g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
+
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
+	SameLine( GetContentRegionAvail( ).x - 17.f -
+	          g_render.m_fonts[ e_font_names::font_name_icon_14 ]
+	              ->CalcTextSizeA( g_render.m_fonts[ e_font_names::font_name_icon_14 ]->FontSize, 0.f, FLT_MAX, cog_icon )
+	              .x );
+
+	PushFont( g_render.m_fonts[ e_font_names::font_name_icon_14 ] );
+	Text( cog_icon );
+	PopFont( );
+
+	const bool hovered = IsItemHovered( );
+	if ( hovered && IsMouseClicked( ImGuiMouseButton_Right ) )
+		OpenPopup( str_id );
+
+	SetNextWindowSize( window_size );
+
+	if ( BeginPopup( str_id ) ) {
+		const auto draw_list = GetWindowDrawList( );
+
+		const ImVec2 position = GetWindowPos( ), size = GetWindowSize( );
+
+		auto text_animation = ImAnimationHelper( hashed_str_id, ImGui::GetIO( ).DeltaTime );
+
+		PushClipRect( ImVec2( position ), ImVec2( position.x + size.x, position.y + 20.f ), false );
+
+		draw_list->AddRectFilled( ImVec2( position ), ImVec2( position.x + size.x, position.y + 20.f ), ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f ),
+		                          g.Style.WindowRounding - 2.f, ImDrawFlags_::ImDrawFlags_RoundCornersTop );
+
+		PopClipRect( );
+
+		PushClipRect( position, position + size, false );
+		draw_list->AddRect( position, position + size, ImColor( 50, 50, 50, 100 ), g.Style.WindowRounding - 2.f );
+
+		text_animation.Update( ImGui::IsMouseHoveringRect( position, position + size )
+		                           ? 3.f
+		                           : -2.f,
+		                       1.f, 0.5f, 1.f );
+
+		PopClipRect( );
+
+		const ImColor text_color = GetColorU32( ImGuiCol_Text );
+
+		draw_list->AddText(
+			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
+			position + ImVec2( ( size.x - text_size.x ) / 2.f, ( 20.f - text_size.y ) / 2.f ),
+			ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * text_animation.AnimationData->second ), str_id );
+
+		RenderFadedGradientLine( draw_list, position + ImVec2( 0.f, 20.f ), ImVec2( size.x, 1.f ),
+		                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
+
+		SetCursorPosY( GetCursorPosY( ) + 20.f );
+
 		function( );
-		ImGui::EndPopup( );
+		EndPopup( );
 	}
 }
 
