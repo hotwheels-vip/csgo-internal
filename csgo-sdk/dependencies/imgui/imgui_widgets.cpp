@@ -1393,28 +1393,6 @@ void ImGui::Bullet( )
 	SameLine( 0, style.FramePadding.x * 2.0f );
 }
 
-void ImGui::CustomSeparator( const char* label )
-{
-	const auto draw_list = ImGui::GetWindowDrawList( );
-
-	const auto position = ImGui::GetWindowPos( );
-	const auto size     = ImGui::GetWindowSize( );
-
-	const auto cursor_position = ImGui::GetCursorPos( );
-
-	const ImColor accent = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
-
-	const auto text_size = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-		g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, label );
-
-	RenderFadedGradientLine( draw_list, ImVec2( position.x + text_size.x + 12.f, position.y + cursor_position.y + text_size.y / 2.f ),
-	                         ImVec2( size.x - text_size.x - 10.f, 0.5f ), accent );
-
-	draw_list->AddText( ImVec2( position.x + 7.f, position.y + cursor_position.y ), ImColor( 1.f, 1.f, 1.f, 0.5f ), label );
-
-	ImGui::SetCursorPosY( cursor_position.y + text_size.y + 10.f );
-}
-
 constexpr const char* cog_icon = "\xef\x80\x93";
 
 void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& function, const ImVec2& window_size )
