@@ -89,6 +89,44 @@ void n_movement::impl_t::on_create_move_post( )
 			g_prediction.end( g_ctx.m_local );
 
 			if ( !( backup_flags & fl_onground ) && g_ctx.m_local->get_flags( ) & fl_onground ) {
+
+				//	Im at uni and cant really build right now.
+				//	Im righting these comments for @coffin1337 and myself.
+				//
+				// TODO:
+				// simulate jumpbug in here with simulated cmd, same method as in other 
+				// features that need simulation.
+				// then, run prediction again and run jumpbug detection code, same as old hotwheels had.
+				// if the detection returns true, the we can jumpbug in the future.
+				// also dont forget to set simulated cmds forward move and side move to 0.f
+				// this idea was provided by patoke but i tried it before, didnt really do it right so
+				// it didnt work. 
+				// 
+				//
+				// this is what it would look like roughly:
+				// (after this check on line 91)
+				// 
+				// 	if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground && !( backup_flags & e_flags::fl_onground ) )
+				//		simulated_cmd->m_buttons |= e_command_buttons::in_duck;
+				//
+				//	if ( g_ctx.m_local->get_flags( ) & e_flags::fl_onground )
+				//		simulated_cmd->m_buttons &= ~e_command_buttons::in_jump;
+				//
+				//	g_prediction.begin( g_ctx.m_local, simulated_cmd );
+				//	g_prediction.end( g_ctx.m_local );
+				//
+				//	if ( velocity.z > backupvelocity.z && backup flags not on ground && predicted flags not onground)
+				//		jumpbug = expected_vertical_velocity == std::roundf( globals.m_local->velocity( ).m_z );
+				//	else
+				//		jumpbug = false;
+				//
+				// if the code theory from above does not work, we simply have to keep the method below and 
+				// do some minor changes to the value for it to work properly. i need a way for numbers to be exact
+				// every time a jumpbug is posible. might have to use std::floor or std::abs.
+				// im pretty sure this current method is better, but it doesnt hurt to try the simulation method.
+				// this simulation method is also used in clarity's route calculator, patoke also does this in his source.
+				// he runs the necessary amount of ticks with prediction and simulates movement techniques
+
 				// LOOOOOOOOOL
 				const bool can_jb = static_cast< int >( backup_origin_z - g_ctx.m_local->get_abs_origin( ).m_z ) >= 3;
 
