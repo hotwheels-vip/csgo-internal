@@ -415,17 +415,24 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Keybind( "jump bug key", &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) );
 
 				ImGui::Checkbox( "edge bug", &GET_VARIABLE( g_variables.m_edge_bug, bool ) );
-				ImGui::Keybind( "edge bug key", &GET_VARIABLE( g_variables.m_edge_bug_key, key_bind_t ) );
 
 				if ( GET_VARIABLE( g_variables.m_edge_bug, bool ) ) {
-					ImGui::SliderInt( "edge bug predicted ticks", &GET_VARIABLE( g_variables.m_edge_bug_ticks, int ), 0, 32 );
-					ImGui::SliderFloat( "mouse lock scale", &GET_VARIABLE( g_variables.m_edge_bug_lock_amt, float ), 0.f, 1.f, "%.2f" );
+					ImGui::OptionPopup(
+						"edgebug advanced settings",
+						[ & ]( ) {
+							ImGui::SetCursorPosX( 26.f );
+							ImGui::Text( "edgebug keybind" );
+							ImGui::Keybind( "edge bug key", &GET_VARIABLE( g_variables.m_edge_bug_key, key_bind_t ) );
+							ImGui::SliderInt( "edge bug predicted ticks", &GET_VARIABLE( g_variables.m_edge_bug_ticks, int ), 0, 32 );
+							ImGui::SliderFloat( "mouse lock scale", &GET_VARIABLE( g_variables.m_edge_bug_lock_amt, float ), 0.f, 1.f, "%.2f" );
 
-					ImGui::Checkbox( "advanced detection", &GET_VARIABLE( g_variables.m_advanced_detection, bool ) );
-					if ( GET_VARIABLE( g_variables.m_advanced_detection, bool ) )
-						ImGui::SliderFloat( "max strafe delta", &GET_VARIABLE( g_variables.m_edge_bug_strafe_delta_max, float ), 0.1f, 10.f, "%.1f" );
+							ImGui::Checkbox( "advanced detection", &GET_VARIABLE( g_variables.m_advanced_detection, bool ) );
+							if ( GET_VARIABLE( g_variables.m_advanced_detection, bool ) )
+								ImGui::SliderFloat( "max strafe delta", &GET_VARIABLE( g_variables.m_edge_bug_strafe_delta_max, float ), 0.1f, 100.f,
+							                        "%.1f%" );
+						},
+						ImVec2( 200.f, -1 ) );
 				}
-
 				ImGui::Checkbox( "pixel surf", &GET_VARIABLE( g_variables.m_pixel_surf, bool ) );
 				ImGui::Keybind( "pixel surf key", &GET_VARIABLE( g_variables.m_pixel_surf_key, key_bind_t ) );
 

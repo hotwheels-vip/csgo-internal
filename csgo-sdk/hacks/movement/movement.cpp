@@ -243,7 +243,7 @@ void n_movement::impl_t::edge_bug( )
 
 	// strafed edgebugs
 	if ( GET_VARIABLE( g_variables.m_advanced_detection, bool ) &&
-	     yaw_delta < ( GET_VARIABLE( g_variables.m_edge_bug_strafe_delta_max, float ) / 1000.f ) ) {
+	     yaw_delta < ( GET_VARIABLE( g_variables.m_edge_bug_strafe_delta_max, float ) / 10000.f ) ) {
 		loop_through_ticks( edgebug_type_t::eb_standing, true );
 		loop_through_ticks( edgebug_type_t::eb_ducking, true );
 	}

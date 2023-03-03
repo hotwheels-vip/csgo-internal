@@ -21,7 +21,7 @@ void n_misc::impl_t::on_paint_traverse( )
 #ifdef _DEBUG
 	// TESTING FUNCTION
 	[ & ]( const bool run ) {
-		if ( !run && !GET_VARIABLE( g_variables.m_debugger_visual, bool ) )
+		if ( !run || !GET_VARIABLE( g_variables.m_debugger_visual, bool ) )
 			return;
 
 		float offset = 0.f;
