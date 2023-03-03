@@ -96,6 +96,7 @@
     <ClCompile Include="utilities\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\avatar_data\avatar_data.h" />
     <ClInclude Include="dependencies\crc32\crc32.h" />
     <ClInclude Include="dependencies\fnv1a\fnv1a.h" />
     <ClInclude Include="dependencies\imgui\helpers\easing.h" />
@@ -388,11 +389,15 @@
     <IntDir>intermediates</IntDir>
     <TargetName>zipudhe2</TargetName>
     <OutDir>debug</OutDir>
+    <LibraryPath>$(DXSDK_DIR)Lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>intermediates</IntDir>
     <TargetName>fart</TargetName>
     <OutDir>release</OutDir>
+    <LibraryPath>$(DXSDK_DIR)Lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <VcpkgTriplet>x86-windows-static-md</VcpkgTriplet>

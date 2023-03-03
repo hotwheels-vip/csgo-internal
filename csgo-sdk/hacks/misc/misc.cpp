@@ -2,6 +2,7 @@
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
 #include "../../globals/logger/logger.h"
+#include "../avatar_cache/avatar_cache.h"
 #include "../entity_cache/entity_cache.h"
 #include "../movement/movement.h"
 
@@ -126,7 +127,7 @@ void n_misc::impl_t::on_end_scene( )
 		constexpr auto background_height = 25.f;
 		constexpr auto title_text        = "practice";
 		const auto title_text_size       = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-				  g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
+            g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
 
 		ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 25.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
 		ImGui::Begin( ( "hotwheels-practice-window-ui" ), 0,
@@ -294,7 +295,7 @@ void n_misc::impl_t::draw_spectating_local( )
 		spectator_data.push_back(
 			{ std::vformat( "{} | {}", std::make_format_args( std::string( spectating_info.m_name ).substr( 0, 12 ).append( "..." ),
 		                                                      get_player_spec_type( entity->get_observer_mode( ) ) ) ),
-		      GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ) } );
+		      nullptr, GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ) } );
 	} );
 
 	if ( spectator_data.empty( ) ) {
@@ -352,6 +353,11 @@ void n_misc::impl_t::draw_spectator_list( )
 
 		spectator_data.push_back( { std::format( ( "{} -> {}" ), std::string( spectating_info.m_name ).substr( 0, 24 ),
 		                                         std::string( spectated_info.m_name ).substr( 0, 24 ) ),
+
+		                            spectating_info.m_fake_player ? entity_team == 2 /* terrorist */           ? g_render.m_terrorist_avatar
+		                                                            : entity_team == 3 /* counter terrorist */ ? g_render.m_counter_terrorist_avatar
+		                                                                                                       : nullptr
+		                                                          : g_avatar_cache[ entity_index ],
 		                            spectated_player == g_ctx.m_local ? GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color )
 		                                                              : GET_VARIABLE( g_variables.m_spectators_list_text_color_two, c_color ) } );
 	} );
@@ -412,8 +418,8 @@ void n_misc::impl_t::draw_spectator_list( )
 		ImGui::SetCursorPosY( 30.f );
 
 		for ( const auto& data : spectator_data ) {
-			// ImGui::Image( data.m_avatar, ImVec2( 14, 14 ), ImVec2( 0, 0 ), ImVec2( 1, 1 ) );
-			// ImGui::SameLine( );
+			ImGui::Image( data.m_avatar, ImVec2( 14, 14 ), ImVec2( 0, 0 ), ImVec2( 1, 1 ) );
+			ImGui::SameLine( );
 			ImGui::TextColored( data.m_color.get_vec4( ), data.m_text.c_str( ) );
 		}
 	}

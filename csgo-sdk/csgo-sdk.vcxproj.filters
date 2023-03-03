@@ -302,6 +302,7 @@
     <ClInclude Include="dependencies\steam\steamtypes.h" />
     <ClInclude Include="dependencies\steam\steamuniverse.h" />
     <ClInclude Include="hacks\avatar_cache\avatar_cache.h" />
+    <ClInclude Include="dependencies\avatar_data\avatar_data.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

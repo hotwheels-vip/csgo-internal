@@ -2,11 +2,14 @@
 #include "../../globals/includes/includes.h"
 #include <string>
 
+struct IDirect3DTexture9;
+
 namespace n_misc
 {
 	struct spectator_data_t {
-		std::string m_text = { };
-		c_color m_color    = { };
+		std::string m_text          = { };
+		IDirect3DTexture9* m_avatar = { };
+		c_color m_color             = { };
 	};
 
 	struct impl_t {

@@ -1,8 +1,11 @@
 #include "render.h"
 #include "../../dependencies/imgui/helpers/fonts.h"
+#include "../../dependencies/avatar_data/avatar_data.h"
 
 #include "../../game/sdk/includes/includes.h"
 #include "../includes/includes.h"
+
+#include <d3dx9tex.h>
 
 void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, IDirect3DDevice9* device )
 {
@@ -10,6 +13,13 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 		ImGui::CreateContext( );
 		ImGui_ImplWin32_Init( g_input.m_window );
 		ImGui_ImplDX9_Init( device );
+
+		if ( !g_render.m_terrorist_avatar )
+			D3DXCreateTextureFromFileInMemory( device, &terrorist_avatar_data, sizeof( terrorist_avatar_data ), &this->m_terrorist_avatar );
+
+		if ( !g_render.m_counter_terrorist_avatar )
+			D3DXCreateTextureFromFileInMemory( device, &counter_terrorist_avatar_data, sizeof( counter_terrorist_avatar_data ),
+			                                   &this->m_counter_terrorist_avatar );
 
 		auto& style = ImGui::GetStyle( );
 
@@ -301,7 +311,7 @@ IDirect3DTexture9* n_render::impl_t::steam_image( CSteamID steam_id )
 	}
 
 	long result = g_interfaces.m_direct_device->CreateTexture( avatar_width, avatar_height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT,
-	                                              &created_texture, nullptr );
+	                                                           &created_texture, nullptr );
 
 	std::vector< unsigned char > texture_data = { };
 	texture_data.resize( avatar_width * avatar_height * 4U );

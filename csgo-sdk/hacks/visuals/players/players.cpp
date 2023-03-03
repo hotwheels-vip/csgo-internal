@@ -15,7 +15,7 @@ void n_players::impl_t::on_paint_traverse( )
 void n_players::impl_t::players( )
 {
 	// dormancy-related
-	static DWORD radar_base{ };
+	static unsigned long radar_base{ };
 	static c_csgo_hud_radar* hud_radar{ };
 
 	[]( ) {

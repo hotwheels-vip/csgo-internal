@@ -7,8 +7,8 @@
 #include <shared_mutex>
 #include <string>
 
-#include "../../game/sdk/classes/c_vector.h"
 #include "../../dependencies/steam/isteamclient.h"
+#include "../../game/sdk/classes/c_vector.h"
 
 struct IDirect3DDevice9;
 struct IDirect3DTexture9;
@@ -148,6 +148,9 @@ namespace n_render
 
 		void copy_and_convert( const uint8_t* rgba_data, uint8_t* out, const size_t size );
 		IDirect3DTexture9* steam_image( CSteamID steam_id );
+
+		IDirect3DTexture9* m_counter_terrorist_avatar = nullptr;
+		IDirect3DTexture9* m_terrorist_avatar         = nullptr;
 	};
 } // namespace n_render
 
