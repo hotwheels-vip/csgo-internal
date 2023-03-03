@@ -1400,6 +1400,8 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 	ImGuiContext& g         = *GImGui;
 	const ImGuiStyle& style = g.Style;
 
+	const auto window = g.CurrentWindow;
+
 	const auto hashed_str_id = ImHashStr( str_id );
 	const auto text_size     = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
 			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
@@ -1407,16 +1409,19 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
 	[ & ]( ) {
+		const auto cog_text_size = g_render.m_fonts[ e_font_names::font_name_icon_13 ]->CalcTextSizeA(
+			g_render.m_fonts[ e_font_names::font_name_icon_13 ]->FontSize, FLT_MAX, 0.f, str_id );
+
 		const ImVec2 position = GetWindowPos( );
 
-		const bool hovered = IsMouseHoveringRect( ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ),
-		                                          ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 21.f ) +
-		                                              ImVec2( 15.f, text_size.y + 3.f ),
+		const bool hovered = IsMouseHoveringRect( ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 20.f ),
+		                                          ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 21.f ) +
+		                             ImVec2( cog_text_size.x, cog_text_size.y ),
 		                                          false );
 
 		GetWindowDrawList( )->AddText( g_render.m_fonts[ e_font_names::font_name_icon_13 ],
 		                               g_render.m_fonts[ e_font_names::font_name_icon_13 ]->FontSize,
-		                               ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ),
+		                               ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 20.f ),
 		                               hovered ? IM_COL32_WHITE : IM_COL32( 190, 190, 190, 255 ), cog_icon );
 
 		if ( hovered && ( IsMouseClicked( ImGuiMouseButton_Right ) || IsMouseClicked( ImGuiMouseButton_Left ) ) )

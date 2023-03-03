@@ -1,4 +1,5 @@
 #pragma once
+#include "../../../dependencies/steam/isteamclient.h"
 #include "../../../game/sdk/classes/c_angle.h"
 #include "../../../globals/macros/macros.h"
 #include "../../../utilities/memory/virtual.h"
@@ -10,6 +11,32 @@ struct player_info_t;
 struct view_matrix_t;
 
 class c_net_channel_info;
+
+struct steam_api_context_t {
+	ISteamClient* m_steam_client;
+	ISteamUser* m_steam_user;
+	ISteamFriends* m_steam_friends;
+	ISteamUtils* m_steam_utils;
+	ISteamMatchmaking* m_steam_matchmaking;
+	void* m_steam_game_search;
+	ISteamMatchmakingServers* m_steam_matchmaking_servers;
+	ISteamUserStats* m_steam_user_stats;
+	ISteamApps* m_steam_apps;
+	ISteamNetworking* m_steam_networking;
+	ISteamRemoteStorage* m_steam_remote_storage;
+	ISteamScreenshots* m_steam_screenshots;
+	ISteamHTTP* m_steam_http;
+	ISteamController* m_controller;
+	ISteamUGC* m_steam_ugc;
+	ISteamAppList* m_steam_app_list;
+	ISteamMusic* m_steam_music;
+	ISteamMusicRemote* m_steam_music_remote;
+	ISteamHTMLSurface* m_steam_html_surface;
+	ISteamInventory* m_steam_inventory;
+	ISteamVideo* m_steam_video;
+	ISteamParentalSettings* m_steam_parental_settings;
+	void* m_steam_input;
+};
 
 class c_engine_client
 {
@@ -139,6 +166,11 @@ public:
 	void client_cmd_unrestricted( const char* cmd_string, bool from_console_or_keybind = false )
 	{
 		g_virtual.call< void >( this, 114, cmd_string, from_console_or_keybind );
+	}
+
+	steam_api_context_t* steam_api_context( )
+	{
+		return g_virtual.call< steam_api_context_t* >( this, 185 );
 	}
 
 	void fire_events( )

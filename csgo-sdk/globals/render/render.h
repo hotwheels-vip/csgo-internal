@@ -8,8 +8,10 @@
 #include <string>
 
 #include "../../game/sdk/classes/c_vector.h"
+#include "../../dependencies/steam/isteamclient.h"
 
 struct IDirect3DDevice9;
+struct IDirect3DTexture9;
 struct ImFont;
 struct ImDrawList;
 struct ImColor;
@@ -143,6 +145,9 @@ namespace n_render
 		           unsigned int outline_flags );
 
 		void corner_rect( float x1, float y1, float x2, float y2, const unsigned int& color, float thickness = 1.f );
+
+		void copy_and_convert( const uint8_t* rgba_data, uint8_t* out, const size_t size );
+		IDirect3DTexture9* steam_image( CSteamID steam_id );
 	};
 } // namespace n_render
 

@@ -268,3 +268,63 @@ void n_render::impl_t::corner_rect( float x1, float y1, float x2, float y2, cons
 		e_draw_type::draw_type_line,
 		std::make_any< line_draw_object_t >( c_vector_2d( x1 + w - 1, y1 + h - ih ), c_vector_2d( x1 + w - 1, y1 + h ), color, thickness ) );
 }
+
+void n_render::impl_t::copy_and_convert( const uint8_t* rgba_data, uint8_t* out, const size_t size )
+{
+	auto in     = reinterpret_cast< const uint32_t* >( rgba_data );
+	auto buffer = reinterpret_cast< uint32_t* >( out );
+	for ( auto i = 0u; i < ( size / 4 ); ++i ) {
+		const auto pixel = *in++;
+		*buffer++        = ( pixel & 0xFF00FF00 ) | ( ( pixel & 0xFF0000 ) >> 16 ) | ( ( pixel & 0xFF ) << 16 );
+	}
+}
+
+IDirect3DTexture9* n_render::impl_t::steam_image( CSteamID steam_id )
+{
+	IDirect3DTexture9* created_texture = { };
+
+	int image_index = SteamFriends->GetSmallFriendAvatar( steam_id );
+	if ( image_index == -1 )
+		return nullptr;
+
+	unsigned int avatar_width = { }, avatar_height = { };
+
+	if ( !SteamUtils->GetImageSize( image_index, &avatar_width, &avatar_height ) )
+		return nullptr;
+
+	const int image_size_in_bytes = avatar_width * avatar_height * 4;
+	unsigned char* avatar_rgba    = new unsigned char[ image_size_in_bytes ];
+
+	if ( !SteamUtils->GetImageRGBA( image_index, avatar_rgba, image_size_in_bytes ) ) {
+		delete[] avatar_rgba;
+		return nullptr;
+	}
+
+	long result = g_interfaces.m_direct_device->CreateTexture( avatar_width, avatar_height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT,
+	                                              &created_texture, nullptr );
+
+	std::vector< unsigned char > texture_data = { };
+	texture_data.resize( avatar_width * avatar_height * 4U );
+
+	this->copy_and_convert( avatar_rgba, texture_data.data( ), avatar_width * avatar_height * 4U );
+
+	D3DLOCKED_RECT locked_rect = { };
+	if ( !created_texture )
+		return nullptr;
+
+	result   = created_texture->LockRect( 0, &locked_rect, nullptr, D3DLOCK_DISCARD );
+	auto src = texture_data.data( );
+	auto dst = reinterpret_cast< unsigned char* >( locked_rect.pBits );
+
+	for ( auto y = 0u; y < avatar_height; ++y ) {
+		std::copy( src, src + ( avatar_width * 4 ), dst );
+
+		src += avatar_width * 4;
+		dst += locked_rect.Pitch;
+	}
+
+	result = created_texture->UnlockRect( 0 );
+	delete[] avatar_rgba;
+
+	return created_texture;
+}
