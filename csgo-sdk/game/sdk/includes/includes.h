@@ -46,7 +46,7 @@
 #include "../classes/entity.h"
 
 // panorama
-#include "../classes/panorama/c_panoramauiengine.h"
+#include "../classes/panorama/c_panorama_ui_engine.h"
 
 #include "../structs/bounding_box_t.h"
 #include "../structs/data_map_t.h"

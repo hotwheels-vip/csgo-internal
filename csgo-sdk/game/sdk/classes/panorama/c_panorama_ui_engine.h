@@ -197,7 +197,7 @@ public:
 	virtual void create_sound_system( void )                                               = 0;
 };
 
-class c_panoramauiengine : c_app_system
+class c_panorama_ui_engine : c_app_system
 {
 public:
 	virtual void setup_ui_engine( void )          = 0;

@@ -3,6 +3,7 @@
 #include "../hooks.h"
 
 #include "../../hacks/entity_cache/entity_cache.h"
+#include "../../hacks/avatar_cache/avatar_cache.h"
 
 void __fastcall n_detoured_functions::on_remove_entity( void* ecx, void* edx, void* handle_entity, unsigned int entity_handle )
 {
@@ -11,6 +12,7 @@ void __fastcall n_detoured_functions::on_remove_entity( void* ecx, void* edx, vo
 	const auto entity = reinterpret_cast< c_base_entity* >( g_interfaces.m_client_entity_list->get_client_entity_from_handle( entity_handle ) );
 
 	g_entity_cache.on_remove_entity( entity );
+	g_avatar_cache.on_remove_entity( entity );
 
 	original( ecx, edx, handle_entity, entity_handle );
 }

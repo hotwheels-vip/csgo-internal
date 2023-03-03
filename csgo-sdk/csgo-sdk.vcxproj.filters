@@ -75,6 +75,7 @@
     <ClCompile Include="hooks\functions\list_leaves_in_box.cpp" />
     <ClCompile Include="hacks\animations\animations.cpp" />
     <ClCompile Include="hacks\visuals\players\dormancy\dormancy.cpp" />
+    <ClCompile Include="hacks\avatar_cache\avatar_cache.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -252,7 +253,7 @@
     <ClInclude Include="game\sdk\classes\panorama\panorama.h" />
     <ClInclude Include="game\sdk\classes\panorama\c_uipanel.h" />
     <ClInclude Include="game\sdk\classes\panorama\c_uievent.h" />
-    <ClInclude Include="game\sdk\classes\panorama\c_panoramauiengine.h" />
+    <ClInclude Include="game\sdk\classes\panorama\c_panorama_ui_engine.h" />
     <ClInclude Include="hacks\misc\scaleform\scaleform.h" />
     <ClInclude Include="game\sdk\structs\fmt_str_n_t.h" />
     <ClInclude Include="utilities\data\data.h" />
@@ -263,6 +264,44 @@
     <ClInclude Include="hacks\visuals\players\dormancy\dormancy.h" />
     <ClInclude Include="game\sdk\classes\c_engine_sound.h" />
     <ClInclude Include="game\sdk\classes\c_csgo_hud_radar.h" />
+    <ClInclude Include="dependencies\steam\isteamapplist.h" />
+    <ClInclude Include="dependencies\steam\isteamapps.h" />
+    <ClInclude Include="dependencies\steam\isteamappticket.h" />
+    <ClInclude Include="dependencies\steam\isteamclient.h" />
+    <ClInclude Include="dependencies\steam\isteamcontroller.h" />
+    <ClInclude Include="dependencies\steam\isteamfriends.h" />
+    <ClInclude Include="dependencies\steam\isteamgamecoordinator.h" />
+    <ClInclude Include="dependencies\steam\isteamgameserver.h" />
+    <ClInclude Include="dependencies\steam\isteamgameserverstats.h" />
+    <ClInclude Include="dependencies\steam\isteamhtmlsurface.h" />
+    <ClInclude Include="dependencies\steam\isteamhttp.h" />
+    <ClInclude Include="dependencies\steam\isteaminventory.h" />
+    <ClInclude Include="dependencies\steam\isteammasterserverupdater.h" />
+    <ClInclude Include="dependencies\steam\isteammatchmaking.h" />
+    <ClInclude Include="dependencies\steam\isteammusic.h" />
+    <ClInclude Include="dependencies\steam\isteammusicremote.h" />
+    <ClInclude Include="dependencies\steam\isteamnetworking.h" />
+    <ClInclude Include="dependencies\steam\isteamparentalsettings.h" />
+    <ClInclude Include="dependencies\steam\isteamps3overlayrenderer.h" />
+    <ClInclude Include="dependencies\steam\isteamremotestorage.h" />
+    <ClInclude Include="dependencies\steam\isteamscreenshots.h" />
+    <ClInclude Include="dependencies\steam\isteamugc.h" />
+    <ClInclude Include="dependencies\steam\isteamuser.h" />
+    <ClInclude Include="dependencies\steam\isteamuserstats.h" />
+    <ClInclude Include="dependencies\steam\isteamutils.h" />
+    <ClInclude Include="dependencies\steam\isteamvideo.h" />
+    <ClInclude Include="dependencies\steam\matchmakingtypes.h" />
+    <ClInclude Include="dependencies\steam\steam_api.h" />
+    <ClInclude Include="dependencies\steam\steam_api_flat.h" />
+    <ClInclude Include="dependencies\steam\steam_api_internal.h" />
+    <ClInclude Include="dependencies\steam\steam_gameserver.h" />
+    <ClInclude Include="dependencies\steam\steamclientpublic.h" />
+    <ClInclude Include="dependencies\steam\steamencryptedappticket.h" />
+    <ClInclude Include="dependencies\steam\steamhttpenums.h" />
+    <ClInclude Include="dependencies\steam\steamps3params.h" />
+    <ClInclude Include="dependencies\steam\steamtypes.h" />
+    <ClInclude Include="dependencies\steam\steamuniverse.h" />
+    <ClInclude Include="hacks\avatar_cache\avatar_cache.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

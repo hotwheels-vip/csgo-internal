@@ -69,7 +69,7 @@ bool n_interfaces::impl_t::on_attach( )
 	if ( !( m_game_event_manager = static_cast< game_event_manager_t* >( g_modules[ ENGINE_DLL ].find_interface( "GAMEEVENTSMANAGER002" ) ) ) )
 		return false;
 
-	if ( !( m_panorama = static_cast< c_panoramauiengine* >( g_modules[ PANORAMA_DLL ].find_interface( "PanoramaUIEngine001" ) ) ) )
+	if ( !( m_panorama = static_cast< c_panorama_ui_engine* >( g_modules[ PANORAMA_DLL ].find_interface( "PanoramaUIEngine001" ) ) ) )
 		return false;
 
 	if ( !( m_key_values_system =
@@ -119,6 +119,32 @@ bool n_interfaces::impl_t::on_attach( )
 	if ( !( g_scaleform.compare_extension = reinterpret_cast< decltype( g_scaleform.compare_extension ) >(
 				g_modules[ PANORAMA_DLL ].find_pattern( "55 8B EC 53 57 8B 7D 08 85" ) ) ) )
 		g_console.print( "FAILED TO FIND COMPARE_EXTENSION" );
+
+	SteamClient = this->m_engine_client->steam_api_context( )->m_steam_client;
+	if ( !SteamClient )
+		return false;
+
+	SteamUser = this->m_engine_client->steam_api_context( )->m_steam_user;
+	if ( !SteamUser )
+		return false;
+
+	SteamFriends = this->m_engine_client->steam_api_context( )->m_steam_friends;
+	if ( !SteamFriends )
+		return false;
+
+	SteamUtils = this->m_engine_client->steam_api_context( )->m_steam_utils;
+	if ( !SteamUtils )
+		return false;
+
+	const int steam_user =
+		reinterpret_cast< std::add_pointer_t< int( ) > >( g_modules[ STEAM_API_DLL ].find_export( HASH_BT( "SteamAPI_GetHSteamUser" ) ) )( );
+	const int steam_pipe =
+		reinterpret_cast< std::add_pointer_t< int( ) > >( g_modules[ STEAM_API_DLL ].find_export( HASH_BT( "SteamAPI_GetHSteamPipe" ) ) )( );
+
+	SteamGameCoordinator =
+		static_cast< ISteamGameCoordinator* >( SteamClient->GetISteamGenericInterface( steam_user, steam_pipe, "SteamGameCoordinator001" ) );
+	if ( !SteamGameCoordinator )
+		return false;
 
 	return true;
 }
