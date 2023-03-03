@@ -198,9 +198,14 @@ void n_menu::impl_t::on_end_scene( )
 						ImGui::Checkbox( "health number##player", &GET_VARIABLE( g_variables.m_players_health_text, bool ) );
 						// TODO add more types
 						if ( GET_VARIABLE( g_variables.m_players_health_text, bool ) ) {
-							ImGui::Checkbox( "health number suffix", &GET_VARIABLE( g_variables.m_players_health_suffix, bool ) );
-							ImGui::Combo( "health number style", &GET_VARIABLE( g_variables.m_players_health_text_style, int ),
-							              "standalone bottom\0follow health bar" );
+							ImGui::OptionPopup(
+								"health number settings",
+								[ & ]( ) {
+									ImGui::Checkbox( "health number suffix", &GET_VARIABLE( g_variables.m_players_health_suffix, bool ) );
+									ImGui::Combo( "health number style", &GET_VARIABLE( g_variables.m_players_health_text_style, int ),
+								                  "standalone bottom\0follow health bar" );
+								},
+								ImVec2( 200.f, -1 ) );
 						}
 
 						ImGui::Checkbox( "weapon name##player", &GET_VARIABLE( g_variables.m_weapon_name, bool ) );
@@ -239,41 +244,60 @@ void n_menu::impl_t::on_end_scene( )
 				case 1: {
 					ImGui::Checkbox( "dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons, bool ) );
 					if ( GET_VARIABLE( g_variables.m_dropped_weapons, bool ) ) {
-						ImGui::Checkbox( "bounding box##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) );
-						if ( GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) ) {
-							if ( GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool ) ) {
-								ImGui::ColorEdit4( "##dropped weapons bounding box color",
-								                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ), color_picker_alpha_flags );
+						ImGui::OptionPopup(
+							"dropped weapons settings",
+							[ & ]( ) {
+								ImGui::Checkbox( "bounding box##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) );
+								if ( GET_VARIABLE( g_variables.m_dropped_weapons_box, bool ) ) {
+									if ( GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool ) ) {
+										ImGui::ColorEdit4( "##dropped weapons bounding box color",
+									                       &GET_VARIABLE( g_variables.m_dropped_weapons_box_color, c_color ),
+									                       color_picker_alpha_flags );
 
-								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+										ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
-								ImGui::ColorEdit4( "##dropped weapons bounding box outline color",
-								                   &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ),
-								                   color_picker_alpha_flags );
-							}
+										ImGui::ColorEdit4( "##dropped weapons bounding box outline color",
+									                       &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline_color, c_color ),
+									                       color_picker_alpha_flags );
+									}
 
-							ImGui::SetCursorPosX( 26.f );
-							ImGui::Checkbox( "corner bounding box##dropped weapons",
-							                 &GET_VARIABLE( g_variables.m_dropped_weapons_box_corner, bool ) );
-							ImGui::SetCursorPosX( 26.f );
-							ImGui::Checkbox( "bounding box outline##dropped weapons",
-							                 &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool ) );
-						}
+									ImGui::SetCursorPosX( 26.f );
+									ImGui::Checkbox( "corner bounding box##dropped weapons",
+								                     &GET_VARIABLE( g_variables.m_dropped_weapons_box_corner, bool ) );
+									ImGui::SetCursorPosX( 26.f );
+									ImGui::Checkbox( "bounding box outline##dropped weapons",
+								                     &GET_VARIABLE( g_variables.m_dropped_weapons_box_outline, bool ) );
+								}
 
-						ImGui::Checkbox( "name##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) );
-						if ( GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) )
-							ImGui::ColorEdit4( "##dropped weapons name color", &GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ),
-							                   color_picker_alpha_flags );
+								ImGui::Checkbox( "name##dropped weapons", &GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) );
+								if ( GET_VARIABLE( g_variables.m_dropped_weapons_name, bool ) )
+									ImGui::ColorEdit4( "##dropped weapons name color",
+								                       &GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color ), color_picker_alpha_flags );
+
+								ImGui::Checkbox( "icons##dropped weapons icon", &GET_VARIABLE( g_variables.m_dropped_weapons_icon, bool ) );
+								if ( GET_VARIABLE( g_variables.m_dropped_weapons_icon, bool ) )
+									ImGui::ColorEdit4( "##dropped weapons name color",
+								                       &GET_VARIABLE( g_variables.m_dropped_weapons_icon_color, c_color ), color_picker_alpha_flags );
+							},
+							ImVec2( 200.f, -1 ) );
 					}
 
-					ImGui::Checkbox( "thrown objects name", &GET_VARIABLE( g_variables.m_thrown_objects_name, bool ) );
-					if ( GET_VARIABLE( g_variables.m_thrown_objects_name, bool ) )
-						ImGui::ColorEdit4( "##thrown objects name color", &GET_VARIABLE( g_variables.m_thrown_objects_name_color, c_color ),
-						                   color_picker_alpha_flags );
-					ImGui::Checkbox( "thrown objects icon", &GET_VARIABLE( g_variables.m_thrown_objects_icon, bool ) );
-					if ( GET_VARIABLE( g_variables.m_thrown_objects_icon, bool ) )
-						ImGui::ColorEdit4( "##thrown objects icon color", &GET_VARIABLE( g_variables.m_thrown_objects_icon_color, c_color ),
-						                   color_picker_alpha_flags );
+					ImGui::Checkbox( "thrown projectiles", &GET_VARIABLE( g_variables.m_thrown_objects, bool ) );
+					if ( GET_VARIABLE( g_variables.m_thrown_objects, bool ) ) {
+						ImGui::OptionPopup(
+							"health number settings",
+							[ & ]( ) {
+								ImGui::Checkbox( "thrown objects name", &GET_VARIABLE( g_variables.m_thrown_objects_name, bool ) );
+								if ( GET_VARIABLE( g_variables.m_thrown_objects_name, bool ) )
+									ImGui::ColorEdit4( "##thrown objects name color",
+								                       &GET_VARIABLE( g_variables.m_thrown_objects_name_color, c_color ), color_picker_alpha_flags );
+								ImGui::Checkbox( "thrown objects icon", &GET_VARIABLE( g_variables.m_thrown_objects_icon, bool ) );
+								if ( GET_VARIABLE( g_variables.m_thrown_objects_icon, bool ) )
+									ImGui::ColorEdit4( "##thrown objects icon color",
+								                       &GET_VARIABLE( g_variables.m_thrown_objects_icon_color, c_color ), color_picker_alpha_flags );
+							},
+							ImVec2( 200.f, -1 ) );
+					}
 					break;
 				}
 				}

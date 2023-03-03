@@ -27,6 +27,9 @@ int n_utilities::impl_t::get_average_fps( ImGuiIO io )
 
 const char8_t* n_utilities::impl_t::get_weapon_icon( short item_definition_index )
 {
+	if ( item_definition_index == weapon_none )
+		return u8"";
+
 	switch ( item_definition_index ) {
 	case weapon_deagle:
 		return u8"\uE001";
