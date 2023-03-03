@@ -91,7 +91,7 @@ void n_movement::impl_t::on_create_move_post( )
 			if ( !( backup_flags & fl_onground ) && g_ctx.m_local->get_flags( ) & fl_onground ) {
 
 				//	Im at uni and cant really build right now.
-				//	Im wrighting these comments for @coffin1337 and myself.
+				//	Im writing these comments for @coffin1337 and myself.
 				//
 				// TODO:
 				// simulate jumpbug in here with simulated cmd, same method as in other 
