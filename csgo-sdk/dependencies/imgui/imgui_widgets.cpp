@@ -1411,14 +1411,13 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 
 		GetWindowDrawList( )->AddText(
 			g_render.m_fonts[ e_font_names::font_name_icon_13 ], g_render.m_fonts[ e_font_names::font_name_icon_13 ]->FontSize,
-			ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ), IM_COL32_WHITE,
-		                           cog_icon );
+			ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ), IM_COL32_WHITE, cog_icon );
 
 		const bool hovered = IsMouseHoveringRect( ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ),
 		                                          ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 21.f ) +
 		                                              ImVec2( 15.f, text_size.y + 3.f ),
 		                                          false );
-		if ( hovered && IsMouseClicked( ImGuiMouseButton_Right ) )
+		if ( hovered && IsMouseClicked( ImGuiMouseButton_Right ) || IsMouseClicked( ImGuiMouseButton_Left ) )
 			OpenPopup( str_id );
 	}( );
 
