@@ -1417,7 +1417,7 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 		                                          ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 21.f ) +
 		                                              ImVec2( 15.f, text_size.y + 3.f ),
 		                                          false );
-		if ( hovered && IsMouseClicked( ImGuiMouseButton_Right ) || IsMouseClicked( ImGuiMouseButton_Left ) )
+		if ( hovered && ( IsMouseClicked( ImGuiMouseButton_Right ) || IsMouseClicked( ImGuiMouseButton_Left ) ) )
 			OpenPopup( str_id );
 	}( );
 
