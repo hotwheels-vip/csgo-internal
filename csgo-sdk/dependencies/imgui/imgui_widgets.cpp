@@ -1402,21 +1402,23 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 
 	const auto hashed_str_id = ImHashStr( str_id );
 	const auto text_size     = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-        g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
+			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
 
 	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
 	[ & ]( ) {
 		const ImVec2 position = GetWindowPos( );
 
-		GetWindowDrawList( )->AddText(
-			g_render.m_fonts[ e_font_names::font_name_icon_13 ], g_render.m_fonts[ e_font_names::font_name_icon_13 ]->FontSize,
-			ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ), IM_COL32_WHITE, cog_icon );
-
 		const bool hovered = IsMouseHoveringRect( ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ),
 		                                          ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 21.f ) +
 		                                              ImVec2( 15.f, text_size.y + 3.f ),
 		                                          false );
+
+		GetWindowDrawList( )->AddText( g_render.m_fonts[ e_font_names::font_name_icon_13 ],
+		                               g_render.m_fonts[ e_font_names::font_name_icon_13 ]->FontSize,
+		                               ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - 20.f ),
+		                               hovered ? IM_COL32_WHITE : IM_COL32( 190, 190, 190, 255 ), cog_icon );
+
 		if ( hovered && ( IsMouseClicked( ImGuiMouseButton_Right ) || IsMouseClicked( ImGuiMouseButton_Left ) ) )
 			OpenPopup( str_id );
 	}( );
