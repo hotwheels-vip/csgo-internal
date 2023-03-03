@@ -3,6 +3,7 @@
 #include "../../globals/includes/includes.h"
 #include "../../globals/logger/logger.h"
 #include "../entity_cache/entity_cache.h"
+#include "../movement/movement.h"
 
 void n_misc::impl_t::on_create_move_pre( )
 {
@@ -16,6 +17,31 @@ void n_misc::impl_t::on_create_move_pre( )
 void n_misc::impl_t::on_paint_traverse( )
 {
 	this->draw_spectating_local( );
+
+#ifdef _DEBUG
+	// TESTING FUNCTION
+	[ & ]( const bool run ) {
+		if ( !run && !GET_VARIABLE( g_variables.m_debugger_visual, bool ) )
+			return;
+
+		float offset = 0.f;
+
+		static auto render_jb_debug = [ & ]( const std::string& text ) {
+			g_render.m_draw_data.emplace_back( e_draw_type::draw_type_text, std::make_any< text_draw_object_t >(
+																				g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ],
+																				c_vector_2d( g_ctx.m_width / 2, ( g_ctx.m_height / 1.5 ) + offset ),
+																				text.c_str( ), ImColor( 1.f, 1.f, 1.f, 1.f ),
+																				ImColor( 0.f, 0.f, 0.f, 1.f ), e_text_flags::text_flag_dropshadow ) );
+			offset += 10;
+		};
+
+		render_jb_debug( std::format( "can_jb = {}", g_movement.m_jumpbug_data.m_can_jb ) );
+		render_jb_debug( std::format( "height_diff = {}", g_movement.m_jumpbug_data.m_height_diff ) );
+		render_jb_debug( std::format( "vertical_velocity_at_landing = {}", g_movement.m_jumpbug_data.m_vertical_velocity_at_landing ) );
+		render_jb_debug( std::format( "abs_height_diff = {}", g_movement.m_jumpbug_data.m_abs_height_diff ) );
+		render_jb_debug( std::format( "ticks_till_land = {}", g_movement.m_jumpbug_data.m_ticks_till_land ) );
+	}( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) );
+#endif
 }
 
 void n_misc::impl_t::on_end_scene( )

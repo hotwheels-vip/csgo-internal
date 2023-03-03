@@ -31,6 +31,14 @@ namespace n_movement
 			void reset( );
 		} m_edgebug_data;
 
+		struct jumpbug_data_t {
+			int m_height_diff                    = 0.f;
+			float m_vertical_velocity_at_landing = 0.f;
+			float m_abs_height_diff              = 0.f;
+			int m_ticks_till_land                = 0;
+			bool m_can_jb                        = false;
+		} m_jumpbug_data;
+
 		struct pixelsurf_data_t {
 			bool m_predicted_succesful = false, m_in_pixel_surf = false, m_should_duck = false;
 			int m_prediction_ticks      = 0;

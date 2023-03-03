@@ -177,7 +177,7 @@ void n_indicators::impl_t::keybind_indicators( )
 
 	if ( GET_VARIABLE( g_variables.m_jump_bug, bool ) &&
 	     g_config.get< std::vector< bool > >( g_variables.m_key_indicators )[ e_keybind_indicators::key_jb ] )
-		render_indicator( "jb", GET_VARIABLE( g_variables.m_key_color, c_color ),
+		render_indicator( "jb", g_movement.m_jumpbug_data.m_can_jb ? GET_VARIABLE( g_variables.m_key_color, c_color ) : c_color( 1.f, 0.f, 0.f, 1.f ),
 		                  g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) );
 }
 

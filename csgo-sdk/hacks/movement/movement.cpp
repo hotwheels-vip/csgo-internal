@@ -64,6 +64,46 @@ void n_movement::impl_t::on_create_move_post( )
 	this->pixel_surf_locking( target_ps_velocity );
 
 	this->edge_bug( );
+
+	// TESTING PURPOSES
+	[ & ]( const bool run ) {
+		if ( !run )
+			return;
+
+		if ( g_prediction.backup_data.m_flags & e_flags::fl_onground && g_ctx.m_local->get_flags( ) & fl_onground ) {
+			m_jumpbug_data.m_abs_height_diff = m_jumpbug_data.m_height_diff = m_jumpbug_data.m_vertical_velocity_at_landing = 0.f;
+
+			m_jumpbug_data.m_can_jb          = true;
+			m_jumpbug_data.m_ticks_till_land = 0;
+			return;
+		}
+
+		g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+
+		for ( int i = 0; i < 64; i++ ) {
+			const float backup_origin_z = g_ctx.m_local->get_abs_origin( ).m_z;
+			const float backup_velo_z   = g_ctx.m_local->get_velocity( ).m_z;
+			const int backup_flags      = g_ctx.m_local->get_flags( );
+
+			g_prediction.begin( g_ctx.m_local, g_ctx.m_cmd );
+			g_prediction.end( g_ctx.m_local );
+
+			if ( !( backup_flags & fl_onground ) && g_ctx.m_local->get_flags( ) & fl_onground ) {
+				// LOOOOOOOOOL
+				const bool can_jb = static_cast< int >( backup_origin_z - g_ctx.m_local->get_abs_origin( ).m_z ) >= 3;
+
+				m_jumpbug_data.m_can_jb = can_jb;
+
+				m_jumpbug_data.m_ticks_till_land              = i;
+				m_jumpbug_data.m_abs_height_diff              = std::abs( backup_origin_z - g_ctx.m_local->get_abs_origin( ).m_z );
+				m_jumpbug_data.m_height_diff                  = static_cast< int >( backup_origin_z - g_ctx.m_local->get_abs_origin( ).m_z );
+				m_jumpbug_data.m_vertical_velocity_at_landing = std::floor( g_ctx.m_local->get_velocity( ).m_z );
+				// break;
+			}
+		}
+
+		g_prediction.restore_entity_to_predicted_frame( g_interfaces.m_prediction->m_commands_predicted - 1 );
+	}( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) );
 }
 
 void n_movement::impl_t::edge_jump( )
