@@ -94,3 +94,28 @@ bool n_input::impl_t::on_wndproc( unsigned int msg, unsigned int wide_param, lon
 
 	return true;
 }
+
+bool n_input::impl_t::check_input( key_bind_t* key_data )
+{
+	switch ( key_data->m_key_style ) {
+	case 0: {
+		return g_menu.m_opened ? false : true;
+		break;
+	}
+	case 1: {
+		return this->is_key_down( key_data->m_key ) && !( g_menu.m_opened );
+		break;
+	}
+	case 2: {
+		static bool toggled = false;
+
+		if ( this->is_key_released( key_data->m_key ) && !( g_menu.m_opened ) )
+			toggled = !toggled;
+
+		return toggled;
+		break;
+	}
+	}
+
+	return false;
+}

@@ -39,30 +39,7 @@ namespace n_input
 			return false;
 		}
 
-		bool check_input( key_bind_t* key_data )
-		{
-			switch ( key_data->m_key_style ) {
-			case 0: {
-				return true;
-				break;
-			}
-			case 1: {
-				return this->is_key_down( key_data->m_key );
-				break;
-			}
-			case 2: {
-				static bool toggled = false;
-
-				if ( this->is_key_released( key_data->m_key ) )
-					toggled = !toggled;
-
-				return toggled;
-				break;
-			}
-			}
-
-			return false;
-		}
+		bool check_input( key_bind_t* key_data );
 	};
 } // namespace n_input
 
