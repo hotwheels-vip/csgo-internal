@@ -1,11 +1,9 @@
 #include "render.h"
-#include "../../dependencies/imgui/helpers/fonts.h"
 #include "../../dependencies/avatar_data/avatar_data.h"
+#include "../../dependencies/imgui/helpers/fonts.h"
 
 #include "../../game/sdk/includes/includes.h"
 #include "../includes/includes.h"
-
-#include <d3dx9tex.h>
 
 void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, IDirect3DDevice9* device )
 {
@@ -164,6 +162,14 @@ void n_render::impl_t::draw_cached_data( )
 			const auto& obj = std::any_cast< rect_draw_object_t >( data.m_obj );
 			this->rect( draw_list, obj.m_min, obj.m_max, obj.m_color, obj.m_outline_color, obj.m_filled, obj.m_rounding, obj.m_corner_rounding_flags,
 			            obj.m_thickness, obj.m_outline_flags );
+			break;
+		}
+		case e_draw_type::draw_type_texture: {
+			const auto& obj = std::any_cast< texture_draw_object_t >( data.m_obj );
+
+			draw_list->AddImageRounded( obj.m_texture_id, ImVec2( obj.m_position.m_x, obj.m_position.m_y ),
+			                            ImVec2( obj.m_position.m_x + obj.m_size.m_x, obj.m_position.m_y + obj.m_size.m_y ), ImVec2( 0, 0 ),
+			                            ImVec2( 1, 1 ), obj.m_color, obj.m_rounding, obj.m_draw_flags );
 			break;
 		}
 		case e_draw_type::draw_type_triangle: {

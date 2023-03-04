@@ -3,7 +3,6 @@
 #include "../../globals/includes/includes.h"
 #include "../entity_cache/entity_cache.h"
 
-// https://www.unknowncheats.me/forum/counterstrike-global-offensive/211594-fix-inaccurate-setupbones-target-player-pvs-fix.html
 void n_animations::impl_t::on_frame_stage_notify( int stage )
 {
 	// fix pvs

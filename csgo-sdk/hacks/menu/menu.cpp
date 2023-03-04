@@ -444,7 +444,7 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::OptionPopup(
 						"edgebug advanced settings",
 						[ & ]( ) {
-							ImGui::SetCursorPosX( 26.f );
+							ImGui::SetCursorPosX( 25.f );
 							ImGui::Text( "edgebug keybind" );
 							ImGui::Keybind( "edge bug key", &GET_VARIABLE( g_variables.m_edge_bug_key, key_bind_t ) );
 							ImGui::SliderInt( "edge bug predicted ticks", &GET_VARIABLE( g_variables.m_edge_bug_ticks, int ), 0, 32 );
@@ -579,17 +579,24 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::Checkbox( "spectator list", &GET_VARIABLE( g_variables.m_spectators_list, bool ) );
 
 				if ( GET_VARIABLE( g_variables.m_spectators_list, bool ) ) {
-					ImGui::ColorEdit4( "##spectator list text color one", &GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ),
-					                   color_picker_alpha_flags );
+					ImGui::OptionPopup(
+						"spectators configuration",
+						[]( ) {
+							ImGui::SetCursorPosX( 25.f );
+							ImGui::Text( "spectating local color" );
+							ImGui::ColorEdit4( "##spectator list text color one",
+						                       &GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ), color_picker_alpha_flags );
+							ImGui::SetCursorPosX( 25.f );
+							ImGui::Text( "spectating other color" );
+							ImGui::ColorEdit4( "##spectator list text color two",
+						                       &GET_VARIABLE( g_variables.m_spectators_list_text_color_two, c_color ), color_picker_alpha_flags );
 
-					if ( GET_VARIABLE( g_variables.m_spectators_list_type, int ) == 0 ) {
-						ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
+							ImGui::Combo( "listed players##spectatorlist player", &GET_VARIABLE( g_variables.m_spectators_list_type, int ),
+						                  "all spectators\0local spectators\0" );
 
-						ImGui::ColorEdit4( "##spectator list text color two", &GET_VARIABLE( g_variables.m_spectators_list_text_color_two, c_color ),
-						                   color_picker_alpha_flags );
-					}
-
-					ImGui::Combo( "listed players", &GET_VARIABLE( g_variables.m_spectators_list_type, int ), "all spectators\0local spectators" );
+							ImGui::Checkbox( "spectator avatars", &GET_VARIABLE( g_variables.m_spectators_avatar, bool ) );
+						},
+						ImVec2( 200.f, -1.f ) );
 				}
 				// TODO: combobox between force crosshair and just draw a white dot
 				ImGui::Checkbox( "sniper crosshair", &GET_VARIABLE( g_variables.m_sniper_crosshair, bool ) );

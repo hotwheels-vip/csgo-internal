@@ -127,7 +127,7 @@ void n_misc::impl_t::on_end_scene( )
 		constexpr auto background_height = 25.f;
 		constexpr auto title_text        = "practice";
 		const auto title_text_size       = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-            g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
+				  g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, title_text );
 
 		ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 25.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
 		ImGui::Begin( ( "hotwheels-practice-window-ui" ), 0,
@@ -295,7 +295,11 @@ void n_misc::impl_t::draw_spectating_local( )
 		spectator_data.push_back(
 			{ std::vformat( "{} | {}", std::make_format_args( std::string( spectating_info.m_name ).substr( 0, 12 ).append( "..." ),
 		                                                      get_player_spec_type( entity->get_observer_mode( ) ) ) ),
-		      nullptr, GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ) } );
+		      spectating_info.m_fake_player ? entity_team == 2 /* terrorist */           ? g_render.m_terrorist_avatar
+		                                      : entity_team == 3 /* counter terrorist */ ? g_render.m_counter_terrorist_avatar
+		                                                                                 : nullptr
+		                                    : g_avatar_cache[ entity_index ],
+		      GET_VARIABLE( g_variables.m_spectators_list_text_color_one, c_color ) } );
 	} );
 
 	if ( spectator_data.empty( ) ) {
@@ -303,12 +307,22 @@ void n_misc::impl_t::draw_spectating_local( )
 		return;
 	}
 
+	const auto draw_avatar            = GET_VARIABLE( g_variables.m_spectators_avatar, bool );
+	constexpr static auto avatar_size = 14.f;
+
 	for ( const auto& data : spectator_data ) {
-		g_render.m_draw_data.emplace_back( e_draw_type::draw_type_text,
-		                                   std::make_any< text_draw_object_t >(
-											   g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ], c_vector_2d( 10, m_y ), data.m_text.c_str( ),
-											   data.m_color.get_u32( ), ImColor( 0.f, 0.f, 0.f, data.m_color.base< e_color_type::color_type_a >( ) ),
-											   e_text_flags::text_flag_dropshadow ) );
+		if ( draw_avatar )
+			g_render.m_draw_data.emplace_back(
+				e_draw_type::draw_type_texture,
+				std::make_any< texture_draw_object_t >( c_vector_2d( 10, m_y ), c_vector_2d( avatar_size, avatar_size ),
+			                                            ImColor( 1.f, 1.f, 1.f, 1.f ), data.m_avatar, 0.f, ImDrawFlags_::ImDrawFlags_None ) );
+
+		g_render.m_draw_data.emplace_back(
+			e_draw_type::draw_type_text,
+			std::make_any< text_draw_object_t >( g_render.m_fonts[ e_font_names::font_name_tahoma_bd_12 ], c_vector_2d( draw_avatar ? 27 : 10, m_y ),
+		                                         data.m_text.c_str( ), data.m_color.get_u32( ),
+		                                         ImColor( 0.f, 0.f, 0.f, data.m_color.base< e_color_type::color_type_a >( ) ),
+		                                         e_text_flags::text_flag_dropshadow ) );
 
 		m_y += 15;
 
@@ -328,6 +342,8 @@ void n_misc::impl_t::draw_spectator_list( )
 
 		return;
 	}
+
+	const auto draw_avatar = GET_VARIABLE( g_variables.m_spectators_avatar, bool );
 
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
 		if ( !entity || entity->is_alive( ) || entity->is_dormant( ) )
@@ -418,8 +434,10 @@ void n_misc::impl_t::draw_spectator_list( )
 		ImGui::SetCursorPosY( 30.f );
 
 		for ( const auto& data : spectator_data ) {
-			ImGui::Image( data.m_avatar, ImVec2( 14, 14 ), ImVec2( 0, 0 ), ImVec2( 1, 1 ) );
-			ImGui::SameLine( );
+			if ( draw_avatar ) {
+				ImGui::Image( data.m_avatar, ImVec2( 14, 14 ), ImVec2( 0, 0 ), ImVec2( 1, 1 ) );
+				ImGui::SameLine( );
+			}
 			ImGui::TextColored( data.m_color.get_vec4( ), data.m_text.c_str( ) );
 		}
 	}

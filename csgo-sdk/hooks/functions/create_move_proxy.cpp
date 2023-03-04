@@ -55,6 +55,8 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 
 	g_ctx.m_last_tick_yaw = cmd->m_view_point.m_y;
 
+	if ( send_packet ) { }
+
 	verified_cmd->m_user_cmd = *cmd;
 	verified_cmd->m_hash_crc = cmd->get_check_sum( );
 }

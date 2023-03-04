@@ -7,11 +7,15 @@
 #include <shared_mutex>
 #include <string>
 
+#pragma comment( lib, "d3d9.lib" )
+#pragma comment( lib, "d3dx9.lib" )
+#include <d3d9.h>
+#include <d3dx9.h>
+#include <d3dx9tex.h>
+
 #include "../../dependencies/steam/isteamclient.h"
 #include "../../game/sdk/classes/c_vector.h"
 
-struct IDirect3DDevice9;
-struct IDirect3DTexture9;
 struct ImFont;
 struct ImDrawList;
 struct ImColor;
@@ -36,6 +40,7 @@ enum e_draw_type {
 	draw_type_line,
 	draw_type_rect,
 	draw_type_triangle,
+	draw_type_texture,
 	draw_type_max
 };
 
@@ -62,6 +67,15 @@ struct draw_object_t {
 
 	e_draw_type m_type = e_draw_type::draw_type_none;
 	std::any m_obj     = { };
+};
+
+struct texture_draw_object_t {
+	c_vector_2d m_position = { };
+	c_vector_2d m_size     = { };
+	unsigned int m_color   = { };
+	void* m_texture_id     = { };
+	float m_rounding       = { };
+	int m_draw_flags       = { };
 };
 
 struct text_draw_object_t {
