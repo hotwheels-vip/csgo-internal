@@ -18,7 +18,7 @@ c_material* return_material( const int mat_index )
 	case 1:
 		return g_interfaces.m_material_system->find_material( "debug/debugambientcube", TEXTURE_GROUP_MODEL );
 	case 2:
-		return g_interfaces.m_material_system->find_material( "mat_metallic", TEXTURE_GROUP_MODEL );
+		return g_interfaces.m_material_system->find_material( "metallic_material", TEXTURE_GROUP_MODEL );
 	case 3:
 		return g_interfaces.m_material_system->find_material( "mat_glow", TEXTURE_GROUP_MODEL );
 	default:
@@ -35,26 +35,30 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 {
 	static auto original = g_hooks.m_draw_model_execute.get_original< decltype( &n_detoured_functions::draw_model_execute ) >( );
 
-	// static auto glow_material = g_interfaces.m_material_system->find_material( "dev/glow_color", TEXTURE_GROUP_OTHER );
-	//
-	// if ( static bool found_glow_material_alpha = false; glow_material ) {
-	// 	static auto var = glow_material->find_var( "$translucent", &found_glow_material_alpha );
-	// 	if ( found_glow_material_alpha )
-	// 		var->set_int( 0 );
-	// }
+	/* static auto glow_material = g_interfaces.m_material_system->find_material( "dev/glow_color", TEXTURE_GROUP_OTHER );
 
-	// [!] TEMPORARY [!]
-	// todo - use key values for materials, dont create actual vmt files itself
-	// creating vmt files on the csgo directory can make people go mess with it
+	if ( static bool found_glow_material_alpha = false; glow_material ) {
+	    static auto var = glow_material->find_var( "$translucent", &found_glow_material_alpha );
+	    if ( found_glow_material_alpha )
+	        var->set_int( 0 );
+	}
+
+	[!] TEMPORARY [!]
+	todo - use key values for materials, dont create actual vmt files itself
+	creating vmt files on the csgo directory can make people go mess with it */
 
 	static c_material* lag_material{ };
 	static c_material* vis_material{ };
 	static c_material* invis_material{ };
 
 	if ( static bool init = false; !init ) {
-		// metallic vis = mat_metallic.vmt
-		std::ofstream( "csgo/materials/mat_metallic.vmt" ) << R"#("UnlitGeneric" 
-		{
+		constexpr auto create_material = [ & ]( const char* material_name, const char* shader, const char* material ) {
+			c_key_values* key_values = new c_key_values( shader );
+			key_values->load_from_buffer( material_name, material );
+			return g_interfaces.m_material_system->create_material( material_name, key_values );
+		};
+
+		create_material( "metallic_material", "UnlitGeneric", R"("UnlitGeneric" {
 	        "$basetexture" "vgui/white"
 			"$ignorez"      "0"
 			"$envmap"       "env_cubemap"
@@ -70,10 +74,9 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
 			"$rimlightboost"     ".2"	
 			"$reflectivity" "[1 1 1]"
         }
-		)#";
+		)" );
 
-		// glow = mat_glow.vmt
-		std::ofstream( "csgo/materials/mat_glow.vmt" ) << R"#("VertexLitGeneric" 
+		create_material( "glow_material", "VertexLitGeneric", R"("VertexLitGeneric" 
 		{
     		"$additive" "1"
     		"$envmap" "models/effects/cube_white"
@@ -82,12 +85,10 @@ void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, 
     		"$envmapfresnelminmaxexp" "[0 1 2]"
     		"$alpha" "0.2"
 		}
-		)#";
+		)" );
 
 		init = true;
 	};
-
-	// set materials
 
 	if ( static int lag_mat_index = -1; !lag_material || lag_mat_index != GET_VARIABLE( g_variables.m_player_lag_chams_material, int ) ) {
 		lag_material = return_material( GET_VARIABLE( g_variables.m_player_lag_chams_material, int ) );

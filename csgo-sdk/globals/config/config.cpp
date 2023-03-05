@@ -7,6 +7,7 @@
 #include "../../game/sdk/classes/c_color.h"
 #include "../../utilities/console/console.h"
 #include "../macros/macros.h"
+#include "variables.h"
 
 #include "config.h"
 
