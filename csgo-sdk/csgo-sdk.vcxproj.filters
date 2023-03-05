@@ -76,6 +76,7 @@
     <ClCompile Include="hacks\animations\animations.cpp" />
     <ClCompile Include="hacks\visuals\players\dormancy\dormancy.cpp" />
     <ClCompile Include="hacks\avatar_cache\avatar_cache.cpp" />
+    <ClCompile Include="game\sdk\classes\c_key_values.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -303,6 +304,7 @@
     <ClInclude Include="dependencies\steam\steamuniverse.h" />
     <ClInclude Include="hacks\avatar_cache\avatar_cache.h" />
     <ClInclude Include="dependencies\avatar_data\avatar_data.h" />
+    <ClInclude Include="game\sdk\classes\c_key_values.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

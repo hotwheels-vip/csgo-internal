@@ -35,6 +35,7 @@
     <ClCompile Include="dependencies\minhook\src\trampoline.c" />
     <ClCompile Include="game\sdk\classes\c_angle.cpp" />
     <ClCompile Include="game\sdk\classes\c_color.cpp" />
+    <ClCompile Include="game\sdk\classes\c_key_values.cpp" />
     <ClCompile Include="game\sdk\classes\c_user_cmd.cpp" />
     <ClCompile Include="game\sdk\classes\c_weapon_data.cpp" />
     <ClCompile Include="game\sdk\classes\entity.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="game\sdk\classes\c_game_movement.h" />
     <ClInclude Include="game\sdk\classes\c_game_types.h" />
     <ClInclude Include="game\sdk\classes\c_input.h" />
+    <ClInclude Include="game\sdk\classes\c_key_values.h" />
     <ClInclude Include="game\sdk\classes\c_localize.h" />
     <ClInclude Include="game\sdk\classes\c_model_cache.h" />
     <ClInclude Include="game\sdk\classes\c_model_info.h" />

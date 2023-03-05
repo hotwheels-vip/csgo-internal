@@ -18,6 +18,7 @@
 #include "../classes/c_global_vars_base.h"
 #include "../classes/c_input.h"
 #include "../classes/c_input_system.h"
+#include "../classes/c_key_values.h"
 #include "../classes/c_key_values_system.h"
 #include "../classes/c_localize.h"
 #include "../classes/c_material.h"

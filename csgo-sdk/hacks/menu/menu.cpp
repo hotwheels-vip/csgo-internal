@@ -483,27 +483,27 @@ void n_menu::impl_t::on_end_scene( )
 							ImGui::Text( "velocity colors" );
 
 							if ( GET_VARIABLE( g_variables.m_velocity_indicator_custom_color, bool ) ) {
-								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 20.f );
+								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) );
 
 								ImGui::ColorEdit4( "##velocity indicator color 1", &GET_VARIABLE( g_variables.m_velocity_indicator_color1, c_color ),
 							                       color_picker_alpha_flags );
 
-								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 45.f );
+								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
 								ImGui::ColorEdit4( "##velocity indicator color 2", &GET_VARIABLE( g_variables.m_velocity_indicator_color2, c_color ),
 							                       color_picker_alpha_flags );
 							} else {
-								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 20.f );
+								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) );
 
 								ImGui::ColorEdit4( "##velocity indicator color 3", &GET_VARIABLE( g_variables.m_velocity_indicator_color3, c_color ),
 							                       color_picker_alpha_flags );
 
-								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 45.f );
+								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
 								ImGui::ColorEdit4( "##velocity indicator color 4", &GET_VARIABLE( g_variables.m_velocity_indicator_color4, c_color ),
 							                       color_picker_alpha_flags );
 
-								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 70.f );
+								ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 50.f );
 
 								ImGui::ColorEdit4( "##velocity indicator color 5", &GET_VARIABLE( g_variables.m_velocity_indicator_color5, c_color ),
 							                       color_picker_alpha_flags );
@@ -530,12 +530,12 @@ void n_menu::impl_t::on_end_scene( )
 						[ & ]( ) {
 							ImGui::Text( "stamina colors" );
 
-							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 20.f );
+							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) );
 
 							ImGui::ColorEdit4( "##stamina indicator color 1", &GET_VARIABLE( g_variables.m_stamina_indicator_color1, c_color ),
 						                       color_picker_alpha_flags );
 
-							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 45.f );
+							ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 25.f );
 
 							ImGui::ColorEdit4( "##stamina indicator color 2", &GET_VARIABLE( g_variables.m_stamina_indicator_color2, c_color ),
 						                       color_picker_alpha_flags );
