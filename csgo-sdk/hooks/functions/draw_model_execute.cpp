@@ -27,7 +27,7 @@ c_material* return_material( const int mat_index )
 
 	g_console.print( std::format( "return_material failed at index {}", mat_index ).c_str( ) );
 
-	return g_interfaces.m_material_system->find_material( "debug/debugdrawflat" );
+	return nullptr;
 }
 
 void __fastcall n_detoured_functions::draw_model_execute( void* ecx, void* edx, void* context, void* state, model_render_info_t& info,

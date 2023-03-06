@@ -13,10 +13,9 @@ void n_animations::impl_t::on_frame_stage_notify( int stage )
 				if ( !entity->is_valid_player( ) )
 					return;
 
-				*reinterpret_cast< int* >( reinterpret_cast< uintptr_t >( entity ) + 0xA30 ) =
-					g_interfaces.m_global_vars_base->m_frame_count; // we'll skip occlusion checks now
-
-				*reinterpret_cast< int* >( reinterpret_cast< uintptr_t >( entity ) + 0xA28 ) = 0; // clear occlusion flags
+				*reinterpret_cast< int* >( reinterpret_cast< unsigned int >( entity ) + 0xA30 ) =
+					g_interfaces.m_global_vars_base->m_frame_count; 
+				*reinterpret_cast< int* >( reinterpret_cast< unsigned int >( entity ) + 0xA28 ) = 0;
 			} );
 		}
 	}( );
