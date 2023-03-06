@@ -16,6 +16,10 @@ public:
 	{
 		return static_cast< fn >( m_original_fn );
 	}
+	inline bool is_hooked( ) const
+	{
+		return m_is_hooked;
+	}
 
 private:
 	bool m_is_hooked    = false;

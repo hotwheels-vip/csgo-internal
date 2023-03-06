@@ -38,6 +38,7 @@ namespace n_variables
 
 		ADD_VARIABLE( bool, m_aimbot_enable, false );
 		ADD_VARIABLE( bool, m_backtrack_enable, false );
+		ADD_VARIABLE( bool, m_backtrack_extend, false );
 
 		/* visuals - players */
 		ADD_VARIABLE( bool, m_players, false );
@@ -67,6 +68,7 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_glow_vis_color, c_color( 224, 175, 86, 153 ) );
 		ADD_VARIABLE( c_color, m_glow_invis_color, c_color( 114, 155, 221, 153 ) );
 		ADD_VARIABLE( bool, m_players_backtrack_trail, false );
+		ADD_VARIABLE( bool, m_players_avatar, false );
 		ADD_VARIABLE( bool, m_out_of_fov_arrows, false );
 		ADD_VARIABLE( c_color, m_out_of_fov_arrows_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( float, m_out_of_fov_arrows_size, 20.f );

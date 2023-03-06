@@ -14,6 +14,64 @@ constexpr int color_picker_no_alpha_flags = ImGuiColorEditFlags_NoLabel | ImGuiC
 
 constexpr static const auto chams_materials = "flat\0textured\0metallic\0glow";
 
+void save_popup( const char* str_id, const ImVec2& window_size, const std::function< void( ) >& fn )
+{
+	ImGuiContext& g         = *GImGui;
+	const ImGuiStyle& style = g.Style;
+
+	const auto window = g.CurrentWindow;
+
+	const auto hashed_str_id = ImHashStr( str_id );
+	const auto text_size     = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
+			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
+
+	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+
+	ImGui::OpenPopup( str_id );
+
+	ImGui::SetNextWindowSize( window_size );
+
+	if ( ImGui::BeginPopup( str_id ) ) {
+		const auto draw_list = ImGui::GetWindowDrawList( );
+
+		const ImVec2 position = ImGui::GetWindowPos( ), size = ImGui::GetWindowSize( );
+
+		auto text_animation = ImAnimationHelper( hashed_str_id, ImGui::GetIO( ).DeltaTime );
+
+		ImGui::PushClipRect( ImVec2( position ), ImVec2( position.x + size.x, position.y + 20.f ), false );
+
+		draw_list->AddRectFilled( ImVec2( position ), ImVec2( position.x + size.x, position.y + 20.f ), ImColor( 25 / 255.f, 25 / 255.f, 25 / 255.f ),
+		                          g.Style.WindowRounding - 2.f, ImDrawFlags_RoundCornersTop );
+
+		ImGui::PopClipRect( );
+
+		ImGui::PushClipRect( position, ImVec2( position.x + size.x, position.y + size.y ), false );
+		draw_list->AddRect( position, ImVec2( position.x + size.x, position.y + size.y ), ImColor( 50, 50, 50, 100 ), g.Style.WindowRounding - 2.f );
+
+		text_animation.Update( ImGui::IsMouseHoveringRect( position, ImVec2( position.x + size.x, position.y + size.y ) ) ? 3.f : -2.f, 1.f, 0.5f,
+		                       1.f );
+
+		ImGui::PopClipRect( );
+
+		const ImColor text_color = ImGui::GetColorU32( ImGuiCol_Text );
+
+		draw_list->AddText(
+			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ], g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize,
+			ImVec2( position.x + ( size.x - text_size.x ) / 2.f, position.y + ( 20.f - text_size.y ) / 2.f ),
+			ImColor( text_color.Value.x, text_color.Value.y, text_color.Value.z, text_color.Value.w * text_animation.AnimationData->second ),
+			str_id );
+
+		RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + 20.f ), ImVec2( size.x, 1.f ),
+		                         ImColor( accent_color.Value.x, accent_color.Value.y, accent_color.Value.z ) );
+
+		ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) + 20.f );
+
+		fn( );
+
+		ImGui::EndPopup( );
+	}
+}
+
 void n_menu::impl_t::on_end_scene( )
 {
 	ImGui::GetStyle( ).Colors[ ImGuiCol_::ImGuiCol_Accent ] = GET_VARIABLE( g_variables.m_accent, c_color ).get_vec4( );
@@ -142,6 +200,10 @@ void n_menu::impl_t::on_end_scene( )
 					 true, 0, true ) ) {
 				ImGui::Checkbox( "enable aimbot", &GET_VARIABLE( g_variables.m_aimbot_enable, bool ) );
 				ImGui::Checkbox( "enable backtrack", &GET_VARIABLE( g_variables.m_backtrack_enable, bool ) );
+				if ( GET_VARIABLE( g_variables.m_backtrack_enable, bool ) ) {
+					ImGui::SetCursorPosX( 26.f );
+					ImGui::Checkbox( "extended", &GET_VARIABLE( g_variables.m_backtrack_extend, bool ) );
+				}
 			}
 			ImGui::EndChild( );
 			ImGui::SameLine( );
@@ -199,7 +261,7 @@ void n_menu::impl_t::on_end_scene( )
 						// TODO add more types
 						if ( GET_VARIABLE( g_variables.m_players_health_text, bool ) ) {
 							ImGui::OptionPopup(
-								"health number settings",
+								"health number settings##player health number settings",
 								[ & ]( ) {
 									ImGui::Checkbox( "health number suffix", &GET_VARIABLE( g_variables.m_players_health_suffix, bool ) );
 									ImGui::Combo( "health number style", &GET_VARIABLE( g_variables.m_players_health_text_style, int ),
@@ -231,12 +293,23 @@ void n_menu::impl_t::on_end_scene( )
 							              "normal\0lag compensated" );
 						}
 						ImGui::Checkbox( "lag compensated trail", &GET_VARIABLE( g_variables.m_players_backtrack_trail, bool ) );
+						ImGui::Checkbox( "players avatar", &GET_VARIABLE( g_variables.m_players_avatar, bool ) );
+
 						ImGui::Checkbox( ( "out of fov arrows" ), &GET_VARIABLE( g_variables.m_out_of_fov_arrows, bool ) );
 						if ( GET_VARIABLE( g_variables.m_out_of_fov_arrows, bool ) ) {
-							ImGui::ColorEdit4( ( "##out of fov arrows color" ), &GET_VARIABLE( g_variables.m_out_of_fov_arrows_color, c_color ),
-							                   color_picker_alpha_flags );
-							ImGui::SliderFloat( "arrows size", &GET_VARIABLE( g_variables.m_out_of_fov_arrows_size, float ), 0.1f, 50.f, "%.1f px" );
-							ImGui::SliderInt( "arrows distance", &GET_VARIABLE( g_variables.m_out_of_fov_arrows_distance, int ), 10, 500, "%d px" );
+							ImGui::OptionPopup(
+								"fov arrows settings",
+								[ & ]( ) {
+									ImGui::SetCursorPosX( 25.f );
+									ImGui::Text( "fov arrows color" );
+									ImGui::ColorEdit4( ( "##out of fov arrows color" ),
+								                       &GET_VARIABLE( g_variables.m_out_of_fov_arrows_color, c_color ), color_picker_alpha_flags );
+									ImGui::SliderFloat( "arrows size", &GET_VARIABLE( g_variables.m_out_of_fov_arrows_size, float ), 0.1f, 50.f,
+								                        "%.1f px" );
+									ImGui::SliderInt( "arrows distance", &GET_VARIABLE( g_variables.m_out_of_fov_arrows_distance, int ), 10, 500,
+								                      "%d px" );
+								},
+								ImVec2( 200.f, -1 ) );
 						}
 					}
 					break;
@@ -679,11 +752,25 @@ void n_menu::impl_t::on_end_scene( )
 					g_config.refresh( );
 				}
 
+				static bool open_save_popup = false;
 				if ( ImGui::Button( ( "save" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
-					if ( !g_config.save( selected_config_name ) )
-						g_console.print( std::vformat( "failed to save {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
-					else
-						g_logger.print( std::vformat( "saved config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+					open_save_popup = true;
+				}
+				if ( open_save_popup ) {
+					save_popup( "save confirmation", ImVec2( 200.f, -1.f ), []( ) {
+						if ( ImGui::Button( "yes", ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
+							if ( !g_config.save( selected_config_name ) )
+								g_console.print( std::vformat( "failed to save {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+							else
+								g_logger.print( std::vformat( "saved config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+							open_save_popup = false;
+						}
+						if ( ImGui::Button( "no", ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
+							g_logger.print( std::vformat( "canceled saving config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+
+							open_save_popup = false;
+						}
+					} );
 				}
 
 				if ( ImGui::Button( ( "load" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
@@ -710,15 +797,6 @@ void n_menu::impl_t::on_end_scene( )
 #ifdef _DEBUG
 				ImGui::Checkbox( "watermark", &GET_VARIABLE( g_variables.m_watermark, bool ) );
 				ImGui::Checkbox( "debugger menu", &GET_VARIABLE( g_variables.m_debugger_visual, bool ) );
-
-				// THIS IS FOR TESTING PURPOSES
-
-				static char cmd[ 32 ];
-				ImGui::InputText( "convar", cmd, IM_ARRAYSIZE( cmd ) );
-				static char cmd_val[ 32 ];
-				ImGui::InputText( "convar value", cmd_val, IM_ARRAYSIZE( cmd_val ) );
-				if ( ImGui::Button( "set convar value" ) )
-					g_convars[ HASH_RT( cmd ) ]->set_value( atoi( cmd_val ) );
 #endif
 
 				ImGui::EndChild( );

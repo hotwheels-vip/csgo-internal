@@ -4,7 +4,20 @@
 
 void n_prediction::impl_t::update( )
 {
-	g_ctx.m_max_allocations = g_math.time_to_ticks( g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( ) );
+	auto nci = g_interfaces.m_engine_client->get_net_channel_info( );
+	if ( nci ) {
+		g_ctx.m_max_allocations =
+			g_math.time_to_ticks( std::max( 0.f, g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( ) ) - nci->get_latency( FLOW_OUTGOING ) );
+
+		// add 200 ms if extended is on
+		if ( GET_VARIABLE( g_variables.m_backtrack_extend, bool ) )
+			// cannot get the right value for this. do not know whats happening.
+			// tried unlg - flow outgoing, didnt work
+			// tried unlag - outoing and incoming, weird glitches
+			// if anyone can figure this out, please and thank you
+			g_ctx.m_max_allocations += 0.199f;
+	} else
+		g_ctx.m_max_allocations = 0;
 
 	// handle backup data
 	g_prediction.backup_data.m_flags         = g_ctx.m_local->get_flags( );

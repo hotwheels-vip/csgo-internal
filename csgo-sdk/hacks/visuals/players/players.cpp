@@ -3,6 +3,7 @@
 #include "../../../game/sdk/classes/c_csgo_hud_radar.h"
 #include "../../../game/sdk/includes/includes.h"
 #include "../../../globals/includes/includes.h"
+#include "../../avatar_cache/avatar_cache.h"
 #include "../../entity_cache/entity_cache.h"
 #include "dormancy/dormancy.h"
 
@@ -142,6 +143,8 @@ void n_players::impl_t::players( )
 		if ( GET_VARIABLE( g_variables.m_players_health_suffix, bool ) )
 			hp_text.append( "hp" );
 
+		const int team = entity->get_team( );
+
 		if ( this->m_backup_player_data[ index ].m_animated_health > entity->get_health( ) )
 			this->m_backup_player_data[ index ].m_animated_health -=
 				( 100.f * g_interfaces.m_global_vars_base->m_frame_time ) /* NOTE ~ float ~ cannot use the variable delta_time as it is too slow. */;
@@ -196,6 +199,8 @@ void n_players::impl_t::players( )
 					c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ), converted_name,
 					GET_VARIABLE( g_variables.m_players_name_color, c_color ).get_u32( this->m_fading_alpha[ index ] ),
 					c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( this->m_fading_alpha[ index ] ), e_text_flags::text_flag_dropshadow ) );
+
+			padding[ e_padding_direction::padding_direction_top ] -= text_size.y - 20;
 		}
 
 		if ( GET_VARIABLE( g_variables.m_players_health_text, bool ) && GET_VARIABLE( g_variables.m_players_health_text_style, int ) == 0 ) {
@@ -313,6 +318,24 @@ void n_players::impl_t::players( )
 					}
 				}
 			}
+		}
+
+		if ( GET_VARIABLE( g_variables.m_players_avatar, bool ) ) {
+			constexpr const static auto avatar_size = 14.f;
+
+			g_render.m_draw_data.emplace_back( e_draw_type::draw_type_texture,
+			                                   std::make_any< texture_draw_object_t >(
+												   c_vector_2d( box.m_left + ( box.m_width - avatar_size ) * 0.5f,
+			                                                    box.m_top - 5 - avatar_size - padding[ e_padding_direction::padding_direction_top ] ),
+												   c_vector_2d( avatar_size, avatar_size ), ImColor( 1.f, 1.f, 1.f, this->m_fading_alpha[ index ] ),
+												   player_info.m_fake_player
+													   ? team == 2 /* terrorist */           ? g_render.m_terrorist_avatar
+			                                             : team == 3 /* counter terrorist */ ? g_render.m_counter_terrorist_avatar
+			                                                                                 : nullptr
+													   : g_avatar_cache[ index ],
+												   0.f, ImDrawFlags_::ImDrawFlags_None ) );
+
+			padding[ e_padding_direction::padding_direction_top ] -= avatar_size;
 		}
 
 		if ( GET_VARIABLE( g_variables.m_players_health_bar, bool ) ) {

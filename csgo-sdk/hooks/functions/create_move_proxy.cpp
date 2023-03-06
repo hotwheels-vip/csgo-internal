@@ -16,6 +16,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 
 	c_user_cmd* cmd                   = g_interfaces.m_input->get_user_cmd( sequence_number );
 	c_verified_user_cmd* verified_cmd = g_interfaces.m_input->get_verified_cmd( sequence_number );
+	auto client_state_net_channel     = g_interfaces.m_client_state->m_net_channel;
 
 	if ( !cmd || !verified_cmd || !cmd->m_command_number || cmd->m_tick_count == 0 )
 		return;
@@ -50,12 +51,19 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		g_movement.on_create_move_post( );
 	}( );
 
+	if ( client_state_net_channel ) {
+		g_lagcomp.on_create_move_update( client_state_net_channel );
+
+		if ( !g_hooks.m_send_datagram.is_hooked( ) ) {
+			if ( g_hooks.m_send_datagram.create( g_virtual.get( client_state_net_channel, 46 ), &n_detoured_functions::send_datagram ) )
+				g_console.print( "hooked datagram" );
+		}
+	}
+
 	cmd->m_view_point.normalize( );
 	cmd->m_view_point.clamp( );
 
 	g_ctx.m_last_tick_yaw = cmd->m_view_point.m_y;
-
-	if ( send_packet ) { }
 
 	verified_cmd->m_user_cmd = *cmd;
 	verified_cmd->m_hash_crc = cmd->get_check_sum( );

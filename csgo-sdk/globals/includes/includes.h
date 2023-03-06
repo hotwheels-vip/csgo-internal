@@ -1,6 +1,8 @@
 #pragma once
 #include <Windows.h>
 
+#undef max
+
 /* macros */
 #include "../../globals/macros/macros.h"
 

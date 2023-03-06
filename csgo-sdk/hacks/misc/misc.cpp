@@ -36,11 +36,12 @@ void n_misc::impl_t::on_paint_traverse( )
 			offset += 10;
 		};
 
-		render_jb_debug( std::format( "can_jb = {}", g_movement.m_jumpbug_data.m_can_jb ) );
-		render_jb_debug( std::format( "height_diff = {}", g_movement.m_jumpbug_data.m_height_diff ) );
-		render_jb_debug( std::format( "vertical_velocity_at_landing = {}", g_movement.m_jumpbug_data.m_vertical_velocity_at_landing ) );
-		render_jb_debug( std::format( "abs_height_diff = {}", g_movement.m_jumpbug_data.m_abs_height_diff ) );
-		render_jb_debug( std::format( "ticks_till_land = {}", g_movement.m_jumpbug_data.m_ticks_till_land ) );
+		render_jb_debug( std::string( "can_jb = " ).append( std::to_string( g_movement.m_jumpbug_data.m_can_jb ) ) );
+		render_jb_debug( std::string( "height_diff = " ).append( std::to_string( g_movement.m_jumpbug_data.m_height_diff ) ) );
+		render_jb_debug(
+			std::string( "vertical_velocity_at_landing = " ).append( std::to_string( g_movement.m_jumpbug_data.m_vertical_velocity_at_landing ) ) );
+		render_jb_debug( std::string( "abs_height_diff = " ).append( std::to_string( g_movement.m_jumpbug_data.m_abs_height_diff ) ) );
+		render_jb_debug( std::string( "ticks_till_land = " ).append( std::to_string( g_movement.m_jumpbug_data.m_ticks_till_land ) ) );
 	}( GET_VARIABLE( g_variables.m_jump_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_jump_bug_key, key_bind_t ) ) );
 #endif
 }

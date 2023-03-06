@@ -2,7 +2,33 @@
 #include "../../../globals/macros/macros.h"
 #include "../classes/c_angle.h"
 
-class c_net_channel;
+class bf_write;
+class c_net_channel
+{
+public:
+	PAD( 0x14 );                // 0x0000
+	bool m_processing_messages; // 0x0014
+	bool m_should_delete;       // 0x0015
+	bool m_stop_processing;     // 0x0016
+	PAD( 0x1 );                 // 0x0017
+	int m_out_sequence_nr;      // 0x0018 last send outgoing sequence number
+	int m_in_sequence_nr;       // 0x001C last received incoming sequence number
+	int m_out_sequence_nr_ack;  // 0x0020 last received acknowledge outgoing sequence number
+	int m_out_reliable_state;   // 0x0024 state of outgoing reliable data (0/1) flip flop used for loss detection
+	int m_in_reliable_state;    // 0x0028 state of incoming reliable data
+	int m_choked_packets;       // 0x002C number of choked packets
+	PAD( 0x414 );               // 0x0030
+
+	int send_datagram( bf_write* datagram )
+	{
+		return g_virtual.call< int >( this, 46, datagram );
+	}
+
+	bool transmit( bool only_reliable = false )
+	{
+		return g_virtual.call< bool >( this, 49, only_reliable );
+	}
+};
 class c_event_info
 {
 public:

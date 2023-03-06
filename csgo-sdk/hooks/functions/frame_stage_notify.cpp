@@ -14,6 +14,7 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 
 	if ( !g_interfaces.m_engine_client->is_connected_safe( ) ) {
 		g_edicts.reset( );
+		g_lagcomp.clear_incoming_sequences( );
 		return original( ecx, edx, stage );
 	}
 

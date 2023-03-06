@@ -353,6 +353,11 @@ public:
 		g_virtual.call< void >( this, 318 );
 	}
 
+	float spawn_time( ) noexcept
+	{
+		return *reinterpret_cast< float* >( reinterpret_cast< uintptr_t >( this ) + 0x103C0 );
+	}
+
 	const char* get_class_name( )
 	{
 		return g_virtual.call< const char* >( this, 143 );

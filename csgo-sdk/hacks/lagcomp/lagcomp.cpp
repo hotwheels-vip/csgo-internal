@@ -12,11 +12,11 @@ float n_lagcomp::impl_t::lerp_time( )
 				*cl_interp = g_convars[ HASH_BT( "cl_interp" ) ], *sv_client_min_interp_ratio = g_convars[ HASH_BT( "sv_client_min_interp_ratio" ) ],
 				*sv_client_max_interp_ratio = g_convars[ HASH_BT( "sv_client_max_interp_ratio" ) ];
 
-	static auto interp_ratio = max( cl_interp_ratio->get_float( ), 1.f );
+	static auto interp_ratio = std::max( cl_interp_ratio->get_float( ), 1.f );
 
 	interp_ratio = std::clamp( interp_ratio, sv_client_min_interp_ratio->get_float( ), sv_client_max_interp_ratio->get_float( ) );
 
-	return max( cl_interp->get_float( ), interp_ratio / cl_updaterate->get_int( ) );
+	return std::max( cl_interp->get_float( ), interp_ratio / cl_updaterate->get_int( ) );
 }
 
 bool n_lagcomp::impl_t::is_valid( n_lagcomp::impl_t::record_t rec )
@@ -164,11 +164,13 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 		if ( entity->get_old_simulation_time( ) == entity->get_simulation_time( ) )
 			return;
 
+		auto choked = g_math.time_to_ticks( entity->get_simulation_time( ) - entity->get_old_simulation_time( ) );
+
 		record_t new_record{ };
 
 		new_record.m_player     = index;
 		new_record.m_sim_time   = entity->get_simulation_time( );
-		new_record.m_valid      = is_valid( new_record );
+		new_record.m_valid      = choked <= 7 && choked >= 0 ? is_valid( new_record ) : false;
 		new_record.m_vec_origin = entity->get_abs_origin( );
 
 		auto saved_origin = entity->get_abs_origin( );
@@ -309,4 +311,49 @@ void n_lagcomp::impl_t::on_create_move_post( )
 		return;
 
 	g_ctx.m_cmd->m_tick_count = best_tick;
+}
+
+void n_lagcomp::impl_t::update_incoming_sequences( c_net_channel* net_channel )
+{
+	if ( !net_channel )
+		return;
+
+	if ( m_last_incoming_sequence == 0 )
+		m_last_incoming_sequence = net_channel->m_in_sequence_nr;
+
+	if ( net_channel->m_in_sequence_nr > m_last_incoming_sequence ) {
+		m_last_incoming_sequence = net_channel->m_in_sequence_nr;
+		m_sequences.emplace_front( sequence_object_t( net_channel->m_in_reliable_state, net_channel->m_out_reliable_state,
+		                                              net_channel->m_in_sequence_nr, g_interfaces.m_global_vars_base->m_real_time ) );
+	}
+
+	if ( m_sequences.size( ) > 2048U )
+		m_sequences.pop_back( );
+}
+
+void n_lagcomp::impl_t::on_create_move_update( c_net_channel* net_channel )
+{
+	if ( GET_VARIABLE( g_variables.m_backtrack_extend, bool ) )
+		g_lagcomp.update_incoming_sequences( net_channel );
+	else
+		g_lagcomp.clear_incoming_sequences( );
+}
+
+void n_lagcomp::impl_t::clear_incoming_sequences( )
+{
+	if ( !m_sequences.empty( ) ) {
+		m_last_incoming_sequence = 0;
+		m_sequences.clear( );
+	}
+}
+
+void n_lagcomp::impl_t::add_latency_to_net_channel( c_net_channel* net_channel, float latency )
+{
+	for ( const auto& sequence : m_sequences ) {
+		if ( g_interfaces.m_global_vars_base->m_real_time - sequence.m_current_time >= latency ) {
+			net_channel->m_in_reliable_state = sequence.m_in_reliable_state;
+			net_channel->m_in_sequence_nr    = sequence.m_sequence_nr;
+			break;
+		}
+	}
 }

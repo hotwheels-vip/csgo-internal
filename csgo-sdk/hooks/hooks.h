@@ -12,6 +12,8 @@ class c_material;
 class c_animation_state;
 class c_base_entity;
 class c_move_data;
+class c_net_channel;
+class bf_write;
 
 struct game_event_t;
 struct model_render_info_t;
@@ -49,6 +51,7 @@ namespace n_hooks
 		c_detour_hook m_set_image_data_r8g8b8a8{ };
 		c_detour_hook m_draw_model_execute{ };
 		c_detour_hook m_list_leaves_in_box{ };
+		c_detour_hook m_send_datagram{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -95,4 +98,5 @@ namespace n_detoured_functions
 	void __fastcall draw_model_execute( void* ecx, void* edx, void* context, void* state, model_render_info_t& info,
 	                                    matrix3x4_t* custom_bone_to_world );
 	int __fastcall list_leaves_in_box( void* ecx, void* edx, const c_vector& mins, const c_vector& maxs, unsigned short* list, int list_max );
+	int __fastcall send_datagram( c_net_channel* net_channel, int edx, bf_write* datagram );
 } // namespace n_detoured_functions

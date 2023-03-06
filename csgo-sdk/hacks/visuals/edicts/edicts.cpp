@@ -262,13 +262,12 @@ void n_edicts::impl_t::dropped_weapons( )
 					g_render.m_fonts[ e_font_names::font_name_icon_12 ]->FontSize, FLT_MAX, 0.f, text );
 
 				g_render.m_draw_data.emplace_back(
-					e_draw_type::draw_type_text,
-					std::make_any< text_draw_object_t >(
-						g_render.m_fonts[ e_font_names::font_name_icon_12 ],
-						c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ), text,
-						icon_color.get_u32( icon_color.get< color_type_a >( ) * ( 1.f - distance_to_weapon_alpha ) ),
-						c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( icon_color.get< color_type_a >( ) * ( 1.f - distance_to_weapon_alpha ) ),
-						e_text_flags::text_flag_dropshadow ) );
+					e_draw_type::draw_type_text, std::make_any< text_draw_object_t >(
+													 g_render.m_fonts[ e_font_names::font_name_icon_12 ],
+													 c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y ),
+													 text, ( icon_color.get_u32( icon_color.get< color_type_a >( ) - distance_to_weapon_alpha ) ),
+													 ( icon_color.get_u32( icon_color.get< color_type_a >( ) - distance_to_weapon_alpha ) ),
+													 e_text_flags::text_flag_dropshadow ) );
 
 				top_padding -= text_size.y;
 			}
@@ -296,8 +295,8 @@ void n_edicts::impl_t::dropped_weapons( )
 						c_vector_2d( box.m_left + box.m_width * 0.5f - text_size.x * 0.5f, box.m_top - 3 - text_size.y - top_padding ),
 						converted_name,
 						GET_VARIABLE( g_variables.m_dropped_weapons_name_color, c_color )
-							.get_u32( weapon_color.get< color_type_a >( ) * ( 1.f - distance_to_weapon_alpha ) ),
-						c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( weapon_color.get< color_type_a >( ) * ( 1.f - distance_to_weapon_alpha ) ),
+							.get_u32( weapon_color.get< color_type_a >( ) - distance_to_weapon_alpha ),
+						c_color( 0.f, 0.f, 0.f, 1.f ).get_u32( weapon_color.get< color_type_a >( ) - distance_to_weapon_alpha ),
 						e_text_flags::text_flag_dropshadow ) );
 			}
 		}
