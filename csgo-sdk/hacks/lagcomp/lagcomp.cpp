@@ -113,11 +113,11 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 		const auto index = entity->get_index( );
 
 		if ( !entity->is_valid_enemy( ) ) {
-			if ( this->m_records[ index ] ) {
-				delete[] this->m_records[ index ];
-				this->m_records[ index ]         = nullptr;
-				this->m_record_location[ index ] = 0;
-			}
+			// if ( this->m_records[ index ] ) {
+			// 	delete[] this->m_records[ index ];
+			// 	this->m_records[ index ]         = nullptr;
+			// 	this->m_record_location[ index ] = 0;
+			// }
 
 			return;
 		}
@@ -142,7 +142,7 @@ void n_lagcomp::impl_t::on_frame_stage_notify( )
 	} );
 
 	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
-		if ( !entity )
+		if ( !entity || !entity->is_valid_enemy( ) )
 			return;
 
 		const auto index = entity->get_index( );
