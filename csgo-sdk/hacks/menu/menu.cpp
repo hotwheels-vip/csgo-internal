@@ -147,7 +147,9 @@ void n_menu::impl_t::on_end_scene( )
 			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + size.y - background_height ), ImVec2( size.x, 1.f ),
 			                         ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ) );
 
-			std::vector< const char* > tab_names = { ( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" ) };
+			std::vector< const char* > tab_names = {
+				( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" ), ( "fonts" )
+			};
 
 			/* tab logic */
 			for ( int iterator = { }; iterator < static_cast< int >( tab_names.size( ) ); iterator++ ) {
@@ -635,9 +637,9 @@ void n_menu::impl_t::on_end_scene( )
 
 					ImGui::SliderInt( "position##sub indicators", &GET_VARIABLE( g_variables.m_key_indicators_position, int ), 30, g_ctx.m_height );
 
-					ImGui::MultiCombo( "displayed keybinds", g_config.get< std::vector< bool > >( g_variables.m_key_indicators ),
+					ImGui::MultiCombo( "displayed keybinds", GET_VARIABLE( g_variables.m_key_indicators, std::vector< bool > ),
 					                   { "edgebug", "pixelsurf", "edgejump", "longjump", "delayhop", "minijump", "jumpbug" },
-					                   g_config.get< std::vector< bool > >( g_variables.m_key_indicators ).size( ) );
+					                   GET_VARIABLE( g_variables.m_key_indicators, std::vector< bool > ).size( ) );
 				}
 
 				ImGui::EndChild( );
@@ -740,6 +742,7 @@ void n_menu::impl_t::on_end_scene( )
 				                g_config.m_file_names.size( ), 5 );
 
 				ImGui::PopStyleVar( );
+
 				selected_config_name = !g_config.m_file_names.empty( ) ? g_config.m_file_names[ this->m_selected_config ] : "";
 
 				if ( ImGui::Button( ( "create" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
@@ -753,9 +756,9 @@ void n_menu::impl_t::on_end_scene( )
 				}
 
 				static bool open_save_popup = false;
-				if ( ImGui::Button( ( "save" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
+				if ( ImGui::Button( ( "save" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) )
 					open_save_popup = true;
-				}
+
 				if ( open_save_popup ) {
 					save_popup( "save confirmation", ImVec2( 220.f, -1.f ), []( ) {
 						if ( ImGui::Button( "yes", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 33.f ) / 2.f, 15.f ) ) ) {
@@ -763,6 +766,7 @@ void n_menu::impl_t::on_end_scene( )
 								g_console.print( std::vformat( "failed to save {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
 							else
 								g_logger.print( std::vformat( "saved config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+
 							open_save_popup = false;
 						}
 
@@ -779,8 +783,10 @@ void n_menu::impl_t::on_end_scene( )
 				if ( ImGui::Button( ( "load" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 					if ( !g_config.load( selected_config_name ) )
 						g_console.print( std::vformat( "failed to load {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
-					else
+					else {
 						g_logger.print( std::vformat( "loaded config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
+						g_render.m_reload_fonts = true;
+					}
 				}
 
 				if ( ImGui::Button( ( "remove" ), ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
@@ -804,6 +810,27 @@ void n_menu::impl_t::on_end_scene( )
 
 				ImGui::EndChild( );
 			}
+			break;
+		}
+		case 6: /* fonts */ {
+			if ( ImGui::BeginChild( ( "fonts" ),
+			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
+			                        true, 0, true ) ) {
+				ImGui::Text( "indicator" );
+				ImGui::OptionPopup(
+					"indicator font settings",
+					[ & ]( ) {
+						static int size = 0;
+						ImGui::SliderInt( "size##indicator font", &size, 0, 50, "%d", 0, false );
+					},
+					ImVec2( 200.f, -1 ) );
+
+				if ( ImGui::Button( "reload fonts", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 15.f ), 15.f ), false ) )
+					g_render.m_reload_fonts = true;
+
+				ImGui::EndChild( );
+			}
+
 			break;
 		}
 		}

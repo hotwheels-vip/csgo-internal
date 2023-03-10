@@ -695,7 +695,7 @@ bool ImGui::ButtonBehavior( const ImRect& bb, ImGuiID id, bool* out_hovered, boo
 	return pressed;
 }
 
-bool ImGui::ButtonEx( const char* label, const ImVec2& size_arg, ImGuiButtonFlags flags )
+bool ImGui::ButtonEx( const char* label, const ImVec2& size_arg, ImGuiButtonFlags flags, bool underneath_checkbox )
 {
 	ImGuiWindow* window = GetCurrentWindow( );
 	if ( window->SkipItems )
@@ -706,7 +706,7 @@ bool ImGui::ButtonEx( const char* label, const ImVec2& size_arg, ImGuiButtonFlag
 	const ImGuiID id        = window->GetID( label );
 	const ImVec2 label_size = CalcTextSize( label, NULL, true );
 
-	ImVec2 pos = window->DC.CursorPos + ImVec2( 20.f, 0.f );
+	ImVec2 pos = window->DC.CursorPos + ImVec2( underneath_checkbox ? 20.f : 3.f, 0.f );
 	if ( ( flags & ImGuiButtonFlags_AlignTextBaseLine ) &&
 	     style.FramePadding.y < window->DC.CurrLineTextBaseOffset ) // Try to vertically align buttons that are smaller/have no padding so that text
 	                                                                // baseline matches (bit hacky, since it shouldn't be a flag)
@@ -763,9 +763,9 @@ bool ImGui::ButtonEx( const char* label, const ImVec2& size_arg, ImGuiButtonFlag
 	return pressed;
 }
 
-bool ImGui::Button( const char* label, const ImVec2& size_arg )
+bool ImGui::Button( const char* label, const ImVec2& size_arg, bool underneath_checkbox )
 {
-	return ButtonEx( label, size_arg, ImGuiButtonFlags_None );
+	return ButtonEx( label, size_arg, ImGuiButtonFlags_None, underneath_checkbox );
 }
 
 // Small buttons fits within text without additional vertical spacing.
@@ -1404,7 +1404,7 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 
 	const auto hashed_str_id = ImHashStr( str_id );
 	const auto text_size     = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
+        g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
 
 	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
@@ -1414,15 +1414,16 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 
 		const ImVec2 position = GetWindowPos( );
 
-		const bool hovered = IsMouseHoveringRect( ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 20.f ),
-		                                          ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 21.f ) +
+		const bool hovered =
+			IsMouseHoveringRect( ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 20.f ),
+		                         ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 21.f ) +
 		                             ImVec2( cog_text_size.x, cog_text_size.y ),
-		                                          false );
+		                         false );
 
-		GetWindowDrawList( )->AddText( g_render.m_fonts[ e_font_names::font_name_icon_13 ],
-		                               g_render.m_fonts[ e_font_names::font_name_icon_13 ]->FontSize,
-		                               ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 20.f ),
-		                               hovered ? IM_COL32_WHITE : IM_COL32( 190, 190, 190, 255 ), cog_icon );
+		GetWindowDrawList( )->AddText(
+			g_render.m_fonts[ e_font_names::font_name_icon_13 ], g_render.m_fonts[ e_font_names::font_name_icon_13 ]->FontSize,
+			ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 20.f ),
+			hovered ? IM_COL32_WHITE : IM_COL32( 190, 190, 190, 255 ), cog_icon );
 
 		if ( hovered && ( IsMouseClicked( ImGuiMouseButton_Right ) || IsMouseClicked( ImGuiMouseButton_Left ) ) )
 			OpenPopup( str_id );

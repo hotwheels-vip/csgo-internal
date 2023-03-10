@@ -149,7 +149,7 @@ namespace n_render
 
 		ImFont* m_fonts[ e_font_names::font_name_max ] = { };
 
-		bool m_initialised = false;
+		bool m_initialised = false, m_reload_fonts = true;
 
 		void text( ImDrawList* draw_list, ImFont* font, const c_vector_2d& position, const std::string& text, const unsigned int& color,
 		           const unsigned int& outline_color, e_text_flags draw_flags = e_text_flags::text_flag_dropshadow );

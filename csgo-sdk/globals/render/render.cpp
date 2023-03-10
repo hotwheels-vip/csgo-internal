@@ -12,6 +12,8 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 		ImGui_ImplWin32_Init( g_input.m_window );
 		ImGui_ImplDX9_Init( device );
 
+		ImGuiIO& io = ImGui::GetIO( );
+
 		if ( !g_render.m_terrorist_avatar )
 			D3DXCreateTextureFromFileInMemory( device, &terrorist_avatar_data, sizeof( terrorist_avatar_data ), &this->m_terrorist_avatar );
 
@@ -60,8 +62,6 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 		}( );
 
 		[ & ]( ) {
-			ImGuiIO& io = ImGui::GetIO( );
-
 			ImFontConfig verdana_font_config = { };
 			verdana_font_config.FontBuilderFlags =
 				ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
@@ -104,6 +104,16 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 		}( );
 
 		this->m_initialised = true;
+	}
+
+	if ( this->m_reload_fonts ) {
+		ImGuiIO& io = ImGui::GetIO( );
+
+		ImGui_ImplDX9_DestroyFontsTexture( );
+
+		ImGuiFreeType::BuildFontAtlas( io.Fonts, 0x0 );
+
+		this->m_reload_fonts = false;
 	}
 
 	ImGui_ImplDX9_NewFrame( );
