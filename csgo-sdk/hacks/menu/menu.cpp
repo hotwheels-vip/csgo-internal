@@ -23,7 +23,7 @@ void save_popup( const char* str_id, const ImVec2& window_size, const std::funct
 
 	const auto hashed_str_id = ImHashStr( str_id );
 	const auto text_size     = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
+        g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
 
 	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
@@ -757,14 +757,17 @@ void n_menu::impl_t::on_end_scene( )
 					open_save_popup = true;
 				}
 				if ( open_save_popup ) {
-					save_popup( "save confirmation", ImVec2( 200.f, -1.f ), []( ) {
-						if ( ImGui::Button( "yes", ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
+					save_popup( "save confirmation", ImVec2( 220.f, -1.f ), []( ) {
+						if ( ImGui::Button( "yes", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 33.f ) / 2.f, 15.f ) ) ) {
 							if ( !g_config.save( selected_config_name ) )
 								g_console.print( std::vformat( "failed to save {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
 							else
 								g_logger.print( std::vformat( "saved config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
 							open_save_popup = false;
 						}
+
+						ImGui::SameLine( );
+
 						if ( ImGui::Button( "no", ImVec2( ImGui::GetContentRegionAvail( ).x - 33.f, 15.f ) ) ) {
 							g_logger.print( std::vformat( "canceled saving config {:s}", std::make_format_args( selected_config_name ) ).c_str( ) );
 
