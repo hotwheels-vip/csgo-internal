@@ -1,6 +1,7 @@
 #pragma once
 #include "../../game/sdk/classes/c_color.h"
 #include "config.h"
+#include "structs/font_setting_t.h"
 
 // TODO: add this
 enum e_player_flags {
@@ -9,6 +10,18 @@ enum e_player_flags {
 	player_flag_reloading,
 	player_flag_bomb,
 	player_flags_max
+};
+
+enum e_free_type_font_flags : int {
+	font_flag_nohinting = 0,
+	font_flag_noautohint,
+	font_flag_forceautohint,
+	font_flag_lighthinting,
+	font_flag_monohinting,
+	font_flag_bold,
+	font_flag_oblique,
+	font_flag_monochrome,
+	font_flag_max
 };
 
 enum e_log_types {
@@ -197,6 +210,11 @@ namespace n_variables
 		ADD_VARIABLE( key_bind_t, m_practice_tp_key, key_bind_t( 0, 1 ) );
 
 		ADD_VARIABLE_VECTOR( bool, e_log_types::log_type_max, m_log_types, false );
+
+		/* fonts */
+		ADD_VARIABLE_VECTOR( bool, e_free_type_font_flags::font_flag_max, m_indicator_font_flags, false );
+		ADD_VARIABLE( font_setting_t, m_indicator_font_settings, font_setting_t( "Verdanab", 29 ) );
+
 		/* other */
 #ifdef _DEBUG
 		ADD_VARIABLE( bool, m_debugger_visual, false );

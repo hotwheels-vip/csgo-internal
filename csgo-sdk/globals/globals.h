@@ -5,7 +5,7 @@ class c_base_entity;
 
 #include "../hacks/lagcomp/lagcomp.h"
 
-namespace n_globals
+namespace n_ctx
 {
 	struct impl_t {
 		c_user_cmd* m_cmd                     = nullptr;
@@ -35,8 +35,10 @@ namespace n_globals
 		int m_max_allocations = 0;
 
 		int m_last_spectators_y = 5;
+
+		char m_windows_directory[ 64 ]{ };
 	};
 
 } // namespace n_globals
 
-inline n_globals::impl_t g_ctx;
+inline n_ctx::impl_t g_ctx;

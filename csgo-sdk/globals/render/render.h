@@ -34,6 +34,11 @@ enum e_font_names {
 	font_name_max
 };
 
+enum e_custom_font_names {
+	custom_font_name_indicator = 0,
+	custom_font_name_max
+};
+
 enum e_draw_type {
 	draw_type_none = 0,
 	draw_type_text,
@@ -147,9 +152,9 @@ namespace n_render
 		std::deque< draw_object_t > m_thread_safe_draw_data = { };
 		std::shared_mutex m_mutex                           = { };
 
-		ImFont* m_fonts[ e_font_names::font_name_max ] = { };
+		ImFont *m_fonts[ e_font_names::font_name_max ]{ }, *m_custom_fonts[ e_custom_font_names::custom_font_name_max ]{ };
 
-		bool m_initialised = false, m_reload_fonts = true;
+		bool m_initialised = false, m_reload_fonts = true, m_reset_indicator_font = false;
 
 		void text( ImDrawList* draw_list, ImFont* font, const c_vector_2d& position, const std::string& text, const unsigned int& color,
 		           const unsigned int& outline_color, e_text_flags draw_flags = e_text_flags::text_flag_dropshadow );

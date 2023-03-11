@@ -61,6 +61,7 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 			style.Colors[ ImGuiCol_::ImGuiCol_BorderShadow ] = ImVec4( 0 / 255.f, 0 / 255.f, 0 / 255.f, 0.f );
 		}( );
 
+		/* setup fonts */
 		[ & ]( ) {
 			ImFontConfig verdana_font_config = { };
 			verdana_font_config.FontBuilderFlags =
@@ -74,17 +75,11 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 			m_fonts[ e_font_names::font_name_smallest_pixel_10 ] =
 				io.Fonts->AddFontFromMemoryCompressedTTF( smallest_pixel_compressed_data, smallest_pixel_compressed_size, 10.f );
 
-			ImFontConfig icon_font_config     = { };
-			icon_font_config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_LightHinting |
-			                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome |
-			                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
-
-			constexpr ImWchar weapon_icon_ranges[]     = { 0xe000, 0xf8ff, 0 };
-			m_fonts[ e_font_names::font_name_icon_12 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
-				weapon_icons_compressed_data, weapon_icons_compressed_size, 12.f, &icon_font_config, weapon_icon_ranges );
-
 			m_fonts[ e_font_names::font_name_indicator_29 ] =
 				io.Fonts->AddFontFromMemoryCompressedTTF( verdana_bold_compressed_data, verdana_bold_compressed_size, 29.f );
+
+			if ( m_fonts[ e_font_names::font_name_indicator_29 ] )
+				m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ] = m_fonts[ e_font_names::font_name_indicator_29 ];
 
 			ImFontConfig tahoma_font_config = { };
 			tahoma_font_config.FontBuilderFlags =
@@ -110,6 +105,21 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 		ImGuiIO& io = ImGui::GetIO( );
 
 		ImGui_ImplDX9_DestroyFontsTexture( );
+
+					ImFontConfig icon_font_config     = { };
+		icon_font_config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_LightHinting |
+		                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome |
+		                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
+
+		constexpr ImWchar weapon_icon_ranges[]     = { 0xe000, 0xf8ff, 0 };
+		m_fonts[ e_font_names::font_name_icon_12 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
+			weapon_icons_compressed_data, weapon_icons_compressed_size, 12.f, &icon_font_config, weapon_icon_ranges ); /* we have to reinitialise the weapon icon font because we destroy the font texture, and with icons it is very weird. */
+
+		const font_setting_t indicator_font_setting = GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t );
+
+		m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ] = io.Fonts->AddFontFromFileTTF(
+			std::vformat( "{}\\Fonts\\{}.ttf", std::make_format_args( g_ctx.m_windows_directory, indicator_font_setting.m_name ) ).c_str( ),
+			indicator_font_setting.m_size );
 
 		ImGuiFreeType::BuildFontAtlas( io.Fonts, 0x0 );
 

@@ -1417,7 +1417,7 @@ void ImGui::OptionPopup( const char* str_id, const std::function< void( ) >& fun
 		const bool hovered =
 			IsMouseHoveringRect( ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 20.f ),
 		                         ImVec2( position.x + GetContentRegionAvail( ).x - 15.f, position.y + GetCursorPosY( ) - window->Scroll.y - 21.f ) +
-		                             ImVec2( cog_text_size.x, cog_text_size.y ),
+		                             ImVec2( 15.f, cog_text_size.y ),
 		                         false );
 
 		GetWindowDrawList( )->AddText(

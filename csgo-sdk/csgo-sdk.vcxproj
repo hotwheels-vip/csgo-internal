@@ -41,6 +41,7 @@
     <ClCompile Include="game\sdk\classes\entity.cpp" />
     <ClCompile Include="globals\config\config.cpp" />
     <ClCompile Include="globals\convars\convars.cpp" />
+    <ClCompile Include="globals\fonts\fonts.cpp" />
     <ClCompile Include="globals\math\math.cpp" />
     <ClCompile Include="hacks\aimbot\aimbot.cpp" />
     <ClCompile Include="hacks\animations\animations.cpp" />
@@ -286,8 +287,10 @@
     <ClInclude Include="game\sdk\structs\var_mapping.h" />
     <ClInclude Include="game\sdk\structs\vcollide_t.h" />
     <ClInclude Include="globals\config\config.h" />
+    <ClInclude Include="globals\config\structs\font_setting_t.h" />
     <ClInclude Include="globals\config\variables.h" />
     <ClInclude Include="globals\convars\convars.h" />
+    <ClInclude Include="globals\fonts\fonts.h" />
     <ClInclude Include="globals\globals.h" />
     <ClInclude Include="globals\logger\logger.h" />
     <ClInclude Include="globals\macros\macros.h" />

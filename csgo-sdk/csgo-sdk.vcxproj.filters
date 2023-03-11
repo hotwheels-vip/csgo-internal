@@ -78,6 +78,7 @@
     <ClCompile Include="hacks\avatar_cache\avatar_cache.cpp" />
     <ClCompile Include="game\sdk\classes\c_key_values.cpp" />
     <ClCompile Include="hooks\functions\send_datagram.cpp" />
+    <ClCompile Include="globals\fonts\fonts.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -306,6 +307,8 @@
     <ClInclude Include="hacks\avatar_cache\avatar_cache.h" />
     <ClInclude Include="dependencies\avatar_data\avatar_data.h" />
     <ClInclude Include="game\sdk\classes\c_key_values.h" />
+    <ClInclude Include="globals\config\structs\font_setting_t.h" />
+    <ClInclude Include="globals\fonts\fonts.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

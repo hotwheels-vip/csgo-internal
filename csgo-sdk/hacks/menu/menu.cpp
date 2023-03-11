@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "../../globals/fonts/fonts.h"
 #include "../../globals/includes/includes.h"
 #include "../../globals/logger/logger.h"
 #include "../misc/scaleform/scaleform.h"
@@ -820,8 +821,14 @@ void n_menu::impl_t::on_end_scene( )
 				ImGui::OptionPopup(
 					"indicator font settings",
 					[ & ]( ) {
-						static int size = 0;
-						ImGui::SliderInt( "size##indicator font", &size, 0, 50, "%d", 0, false );
+						ImGui::SliderInt( "size##indicator font", &GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_size, 0,
+					                      50, "%d", 0, false );
+
+						if ( ImGui::Button( "reset to default##indicator font", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 7.f ), 15.f ),
+					                        false ) ) {
+							g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ] =
+								g_render.m_fonts[ e_font_names::font_name_indicator_29 ];
+						}
 					},
 					ImVec2( 200.f, -1 ) );
 

@@ -114,20 +114,20 @@ void n_indicators::impl_t::keybind_indicators( )
 {
 	float offset = 0.f;
 
-	constexpr auto render_indicator = [ & ]( const char* indicator_name, const c_color& color, const bool active ) {
+	const auto render_indicator = [ & ]( const char* indicator_name, const c_color& color, const bool active ) {
 		ImAnimationHelper indicator_animation = ImAnimationHelper( fnv1a::hash( indicator_name ), ImGui::GetIO( ).DeltaTime );
 		indicator_animation.Update( 2.f, active ? 2.f : -2.f );
 
 		if ( indicator_animation.AnimationData->second <= 0.f )
 			return;
 
-		const auto text_size = g_render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
-			g_render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, indicator_name );
+		const auto text_size = g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ]->CalcTextSizeA(
+			g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ]->FontSize, FLT_MAX, 0.f, indicator_name );
 
 		g_render.m_draw_data.emplace_back(
 			e_draw_type::draw_type_text,
 			std::make_any< text_draw_object_t >(
-				g_render.m_fonts[ e_font_names::font_name_indicator_29 ],
+				g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ],
 				c_vector_2d( ( g_ctx.m_width - text_size.x ) / 2.f,
 		                     g_ctx.m_height - offset - GET_VARIABLE( g_variables.m_key_indicators_position, int ) ),
 
@@ -210,13 +210,13 @@ void n_indicators::impl_t::velocity( const bool on_ground )
 	const std::string text =
 		std::vformat( should_draw_take_off ? "{:d} ({:d})" : "{:d}", std::make_format_args( velocity, this->m_indicator_data.m_take_off_velocity ) );
 
-	const auto text_size = g_render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
-		g_render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
+	const auto text_size = g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ]->CalcTextSizeA(
+		g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
 
 	g_render.m_draw_data.emplace_back(
 		e_draw_type::draw_type_text,
 		std::make_any< text_draw_object_t >(
-			g_render.m_fonts[ e_font_names::font_name_indicator_29 ],
+			g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ],
 			c_vector_2d( ( g_ctx.m_width - text_size.x ) / 2.f,
 	                     g_ctx.m_height * ( 1.f - GET_VARIABLE( g_variables.m_velocity_indicator_padding, int ) / ( 100.f ) ) ),
 			text,
@@ -255,13 +255,13 @@ void n_indicators::impl_t::stamina( const bool on_ground )
 	const std::string text = std::vformat( should_draw_take_off ? "{:.1f} ({:.1f})" : "{:.1f}",
 	                                       std::make_format_args( stamina, this->m_indicator_data.m_take_off_stamina ) );
 
-	const auto text_size = g_render.m_fonts[ e_font_names::font_name_indicator_29 ]->CalcTextSizeA(
-		g_render.m_fonts[ e_font_names::font_name_indicator_29 ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
+	const auto text_size = g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ]->CalcTextSizeA(
+		g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ]->FontSize, FLT_MAX, 0.f, text.c_str( ) );
 
 	g_render.m_draw_data.emplace_back(
 		e_draw_type::draw_type_text,
 		std::make_any< text_draw_object_t >(
-			g_render.m_fonts[ e_font_names::font_name_indicator_29 ],
+			g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ],
 			c_vector_2d( ( g_ctx.m_width - text_size.x ) / 2.f,
 	                     g_ctx.m_height * ( 1.f - GET_VARIABLE( g_variables.m_stamina_indicator_padding, int ) / ( 100.f ) ) ),
 			text,

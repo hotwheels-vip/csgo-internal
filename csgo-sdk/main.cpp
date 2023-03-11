@@ -93,6 +93,7 @@ Nobody like chungus
 Huh */
 
 #include "game/sdk/includes/includes.h"
+#include "globals/fonts/fonts.h"
 #include "globals/includes/includes.h"
 
 static unsigned long __stdcall on_attach( void* instance )
@@ -140,6 +141,12 @@ static unsigned long __stdcall on_attach( void* instance )
 		g_console.print< n_console::log_level::WARNING >( "failed to initialise hooks" );
 	else
 		g_console.print( "initialised hooks" );
+
+	LI_FN( GetWindowsDirectoryA )( g_ctx.m_windows_directory, 64 );
+	g_console.print( std::vformat( "windows directory - {:s}", std::make_format_args( g_ctx.m_windows_directory ) ).c_str( ) );
+
+	g_fonts.on_attach( );
+	g_console.print( "initialised font file vector" );
 
 	while ( !g_input.is_key_down( VK_END ) && !g_input.is_key_down( VK_DELETE ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

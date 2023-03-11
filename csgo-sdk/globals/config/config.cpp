@@ -81,6 +81,17 @@ bool n_config::impl_t::save( std::string_view file_name )
 				entry[ ( "value" ) ] = sub.dump( );
 				break;
 			}
+			case HASH_BT( "font_setting_t" ): {
+				const auto& bind = variable.get< font_setting_t >( );
+
+				nlohmann::json sub = { };
+
+				sub.push_back( bind.m_name );
+				sub.push_back( bind.m_size );
+
+				entry[ ( "value" ) ] = sub.dump( );
+				break;
+			}
 			case HASH_BT( "std::vector<bool>" ): {
 				const auto& booleans = variable.get< std::vector< bool > >( );
 
@@ -211,7 +222,12 @@ bool n_config::impl_t::load( std::string_view file_name )
 				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 
 				entry.set< key_bind_t >( key_bind_t( vector[ 0 ].get< int >( ), vector[ 1 ].get< int >( ) ) );
+				break;
+			}
+			case HASH_BT( "font_setting_t" ): {
+				const nlohmann::json vector = nlohmann::json::parse( variable[ ( "value" ) ].get< std::string >( ) );
 
+				entry.set< font_setting_t >( font_setting_t( vector[ 0 ].get< std::string >( ), vector[ 1 ].get< int >( ) ) );
 				break;
 			}
 			case HASH_BT( "std::vector<bool>" ): {
