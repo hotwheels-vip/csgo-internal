@@ -818,8 +818,11 @@ void n_menu::impl_t::on_end_scene( )
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
 				ImGui::Text( "indicator" );
+
+				constexpr const char* indicator_popup_name = "indicator font settings";
+
 				ImGui::OptionPopup(
-					"indicator font settings",
+					indicator_popup_name,
 					[ & ]( ) {
 						ImGui::SliderInt( "size##indicator font", &GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_size, 0,
 					                      50, "%d", 0, false );
@@ -828,6 +831,12 @@ void n_menu::impl_t::on_end_scene( )
 					                        false ) ) {
 							g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ] =
 								g_render.m_fonts[ e_font_names::font_name_indicator_29 ];
+						}
+
+						for ( const auto iterator : g_fonts.m_font_file_names ) {
+							if ( ImGui::Selectable( iterator.c_str( ), HASH_RT( GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t )
+						                                                            .m_name.c_str( ) ) == HASH_RT( iterator.c_str( ) ) ) )
+								GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_name = iterator;
 						}
 					},
 					ImVec2( 200.f, -1 ) );
