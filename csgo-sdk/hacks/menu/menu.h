@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 
 constexpr const char* base_material_names[ 2 ]    = { "flat", "textured" };
 constexpr const char* overlay_material_names[ 1 ] = { "snow" };

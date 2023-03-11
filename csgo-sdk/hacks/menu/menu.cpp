@@ -148,9 +148,7 @@ void n_menu::impl_t::on_end_scene( )
 			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + size.y - background_height ), ImVec2( size.x, 1.f ),
 			                         ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ) );
 
-			std::vector< const char* > tab_names = {
-				( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" ), ( "fonts" )
-			};
+			std::vector< const char* > tab_names = { ( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" ) };
 
 			/* tab logic */
 			for ( int iterator = { }; iterator < static_cast< int >( tab_names.size( ) ); iterator++ ) {
@@ -726,9 +724,10 @@ void n_menu::impl_t::on_end_scene( )
 		}
 		case 5: /* settings */
 		{
-			if ( ImGui::BeginChild( ( "settings" ),
-			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
-			                        true, 0, true ) ) {
+			if ( ImGui::BeginChild(
+					 ( "settings" ),
+					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
+					 0, true ) ) {
 				ImGui::InputText( ( "config file name" ), this->m_config_file, sizeof( this->m_config_file ) );
 
 				std::string converted_file_name = this->m_config_file;
@@ -811,42 +810,50 @@ void n_menu::impl_t::on_end_scene( )
 
 				ImGui::EndChild( );
 			}
-			break;
-		}
-		case 6: /* fonts */ {
-			if ( ImGui::BeginChild( ( "fonts" ),
+
+			ImGui::SameLine( );
+			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
+
+			if ( ImGui::BeginChild(
+					 ( "lua" ), ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ),
+					 true, 0, true ) ) {
+				ImGui::EndChild( );
+			}
+
+			static int font_subtab_number = 0;
+
+			if ( ImGui::BeginChild( ( "fonts" ), { "indicator", "name", "flags", "weapon", "dropped weapon" }, &font_subtab_number,
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
-				ImGui::Text( "indicator" );
+				switch ( font_subtab_number ) {
+				case 0: {
+					ImGui::SliderInt( "size##indicator font", &GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_size, 0, 50,
+					                  "%d", 0, false );
 
-				constexpr const char* indicator_popup_name = "indicator font settings";
+					if ( ImGui::Button( "reset to default##indicator font", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 7.f ), 15.f ), false ) ) {
+						g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ] =
+							g_render.m_fonts[ e_font_names::font_name_indicator_29 ];
+					}
 
-				ImGui::OptionPopup(
-					indicator_popup_name,
-					[ & ]( ) {
-						ImGui::SliderInt( "size##indicator font", &GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_size, 0,
-					                      50, "%d", 0, false );
-
-						if ( ImGui::Button( "reset to default##indicator font", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 7.f ), 15.f ),
-					                        false ) ) {
-							g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ] =
-								g_render.m_fonts[ e_font_names::font_name_indicator_29 ];
-						}
-
+					ImGui::SetCursorPosX( -9.f );
+					if ( ImGui::BeginListBox( "##font list", ImVec2( ImGui::GetContentRegionAvail( ).x + 7.f, 100.f ) ) ) {
 						for ( const auto iterator : g_fonts.m_font_file_names ) {
 							if ( ImGui::Selectable( iterator.c_str( ), HASH_RT( GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t )
-						                                                            .m_name.c_str( ) ) == HASH_RT( iterator.c_str( ) ) ) )
+							                                                        .m_name.c_str( ) ) == HASH_RT( iterator.c_str( ) ) ) )
 								GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_name = iterator;
 						}
-					},
-					ImVec2( 200.f, -1 ) );
+						ImGui::EndListBox( );
+					}
+
+					break;
+				}
+				}
 
 				if ( ImGui::Button( "reload fonts", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 15.f ), 15.f ), false ) )
 					g_render.m_reload_fonts = true;
 
 				ImGui::EndChild( );
 			}
-
 			break;
 		}
 		}
