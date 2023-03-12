@@ -649,7 +649,7 @@ namespace ImGui
 	// - Most widgets return true when the value has been changed or when pressed/selected
 	// - You may also use one of the many IsItemXXX functions (e.g. IsItemActive, IsItemHovered, etc.) to query widget state.
 	IMGUI_API bool Button( const char* label, const ImVec2& size = ImVec2( 0, 0 ), bool underneath_checkbox = true ); // button
-	IMGUI_API bool SmallButton( const char* label );                                 // button with FramePadding=(0,0) to easily embed within text
+	IMGUI_API bool SmallButton( const char* label ); // button with FramePadding=(0,0) to easily embed within text
 	IMGUI_API bool InvisibleButton( const char* str_id, const ImVec2& size,
 	                                ImGuiButtonFlags flags = 0 );   // flexible button behavior without the visuals, frequently useful to build custom
 	                                                                // behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)
@@ -784,7 +784,7 @@ namespace ImGui
 	// imgui_demo.cpp.
 	// - Most of the ImGuiInputTextFlags flags are only useful for InputText() and not for InputFloatX, InputIntX, InputDouble etc.
 	IMGUI_API bool InputText( const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL,
-	                          void* user_data = NULL );
+	                          void* user_data = NULL, int width = -1 );
 	IMGUI_API bool InputTextMultiline( const char* label, char* buf, size_t buf_size, const ImVec2& size = ImVec2( 0, 0 ),
 	                                   ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL );
 	IMGUI_API bool InputTextWithHint( const char* label, const char* hint, char* buf, size_t buf_size, ImGuiInputTextFlags flags = 0,
@@ -1361,6 +1361,7 @@ enum ImGuiWindowFlags_ {
 	ImGuiWindowFlags_Popup       = 1 << 26,  // Don't use! For internal use by BeginPopup()
 	ImGuiWindowFlags_Modal       = 1 << 27,  // Don't use! For internal use by BeginPopupModal()
 	ImGuiWindowFlags_ChildMenu   = 1 << 28,  // Don't use! For internal use by BeginMenu()
+	ImGuiWindowFlags_IsListBox   = 1 << 29
 };
 
 // Flags for ImGui::InputText()

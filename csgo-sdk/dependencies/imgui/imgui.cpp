@@ -2635,9 +2635,7 @@ ImGuiTextFilter::ImGuiTextFilter( const char* default_filter ) //-V1077
 
 bool ImGuiTextFilter::Draw( const char* label, float width )
 {
-	if ( width != 0.0f )
-		ImGui::SetNextItemWidth( width );
-	bool value_changed = ImGui::InputText( label, InputBuf, IM_ARRAYSIZE( InputBuf ) );
+	bool value_changed = ImGui::InputText( label, InputBuf, IM_ARRAYSIZE( InputBuf ),0,0,0,width );
 	if ( value_changed )
 		Build( );
 	return value_changed;
@@ -5783,6 +5781,8 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 	child_window->ChildId            = id;
 	child_window->AutoFitChildAxises = ( ImS8 )auto_fit_axises;
 
+	const bool is_list_box = flags & ImGuiWindowFlags_IsListBox;
+
 	// Set the cursor to handle case where the user called SetNextWindowPos()+BeginChild() manually.
 	// While this is not really documented/defined, it seems that the expected thing to do.
 	if ( child_window->BeginCount == 1 )
@@ -5898,6 +5898,7 @@ bool ImGui::BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, 
 
 	const auto draw_position   = child_window->Pos - ImVec2( 0.f, 20.f );
 	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
+	const bool is_list_box     = flags & ImGuiWindowFlags_IsListBox;
 
 	if ( show_text ) {
 		parent_window->DrawList->AddRectFilled(
@@ -6058,7 +6059,9 @@ void ImGui::EndChild( )
 		ImRect bb( parent_window->DC.CursorPos, parent_window->DC.CursorPos + sz );
 		ItemSize( sz );
 		if ( ( window->DC.NavLayersActiveMask != 0 || window->DC.NavHasScroll ) && !( window->Flags & ImGuiWindowFlags_NavFlattened ) ) {
-			if ( window->ScrollbarY ) {
+			const bool is_list_box = window->Flags & ImGuiWindowFlags_IsListBox;
+
+			if ( window->ScrollbarY && !( is_list_box ) ) {
 				constexpr float shadow_opacity = 0.6f;
 				const float shadow_height      = window->Size.y / 8.f;
 

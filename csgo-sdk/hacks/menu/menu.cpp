@@ -148,7 +148,7 @@ void n_menu::impl_t::on_end_scene( )
 			RenderFadedGradientLine( draw_list, ImVec2( position.x, position.y + size.y - background_height ), ImVec2( size.x, 1.f ),
 			                         ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent ) );
 
-			std::vector< const char* > tab_names = { ( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "skins" ), ( "settings" ) };
+			std::vector< const char* > tab_names = { ( "aimbot" ), ( "visuals" ), ( "movement" ), ( "misc" ), ( "inventory" ), ( "settings" ) };
 
 			/* tab logic */
 			for ( int iterator = { }; iterator < static_cast< int >( tab_names.size( ) ); iterator++ ) {
@@ -722,13 +722,16 @@ void n_menu::impl_t::on_end_scene( )
 			}
 			break;
 		}
+		case 4: /* inventory */ {
+			break;
+		}
 		case 5: /* settings */
 		{
 			if ( ImGui::BeginChild(
 					 ( "settings" ),
 					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
 					 0, true ) ) {
-				ImGui::InputText( ( "config file name" ), this->m_config_file, sizeof( this->m_config_file ) );
+				ImGui::InputText( ( "config file name" ), this->m_config_file, sizeof( this->m_config_file ),0,0,0 ,-7.f);
 
 				std::string converted_file_name = this->m_config_file;
 
@@ -830,17 +833,25 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::SliderInt( "size##indicator font", &GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_size, 0, 50,
 					                  "%d", 0, false );
 
-					if ( ImGui::Button( "reset to default##indicator font", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 7.f ), 15.f ), false ) ) {
+					if ( ImGui::Button( "reset to default##indicator font", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 5.f ), 15.f ), false ) ) {
 						g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ] =
 							g_render.m_fonts[ e_font_names::font_name_indicator_29 ];
 					}
 
-					ImGui::SetCursorPosX( -9.f );
-					if ( ImGui::BeginListBox( "##font list", ImVec2( ImGui::GetContentRegionAvail( ).x + 7.f, 100.f ) ) ) {
+					ImGui::SetCursorPosX( -10.f );
+
+					static ImGuiTextFilter indicator_font_search_filter{ };
+					indicator_font_search_filter.Draw( "search for a font", 20.f);
+
+					ImGui::SetCursorPosX( -10.f );
+					if ( ImGui::BeginListBox( "##font list", ImVec2( ImGui::GetContentRegionAvail( ).x + 8.f, 100.f ) ) ) {
 						for ( const auto iterator : g_fonts.m_font_file_names ) {
-							if ( ImGui::Selectable( iterator.c_str( ), HASH_RT( GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t )
-							                                                        .m_name.c_str( ) ) == HASH_RT( iterator.c_str( ) ) ) )
-								GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_name = iterator;
+							if ( indicator_font_search_filter.PassFilter( iterator.c_str( ) ) )
+								if ( ImGui::Selectable(
+										 iterator.c_str( ),
+										 HASH_RT( GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_name.c_str( ) ) ==
+											 HASH_RT( iterator.c_str( ) ) ) )
+									GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_name = iterator;
 						}
 						ImGui::EndListBox( );
 					}
@@ -849,7 +860,7 @@ void n_menu::impl_t::on_end_scene( )
 				}
 				}
 
-				if ( ImGui::Button( "reload fonts", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 15.f ), 15.f ), false ) )
+				if ( ImGui::Button( "reload fonts", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 5.f ), 15.f ), false ) )
 					g_render.m_reload_fonts = true;
 
 				ImGui::EndChild( );

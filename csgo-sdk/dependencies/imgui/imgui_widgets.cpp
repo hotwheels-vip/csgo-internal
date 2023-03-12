@@ -706,7 +706,7 @@ bool ImGui::ButtonEx( const char* label, const ImVec2& size_arg, ImGuiButtonFlag
 	const ImGuiID id        = window->GetID( label );
 	const ImVec2 label_size = CalcTextSize( label, NULL, true );
 
-	ImVec2 pos = window->DC.CursorPos + ImVec2( underneath_checkbox ? 20.f : 3.f, 0.f );
+	ImVec2 pos = window->DC.CursorPos + ImVec2( underneath_checkbox ? 20.f : 2.f, 0.f );
 	if ( ( flags & ImGuiButtonFlags_AlignTextBaseLine ) &&
 	     style.FramePadding.y < window->DC.CurrLineTextBaseOffset ) // Try to vertically align buttons that are smaller/have no padding so that text
 	                                                                // baseline matches (bit hacky, since it shouldn't be a flag)
@@ -4243,10 +4243,11 @@ bool ImGui::InputDouble( const char* label, double* v, double step, double step_
 // - DebugNodeInputTextState() [Internal]
 //-------------------------------------------------------------------------
 
-bool ImGui::InputText( const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data )
+bool ImGui::InputText( const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data,
+                       int width )
 {
 	IM_ASSERT( !( flags & ImGuiInputTextFlags_Multiline ) ); // call InputTextMultiline()
-	return InputTextEx( label, NULL, buf, ( int )buf_size, ImVec2( 0, 0 ), flags, callback, user_data );
+	return InputTextEx( label, NULL, buf, ( int )buf_size, ImVec2( 0, 0 ), flags, callback, user_data, width );
 }
 
 bool ImGui::InputTextMultiline( const char* label, char* buf, size_t buf_size, const ImVec2& size, ImGuiInputTextFlags flags,
@@ -4711,9 +4712,9 @@ static void InputTextReconcileUndoStateAfterUserCallback( ImGuiInputTextState* s
 //  doing UTF8 > U16 > UTF8 conversions on the go to easily interface with stb_textedit. Ideally should stay in UTF-8 all the time. See
 //  https://github.com/nothings/stb/issues/188)
 bool ImGui::InputTextEx( const char* label, const char* hint, char* buf, int buf_size, const ImVec2& size_arg, ImGuiInputTextFlags flags,
-                         ImGuiInputTextCallback callback, void* callback_user_data )
+                         ImGuiInputTextCallback callback, void* callback_user_data, int width )
 {
-	SetNextItemWidth( -1 );
+	// SetNextItemWidth( width);
 
 	SetCursorPosY( ImGui::GetCursorPos( ).y + 10.f );
 
@@ -4750,7 +4751,7 @@ bool ImGui::InputTextEx( const char* label, const char* hint, char* buf, int buf
 	                                            4.f * 2.0f ); // Arbitrary default of 8 lines high for multi-line
 	const ImVec2 total_size = ImVec2( frame_size.x + ( label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f ), frame_size.y );
 
-	const float w = ( GetWindowWidth( ) - style.WindowPadding.x * 2 ) - 11.f;
+	const float w = ( ( GetWindowWidth( ) - style.WindowPadding.x * 2 ) - 11.f ) + width;
 
 	const ImRect frame_bb( window->DC.CursorPos + ImVec2( 18.f, 0.f ), window->DC.CursorPos + ImVec2( w, 17 ) );
 	const ImRect total_bb( frame_bb.Min, frame_bb.Max + ImVec2( label_size.x > 0.0f ? ( style.ItemInnerSpacing.x + label_size.x ) : 0.0f, 0.0f ) );
@@ -7168,7 +7169,7 @@ bool ImGui::BeginListBox( const char* label, const ImVec2& size_arg )
 		window->DC.CursorMaxPos = ImMax( window->DC.CursorMaxPos, label_pos + label_size );
 	}
 
-	BeginChildFrame( id, frame_bb.GetSize( ) );
+	BeginChildFrame( id, frame_bb.GetSize( ), ImGuiWindowFlags_IsListBox );
 	return true;
 }
 
