@@ -24,7 +24,7 @@ void save_popup( const char* str_id, const ImVec2& window_size, const std::funct
 
 	const auto hashed_str_id = ImHashStr( str_id );
 	const auto text_size     = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-        g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
+			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
 
 	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
@@ -533,7 +533,10 @@ void n_menu::impl_t::on_end_scene( )
 				}
 				ImGui::Checkbox( "pixel surf", &GET_VARIABLE( g_variables.m_pixel_surf, bool ) );
 				ImGui::Keybind( "pixel surf key", &GET_VARIABLE( g_variables.m_pixel_surf_key, key_bind_t ) );
-
+				if ( GET_VARIABLE( g_variables.m_pixel_surf, bool ) ) {
+					ImGui::SetCursorPosX( 25.f );
+					ImGui::Checkbox( "pixel surf fix", &GET_VARIABLE( g_variables.m_pixel_surf_fix, bool ) );
+				}
 				ImGui::Checkbox( "auto align", &GET_VARIABLE( g_variables.m_auto_align, bool ) );
 
 				ImGui::Checkbox( "no crouch cooldown", &GET_VARIABLE( g_variables.m_no_crouch_cooldown, bool ) );
@@ -731,7 +734,7 @@ void n_menu::impl_t::on_end_scene( )
 					 ( "settings" ),
 					 ImVec2( ImGui::GetContentRegionAvail( ).x / 2.f, ( ImGui::GetContentRegionAvail( ).y / 2.f ) - background_height - 20.f ), true,
 					 0, true ) ) {
-				ImGui::InputText( ( "config file name" ), this->m_config_file, sizeof( this->m_config_file ),0,0,0 ,-7.f);
+				ImGui::InputText( ( "config file name" ), this->m_config_file, sizeof( this->m_config_file ), 0, 0, 0, -7.f );
 
 				std::string converted_file_name = this->m_config_file;
 
@@ -841,7 +844,7 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::SetCursorPosX( -10.f );
 
 					static ImGuiTextFilter indicator_font_search_filter{ };
-					indicator_font_search_filter.Draw( "search for a font", 20.f);
+					indicator_font_search_filter.Draw( "search for a font", 20.f );
 
 					ImGui::SetCursorPosX( -10.f );
 					if ( ImGui::BeginListBox( "##font list", ImVec2( ImGui::GetContentRegionAvail( ).x + 8.f, 100.f ) ) ) {

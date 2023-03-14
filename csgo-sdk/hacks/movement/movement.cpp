@@ -55,6 +55,9 @@ void n_movement::impl_t::on_create_move_post( )
 	                                                          this->m_pixelsurf_data.m_in_pixel_surf || this->m_edgebug_data.m_will_edgebug ) )
 		this->auto_align( g_ctx.m_cmd );
 
+	if ( GET_VARIABLE( g_variables.m_pixel_surf_fix, bool ) )
+		this->pixel_surf_fix( );
+
 	this->pixel_surf( target_ps_velocity );
 
 	this->auto_duck( );
@@ -67,7 +70,7 @@ void n_movement::impl_t::on_create_move_post( )
 
 	// TESTING PURPOSES
 	[ & ]( const bool run ) {
-		if ( !run )
+		if ( !run && GET_VARIABLE( g_variables.m_key_indicators_enable, bool ) )
 			return;
 
 		if ( g_prediction.backup_data.m_flags & e_flags::fl_onground && g_ctx.m_local->get_flags( ) & fl_onground ) {
@@ -169,6 +172,35 @@ void n_movement::impl_t::edge_jump( )
 
 	if ( ( g_prediction.backup_data.m_flags & e_flags::fl_onground ) && !( g_ctx.m_local->get_flags( ) & e_flags::fl_onground ) )
 		g_ctx.m_cmd->m_buttons |= e_command_buttons::in_jump;
+}
+
+void n_movement::impl_t::pixel_surf_fix( )
+{
+	// creds patoke, todo: test this.
+
+	static const auto sv_airaccelerate = g_convars[ HASH_BT( "sv_airaccelerate" ) ];
+	const auto tickrate                = 1.f / g_interfaces.m_global_vars_base->m_interval_per_tick;
+
+	const auto velocity = g_ctx.m_local->get_velocity( );
+
+	if ( g_ctx.m_cmd->m_buttons & in_duck )
+		return;
+
+	if ( velocity.m_z >= 0.f )
+		return;
+
+	if ( !( g_ctx.m_local->get_flags( ) & fl_onground ) )
+		return;
+
+	const float wishdelta = ( velocity.length_2d( ) - 285.93f ) * tickrate / sv_airaccelerate->get_float( );
+	const auto velo_ang   = c_vector( velocity * -1.f ).to_angle( ).normalize( );
+
+	const auto rotation = deg2rad( velo_ang.m_y - g_ctx.m_cmd->m_view_point.m_y );
+	const auto cos_rot  = cos( rotation );
+	const auto sin_rot  = sin( rotation );
+
+	g_ctx.m_cmd->m_forward_move = cos_rot * wishdelta;
+	g_ctx.m_cmd->m_side_move    = -sin_rot * wishdelta;
 }
 
 void n_movement::impl_t::edge_bug( )

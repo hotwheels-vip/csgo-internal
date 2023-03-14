@@ -80,6 +80,8 @@ namespace n_movement
 
 		void pixel_surf_locking( float target_ps_velocity );
 
+		void pixel_surf_fix( );
+
 		void pixel_surf( float target_ps_velocity );
 
 		void detect_edgebug( c_user_cmd* cmd );

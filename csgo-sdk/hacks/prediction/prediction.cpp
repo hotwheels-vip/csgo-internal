@@ -6,8 +6,7 @@ void n_prediction::impl_t::update( )
 {
 	auto nci = g_interfaces.m_engine_client->get_net_channel_info( );
 	if ( nci ) {
-		g_ctx.m_max_allocations =
-			g_math.time_to_ticks( g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( ) );
+		g_ctx.m_max_allocations = g_math.time_to_ticks( g_convars[ HASH_BT( "sv_maxunlag" ) ]->get_float( ) );
 
 		// add 200 ms if extended is on
 		if ( GET_VARIABLE( g_variables.m_backtrack_extend, bool ) )
@@ -15,7 +14,7 @@ void n_prediction::impl_t::update( )
 			// tried unlg - flow outgoing, didnt work
 			// tried unlag - outoing and incoming, weird glitches
 			// if anyone can figure this out, please and thank you
-			g_ctx.m_max_allocations += g_math.time_to_ticks( 0.199f );
+			g_ctx.m_max_allocations += g_math.time_to_ticks( nci->get_latency( FLOW_INCOMING ) + nci->get_latency( FLOW_OUTGOING ) );
 	} else
 		g_ctx.m_max_allocations = 0;
 
