@@ -4,6 +4,8 @@ class c_user_cmd;
 class c_base_entity;
 class c_angle;
 #include "../../game/sdk/classes/c_vector.h"
+#include "../../globals/macros/macros.h"
+#include "../../utilities/modules/modules.h"
 
 namespace n_prediction
 {

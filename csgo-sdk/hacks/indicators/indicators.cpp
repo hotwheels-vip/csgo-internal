@@ -100,11 +100,14 @@ void n_indicators::impl_t::sniper_crosshair( )
 
 	const auto definition_index = active_weapon->get_item_definition_index( );
 
+	if ( g_ctx.m_local->is_scoped( ) )
+		return;
+
 	if ( g_utilities.is_in< short >( definition_index, { e_item_definition_index::weapon_awp, e_item_definition_index::weapon_ssg08,
 	                                                     e_item_definition_index::weapon_scar20, e_item_definition_index::weapon_g3sg1 } ) ) {
 		g_render.m_draw_data.emplace_back(
-			e_draw_type::draw_type_rect, std::make_any< rect_draw_object_t >( c_vector_2d( ( g_ctx.m_width / 2 ) - 2, ( g_ctx.m_height / 2 ) - 2 ),
-		                                                                      c_vector_2d( ( g_ctx.m_width / 2 ), ( g_ctx.m_height / 2 ) ),
+			e_draw_type::draw_type_rect, std::make_any< rect_draw_object_t >( c_vector_2d( ( g_ctx.m_width / 2 ) - 1, ( g_ctx.m_height / 2 ) - 1 ),
+		                                                                      c_vector_2d( ( g_ctx.m_width / 2 ) + 1, ( g_ctx.m_height / 2 ) + 1 ),
 		                                                                      ImColor( 1.f, 1.f, 1.f, 1.f ), ImColor( 0.f, 0.f, 0.f, 0.f ), true, 0.f,
 		                                                                      ImDrawFlags_::ImDrawFlags_None, 4.f, e_rect_flags::rect_flag_none ) );
 	}

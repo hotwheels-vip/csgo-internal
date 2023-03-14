@@ -38,6 +38,7 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 			g_movement.m_autoduck_data.reset( );
 			return;
 		}
+
 		g_movement.on_create_move_pre( );
 		g_misc.on_create_move_pre( );
 

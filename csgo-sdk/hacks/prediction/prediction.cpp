@@ -39,13 +39,15 @@ void n_prediction::impl_t::begin( c_base_entity* local, c_user_cmd* cmd )
 	*local->get_current_command( ) = cmd;
 	local->get_last_command( )     = *cmd;
 
-	if ( !m_prediction_random_seed && !m_prediction_player ) {
-		m_prediction_random_seed = *reinterpret_cast< unsigned int** >( g_modules[ CLIENT_DLL ].find_pattern( "A3 ? ? ? ? 66 ? ? 86" ) + 0x1 );
+	if ( static bool once = false; !once ) {
+		m_prediction_random_seed =
+			*reinterpret_cast< unsigned int** >( g_modules[ CLIENT_DLL ].find_pattern( "8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04" ) + 0x2 );
 
 		m_prediction_player = *reinterpret_cast< c_base_entity*** >( g_modules[ CLIENT_DLL ].find_pattern( "89 35 ? ? ? ? F3 0F 10 48 20" ) + 0x2 );
+		once                = true;
 	}
 
-	*m_prediction_random_seed = cmd->m_random_seed & 0x7FFFFFFF;
+	*m_prediction_random_seed = cmd->m_random_seed;
 	*m_prediction_player      = local;
 
 	m_old_current_time = g_interfaces.m_global_vars_base->m_current_time;
