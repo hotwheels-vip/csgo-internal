@@ -42,7 +42,12 @@ void c_base_entity::modify_eye_position( const c_animation_state* animation_stat
 	if ( !animation_state->m_hit_ground_animation && animation_state->m_duck_amount == 0.f && ground_entity )
 		return;
 
-	const auto head_position = entity->get_bone_position( entity->get_bone_by_hash( HASH_BT( "head_0" ) ) );
+	const auto hashed_bone = entity->get_bone_by_hash( HASH_BT( "head_0" ) );
+
+	if ( hashed_bone == -1 )
+		return;
+
+	const auto head_position = entity->get_bone_position( hashed_bone );
 	if ( head_position.is_zero( ) )
 		return;
 
@@ -51,11 +56,11 @@ void c_base_entity::modify_eye_position( const c_animation_state* animation_stat
 
 	if ( modified_position.m_z < position->m_z ) {
 		float factor       = 0.f;
-		const float delta  = std::fabsf( position->m_z - modified_position.m_z );
+		const float delta  = abs( position->m_z - modified_position.m_z );
 		const float offset = ( delta - 4.0f ) / 6.0f;
 
 		if ( offset >= 0.f )
-			factor = min( offset, 1.0f );
+			factor = std::min( offset, 1.0f );
 
 		const float factor_squared = ( factor * factor );
 		position->m_z += ( ( modified_position.m_z - position->m_z ) * ( ( factor_squared * 3.0f ) - ( ( factor_squared * 2.0f ) * factor ) ) );
@@ -186,9 +191,6 @@ bool c_base_entity::is_enemy( c_base_entity* entity )
 
 	return false;
 }
-
-#undef max
-#undef min
 
 bool c_base_entity::get_bounding_box( bounding_box_t* box )
 {

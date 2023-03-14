@@ -2,6 +2,7 @@
 #include <Windows.h>
 
 #undef max
+#undef min
 
 /* macros */
 #include "../../globals/macros/macros.h"

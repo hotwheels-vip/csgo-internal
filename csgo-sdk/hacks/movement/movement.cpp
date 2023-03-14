@@ -192,12 +192,12 @@ void n_movement::impl_t::pixel_surf_fix( )
 	if ( !( g_ctx.m_local->get_flags( ) & fl_onground ) )
 		return;
 
-	const float wishdelta = ( velocity.length_2d( ) - 285.93f ) * tickrate / sv_airaccelerate->get_float( );
-	const auto velo_ang   = c_vector( velocity * -1.f ).to_angle( ).normalize( );
+	float wishdelta = ( velocity.length_2d( ) - 285.93f ) * tickrate / sv_airaccelerate->get_float( );
+	auto velo_ang   = c_vector( velocity * -1.f ).to_angle( ).normalize( );
 
-	const auto rotation = deg2rad( velo_ang.m_y - g_ctx.m_cmd->m_view_point.m_y );
-	const auto cos_rot  = cos( rotation );
-	const auto sin_rot  = sin( rotation );
+	auto rotation = deg2rad( velo_ang.m_y - g_prediction.backup_data.m_view_angles.m_y );
+	auto cos_rot  = cos( rotation );
+	auto sin_rot  = sin( rotation );
 
 	g_ctx.m_cmd->m_forward_move = cos_rot * wishdelta;
 	g_ctx.m_cmd->m_side_move    = -sin_rot * wishdelta;
@@ -594,14 +594,24 @@ void n_movement::impl_t::rotate_movement( c_user_cmd* cmd, c_angle& angle )
 
 void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 {
-	const c_vector origin   = g_ctx.m_local->get_abs_origin( );
-	const c_vector velocity = g_ctx.m_local->get_velocity( );
+	static const float max_fw_move = g_convars[ HASH_BT( "cl_forwardspeed" ) ]->get_float( );
+	static const float max_sw_move = g_convars[ HASH_BT( "cl_sidespeed" ) ]->get_float( );
+
+	constexpr auto rotate = []( c_angle& angle, const float speed ) {
+		const float rotation = deg2rad( g_ctx.m_cmd->m_view_point.m_y - angle.m_y );
+
+		g_ctx.m_cmd->m_forward_move = cosf( rotation ) * speed;
+		g_ctx.m_cmd->m_side_move    = sinf( rotation ) * speed;
+	};
+
+	const c_vector origin      = g_ctx.m_local->get_abs_origin( );
+	const c_vector velocity    = g_ctx.m_local->get_velocity( );
+	const c_vector player_mins = g_ctx.m_local->get_collideable( )->obb_mins( );
+	const c_vector player_maxs = g_ctx.m_local->get_collideable( )->obb_maxs( );
 
 	constexpr static float distance_till_adjust = 0.03125f;
 	constexpr static float error_margin         = 0.01f;
-
-	static const float max_fw_move = g_convars[ HASH_BT( "cl_forwardspeed" ) ]->get_float( );
-	static const float max_sw_move = g_convars[ HASH_BT( "cl_sidespeed" ) ]->get_float( );
+	float align_trace_additive                  = error_margin + player_maxs.m_x;
 
 	auto get_colliding_wall = [ & ]( trace_t& out_trace ) -> bool {
 		float fw_move = cmd->m_forward_move / max_fw_move;
@@ -610,21 +620,38 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 		c_vector va_forward = cmd->m_view_point.forward( ).normalize( ).to_vector( );
 		c_vector va_right   = cmd->m_view_point.right( ).normalize( ).to_vector( );
 
-		c_vector wish_dir = { va_forward.m_x * fw_move + va_right.m_x * sw_move, va_forward.m_y * fw_move + va_right.m_y * sw_move, 0.f };
+		c_vector wish_dir   = { va_forward.m_x * fw_move + va_right.m_x * sw_move, va_forward.m_y * fw_move + va_right.m_y * sw_move, 0.f };
+		c_vector direct_dir = { round( wish_dir.m_x ), round( wish_dir.m_y ), 0.f };
 
-		c_vector direct_dir = { roundf( wish_dir.m_x ), roundf( wish_dir.m_y ), 0.f };
+		float trace_additive = ( distance_till_adjust + error_margin ) + player_maxs.m_x;
+		c_vector trace_dir   = origin + c_vector( trace_additive * direct_dir.m_x, trace_additive * direct_dir.m_y, 0.f );
 
-		float trace_additive = ( distance_till_adjust + error_margin ) + g_ctx.m_local->get_collideable( )->obb_maxs( ).m_x;
+		// check if we weren't aligned before already
+		{
+			trace_t al_trace{ };
+			c_trace_filter al_filter( g_ctx.m_local );
+
+			c_vector align_trace_dir = origin + c_vector( align_trace_additive * direct_dir.m_x, align_trace_additive * direct_dir.m_y, 0.f );
+
+			ray_t ray( origin, align_trace_dir );
+			g_interfaces.m_engine_trace->trace_ray( ray, mask_playersolid, &al_filter, &al_trace );
+
+			// if we hit the wall we are already aligned and don't succeed if we hit a slope
+			if ( al_trace.did_hit( ) || al_trace.m_plane.m_normal.m_z != 0.f )
+				return false;
+		}
 
 		trace_t trace{ };
 		c_trace_filter filter( g_ctx.m_local );
-
-		c_vector trace_dir = origin + c_vector( trace_additive * direct_dir.m_x, trace_additive * direct_dir.m_y, 0.f );
-
 		ray_t ray( origin, trace_dir );
 		g_interfaces.m_engine_trace->trace_ray( ray, mask_playersolid, &filter, &trace );
 
-		if ( trace.did_hit( ) && !trace.m_hit_entity->is_player( ) ) {
+		// we're trynna align on a slope
+		if ( trace.m_plane.m_normal.m_z != 0.f )
+			return false;
+
+		// we did hit a wall
+		if ( trace.did_hit( ) ) {
 			out_trace = trace;
 			return true;
 		}
@@ -632,43 +659,19 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 		return false;
 	};
 
-	constexpr auto has_to_align = []( const c_vector& origin ) -> bool {
-		constexpr static float distance_to_stop = 0.00750f;
-
-		const c_vector_2d remainder1 = c_vector_2d( 1.f - ( origin.m_x - floor( origin.m_x ) ), 1.f - ( origin.m_y - floor( origin.m_y ) ) );
-		const c_vector_2d remainder2 = c_vector_2d( ( origin.m_x - floor( origin.m_x ) ), ( origin.m_y - floor( origin.m_y ) ) );
-
-		return ( ( remainder1.m_x >= distance_to_stop && remainder1.m_x <= distance_till_adjust ) ||
-		         ( remainder1.m_y >= distance_to_stop && remainder1.m_y <= distance_till_adjust ) ) ||
-		       ( ( remainder2.m_x >= distance_to_stop && remainder2.m_x <= distance_till_adjust ) ||
-		         ( remainder2.m_y >= distance_to_stop && remainder2.m_y <= distance_till_adjust ) );
-	};
-
-	if ( this->m_pixelsurf_data.m_predicted_succesful )
-		return;
-
-	// arbitrary minimum velocity number
-	if ( velocity.length_2d( ) < 5.f || g_ctx.m_local->get_flags( ) & e_flags::fl_onground || !has_to_align( origin ) )
+	if ( velocity.length_2d( ) < 5.f || this->m_pixelsurf_data.m_predicted_succesful || g_ctx.m_local->get_flags( ) & e_flags::fl_onground )
 		return;
 
 	trace_t hit_trace{ };
 	bool is_valid = get_colliding_wall( hit_trace );
 
-	if ( !is_valid || hit_trace.m_plane.m_normal.m_z != 0.f /*slope check*/ )
+	if ( !is_valid )
 		return;
 
-	float gain_fraction = cmd->m_buttons & e_command_buttons::in_duck ? 4.6775f : 4.5500f;
-	float minimum_gain  = rad2deg( atan( gain_fraction / velocity.length_2d( ) ) ) * ( 2.f * std::numbers::pi_v< float > );
+	auto wall_angle   = hit_trace.m_plane.m_normal.to_angle( ).flip( );
+	auto strafe_angle = c_angle( g_ctx.m_cmd->m_view_point.m_x, wall_angle.m_y, g_ctx.m_cmd->m_view_point.m_z );
 
-	float strafe_yaw = c_vector( hit_trace.m_plane.m_normal ).to_angle( ).flip( ).m_y;
-
-	float yaw_delta = g_math.normalize_angle( velocity.to_angle( ).m_y - strafe_yaw );
-
-	strafe_yaw += yaw_delta < 0.f ? -minimum_gain : minimum_gain;
-
-	c_angle strafe_angle = c_angle( cmd->m_view_point.m_x, strafe_yaw, 0.f );
-
-	rotate_movement( cmd, strafe_angle );
+	rotate( strafe_angle, 10.f ); // 10.f is the velocity value at which we gain around 0.03125 velocity instantly
 }
 
 void n_movement::impl_t::strafe_to_yaw( c_user_cmd* cmd, c_angle& angle, const float yaw )
@@ -699,8 +702,7 @@ void n_movement::impl_t::on_frame_stage_notify( int stage )
 
 	float final_yaw{ };
 
-	c_angle wish_angles = { g_prediction.backup_data.m_view_angles.m_x, g_movement.m_edgebug_data.m_starting_yaw,
-		                    g_prediction.backup_data.m_view_angles.m_z };
+	c_angle wish_angles = { g_prediction.backup_data.m_view_angles.m_x, g_movement.m_edgebug_data.m_starting_yaw, 0.f };
 
 	float hit_time_delta = g_math.ticks_to_time( g_movement.m_edgebug_data.m_ticks_to_stop );
 
