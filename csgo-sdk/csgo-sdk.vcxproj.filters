@@ -79,6 +79,7 @@
     <ClCompile Include="game\sdk\classes\c_key_values.cpp" />
     <ClCompile Include="hooks\functions\send_datagram.cpp" />
     <ClCompile Include="globals\fonts\fonts.cpp" />
+    <ClCompile Include="hooks\functions\is_following_entity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />

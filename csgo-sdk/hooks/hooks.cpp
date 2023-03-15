@@ -76,15 +76,8 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_fire_event_intern, g_virtual.get( g_interfaces.m_game_event_manager, 9 ), &n_detoured_functions::fire_event_intern,
 	                 "CGameEventManager::FireEventIntern()" );
 
-	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
-
-	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );
-
 	initialise_hook( m_level_init_post_entity, g_virtual.get( g_interfaces.m_base_client, 6 ), &n_detoured_functions::level_init_post_entity,
 	                 "CHLClient::LevelInitPostEntity()" );
-
-	initialise_hook( m_end_scene, g_virtual.get( g_interfaces.m_direct_device, 42 ), &n_detoured_functions::end_scene,
-	                 "IDirect3DDevice9::EndScene()" );
 
 	initialise_hook( m_draw_set_color, g_virtual.get( g_interfaces.m_surface, 15 ), &n_detoured_functions::draw_set_color,
 	                 "ISurface::DrawSetColor()" );
@@ -101,6 +94,15 @@ bool n_hooks::impl_t::on_attach( )
 
 	initialise_hook( m_list_leaves_in_box, g_modules[ ENGINE_DLL ].find_pattern( "55 8B EC 83 EC ? 8B 4D ? 8D 55" ),
 	                 &n_detoured_functions::list_leaves_in_box, "CEngineBSPTree::ListLeavesInBox()" );
+
+	initialise_hook( m_is_following_entity, g_modules[ CLIENT_DLL ].find_pattern( "F6 ? ? ? ? ? ? 74 31 80" ),
+	                 &n_detoured_functions::is_following_entity,
+	                 "C_BaseEntity::IsFollowingEntity()" );
+
+	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
+	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );
+	initialise_hook( m_end_scene, g_virtual.get( g_interfaces.m_direct_device, 42 ), &n_detoured_functions::end_scene,
+	                 "IDirect3DDevice9::EndScene()" );
 
 	if ( g_interfaces.m_engine_client->is_in_game( ) )
 		g_interfaces.m_client_state->m_delta_tick = -1;
