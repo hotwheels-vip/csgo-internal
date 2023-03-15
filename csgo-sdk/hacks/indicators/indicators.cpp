@@ -138,7 +138,7 @@ void n_indicators::impl_t::keybind_indicators( )
 				ImColor( 0.f, 0.f, 0.f, color.base< e_color_type::color_type_a >( ) * indicator_animation.AnimationData->second ),
 				e_text_flags::text_flag_dropshadow ) );
 
-		offset -= ( text_size.y + 2 ) * indicator_animation.AnimationData->second;
+		offset -= text_size.y * indicator_animation.AnimationData->second;
 	};
 
 	if ( GET_VARIABLE( g_variables.m_edge_bug, bool ) &&
