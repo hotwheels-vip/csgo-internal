@@ -118,7 +118,7 @@ void n_indicators::impl_t::keybind_indicators( )
 	float offset = 0.f;
 
 	const auto render_indicator = [ & ]( const char* indicator_name, const c_color& color, const bool active ) {
-		ImAnimationHelper indicator_animation = ImAnimationHelper( fnv1a::hash( indicator_name ), ImGui::GetIO( ).DeltaTime );
+		ImAnimationHelper indicator_animation = ImAnimationHelper( HASH_BT( indicator_name ), ImGui::GetIO( ).DeltaTime );
 		indicator_animation.Update( 3.f, active ? 3.f : -3.f );
 
 		if ( indicator_animation.AnimationData->second <= 0.f )
