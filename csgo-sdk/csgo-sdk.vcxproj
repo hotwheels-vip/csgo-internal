@@ -312,6 +312,7 @@
     <ClInclude Include="hacks\visuals\players\dormancy\dormancy.h" />
     <ClInclude Include="hacks\visuals\players\players.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />
+    <ClInclude Include="hooks\functions\draw_view_models.cpp" />
     <ClInclude Include="hooks\hooks.h" />
     <ClInclude Include="globals\includes\includes.h" />
     <ClInclude Include="globals\interfaces\interfaces.h" />

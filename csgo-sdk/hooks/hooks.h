@@ -8,6 +8,7 @@
 // [\/] fw decs to prevent include errors
 
 class c_vector;
+class c_view_setup;
 class c_material;
 class c_animation_state;
 class c_base_entity;
@@ -53,6 +54,7 @@ namespace n_hooks
 		c_detour_hook m_list_leaves_in_box{ };
 		c_detour_hook m_send_datagram{ };
 		c_detour_hook m_is_following_entity{ };
+		c_detour_hook m_draw_view_models{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -101,4 +103,6 @@ namespace n_detoured_functions
 	int __fastcall list_leaves_in_box( void* ecx, void* edx, const c_vector& mins, const c_vector& maxs, unsigned short* list, int list_max );
 	int __fastcall send_datagram( c_net_channel* net_channel, int edx, bf_write* datagram );
 	bool __fastcall is_following_entity( void* ecx, void* edx );
+	void __fastcall draw_view_models( void* ecx, void* edx, c_view_setup& setup, bool draw_view_model, bool draw_scope_lens_mask );
+
 } // namespace n_detoured_functions

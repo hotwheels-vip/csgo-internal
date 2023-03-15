@@ -2,6 +2,7 @@
 
 #include "../game/sdk/includes/includes.h"
 #include "../globals/includes/includes.h"
+#include "../utilities/memory/relative.h"
 #include "../utilities/memory/virtual.h"
 
 bool n_hooks::impl_t::on_attach( )
@@ -37,11 +38,10 @@ bool n_hooks::impl_t::on_attach( )
 
 	initialise_hook( m_paint_traverse, g_virtual.get( g_interfaces.m_panel, 41 ), &n_detoured_functions::paint_traverse, "IPanel::PaintTraverse()" );
 
-	initialise_hook( m_on_add_entity, reinterpret_cast< void* >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 51 8B 45 0C 53 56 8B F1 57" ) ),
+	initialise_hook( m_on_add_entity, g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 51 8B 45 0C 53 56 8B F1 57" ),
 	                 &n_detoured_functions::on_add_entity, "IClientEntityList::OnAddEntity()" );
 
-	initialise_hook( m_on_remove_entity,
-	                 reinterpret_cast< void* >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07" ) ),
+	initialise_hook( m_on_remove_entity, g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07" ),
 	                 &n_detoured_functions::on_remove_entity, "IClientEntityList::OnRemoveEntity()" );
 
 	initialise_hook( m_level_init_pre_entity, g_virtual.get( g_interfaces.m_base_client, 5 ), &n_detoured_functions::level_init_pre_entity,
@@ -53,10 +53,10 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_get_vcollide, g_virtual.get( g_interfaces.m_model_info, 6 ), &n_detoured_functions::get_vcollide,
 	                 "CModelInfo::GetVCollide()" );
 
-	initialise_hook( m_particle_collection_simulate,
-	                 reinterpret_cast< void* >( g_modules[ CLIENT_DLL ].find_pattern(
-						 "55 8B EC 83 E4 F8 83 EC 30 56 57 8B F9 0F 28 E1 8B 0D ? ? ? ? F3 0F 11 64 24 ? 89 7C 24 18 8B 81" ) ),
-	                 &n_detoured_functions::particle_collection_simulate, "CParticleCollection::Simulate()" );
+	initialise_hook(
+		m_particle_collection_simulate,
+		g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 E4 F8 83 EC 30 56 57 8B F9 0F 28 E1 8B 0D ? ? ? ? F3 0F 11 64 24 ? 89 7C 24 18 8B 81" ),
+		&n_detoured_functions::particle_collection_simulate, "CParticleCollection::Simulate()" );
 
 	initialise_hook( m_find_material, g_virtual.get( g_interfaces.m_material_system, 84 ), &n_detoured_functions::find_material,
 	                 "CMaterialSystem::FindMaterial()" );
@@ -96,8 +96,12 @@ bool n_hooks::impl_t::on_attach( )
 	                 &n_detoured_functions::list_leaves_in_box, "CEngineBSPTree::ListLeavesInBox()" );
 
 	initialise_hook( m_is_following_entity, g_modules[ CLIENT_DLL ].find_pattern( "F6 ? ? ? ? ? ? 74 31 80" ),
-	                 &n_detoured_functions::is_following_entity,
-	                 "C_BaseEntity::IsFollowingEntity()" );
+	                 &n_detoured_functions::is_following_entity, "C_BaseEntity::IsFollowingEntity()" );
+
+	initialise_hook( m_draw_view_models,
+	                 reinterpret_cast< void* >( g_relative.get(
+						 reinterpret_cast< unsigned int >( g_modules[ CLIENT_DLL ].find_pattern( "E8 ? ? ? ? 8B 43 10 8D 4D 04" ) + 0x1 ) ) ),
+	                 &n_detoured_functions::draw_view_models, "CViewRender::DrawViewModels()" );
 
 	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );
