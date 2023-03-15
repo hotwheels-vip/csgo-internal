@@ -48,7 +48,7 @@ void n_edicts::impl_t::reset( )
 			if ( !client_class )
 				return;
 
-			if ( static_cast< int >( client_class->m_class_id ) == 138 /* cprecipitation class id */ ) {
+			if ( client_class->m_class_id == e_class_ids::c_precipitation ) {
 				const auto rain_networkable = entity->get_client_networkable( );
 				if ( !rain_networkable )
 					return;
