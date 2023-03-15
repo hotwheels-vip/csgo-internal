@@ -42,6 +42,7 @@
 #include "../classes/c_utl_reference.h"
 #include "../classes/c_utl_string.h"
 #include "../classes/c_utl_vector.h"
+#include "../classes/c_view_setup.h"
 #include "../classes/c_weapon_data.h"
 #include "../classes/c_weapon_system.h"
 #include "../classes/entity.h"

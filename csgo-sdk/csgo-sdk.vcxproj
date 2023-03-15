@@ -218,6 +218,7 @@
     <ClInclude Include="game\sdk\classes\c_user_cmd.h" />
     <ClInclude Include="game\sdk\classes\c_utl_reference.h" />
     <ClInclude Include="game\sdk\classes\c_utl_string.h" />
+    <ClInclude Include="game\sdk\classes\c_view_setup.h" />
     <ClInclude Include="game\sdk\classes\entity.h" />
     <ClInclude Include="game\sdk\classes\c_cconvar.h" />
     <ClInclude Include="game\sdk\classes\c_convar.h" />

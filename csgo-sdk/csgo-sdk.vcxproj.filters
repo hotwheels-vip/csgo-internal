@@ -310,6 +310,7 @@
     <ClInclude Include="game\sdk\classes\c_key_values.h" />
     <ClInclude Include="globals\config\structs\font_setting_t.h" />
     <ClInclude Include="globals\fonts\fonts.h" />
+    <ClInclude Include="game\sdk\classes\c_view_setup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
