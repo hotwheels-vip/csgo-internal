@@ -82,6 +82,7 @@
     <ClCompile Include="hooks\functions\is_following_entity.cpp" />
     <ClCompile Include="hooks\functions\draw_view_models.cpp" />
     <ClCompile Include="hacks\visuals\screen\screen.cpp" />
+    <ClCompile Include="hacks\auto_wall\auto_wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -312,6 +313,8 @@
     <ClInclude Include="globals\fonts\fonts.h" />
     <ClInclude Include="game\sdk\classes\c_view_setup.h" />
     <ClInclude Include="hacks\visuals\screen\screen.h" />
+    <ClInclude Include="game\sdk\classes\c_physics_surface_props.h" />
+    <ClInclude Include="hacks\auto_wall\auto_wall.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

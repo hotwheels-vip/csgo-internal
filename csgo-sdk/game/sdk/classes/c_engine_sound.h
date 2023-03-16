@@ -25,7 +25,6 @@ struct sound_info_t {
 class c_engine_sound
 {
 public:
-	// returns servers active sounds to vector list
 	void get_active_sounds( c_utl_vector< sound_info_t >& sound_list )
 	{
 		g_virtual.call< void*, c_utl_vector< sound_info_t >& >( this, 19, sound_list );

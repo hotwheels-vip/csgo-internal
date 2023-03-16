@@ -45,6 +45,7 @@
     <ClCompile Include="globals\math\math.cpp" />
     <ClCompile Include="hacks\aimbot\aimbot.cpp" />
     <ClCompile Include="hacks\animations\animations.cpp" />
+    <ClCompile Include="hacks\auto_wall\auto_wall.cpp" />
     <ClCompile Include="hacks\avatar_cache\avatar_cache.cpp" />
     <ClCompile Include="hacks\entity_cache\entity_cache.cpp" />
     <ClCompile Include="hacks\indicators\indicators.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="game\sdk\classes\c_move_helper.h" />
     <ClInclude Include="game\sdk\classes\c_panel.h" />
     <ClInclude Include="game\sdk\classes\c_physics_collisons.h" />
+    <ClInclude Include="game\sdk\classes\c_physics_surface_props.h" />
     <ClInclude Include="game\sdk\classes\c_prediction.h" />
     <ClInclude Include="game\sdk\classes\c_csgo_hud_radar.h" />
     <ClInclude Include="game\sdk\classes\c_studio_render.h" />
@@ -299,6 +301,7 @@
     <ClInclude Include="globals\math\math.h" />
     <ClInclude Include="hacks\aimbot\aimbot.h" />
     <ClInclude Include="hacks\animations\animations.h" />
+    <ClInclude Include="hacks\auto_wall\auto_wall.h" />
     <ClInclude Include="hacks\avatar_cache\avatar_cache.h" />
     <ClInclude Include="hacks\debug\debug.h" />
     <ClInclude Include="hacks\entity_cache\entity_cache.h" />
