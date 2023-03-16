@@ -54,13 +54,17 @@ void n_aimbot::impl_t::on_create_move_post( )
 		if ( !g_ctx.m_local->can_see_player( entity ) )
 			return;
 	}
-	c_angle angles_to_head{ };
 
-	// if valid record, recalculate to matrix hitbox pos
-	if ( g_ctx.m_record ) {
-		angles_to_head = g_math.calculate_angle( eye_position, entity->get_hitbox_position( hitbox_head, g_ctx.m_record->m_matrix ) );
-	} else
-		angles_to_head = g_math.calculate_angle( eye_position, entity->get_hitbox_position( hitbox_head ) );
+	const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( g_ctx.m_local->get_active_weapon_handle() );
+	if ( !weapon )
+		return;
+
+	if ( !( g_ctx.m_local->can_shoot( weapon ) ) )
+		return;
+
+	c_angle angles_to_head = g_ctx.m_record
+	                             ? g_math.calculate_angle( eye_position, entity->get_hitbox_position( hitbox_head, g_ctx.m_record->m_matrix ) )
+	                             : g_math.calculate_angle( eye_position, entity->get_hitbox_position( hitbox_head ) );
 
 	auto recoil_angle = g_ctx.m_local->get_punch( ) * ( g_convars[ HASH_BT( "weapon_recoil_scale" ) ]->get_float( ) * -1.f );
 
@@ -68,7 +72,7 @@ void n_aimbot::impl_t::on_create_move_post( )
 
 	angles_to_head = angles_to_head.normalize( );
 
-	g_interfaces.m_engine_client->set_view_angles( angles_to_head );
-
 	g_ctx.m_cmd->m_view_point = angles_to_head;
+
+	g_interfaces.m_engine_client->set_view_angles( g_ctx.m_cmd->m_view_point );
 }

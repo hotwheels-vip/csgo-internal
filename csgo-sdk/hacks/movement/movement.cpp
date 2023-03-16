@@ -206,7 +206,7 @@ void n_movement::impl_t::pixel_surf_fix( )
 void n_movement::impl_t::edge_bug( )
 {
 	if ( !( GET_VARIABLE( g_variables.m_edge_bug, bool ) && g_input.check_input( &GET_VARIABLE( g_variables.m_edge_bug_key, key_bind_t ) ) ) ||
-	     g_movement.m_pixelsurf_data.m_in_pixel_surf ) {
+	     g_movement.m_pixelsurf_data.m_in_pixel_surf  ) {
 		m_edgebug_data.reset( );
 		return;
 	}
@@ -263,7 +263,7 @@ void n_movement::impl_t::edge_bug( )
 			g_prediction.end( g_ctx.m_local );
 
 			if ( g_prediction.backup_data.m_flags & e_flags::fl_onground || round( g_prediction.backup_data.m_velocity.m_z ) >= 0 ||
-			     g_ctx.m_local->get_flags( ) & fl_onground ) {
+			     g_ctx.m_local->get_flags( ) & fl_onground || g_ctx.m_local->get_move_type( ) == e_move_types::move_type_ladder ) {
 				m_edgebug_data.m_will_edgebug = false;
 				break;
 			}
@@ -272,7 +272,7 @@ void n_movement::impl_t::edge_bug( )
 				this->detect_edgebug( simulated_cmd );
 
 			if ( m_edgebug_data.m_will_edgebug ) {
-				m_edgebug_data.m_saved_mousedx = abs( simulated_cmd->m_mouse_delta_x );
+				m_edgebug_data.m_saved_mousedx = std::abs( simulated_cmd->m_mouse_delta_x );
 				m_edgebug_data.m_ticks_to_stop = i + 1;
 				m_edgebug_data.m_last_tick     = g_interfaces.m_global_vars_base->m_tick_count;
 

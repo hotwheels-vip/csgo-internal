@@ -104,7 +104,7 @@ void c_base_entity::post_think( )
 }
 
 // any player, including teammates
-const bool c_base_entity::is_valid_player( )
+bool c_base_entity::is_valid_player( )
 {
 	if ( !this || !g_ctx.m_local )
 		return false;
@@ -112,12 +112,37 @@ const bool c_base_entity::is_valid_player( )
 	return this->is_alive( ) && !this->is_dormant( ) && this->is_player( ) && this != g_ctx.m_local;
 }
 
-const bool c_base_entity::is_valid_enemy( )
+bool c_base_entity::is_valid_enemy( )
 {
 	if ( !this || !g_ctx.m_local )
 		return false;
 
 	return this->is_alive( ) && !this->is_dormant( ) && this->is_player( ) && this != g_ctx.m_local && this->is_enemy( g_ctx.m_local );
+}
+
+bool c_base_entity::can_shoot( c_base_entity* weapon )
+{
+	const float server_time = g_interfaces.m_global_vars_base->m_interval_per_tick * static_cast< float >( this->get_tick_base( ) );
+
+	if ( weapon->get_ammo( ) <= 0 )
+		return false;
+
+	if ( this->get_next_attack( ) > server_time )
+		return false;
+
+	const short item_definition_index = weapon->get_item_definition_index( );
+	if ( ( item_definition_index == e_item_definition_index::weapon_famas || item_definition_index == e_item_definition_index::weapon_glock ) &&
+	     weapon->is_burst_mode( ) &&
+	     weapon->get_burst_shots_remaining( ) > 0 )
+		return true;
+
+	if ( weapon->get_next_primary_attack( ) > server_time )
+		return false;
+
+	if ( item_definition_index == e_item_definition_index::weapon_revolver && weapon->get_fire_ready_time( ) > server_time )
+		return false;
+
+	return true;
 }
 
 void c_base_entity::restore_data( const char* context, int slot, int type )
@@ -142,35 +167,6 @@ bool c_base_entity::physics_run_think( int think_method )
 		reinterpret_cast< bool( __thiscall* )( void*, int ) >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87" ) );
 
 	return physics_run_think_fn( this, think_method );
-}
-
-bool c_base_entity::can_shoot( )
-{
-	const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( this->get_active_weapon_handle( ) );
-	if ( !weapon )
-		return false;
-
-	const float server_time = static_cast< float >( this->get_tick_base( ) ) * g_interfaces.m_global_vars_base->m_interval_per_tick;
-
-	if ( weapon->get_ammo( ) <= 0 )
-		return false;
-
-	if ( this->get_next_attack( ) > server_time )
-		return false;
-
-	const short definition_index = weapon->get_item_definition_index( );
-
-	if ( ( definition_index == e_item_definition_index::weapon_famas || definition_index == e_item_definition_index::weapon_glock ) &&
-	     weapon->is_burst_mode( ) && weapon->get_burst_shots_remaining( ) > 0 )
-		return true;
-
-	if ( weapon->get_next_primary_attack( ) > server_time )
-		return false;
-
-	if ( definition_index == e_item_definition_index::weapon_revolver && weapon->get_fire_ready_time( ) > server_time )
-		return false;
-
-	return true;
 }
 
 bool c_base_entity::is_enemy( c_base_entity* entity )
@@ -306,7 +302,8 @@ c_vector c_base_entity::get_hitbox_position( int hitbox, matrix3x4_t* matrix, fl
 		return { };
 
 	auto hitbox_set = hdr->get_hitbox_set( get_hitbox_set( ) );
-	[[unlikely]] if ( !hitbox_set ) return { };
+	[[unlikely]] if ( !hitbox_set )
+		return { };
 
 	auto new_hitbox = hitbox_set->get_hitbox( hitbox );
 	if ( !new_hitbox )

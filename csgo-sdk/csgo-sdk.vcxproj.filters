@@ -81,6 +81,7 @@
     <ClCompile Include="globals\fonts\fonts.cpp" />
     <ClCompile Include="hooks\functions\is_following_entity.cpp" />
     <ClCompile Include="hooks\functions\draw_view_models.cpp" />
+    <ClCompile Include="hacks\visuals\screen\screen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -310,6 +311,7 @@
     <ClInclude Include="globals\config\structs\font_setting_t.h" />
     <ClInclude Include="globals\fonts\fonts.h" />
     <ClInclude Include="game\sdk\classes\c_view_setup.h" />
+    <ClInclude Include="hacks\visuals\screen\screen.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

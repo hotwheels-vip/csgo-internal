@@ -55,6 +55,7 @@
     <ClCompile Include="hacks\visuals\edicts\edicts.cpp" />
     <ClCompile Include="hacks\visuals\players\dormancy\dormancy.cpp" />
     <ClCompile Include="hacks\visuals\players\players.cpp" />
+    <ClCompile Include="hacks\visuals\screen\screen.cpp" />
     <ClCompile Include="hooks\detour_hook\c_detour_hook.cpp" />
     <ClCompile Include="hooks\functions\alloc_key_values_memory.cpp" />
     <ClCompile Include="hooks\functions\create_move_proxy.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="hacks\visuals\players\chams\chams.h" />
     <ClInclude Include="hacks\visuals\players\dormancy\dormancy.h" />
     <ClInclude Include="hacks\visuals\players\players.h" />
+    <ClInclude Include="hacks\visuals\screen\screen.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />
     <ClInclude Include="hooks\hooks.h" />
     <ClInclude Include="globals\includes\includes.h" />

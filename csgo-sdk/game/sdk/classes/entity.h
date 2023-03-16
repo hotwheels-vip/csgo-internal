@@ -339,10 +339,6 @@ public:
 		return ( this->get_life_state( ) == 0 /* LIFE_ALIVE */ );
 	}
 
-	const bool is_valid_enemy( );
-
-	const bool is_valid_player( );
-
 	const int is_max_health( )
 	{
 		return g_virtual.call< int >( this, 123 );
@@ -412,9 +408,11 @@ public:
 	void on_post_restore_data( );
 
 	bool physics_run_think( int think_method );
-	bool can_shoot( );
+	bool can_shoot( c_base_entity* weapon );
 	bool is_enemy( c_base_entity* entity );
 	bool get_bounding_box( bounding_box_t* box );
+	bool is_valid_enemy( );
+	bool is_valid_player( );
 
 	int get_bone_by_hash( const unsigned int hash ) const;
 	int get_max_health( );
