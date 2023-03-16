@@ -141,6 +141,8 @@ namespace n_variables
 		ADD_VARIABLE( c_color, m_custom_molotov_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_custom_blood, false );
 		ADD_VARIABLE( c_color, m_custom_blood_color, c_color( 255, 255, 255, 255 ) );
+		ADD_VARIABLE( bool, m_custom_precipitation, false );
+		ADD_VARIABLE( c_color, m_custom_precipitation_color, c_color( 255, 255, 255, 255 ) );
 		ADD_VARIABLE( bool, m_disable_post_processing, false );
 		ADD_VARIABLE( bool, m_remove_panorama_blur, false );
 

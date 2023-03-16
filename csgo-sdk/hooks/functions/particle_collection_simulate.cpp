@@ -69,14 +69,13 @@ void __fastcall n_detoured_functions::particle_collection_simulate( void* ecx, v
 
 	const auto particle_collection = reinterpret_cast< c_particle_collection* >( ecx );
 
-	c_particle_collection* root = particle_collection;
+	c_particle_collection* root = reinterpret_cast< c_particle_collection* >( ecx );
 	while ( root->m_parent )
 		root = root->m_parent;
 
 	const auto hash = HASH_RT( std::string( root->m_def.m_obj->m_name.m_buffer ).c_str( ) );
 
-	/* looks so ugly :skull: */
-	if ( GET_VARIABLE( g_variables.m_precipitation, bool ) &&
+	if ( GET_VARIABLE( g_variables.m_precipitation, bool ) && GET_VARIABLE( g_variables.m_custom_precipitation, bool ) &&
 	     ( hash == HASH_BT( "rain" ) || hash == HASH_BT( "rain_storm" ) || hash == HASH_BT( "snow" ) || hash == HASH_BT( "ash" ) ) )
 		for ( auto iterator : std::views::iota( 0, particle_collection->m_active_particles ) )
 			particle_collection->m_particle_attributes.modulate_color( GET_VARIABLE( g_variables.m_precipitation_color, c_color ), iterator );

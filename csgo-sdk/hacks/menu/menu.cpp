@@ -432,11 +432,11 @@ void n_menu::impl_t::on_end_scene( )
 			ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) - 20.f );
 
 			static int other_subtab_number = 0;
-			if ( ImGui::BeginChild( ( "other" ), { "effects", "removals" }, &other_subtab_number,
+			if ( ImGui::BeginChild( ( "other" ), { "world", "removals", "screen" }, &other_subtab_number,
 			                        ImVec2( ImGui::GetContentRegionAvail( ).x, ( ImGui::GetContentRegionAvail( ).y ) - background_height - 20.f ),
 			                        true, 0, true ) ) {
 				switch ( other_subtab_number ) {
-				case 0: {
+				case 0: /* world */ {
 					ImGui::Checkbox( "precipitation", &GET_VARIABLE( g_variables.m_precipitation, bool ) );
 					if ( GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
 						ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
@@ -468,14 +468,22 @@ void n_menu::impl_t::on_end_scene( )
 						ImGui::ColorEdit4( "##custom blood color picker", &GET_VARIABLE( g_variables.m_custom_blood_color, c_color ),
 						                   color_picker_alpha_flags );
 
+					ImGui::Checkbox( "custom precipitation color", &GET_VARIABLE( g_variables.m_custom_precipitation, bool ) );
+					if ( GET_VARIABLE( g_variables.m_custom_precipitation, bool ) )
+						ImGui::ColorEdit4( "##custom precipitation color picker", &GET_VARIABLE( g_variables.m_custom_precipitation_color, c_color ),
+						                   color_picker_alpha_flags );
+
 					break;
 				}
-				case 1: {
+				case 1: /* removals */ {
 					ImGui::Checkbox( "disable post processing", &GET_VARIABLE( g_variables.m_disable_post_processing, bool ) );
 					ImGui::Checkbox( "remove panorama blur", &GET_VARIABLE( g_variables.m_remove_panorama_blur, bool ) );
 #ifdef _DEBUG
 					ImGui::Checkbox( "disable interp", &GET_VARIABLE( g_variables.m_disable_interp, bool ) );
 #endif
+					break;
+				}
+				case 2: /* screen */ {
 					break;
 				}
 				}
