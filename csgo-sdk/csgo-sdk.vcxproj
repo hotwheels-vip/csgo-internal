@@ -243,7 +243,6 @@
     <ClInclude Include="game\sdk\classes\c_material_system.h" />
     <ClInclude Include="game\sdk\classes\c_material_var.h" />
     <ClInclude Include="game\sdk\classes\c_net_channel_info.h" />
-    <ClInclude Include="game\sdk\classes\c_texture.h" />
     <ClInclude Include="game\sdk\classes\c_vector.h" />
     <ClInclude Include="game\sdk\classes\c_weapon_data.h" />
     <ClInclude Include="game\sdk\classes\c_weapon_system.h" />
@@ -284,7 +283,6 @@
     <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
     <ClInclude Include="game\sdk\structs\renderable_info_t.h" />
     <ClInclude Include="game\sdk\structs\studiohdr_t.h" />
-    <ClInclude Include="game\sdk\structs\texture_t.h" />
     <ClInclude Include="game\sdk\structs\type_description_t.h" />
     <ClInclude Include="game\sdk\structs\var_mapping.h" />
     <ClInclude Include="game\sdk\structs\vcollide_t.h" />

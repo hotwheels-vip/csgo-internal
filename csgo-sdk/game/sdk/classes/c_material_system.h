@@ -53,7 +53,6 @@
 class c_material;
 class c_material_var;
 class c_key_values;
-class c_texture;
 
 struct material_render_target_depth_t;
 struct rect_t;
@@ -166,7 +165,7 @@ public:
 
 	void set_frame_buffer_copy_texture( c_texture* texture, int texture_index )
 	{
-		return g_virtual.call< void >( this, 20, texture, texture_index )
+		return g_virtual.call< void >( this, 20, texture, texture_index );
 	}
 };
 
