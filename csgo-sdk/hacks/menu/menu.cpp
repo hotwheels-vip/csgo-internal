@@ -24,7 +24,7 @@ void save_popup( const char* str_id, const ImVec2& window_size, const std::funct
 
 	const auto hashed_str_id = ImHashStr( str_id );
 	const auto text_size     = g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->CalcTextSizeA(
-			g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
+        g_render.m_fonts[ e_font_names::font_name_verdana_bd_11 ]->FontSize, FLT_MAX, 0.f, str_id );
 
 	const ImColor accent_color = ImGui::GetColorU32( ImGuiCol_::ImGuiCol_Accent );
 
@@ -438,12 +438,8 @@ void n_menu::impl_t::on_end_scene( )
 				switch ( other_subtab_number ) {
 				case 0: /* world */ {
 					ImGui::Checkbox( "precipitation", &GET_VARIABLE( g_variables.m_precipitation, bool ) );
-					if ( GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
-						ImGui::ColorEdit4( "##precipitation color", &GET_VARIABLE( g_variables.m_precipitation_color, c_color ),
-						                   color_picker_alpha_flags );
-
+					if ( GET_VARIABLE( g_variables.m_precipitation, bool ) )
 						ImGui::Combo( "type##precipitation", &GET_VARIABLE( g_variables.m_precipitation_type, int ), "rain\0ash\0rain storm\0snow" );
-					}
 
 					ImGui::Checkbox( "fog", &GET_VARIABLE( g_variables.m_fog, bool ) );
 					if ( GET_VARIABLE( g_variables.m_fog, bool ) ) {
