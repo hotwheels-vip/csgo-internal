@@ -60,6 +60,7 @@
     <ClCompile Include="hooks\functions\create_move_proxy.cpp" />
     <ClCompile Include="hooks\functions\draw_model_execute.cpp" />
     <ClCompile Include="hooks\functions\draw_set_color.cpp" />
+    <ClCompile Include="hooks\functions\draw_view_models.cpp" />
     <ClCompile Include="hooks\functions\emit_sound.cpp" />
     <ClCompile Include="hooks\functions\end_scene.cpp" />
     <ClCompile Include="hooks\functions\find_material.cpp" />
@@ -310,7 +311,6 @@
     <ClInclude Include="hacks\visuals\players\dormancy\dormancy.h" />
     <ClInclude Include="hacks\visuals\players\players.h" />
     <ClInclude Include="hooks\detour_hook\c_detour_hook.h" />
-    <ClInclude Include="hooks\functions\draw_view_models.cpp" />
     <ClInclude Include="hooks\hooks.h" />
     <ClInclude Include="globals\includes\includes.h" />
     <ClInclude Include="globals\interfaces\interfaces.h" />
