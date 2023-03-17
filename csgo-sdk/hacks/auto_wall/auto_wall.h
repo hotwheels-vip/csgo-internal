@@ -17,10 +17,10 @@ namespace n_auto_wall
 {
 	struct impl_t {
 	public:
-		static float get_damage( c_base_entity* weapon,const c_vector& point, fire_bullet_data_t* data_out = nullptr );
+		static float get_damage( c_base_entity* local, const c_vector& point, fire_bullet_data_t* data_out = nullptr );
 		static void scale_damage( const int hit_group, c_base_entity* entity, const float weapon_armor_ratio, const float weapon_head_shot_multiplier,
 		                          float& damage );
-		static bool simulate_fire_bullet( c_base_entity* weapon, fire_bullet_data_t& data );
+		static bool simulate_fire_bullet( c_base_entity* local, fire_bullet_data_t& data );
 
 	private:
 		static void clip_trace_to_players( const c_vector& abs_start, const c_vector& abs_end, const unsigned int mask, c_trace_filter* filter,

@@ -261,7 +261,10 @@ public:
 	NETVAR_VARIABLE_OFFSET( int, is_used_new_animation_state, "CCSPlayer->m_flLastExoJumpTime", 0x8 );
 	NETVAR_VARIABLE_OFFSET( c_animation_state*, get_animation_state, "CCSPlayer->m_bIsScoped", -0x14 );
 	NETVAR_VARIABLE( int, get_survival_team, "CCSPlayer->m_nSurvivalTeam" );
+	NETVAR_VARIABLE( int, get_armor, "CCSPlayer->m_ArmorValue" );
 	NETVAR_VARIABLE( bool, is_scoped, "CCSPlayer->m_bIsScoped" );
+	NETVAR_VARIABLE( bool, has_heavy_armor, "CCSPlayer->m_bHasHeavyArmor" );
+	NETVAR_VARIABLE( bool, has_helmet, "CCSPlayer->m_bHasHelmet" );
 
 	/* DT_WeaponCSBase */
 	NETVAR_VARIABLE( bool, is_burst_mode, "CWeaponCSBase->m_bBurstMode" );
@@ -413,6 +416,7 @@ public:
 	bool get_bounding_box( bounding_box_t* box );
 	bool is_valid_enemy( );
 	bool is_valid_player( );
+	bool is_armored( const int hit_group );
 
 	int get_bone_by_hash( const unsigned int hash ) const;
 	int get_max_health( );

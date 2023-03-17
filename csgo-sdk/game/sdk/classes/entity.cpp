@@ -103,13 +103,43 @@ void c_base_entity::post_think( )
 	g_interfaces.m_model_cache->end_lock( );
 }
 
-// any player, including teammates
 bool c_base_entity::is_valid_player( )
 {
 	if ( !this || !g_ctx.m_local )
 		return false;
 
 	return this->is_alive( ) && !this->is_dormant( ) && this->is_player( ) && this != g_ctx.m_local;
+}
+
+bool c_base_entity::is_armored( const int hit_group )
+{
+	bool ret = false;
+
+	if ( this->get_armor( ) > 0 ) {
+		switch ( hit_group ) {
+		case e_hitgroup::hitgroup_generic:
+		case e_hitgroup::hitgroup_chest:
+		case e_hitgroup::hitgroup_stomach:
+		case e_hitgroup::hitgroup_leftarm:
+		case e_hitgroup::hitgroup_rightarm:
+		case e_hitgroup::hitgroup_neck:
+			ret = true;
+			break;
+		case e_hitgroup::hitgroup_head:
+			if ( this->has_helmet( ) )
+				ret = true;
+			[[fallthrough]];
+		case e_hitgroup::hitgroup_leftleg:
+		case e_hitgroup::hitgroup_rightleg:
+			if ( this->has_heavy_armor( ) )
+				ret = true;
+			break;
+		default:
+			break;
+		}
+	}
+
+	return ret;
 }
 
 bool c_base_entity::is_valid_enemy( )
@@ -132,8 +162,7 @@ bool c_base_entity::can_shoot( c_base_entity* weapon )
 
 	const short item_definition_index = weapon->get_item_definition_index( );
 	if ( ( item_definition_index == e_item_definition_index::weapon_famas || item_definition_index == e_item_definition_index::weapon_glock ) &&
-	     weapon->is_burst_mode( ) &&
-	     weapon->get_burst_shots_remaining( ) > 0 )
+	     weapon->is_burst_mode( ) && weapon->get_burst_shots_remaining( ) > 0 )
 		return true;
 
 	if ( weapon->get_next_primary_attack( ) > server_time )

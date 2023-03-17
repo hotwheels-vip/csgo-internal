@@ -70,6 +70,7 @@
 #include "../enums/e_client_frame_stage.h"
 #include "../enums/e_command_buttons.h"
 #include "../enums/e_field_types.h"
+#include "../enums/e_team_id.h"
 #include "../enums/e_flags.h"
 #include "../enums/e_glow_style.h"
 #include "../enums/e_hitgroup.h"

@@ -328,11 +328,10 @@ void n_players::impl_t::players( )
 												   c_vector_2d( box.m_left + ( box.m_width - avatar_size ) * 0.5f,
 			                                                    box.m_top - 5 - avatar_size - padding[ e_padding_direction::padding_direction_top ] ),
 												   c_vector_2d( avatar_size, avatar_size ), ImColor( 1.f, 1.f, 1.f, this->m_fading_alpha[ index ] ),
-												   player_info.m_fake_player
-													   ? team == 2 /* terrorist */           ? g_render.m_terrorist_avatar
-			                                             : team == 3 /* counter terrorist */ ? g_render.m_counter_terrorist_avatar
-			                                                                                 : nullptr
-													   : g_avatar_cache[ index ],
+												   player_info.m_fake_player ? team == e_team_id::team_tt   ? g_render.m_terrorist_avatar
+			                                                                   : team == e_team_id::team_ct ? g_render.m_counter_terrorist_avatar
+			                                                                                                : nullptr
+																			 : g_avatar_cache[ index ],
 												   0.f, ImDrawFlags_::ImDrawFlags_None ) );
 
 			padding[ e_padding_direction::padding_direction_top ] -= avatar_size;
