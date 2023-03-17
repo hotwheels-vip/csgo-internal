@@ -32,7 +32,8 @@ namespace n_auto_wall
 		static bool trace_to_exit( trace_t& enter_trace, trace_t& exit_trace, const c_vector& position, const c_vector& direction,
 		                           const c_base_entity* clip_player );
 
-		static bool handle_bullet_penetration( const c_weapon_data* weapon_data, const surfacedata_t* enter_surface_data, fire_bullet_data_t& data );
+		static bool handle_bullet_penetration( c_base_entity* local, const c_weapon_data* weapon_data, const surfacedata_t* enter_surface_data,
+		                                       fire_bullet_data_t& data );
 	};
 } // namespace n_auto_wall
 

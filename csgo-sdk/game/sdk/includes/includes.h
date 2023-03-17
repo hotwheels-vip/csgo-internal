@@ -85,5 +85,6 @@
 #include "../enums/e_send_prop_type.h"
 #include "../enums/e_team_id.h"
 #include "../enums/e_weapon_type.h"
+#include "../enums/e_valve_decals.h"
 
 #include <d3d9.h>

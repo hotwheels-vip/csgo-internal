@@ -149,8 +149,8 @@ bool n_auto_wall::impl_t::trace_to_exit( trace_t& enter_trace, trace_t& exit_tra
 {
 	static auto sv_clip_penetration_traces_to_players = g_convars[ HASH_BT( "sv_clip_penetration_traces_to_players" ) ];
 
-	float distance                                    = 0.0f;
-	int start_contents                                = 0;
+	float distance     = 0.0f;
+	int start_contents = 0;
 
 	while ( distance <= 90.0f ) {
 		distance += 4.0f;
@@ -208,7 +208,7 @@ bool n_auto_wall::impl_t::trace_to_exit( trace_t& enter_trace, trace_t& exit_tra
 					return false;
 
 				if ( enter_trace.m_hit_entity->get_index( ) != 0 && enter_trace.m_hit_entity->is_breakable( ) ) {
-					exit_trace     = enter_trace;
+					exit_trace       = enter_trace;
 					exit_trace.m_end = start + direction;
 					return true;
 				}
@@ -219,4 +219,83 @@ bool n_auto_wall::impl_t::trace_to_exit( trace_t& enter_trace, trace_t& exit_tra
 	}
 
 	return false;
+}
+
+bool n_auto_wall::impl_t::handle_bullet_penetration( c_base_entity* local, const c_weapon_data* weapon_data, const surfacedata_t* enter_surface_data,
+                                                     fire_bullet_data_t& data )
+{
+	static auto ff_damage_reduction_bullets  = g_convars[ HASH_BT( "ff_damage_reduction_bullets" ) ];
+	static auto ff_damage_bullet_penetration = g_convars[ HASH_BT( "ff_damage_bullet_penetration" ) ];
+
+	const float reducation_damage = ff_damage_reduction_bullets->get_float( );
+	const float penetrate_damage = ff_damage_bullet_penetration->get_float( );
+
+	const unsigned short enter_material = enter_surface_data->m_game.m_material;
+
+	if ( data.m_penetrate_count == 0 && enter_material != e_valve_decals::char_tex_grate && enter_material != e_valve_decals::char_tex_glass &&
+	     !( data.m_enter_trace.surface.m_flags & e_surf_type::surf_nodraw ) )
+		return false;
+
+	if ( weapon_data->m_penetration <= 0.0f || data.m_penetrate_count <= 0 )
+		return false;
+
+	trace_t exit_trace = { };
+	if ( !trace_to_exit( data.m_enter_trace, exit_trace, data.m_enter_trace.m_end, data.m_direction, local ) &&
+	     !( g_interfaces.m_engine_trace->get_point_contents( data.m_enter_trace.m_end, e_mask::mask_shot_hull, nullptr ) & e_mask::mask_shot_hull ) )
+		return false;
+
+	const surfacedata_t* exit_surface_data = g_interfaces.m_physics_surface_props->get_surface_data( exit_trace.surface.m_surface_props );
+	const unsigned short exit_material  = exit_surface_data->m_game.m_material;
+
+	const float enter_penetration_modifier = enter_surface_data->m_game.m_penetration_modifier;
+	const float exit_penetration_modifier  = exit_surface_data->m_game.m_penetration_modifier;
+
+	float damage_lost_modifier  = 0.16f;
+	float penetration_modifier = 0.0f;
+
+	if ( enter_material == e_valve_decals::char_tex_grate || enter_material == e_valve_decals::char_tex_glass ) {
+		damage_lost_modifier  = 0.05f;
+		penetration_modifier = 3.0f;
+	} else if ( ( ( data.m_enter_trace.m_contents >> 3 ) & e_contents::contents_solid ) || ( ( data.m_enter_trace.surface.m_flags >> 7 ) & e_surf_type::surf_light ) ) {
+		damage_lost_modifier  = 0.16f;
+		penetration_modifier = 1.0f;
+	} else if ( enter_material == e_valve_decals::char_tex_flesh && reducation_damage == 0.0f && data.m_enter_trace.m_hit_entity != nullptr &&
+	            data.m_enter_trace.m_hit_entity->is_player( ) && ( local->get_team( ) == data.m_enter_trace.m_hit_entity->get_team( ) ) ) {
+		if ( penetrate_damage == 0.0f )
+			return false;
+
+		damage_lost_modifier  = penetrate_damage;
+		penetration_modifier = penetrate_damage;
+	} else {
+		damage_lost_modifier  = 0.16f;
+		penetration_modifier = ( enter_penetration_modifier + exit_penetration_modifier ) * 0.5f;
+	}
+
+	if ( enter_material == exit_material ) {
+		if ( exit_material == e_valve_decals::char_tex_cardboard || exit_material == e_valve_decals::char_tex_wood )
+			penetration_modifier = 3.0f;
+		else if ( exit_material == e_valve_decals::char_tex_plastic )
+			penetration_modifier = 2.0f;
+	}
+
+	const float trace_distance = ( exit_trace.m_end - data.m_enter_trace.m_end ).length_squared( );
+
+	const float modifier = ( penetration_modifier > 0.0f ? 1.0f / penetration_modifier : 0.0f );
+
+	const float lost_damage = ( data.m_current_damage * damage_lost_modifier +
+	                             ( weapon_data->m_penetration > 0.0f ? 3.75f / weapon_data->m_penetration : 0.0f ) * ( modifier * 3.0f ) ) +
+	                           ( ( modifier * trace_distance ) / 24.0f );
+
+	if ( lost_damage > data.m_current_damage )
+		return false;
+
+	if ( lost_damage > 0.0f )
+		data.m_current_damage -= lost_damage;
+
+	if ( data.m_current_damage < 1.0f )
+		return false;
+
+	data.m_position = exit_trace.m_end;
+	--data.m_penetrate_count;
+	return true;
 }
