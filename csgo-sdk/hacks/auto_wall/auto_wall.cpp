@@ -12,7 +12,7 @@ float n_auto_wall::impl_t::get_damage( c_base_entity* local, const c_vector& poi
 	data.m_direction        = ( point - position ).normalized( );
 
 	if ( const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( local->get_active_weapon_handle( ) );
-	     !weapon || !simulate_fire_bullet( weapon, data ) )
+	     !weapon || !simulate_fire_bullet( local,weapon, data ) )
 		return -1.0f;
 
 	if ( data_out )
@@ -298,4 +298,53 @@ bool n_auto_wall::impl_t::handle_bullet_penetration( c_base_entity* local, const
 	data.m_position = exit_trace.m_end;
 	--data.m_penetrate_count;
 	return true;
+}
+
+bool n_auto_wall::impl_t::simulate_fire_bullet( c_base_entity* local, c_base_entity* weapon, fire_bullet_data_t& data )
+{
+	const auto weapon_data = g_interfaces.m_weapon_system->get_weapon_data( weapon->get_item_definition_index( ) );
+	if ( !weapon_data )
+		return false;
+
+	float max_range = weapon_data->m_range;
+
+	data.m_penetrate_count = 4;
+	data.m_current_damage = static_cast< float >( weapon_data->m_damage );
+
+	float trace_length = 0.0f;
+	c_trace_filter filter( local );
+
+	while ( data.m_penetrate_count > 0 && data.m_current_damage >= 1.0f ) {
+		max_range -= trace_length;
+
+		const c_vector end = data.m_position + data.m_direction * max_range;
+
+		ray_t ray( data.m_position, end );
+		g_interfaces.m_engine_trace->trace_ray( ray, e_mask::mask_shot_hull | e_contents::contents_hitbox, &filter, &data.m_enter_trace );
+
+		clip_trace_to_players( data.m_position, end + data.m_direction * 40.0f, e_mask::mask_shot_hull | e_contents::contents_hitbox, &filter, &data.m_enter_trace );
+
+		const surfacedata_t* enter_surface_data =g_interfaces.m_physics_surface_props->get_surface_data( data.m_enter_trace.surface.m_surface_props );
+		const float enter_penetration_modifier = enter_surface_data->m_game.m_penetration_modifier;
+
+		if ( data.m_enter_trace.m_fraction == 1.0f )
+			break;
+
+		trace_length += data.m_enter_trace.m_fraction * max_range;
+		data.m_current_damage *= std::powf( weapon_data->m_range_modifier, trace_length / max_weapon_damage );
+
+		if ( trace_length > 3000.f || enter_penetration_modifier < 0.1f )
+			break;
+
+		if ( data.m_enter_trace.m_hit_group != hitgroup_generic && data.m_enter_trace.m_hit_group != hitgroup_gear &&
+		     local->is_enemy( data.m_enter_trace.m_hit_entity ) ) {
+			scale_damage( data.m_enter_trace.m_hit_group, data.m_enter_trace.m_hit_entity, weapon_data->m_armor_ratio, weapon_data->m_head_shot_multiplier, data.m_current_damage );
+			return true;
+		}
+
+		if ( !handle_bullet_penetration( local, weapon_data, enter_surface_data, data ) )
+			break;
+	}
+
+	return false;
 }

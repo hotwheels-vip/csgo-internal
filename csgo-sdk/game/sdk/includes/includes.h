@@ -88,3 +88,5 @@
 #include "../enums/e_valve_decals.h"
 
 #include <d3d9.h>
+
+constexpr float max_weapon_damage = 500.f;
