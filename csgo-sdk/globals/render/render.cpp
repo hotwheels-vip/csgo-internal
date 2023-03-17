@@ -63,6 +63,35 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 
 		/* setup fonts */
 		[ & ]( ) {
+			constexpr auto add_font_flags = []( std::vector< bool > font_flags, ImFontConfig& font_config ) {
+				if ( font_flags.size( ) < e_free_type_font_flags::font_flag_max )
+					return;
+
+				if ( font_flags[ e_free_type_font_flags::font_flag_nohinting ] )
+					font_config.FontBuilderFlags += 1;
+
+				if ( font_flags[ e_free_type_font_flags::font_flag_noautohint ] )
+					font_config.FontBuilderFlags += 2;
+
+				if ( font_flags[ e_free_type_font_flags::font_flag_forceautohint ] )
+					font_config.FontBuilderFlags += 4;
+
+				if ( font_flags[ e_free_type_font_flags::font_flag_lighthinting ] )
+					font_config.FontBuilderFlags += 8;
+
+				if ( font_flags[ e_free_type_font_flags::font_flag_monohinting ] )
+					font_config.FontBuilderFlags += 16;
+
+				if ( font_flags[ e_free_type_font_flags::font_flag_bold ] )
+					font_config.FontBuilderFlags += 32;
+
+				if ( font_flags[ e_free_type_font_flags::font_flag_oblique ] )
+					font_config.FontBuilderFlags += 64;
+
+				if ( font_flags[ e_free_type_font_flags::font_flag_monochrome ] )
+					font_config.FontBuilderFlags += 128;
+			};
+
 			ImFontConfig verdana_font_config = { };
 			verdana_font_config.FontBuilderFlags =
 				ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
@@ -106,14 +135,16 @@ void n_render::impl_t::on_end_scene( const std::function< void( ) >& function, I
 
 		ImGui_ImplDX9_DestroyFontsTexture( );
 
-					ImFontConfig icon_font_config     = { };
+		ImFontConfig icon_font_config     = { };
 		icon_font_config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_LightHinting |
 		                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_Monochrome |
 		                                    ImGuiFreeTypeBuilderFlags::ImGuiFreeTypeBuilderFlags_MonoHinting;
 
-		constexpr ImWchar weapon_icon_ranges[]     = { 0xe000, 0xf8ff, 0 };
-		m_fonts[ e_font_names::font_name_icon_12 ] = io.Fonts->AddFontFromMemoryCompressedTTF(
-			weapon_icons_compressed_data, weapon_icons_compressed_size, 12.f, &icon_font_config, weapon_icon_ranges ); /* we have to reinitialise the weapon icon font because we destroy the font texture, and with icons it is very weird. */
+		constexpr ImWchar weapon_icon_ranges[] = { 0xe000, 0xf8ff, 0 };
+		m_fonts[ e_font_names::font_name_icon_12 ] =
+			io.Fonts->AddFontFromMemoryCompressedTTF( weapon_icons_compressed_data, weapon_icons_compressed_size, 12.f, &icon_font_config,
+		                                              weapon_icon_ranges ); /* we have to reinitialise the weapon icon font because we destroy the
+		                                                                       font texture, and with icons it is very weird. */
 
 		const font_setting_t indicator_font_setting = GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t );
 

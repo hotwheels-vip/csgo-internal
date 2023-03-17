@@ -43,8 +43,7 @@ c_base_entity* n_aimbot::impl_t::find_closest_player( )
 
 bool n_aimbot::impl_t::can_aimbot( )
 {
-	return GET_VARIABLE( g_variables.m_aimbot_enable, bool ) && g_ctx.m_cmd->m_tick_count != 0 && g_ctx.m_cmd->m_buttons & in_attack &&
-	       g_utilities.is_weapon_valid( );
+	return GET_VARIABLE( g_variables.m_aimbot_enable, bool ) && g_ctx.m_cmd->m_tick_count != 0 && g_ctx.m_cmd->m_buttons & in_attack;
 }
 
 void n_aimbot::impl_t::on_create_move_post( )
@@ -53,7 +52,6 @@ void n_aimbot::impl_t::on_create_move_post( )
 		return;
 
 	auto entity = find_closest_player( );
-
 	if ( !entity )
 		return;
 
@@ -61,6 +59,13 @@ void n_aimbot::impl_t::on_create_move_post( )
 
 	const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( g_ctx.m_local->get_active_weapon_handle( ) );
 	if ( !weapon )
+		return;
+
+	const auto weapon_data = g_interfaces.m_weapon_system->get_weapon_data( weapon->get_item_definition_index( ) );
+	if ( !weapon_data )
+		return;
+
+	if ( !weapon_data->is_gun( ) )
 		return;
 
 	if ( !( g_ctx.m_local->can_shoot( weapon ) ) )
