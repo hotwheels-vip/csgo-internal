@@ -1,6 +1,7 @@
 #include "aimbot.h"
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
+#include "../auto_wall/auto_wall.h"
 #include "../entity_cache/entity_cache.h"
 #include "../prediction/prediction.h"
 
@@ -15,7 +16,21 @@ c_base_entity* n_aimbot::impl_t::find_closest_player( )
 		if ( !entity || !entity->is_alive( ) || entity->is_dormant( ) || !g_ctx.m_local->is_enemy( entity ) || entity == g_ctx.m_local )
 			return;
 
-		const auto angle = g_math.calculate_angle( eye_position, entity->get_hitbox_position( hitbox_head ) );
+		const auto hitbox_position = entity->get_hitbox_position( hitbox_head );
+
+		const auto angle = g_math.calculate_angle( eye_position, hitbox_position );
+
+		if ( GET_VARIABLE( g_variables.m_backtrack_enable, bool ) ) {
+			g_lagcomp.backtrack_player( entity );
+			if ( !g_ctx.m_local->can_see_player( entity ) && !g_ctx.m_local->can_see_matrix( entity, g_ctx.m_record->m_matrix ) )
+				return;
+		} else {
+			g_ctx.m_record = nullptr;
+
+			fire_bullet_data_t data = { };
+			if ( g_auto_wall.get_damage( hitbox_position, &data ) < 0.f )
+				return;
+		}
 
 		if ( float calculated_fov = g_math.calculate_fov( g_prediction.backup_data.m_view_angles, angle ); calculated_fov < closest_fov ) {
 			closest_fov    = calculated_fov;
@@ -44,18 +59,7 @@ void n_aimbot::impl_t::on_create_move_post( )
 
 	const auto eye_position = g_ctx.m_local->get_eye_position( false );
 
-	if ( GET_VARIABLE( g_variables.m_backtrack_enable, bool ) ) {
-		g_lagcomp.backtrack_player( entity );
-		if ( !g_ctx.m_local->can_see_player( entity ) && !g_ctx.m_local->can_see_matrix( entity, g_ctx.m_record->m_matrix ) )
-			return;
-	} else {
-		// sanity
-		g_ctx.m_record = nullptr;
-		if ( !g_ctx.m_local->can_see_player( entity ) )
-			return;
-	}
-
-	const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( g_ctx.m_local->get_active_weapon_handle() );
+	const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( g_ctx.m_local->get_active_weapon_handle( ) );
 	if ( !weapon )
 		return;
 

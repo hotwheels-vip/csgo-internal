@@ -3,16 +3,16 @@
 #include "../../globals/includes/includes.h"
 #include "../entity_cache/entity_cache.h"
 
-float n_auto_wall::impl_t::get_damage( c_base_entity* local, const c_vector& point, fire_bullet_data_t* data_out )
+float n_auto_wall::impl_t::get_damage( const c_vector& point, fire_bullet_data_t* data_out )
 {
-	const auto position = local->get_eye_position( );
+	const auto position = g_ctx.m_local->get_eye_position( );
 
 	fire_bullet_data_t data = { };
 	data.m_position         = position;
 	data.m_direction        = ( point - position ).normalized( );
 
-	if ( const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( local->get_active_weapon_handle( ) );
-	     !weapon || !simulate_fire_bullet( local,weapon, data ) )
+	if ( const auto weapon = g_interfaces.m_client_entity_list->get< c_base_entity >( g_ctx.m_local->get_active_weapon_handle( ) );
+	     !weapon || !simulate_fire_bullet( weapon, data ) )
 		return -1.0f;
 
 	if ( data_out )
@@ -221,14 +221,14 @@ bool n_auto_wall::impl_t::trace_to_exit( trace_t& enter_trace, trace_t& exit_tra
 	return false;
 }
 
-bool n_auto_wall::impl_t::handle_bullet_penetration( c_base_entity* local, const c_weapon_data* weapon_data, const surfacedata_t* enter_surface_data,
+bool n_auto_wall::impl_t::handle_bullet_penetration( const c_weapon_data* weapon_data, const surfacedata_t* enter_surface_data,
                                                      fire_bullet_data_t& data )
 {
 	static auto ff_damage_reduction_bullets  = g_convars[ HASH_BT( "ff_damage_reduction_bullets" ) ];
 	static auto ff_damage_bullet_penetration = g_convars[ HASH_BT( "ff_damage_bullet_penetration" ) ];
 
 	const float reducation_damage = ff_damage_reduction_bullets->get_float( );
-	const float penetrate_damage = ff_damage_bullet_penetration->get_float( );
+	const float penetrate_damage  = ff_damage_bullet_penetration->get_float( );
 
 	const unsigned short enter_material = enter_surface_data->m_game.m_material;
 
@@ -240,34 +240,35 @@ bool n_auto_wall::impl_t::handle_bullet_penetration( c_base_entity* local, const
 		return false;
 
 	trace_t exit_trace = { };
-	if ( !trace_to_exit( data.m_enter_trace, exit_trace, data.m_enter_trace.m_end, data.m_direction, local ) &&
+	if ( !trace_to_exit( data.m_enter_trace, exit_trace, data.m_enter_trace.m_end, data.m_direction, g_ctx.m_local ) &&
 	     !( g_interfaces.m_engine_trace->get_point_contents( data.m_enter_trace.m_end, e_mask::mask_shot_hull, nullptr ) & e_mask::mask_shot_hull ) )
 		return false;
 
 	const surfacedata_t* exit_surface_data = g_interfaces.m_physics_surface_props->get_surface_data( exit_trace.surface.m_surface_props );
-	const unsigned short exit_material  = exit_surface_data->m_game.m_material;
+	const unsigned short exit_material     = exit_surface_data->m_game.m_material;
 
 	const float enter_penetration_modifier = enter_surface_data->m_game.m_penetration_modifier;
 	const float exit_penetration_modifier  = exit_surface_data->m_game.m_penetration_modifier;
 
-	float damage_lost_modifier  = 0.16f;
+	float damage_lost_modifier = 0.16f;
 	float penetration_modifier = 0.0f;
 
 	if ( enter_material == e_valve_decals::char_tex_grate || enter_material == e_valve_decals::char_tex_glass ) {
-		damage_lost_modifier  = 0.05f;
+		damage_lost_modifier = 0.05f;
 		penetration_modifier = 3.0f;
-	} else if ( ( ( data.m_enter_trace.m_contents >> 3 ) & e_contents::contents_solid ) || ( ( data.m_enter_trace.surface.m_flags >> 7 ) & e_surf_type::surf_light ) ) {
-		damage_lost_modifier  = 0.16f;
+	} else if ( ( ( data.m_enter_trace.m_contents >> 3 ) & e_contents::contents_solid ) ||
+	            ( ( data.m_enter_trace.surface.m_flags >> 7 ) & e_surf_type::surf_light ) ) {
+		damage_lost_modifier = 0.16f;
 		penetration_modifier = 1.0f;
 	} else if ( enter_material == e_valve_decals::char_tex_flesh && reducation_damage == 0.0f && data.m_enter_trace.m_hit_entity != nullptr &&
-	            data.m_enter_trace.m_hit_entity->is_player( ) && ( local->get_team( ) == data.m_enter_trace.m_hit_entity->get_team( ) ) ) {
+	            data.m_enter_trace.m_hit_entity->is_player( ) && ( g_ctx.m_local->get_team( ) == data.m_enter_trace.m_hit_entity->get_team( ) ) ) {
 		if ( penetrate_damage == 0.0f )
 			return false;
 
-		damage_lost_modifier  = penetrate_damage;
+		damage_lost_modifier = penetrate_damage;
 		penetration_modifier = penetrate_damage;
 	} else {
-		damage_lost_modifier  = 0.16f;
+		damage_lost_modifier = 0.16f;
 		penetration_modifier = ( enter_penetration_modifier + exit_penetration_modifier ) * 0.5f;
 	}
 
@@ -283,8 +284,8 @@ bool n_auto_wall::impl_t::handle_bullet_penetration( c_base_entity* local, const
 	const float modifier = ( penetration_modifier > 0.0f ? 1.0f / penetration_modifier : 0.0f );
 
 	const float lost_damage = ( data.m_current_damage * damage_lost_modifier +
-	                             ( weapon_data->m_penetration > 0.0f ? 3.75f / weapon_data->m_penetration : 0.0f ) * ( modifier * 3.0f ) ) +
-	                           ( ( modifier * trace_distance ) / 24.0f );
+	                            ( weapon_data->m_penetration > 0.0f ? 3.75f / weapon_data->m_penetration : 0.0f ) * ( modifier * 3.0f ) ) +
+	                          ( ( modifier * trace_distance ) / 24.0f );
 
 	if ( lost_damage > data.m_current_damage )
 		return false;
@@ -300,7 +301,7 @@ bool n_auto_wall::impl_t::handle_bullet_penetration( c_base_entity* local, const
 	return true;
 }
 
-bool n_auto_wall::impl_t::simulate_fire_bullet( c_base_entity* local, c_base_entity* weapon, fire_bullet_data_t& data )
+bool n_auto_wall::impl_t::simulate_fire_bullet( c_base_entity* weapon, fire_bullet_data_t& data )
 {
 	const auto weapon_data = g_interfaces.m_weapon_system->get_weapon_data( weapon->get_item_definition_index( ) );
 	if ( !weapon_data )
@@ -309,10 +310,10 @@ bool n_auto_wall::impl_t::simulate_fire_bullet( c_base_entity* local, c_base_ent
 	float max_range = weapon_data->m_range;
 
 	data.m_penetrate_count = 4;
-	data.m_current_damage = static_cast< float >( weapon_data->m_damage );
+	data.m_current_damage  = static_cast< float >( weapon_data->m_damage );
 
 	float trace_length = 0.0f;
-	c_trace_filter filter( local );
+	c_trace_filter filter( g_ctx.m_local );
 
 	while ( data.m_penetrate_count > 0 && data.m_current_damage >= 1.0f ) {
 		max_range -= trace_length;
@@ -322,9 +323,11 @@ bool n_auto_wall::impl_t::simulate_fire_bullet( c_base_entity* local, c_base_ent
 		ray_t ray( data.m_position, end );
 		g_interfaces.m_engine_trace->trace_ray( ray, e_mask::mask_shot_hull | e_contents::contents_hitbox, &filter, &data.m_enter_trace );
 
-		clip_trace_to_players( data.m_position, end + data.m_direction * 40.0f, e_mask::mask_shot_hull | e_contents::contents_hitbox, &filter, &data.m_enter_trace );
+		clip_trace_to_players( data.m_position, end + data.m_direction * 40.0f, e_mask::mask_shot_hull | e_contents::contents_hitbox, &filter,
+		                       &data.m_enter_trace );
 
-		const surfacedata_t* enter_surface_data =g_interfaces.m_physics_surface_props->get_surface_data( data.m_enter_trace.surface.m_surface_props );
+		const surfacedata_t* enter_surface_data =
+			g_interfaces.m_physics_surface_props->get_surface_data( data.m_enter_trace.surface.m_surface_props );
 		const float enter_penetration_modifier = enter_surface_data->m_game.m_penetration_modifier;
 
 		if ( data.m_enter_trace.m_fraction == 1.0f )
@@ -337,12 +340,13 @@ bool n_auto_wall::impl_t::simulate_fire_bullet( c_base_entity* local, c_base_ent
 			break;
 
 		if ( data.m_enter_trace.m_hit_group != hitgroup_generic && data.m_enter_trace.m_hit_group != hitgroup_gear &&
-		     local->is_enemy( data.m_enter_trace.m_hit_entity ) ) {
-			scale_damage( data.m_enter_trace.m_hit_group, data.m_enter_trace.m_hit_entity, weapon_data->m_armor_ratio, weapon_data->m_head_shot_multiplier, data.m_current_damage );
+		     g_ctx.m_local->is_enemy( data.m_enter_trace.m_hit_entity ) ) {
+			scale_damage( data.m_enter_trace.m_hit_group, data.m_enter_trace.m_hit_entity, weapon_data->m_armor_ratio,
+			              weapon_data->m_head_shot_multiplier, data.m_current_damage );
 			return true;
 		}
 
-		if ( !handle_bullet_penetration( local, weapon_data, enter_surface_data, data ) )
+		if ( !handle_bullet_penetration( weapon_data, enter_surface_data, data ) )
 			break;
 	}
 
