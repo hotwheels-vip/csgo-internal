@@ -324,6 +324,7 @@
     <ClInclude Include="game\sdk\classes\c_breakable_with_prop_data.h" />
     <ClInclude Include="game\sdk\structs\string_t.h" />
     <ClInclude Include="game\sdk\enums\e_multiplayer_physics_mode.h" />
+    <ClInclude Include="game\sdk\enums\e_valve_decals.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

@@ -278,6 +278,7 @@
     <ClInclude Include="game\sdk\enums\e_property_data_interactions.h" />
     <ClInclude Include="game\sdk\enums\e_send_prop_type.h" />
     <ClInclude Include="game\sdk\enums\e_team_id.h" />
+    <ClInclude Include="game\sdk\enums\e_valve_decals.h" />
     <ClInclude Include="game\sdk\enums\e_weapon_type.h" />
     <ClInclude Include="game\sdk\includes\includes.h" />
     <ClInclude Include="game\sdk\structs\bounding_box_t.h" />
