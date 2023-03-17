@@ -69,6 +69,7 @@ void n_players::impl_t::players( )
 			m_stored_cur_time[ index ] = g_interfaces.m_global_vars_base->m_current_time;
 			this->m_fading_alpha[ index ] += delta_time;
 		}
+
 		const auto collideable = entity->get_collideable( );
 		if ( !collideable )
 			return;
@@ -81,8 +82,8 @@ void n_players::impl_t::players( )
 			return;
 		}
 
-		const bool in_view_frustrum = !g_interfaces.m_engine_client->cull_box( collideable->obb_mins( ) + entity->get_abs_origin( ),
-		                                                                       collideable->obb_maxs( ) + entity->get_abs_origin( ) );
+		const bool in_view_frustrum = !g_interfaces.m_engine_client->cull_box( collideable->get_obb_mins( ) + entity->get_abs_origin( ),
+		                                                                       collideable->get_obb_maxs( ) + entity->get_abs_origin( ) );
 
 		const auto client_renderable = entity->get_client_renderable( );
 		if ( !client_renderable )

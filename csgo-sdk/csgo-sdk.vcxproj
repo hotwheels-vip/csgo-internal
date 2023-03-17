@@ -270,6 +270,7 @@
     <ClInclude Include="game\sdk\enums\e_obs_mode.h" />
     <ClInclude Include="game\sdk\enums\e_preview_image_ret_val.h" />
     <ClInclude Include="game\sdk\enums\e_send_prop_type.h" />
+    <ClInclude Include="game\sdk\enums\e_team_id.h" />
     <ClInclude Include="game\sdk\enums\e_weapon_type.h" />
     <ClInclude Include="game\sdk\includes\includes.h" />
     <ClInclude Include="game\sdk\structs\bounding_box_t.h" />

@@ -606,8 +606,8 @@ void n_movement::impl_t::auto_align( c_user_cmd* cmd )
 
 	const c_vector origin      = g_ctx.m_local->get_abs_origin( );
 	const c_vector velocity    = g_ctx.m_local->get_velocity( );
-	const c_vector player_mins = g_ctx.m_local->get_collideable( )->obb_mins( );
-	const c_vector player_maxs = g_ctx.m_local->get_collideable( )->obb_maxs( );
+	const c_vector player_mins = g_ctx.m_local->get_collideable( )->get_obb_mins( );
+	const c_vector player_maxs = g_ctx.m_local->get_collideable( )->get_obb_maxs( );
 
 	constexpr static float distance_till_adjust = 0.03125f;
 	constexpr static float error_margin         = 0.01f;

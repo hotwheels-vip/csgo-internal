@@ -62,8 +62,8 @@ void n_edicts::impl_t::reset( )
 				if ( !collideable )
 					return;
 
-				collideable->obb_mins( ) = c_vector{ 0, 0, 0 };
-				collideable->obb_maxs( ) = c_vector{ 0, 0, 0 };
+				collideable->get_obb_mins( ) = c_vector{ 0, 0, 0 };
+				collideable->get_obb_maxs( ) = c_vector{ 0, 0, 0 };
 
 				rain_networkable->on_data_changed( 0 );
 				rain_networkable->post_data_update( 0 );
@@ -386,8 +386,8 @@ void n_edicts::impl_t::precipitation( )
 		if ( !collideable )
 			return;
 
-		collideable->obb_mins( ) = c_vector( -32768.f, -32768.f, -32768.f );
-		collideable->obb_maxs( ) = c_vector( 32768.f, 32768.f, 32768.f );
+		collideable->get_obb_mins( ) = c_vector( -32768.f, -32768.f, -32768.f );
+		collideable->get_obb_maxs( ) = c_vector( 32768.f, 32768.f, 32768.f );
 
 		g_interfaces.m_physics_collison->v_collide_load( &precipitation_collideable, 1, ( const char* )collide_data, sizeof( collide_data ) );
 

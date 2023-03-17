@@ -315,6 +315,7 @@
     <ClInclude Include="hacks\visuals\screen\screen.h" />
     <ClInclude Include="game\sdk\classes\c_physics_surface_props.h" />
     <ClInclude Include="hacks\auto_wall\auto_wall.h" />
+    <ClInclude Include="game\sdk\enums\e_team_id.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

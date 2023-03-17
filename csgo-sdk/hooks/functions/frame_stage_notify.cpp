@@ -21,7 +21,7 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 	if ( !g_ctx.m_local )
 		return original( ecx, edx, stage );
 
-	if ( !g_ctx.m_local->is_alive( ) || g_ctx.m_local->get_observer_mode( ) != e_obs_mode::OBS_MODE_NONE )
+	if ( !g_ctx.m_local->is_alive( ) || g_ctx.m_local->get_observer_mode( ) != e_obs_mode::obs_mode_none )
 		g_edicts.reset( );
 
 	g_edicts.on_frame_stage_notify( stage );
@@ -49,7 +49,7 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 			return;
 #endif
 
-			if ( g_ctx.m_local->get_observer_mode( ) != e_obs_mode::OBS_MODE_NONE )
+			if ( g_ctx.m_local->get_observer_mode( ) != e_obs_mode::obs_mode_none )
 				return;
 
 			g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {

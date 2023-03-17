@@ -1,6 +1,7 @@
 #include "auto_wall.h"
 #include "../../game/sdk/includes/includes.h"
 #include "../../globals/includes/includes.h"
+#include "../entity_cache/entity_cache.h"
 
 float n_auto_wall::impl_t::get_damage( c_base_entity* local, const c_vector& point, fire_bullet_data_t* data_out )
 {
@@ -65,14 +66,12 @@ void n_auto_wall::impl_t::scale_damage( const int hit_group, c_base_entity* enti
 	}
 
 	if ( entity->is_armored( hit_group ) ) {
-		// @ida ontakedamage: server.dll @ 80 BF ? ? ? ? ? F3 0F 10 5C 24 ? F3 0F 10 35
-
-		const int armor        = entity->get_armor( );
+		const int armor         = entity->get_armor( );
 		float heavy_armor_bonus = 1.0f, armor_bonus = 0.5f, armor_ratio = weapon_armor_ratio * 0.5f;
 
 		if ( has_heavy_armor ) {
 			heavy_armor_bonus = 0.25f;
-			armor_bonus      = 0.33f;
+			armor_bonus       = 0.33f;
 			armor_ratio *= 0.20f;
 		}
 
@@ -83,4 +82,64 @@ void n_auto_wall::impl_t::scale_damage( const int hit_group, c_base_entity* enti
 
 		damage = damage_to_health;
 	}
+}
+
+void n_auto_wall::impl_t::clip_trace_to_players( const c_vector& abs_start, const c_vector& abs_end, const unsigned int mask, c_trace_filter* filter,
+                                                 trace_t* exit_trace, const float min_range )
+{
+	trace_t trace           = { };
+	float smallest_fraction = exit_trace->m_fraction;
+
+	const ray_t ray( abs_start, abs_end );
+
+	g_entity_cache.enumerate( e_enumeration_type::type_players, [ & ]( c_base_entity* entity ) {
+		if ( !entity || entity == g_ctx.m_local || !g_ctx.m_local->is_enemy( entity ) || !entity->is_alive( ) || entity->is_dormant( ) )
+			return;
+
+		if ( filter && !filter->should_hit_entity( entity, mask ) )
+			return;
+
+		const auto client_renderable = entity->get_client_renderable( );
+		if ( !client_renderable )
+			return;
+
+		const auto client_unknown = client_renderable->get_client_unknown( );
+		if ( !client_unknown )
+			return;
+
+		const auto collideable = client_unknown->get_collideable( );
+		if ( !collideable )
+			return;
+
+		const c_vector obb_mins = collideable->get_obb_mins( );
+		const c_vector obb_maxs = collideable->get_obb_maxs( );
+
+		const c_vector center   = ( obb_maxs + obb_mins ) * 0.5f;
+		const c_vector position = center + entity->get_origin( );
+
+		const c_vector position_difference = position - abs_start;
+		c_vector abs_difference            = abs_end - abs_start;
+		const float flLength               = abs_difference.normalize_in_place( );
+
+		const float range_along = abs_difference.dot_product( position_difference );
+		float range             = 0.0f;
+
+		if ( range_along < 0.0f )
+			range = -position_difference.length( );
+		else if ( range_along > flLength )
+			range = -( position - abs_end ).length( );
+		else
+			range = ( position - ( abs_difference * range_along + abs_start ) ).length( );
+
+		constexpr float max_range = 60.f;
+		if ( range < min_range || range > max_range )
+			return;
+
+		g_interfaces.m_engine_trace->clip_ray_to_entity( ray, mask | e_contents::contents_hitbox, entity, &trace );
+
+		if ( trace.m_fraction < smallest_fraction ) {
+			*exit_trace       = trace;
+			smallest_fraction = trace.m_fraction;
+		}
+	} );
 }

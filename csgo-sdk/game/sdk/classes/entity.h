@@ -46,8 +46,8 @@ class c_collideable
 {
 public:
 	virtual c_handle_entity* get_entity_handle( )                                                 = 0;
-	virtual c_vector& obb_mins( )                                                                 = 0;
-	virtual c_vector& obb_maxs( )                                                                 = 0;
+	virtual c_vector& get_obb_mins( )                                                                 = 0;
+	virtual c_vector& get_obb_maxs( )                                                                 = 0;
 	virtual void world_space_trigger_bounds( c_vector* world_mins, c_vector* world_maxs ) const   = 0;
 	virtual bool test_collision( const ray_t& ray, unsigned int contents_mask, c_game_trace& tr ) = 0;
 	virtual bool test_hitboxes( const ray_t& ray, unsigned int contents_mask, c_game_trace& tr )  = 0;

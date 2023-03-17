@@ -232,8 +232,8 @@ bool c_base_entity::get_bounding_box( bounding_box_t* box )
 		return false;
 
 	/* https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/game/shared/collisionproperty.h#L77 */
-	const c_vector mins = collideable->obb_mins( );
-	const c_vector maxs = collideable->obb_maxs( );
+	const c_vector mins = collideable->get_obb_mins( );
+	const c_vector maxs = collideable->get_obb_maxs( );
 
 	std::array< c_vector, 8U > points = { c_vector( mins.m_x, mins.m_y, mins.m_z ), c_vector( mins.m_x, maxs.m_y, mins.m_z ),
 		                                  c_vector( maxs.m_x, maxs.m_y, mins.m_z ), c_vector( maxs.m_x, mins.m_y, mins.m_z ),
