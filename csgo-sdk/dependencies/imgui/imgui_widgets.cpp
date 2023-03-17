@@ -1737,7 +1737,7 @@ static float CalcMaxPopupHeightFromItemCount( int items_count )
 	return ( g.FontSize + g.Style.ItemSpacing.y ) * items_count - g.Style.ItemSpacing.y + ( g.Style.WindowPadding.y * 2 );
 }
 
-bool ImGui::BeginCombo( const char* label, const char* preview_value, ImGuiComboFlags flags )
+bool ImGui::BeginCombo( const char* label, const char* preview_value, ImGuiComboFlags flags, bool underneath_checkbox )
 {
 	SetNextItemWidth( -1 );
 
@@ -1757,12 +1757,15 @@ bool ImGui::BeginCombo( const char* label, const char* preview_value, ImGuiCombo
 
 	const ImVec2 label_size = CalcTextSize( label, NULL, true );
 	const float expected_w  = CalcItemWidth( );
-	const float w           = expected_w - 10.f;
+	const float w           = underneath_checkbox ? expected_w - 10.f : expected_w;
 	const float h           = GetFrameHeight( ) + 6.f;
 
-	const ImRect frame_bb( window->DC.CursorPos + ImVec2( ( label_size.x > 0.0f ? style.ItemInnerSpacing.x + h : 0.0f ) - 3.f,
-	                                                      label_size.x > 0.0f ? label_size.y : 0.0f ),
-	                       window->DC.CursorPos + ImVec2( w, ( label_size.x > 0.0f ? label_size.y : 0.0f ) + h ) );
+	const ImRect frame_bb(
+		window->DC.CursorPos +
+			ImVec2( ( label_size.x > 0.0f ? style.ItemInnerSpacing.x + h : 0.0f ) - 3.f, label_size.x > 0.0f ? label_size.y : 0.0f ) -
+			ImVec2( 18.f, 0.f ),
+		window->DC.CursorPos + ImVec2( w, ( label_size.x > 0.0f ? label_size.y : 0.0f ) + h ) );
+
 	const ImRect total_bb( window->DC.CursorPos, frame_bb.Max - ImVec2( label_size.x > 0.0f ? style.ItemInnerSpacing.x + h : 0.0f, 0.0f ) );
 
 	ItemSize( total_bb, style.FramePadding.y );
@@ -1854,8 +1857,14 @@ bool ImGui::BeginCombo( const char* label, const char* preview_value, ImGuiCombo
 		else if ( flags & ImGuiComboFlags_HeightLarge )
 			popup_max_height_in_items = 20;
 		// modified by qo0
+
+		if (underneath_checkbox)
 		SetNextWindowSizeConstraints( ImVec2( w - ( label_size.x > 0.0f ? style.ItemInnerSpacing.x + h : 0.0f ) + 3.f, 0.0f ),
-		                              ImVec2( FLT_MAX, CalcMaxPopupHeightFromItemCount( popup_max_height_in_items ) ) );
+			                              ImVec2( FLT_MAX, CalcMaxPopupHeightFromItemCount( popup_max_height_in_items ) ) );
+		else {
+			SetNextWindowSizeConstraints( ImVec2( w - ( label_size.x > 0.0f ? style.ItemInnerSpacing.x + h : 0.0f ) + 21.f, 0.0f ),
+			                              ImVec2( FLT_MAX, CalcMaxPopupHeightFromItemCount( popup_max_height_in_items ) ) );
+		}
 	}
 
 	char name[ 16 ] = { };
@@ -1883,9 +1892,8 @@ bool ImGui::BeginCombo( const char* label, const char* preview_value, ImGuiCombo
 	PushStyleColor( ImGuiCol_::ImGuiCol_PopupBg, ImVec4( 25 / 255.f, 25 / 255.f, 25 / 255.f, 1.f ) );
 	bool ret = Begin( name, NULL, window_flags );
 
-	PushClipRect( ImGui::GetWindowPos( ), ImGui::GetWindowSize( ) + ImGui::GetWindowPos( ), false );
-	ImGui::GetWindowDrawList( )->AddRect( ImGui::GetWindowPos( ), ImGui::GetWindowSize( ) + ImGui::GetWindowPos( ), ImColor( 50, 50, 50, 100 ),
-	                                      style.FrameRounding );
+	PushClipRect( GetWindowPos( ), GetWindowSize( ) + GetWindowPos( ), false );
+	GetWindowDrawList( )->AddRect( GetWindowPos( ), GetWindowSize( ) + GetWindowPos( ), ImColor( 50, 50, 50, 100 ), style.FrameRounding );
 	PopClipRect( );
 
 	PopStyleColor( );
@@ -1899,7 +1907,8 @@ bool ImGui::BeginCombo( const char* label, const char* preview_value, ImGuiCombo
 	return true;
 }
 
-bool ImGui::MultiCombo( const char* label, std::vector< bool >& values, const std::vector< const char* >& item_list, int items_count )
+bool ImGui::MultiCombo( const char* label, std::vector< bool >& values, const std::vector< const char* >& item_list, int items_count,
+                        bool underneath_checkbox )
 {
 	ImGuiContext& g     = *GImGui;
 	ImGuiWindow* window = g.CurrentWindow;
@@ -1940,7 +1949,7 @@ bool ImGui::MultiCombo( const char* label, std::vector< bool >& values, const st
 	}
 
 	bool value_changed = false;
-	if ( BeginCombo( label, buffer.c_str( ) ) ) {
+	if ( BeginCombo( label, buffer.c_str( ), 0, underneath_checkbox ) ) {
 		for ( int i = 0; i < items_count; i++ ) {
 			if ( Selectable( item_list[ i ], values[ i ], ImGuiSelectableFlags_DontClosePopups ) ) {
 				values[ i ]   = !values[ i ];

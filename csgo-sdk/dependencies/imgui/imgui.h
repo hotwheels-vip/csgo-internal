@@ -676,7 +676,7 @@ namespace ImGui
 	// items.
 	// - The old Combo() api are helpers over BeginCombo()/EndCombo() which are kept available for convenience purpose. This is analogous to how
 	// ListBox are created.
-	IMGUI_API bool BeginCombo( const char* label, const char* preview_value, ImGuiComboFlags flags = 0 );
+	IMGUI_API bool BeginCombo( const char* label, const char* preview_value, ImGuiComboFlags flags = 0, bool underneath_checkbox = true );
 	IMGUI_API void EndCombo( ); // only call EndCombo() if BeginCombo() returns true!
 	IMGUI_API bool Combo( const char* label, int* current_item, const char* const items[], int items_count, int popup_max_height_in_items = -1 );
 	IMGUI_API bool
@@ -685,7 +685,8 @@ namespace ImGui
 	IMGUI_API bool Combo( const char* label, int* current_item, bool ( *items_getter )( void* data, int idx, const char** out_text ), void* data,
 	                      int items_count, int popup_max_height_in_items = -1 );
 
-	IMGUI_API bool MultiCombo( const char* label, std::vector< bool >& values, const std::vector< const char* >& item_list, int items_count );
+	IMGUI_API bool MultiCombo( const char* label, std::vector< bool >& values, const std::vector< const char* >& item_list, int items_count,
+	                           bool underneath_checkbox = true );
 
 	enum EKeyStyles {
 		KEY_STYLE_ALWAYS_ON = 0,
