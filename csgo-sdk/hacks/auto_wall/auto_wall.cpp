@@ -143,3 +143,80 @@ void n_auto_wall::impl_t::clip_trace_to_players( const c_vector& abs_start, cons
 		}
 	} );
 }
+
+bool n_auto_wall::impl_t::trace_to_exit( trace_t& enter_trace, trace_t& exit_trace, const c_vector& position, const c_vector& direction,
+                                         const c_base_entity* clip_player )
+{
+	static auto sv_clip_penetration_traces_to_players = g_convars[ HASH_BT( "sv_clip_penetration_traces_to_players" ) ];
+
+	float distance                                    = 0.0f;
+	int start_contents                                = 0;
+
+	while ( distance <= 90.0f ) {
+		distance += 4.0f;
+
+		c_vector start = position + direction * distance;
+
+		if ( !start_contents )
+			start_contents = g_interfaces.m_engine_trace->get_point_contents( start, e_mask::mask_shot_hull | e_contents::contents_hitbox, nullptr );
+
+		const int current_contents =
+			g_interfaces.m_engine_trace->get_point_contents( start, e_mask::mask_shot_hull | e_contents::contents_hitbox, nullptr );
+
+		if ( !( current_contents & e_mask::mask_shot_hull ) ||
+		     ( current_contents & e_contents::contents_hitbox && current_contents != start_contents ) ) {
+			const c_vector end = start - ( direction * 4.0f );
+
+			ray_t world_ray( start, end );
+			g_interfaces.m_engine_trace->trace_ray( world_ray, e_mask::mask_shot_hull | e_contents::contents_hitbox, nullptr, &exit_trace );
+
+			if ( sv_clip_penetration_traces_to_players->get_bool( ) ) {
+				c_trace_filter filter( clip_player );
+				clip_trace_to_players( end, start, e_mask::mask_shot_hull | e_contents::contents_hitbox, &filter, &exit_trace, -60.f );
+			}
+
+			if ( exit_trace.m_start_solid && exit_trace.surface.m_flags & surf_hitbox ) {
+				ray_t ray( start, position );
+				c_trace_filter filter( exit_trace.m_hit_entity );
+
+				g_interfaces.m_engine_trace->trace_ray( ray, e_mask::mask_shot_hull, &filter, &exit_trace );
+
+				if ( exit_trace.did_hit( ) && !exit_trace.m_start_solid ) {
+					start = exit_trace.m_end;
+					return true;
+				}
+
+				continue;
+			}
+
+			if ( exit_trace.did_hit( ) && !exit_trace.m_start_solid ) {
+				if ( enter_trace.m_hit_entity->is_breakable( ) && exit_trace.m_hit_entity->is_breakable( ) )
+					return true;
+
+				if ( enter_trace.surface.m_flags & e_surf_type::surf_nodraw || ( !( exit_trace.surface.m_flags & e_surf_type::surf_nodraw ) &&
+				                                                                 exit_trace.m_plane.m_normal.dot_product( direction ) <= 1.0f ) ) {
+					const float multiplier = exit_trace.m_fraction * 4.0f;
+					start -= direction * multiplier;
+					return true;
+				}
+
+				continue;
+			}
+
+			if ( !exit_trace.did_hit( ) || exit_trace.m_start_solid ) {
+				if ( !enter_trace.m_hit_entity )
+					return false;
+
+				if ( enter_trace.m_hit_entity->get_index( ) != 0 && enter_trace.m_hit_entity->is_breakable( ) ) {
+					exit_trace     = enter_trace;
+					exit_trace.m_end = start + direction;
+					return true;
+				}
+
+				continue;
+			}
+		}
+	}
+
+	return false;
+}

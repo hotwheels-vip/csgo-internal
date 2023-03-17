@@ -142,6 +142,67 @@ bool c_base_entity::is_armored( const int hit_group )
 	return ret;
 }
 
+bool c_base_entity::is_breakable( )
+{
+	const int health = this->get_health( );
+
+	if ( health < 0 && this->get_max_health( ) > 0 )
+		return true;
+
+	if ( this->get_take_damage( ) != e_damage_type::damage_yes ) {
+		const auto client_renderable = this->get_client_renderable( );
+		if ( !client_renderable )
+			return false;
+
+		const auto client_unknown = client_renderable->get_client_unknown( );
+		if ( !client_unknown )
+			return false;
+
+		const auto client_networkable = client_unknown->get_client_networkable( );
+		if ( !client_networkable)
+			return false;
+
+		const auto client_class = client_networkable->get_client_class( );
+		if ( !client_class )
+			return false;
+
+		const auto class_id = client_class->m_class_id;
+		if ( class_id != e_class_ids::c_func_brush )
+			return false;
+	}
+
+	if ( const int collision_group = this->get_collision_group( ); collision_group != e_collision_group::collision_group_pushaway &&
+	                                                             collision_group !=   e_collision_group::collision_group_breakable_glass &&
+	                                                             collision_group !=   e_collision_group::collision_group_none )
+		return false;
+
+	if ( health > 200 )
+		return false;
+
+	if ( const auto physics_interface = dynamic_cast< c_multiplayer_physics* >( this ); physics_interface ) {
+		if ( physics_interface->get_multiplayer_physics_mode( ) != e_multiplayer_physics_mode::physics_multiplayer_solid )
+			return false;
+	} else {
+		if ( const char* class_name = this->get_class_name( );
+		     !strcmp( class_name, "func_breakable" ) || !strcmp( class_name, "func_breakable_surf" ) ) {
+			if ( !strcmp( class_name, "func_breakable_surf" ) ) {
+				const auto surface = static_cast< c_breakable_surface* >( this );
+
+				if ( surface->is_broken( ) )
+					return false;
+			}
+		} else if ( this->physics_solid_mask_for_entity( ) & e_contents::contents_playerclip ) 
+			return false;
+	}
+
+	if ( const auto breakable_interface = dynamic_cast< c_breakable_with_prop_data* >( this ); breakable_interface ) {
+		if ( breakable_interface->get_dmg_mod_bullet( ) <= 0.0f )
+			return false;
+	}
+
+	return true;
+}
+
 bool c_base_entity::is_valid_enemy( )
 {
 	if ( !this || !g_ctx.m_local )
@@ -290,6 +351,14 @@ int c_base_entity::get_max_health( )
 		return 120;
 
 	return 100;
+}
+
+int& c_base_entity::get_take_damage( )
+{
+	static const unsigned int take_damage_fn =
+		*reinterpret_cast< unsigned int* >( g_modules[ CLIENT_DLL ].find_pattern( "80 BE ? ? ? ? ? 75 46 8B 86" ) + 0x2 );
+
+	return *reinterpret_cast< int* >( reinterpret_cast< unsigned int >( this ) + take_damage_fn );
 }
 
 c_vector c_base_entity::get_bone_position( int bone )

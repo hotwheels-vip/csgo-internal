@@ -79,6 +79,25 @@ enum e_mask {
 	mask_deadsolid = ( contents_solid | contents_playerclip | contents_window | contents_grate )
 };
 
+enum e_surf_type {
+	surf_light     = 0x0001,
+	surf_sky2d     = 0x0002,
+	surf_sky       = 0x0004,
+	surf_warp      = 0x0008,
+	surf_trans     = 0x0010,
+	surf_noportal  = 0x0020,
+	surf_trigger   = 0x0040,
+	surf_nodraw    = 0x0080,
+	surf_hint      = 0x0100,
+	surf_skip      = 0x0200,
+	surf_nolight   = 0x0400,
+	surf_bumplight = 0x0800,
+	surf_noshadows = 0x1000,
+	surf_nodecals  = 0x2000,
+	surf_nochop    = 0x4000,
+	surf_hitbox    = 0x8000
+};
+
 enum e_debug_trace_counter_behavior : int {
 	trace_counter_set = 0,
 	trace_counter_inc,

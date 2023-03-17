@@ -200,6 +200,7 @@
     <ClInclude Include="game\datatypes\fn_change_callback.h" />
     <ClInclude Include="game\datatypes\recv_var_proxy_fn.h" />
     <ClInclude Include="game\sdk\classes\c_animation_state.h" />
+    <ClInclude Include="game\sdk\classes\c_breakable_with_prop_data.h" />
     <ClInclude Include="game\sdk\classes\c_color.h" />
     <ClInclude Include="game\sdk\classes\c_engine_sound.h" />
     <ClInclude Include="game\sdk\classes\c_game_movement.h" />
@@ -212,6 +213,7 @@
     <ClInclude Include="game\sdk\classes\c_model_render.h" />
     <ClInclude Include="game\sdk\classes\c_move_data.h" />
     <ClInclude Include="game\sdk\classes\c_move_helper.h" />
+    <ClInclude Include="game\sdk\classes\c_multiplayer_physics.h" />
     <ClInclude Include="game\sdk\classes\c_panel.h" />
     <ClInclude Include="game\sdk\classes\c_physics_collisons.h" />
     <ClInclude Include="game\sdk\classes\c_physics_surface_props.h" />
@@ -256,8 +258,10 @@
     <ClInclude Include="game\sdk\classes\panorama\panorama.h" />
     <ClInclude Include="game\sdk\enums\e_class_ids.h" />
     <ClInclude Include="game\sdk\enums\e_client_frame_stage.h" />
+    <ClInclude Include="game\sdk\enums\e_collision_group.h" />
     <ClInclude Include="game\sdk\enums\e_command_buttons.h" />
     <ClInclude Include="game\sdk\enums\e_convar_flag.h" />
+    <ClInclude Include="game\sdk\enums\e_damage_type.h" />
     <ClInclude Include="game\sdk\enums\e_field_types.h" />
     <ClInclude Include="game\sdk\enums\e_flags.h" />
     <ClInclude Include="game\sdk\enums\e_glow_style.h" />
@@ -267,8 +271,11 @@
     <ClInclude Include="game\sdk\enums\e_material_property_type.h" />
     <ClInclude Include="game\sdk\enums\e_material_var_flags.h" />
     <ClInclude Include="game\sdk\enums\e_move_types.h" />
+    <ClInclude Include="game\sdk\enums\e_multiplayer_break.h" />
+    <ClInclude Include="game\sdk\enums\e_multiplayer_physics_mode.h" />
     <ClInclude Include="game\sdk\enums\e_obs_mode.h" />
     <ClInclude Include="game\sdk\enums\e_preview_image_ret_val.h" />
+    <ClInclude Include="game\sdk\enums\e_property_data_interactions.h" />
     <ClInclude Include="game\sdk\enums\e_send_prop_type.h" />
     <ClInclude Include="game\sdk\enums\e_team_id.h" />
     <ClInclude Include="game\sdk\enums\e_weapon_type.h" />
@@ -287,6 +294,7 @@
     <ClInclude Include="game\sdk\structs\recv_table_t.h" />
     <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
     <ClInclude Include="game\sdk\structs\renderable_info_t.h" />
+    <ClInclude Include="game\sdk\structs\string_t.h" />
     <ClInclude Include="game\sdk\structs\studiohdr_t.h" />
     <ClInclude Include="game\sdk\structs\type_description_t.h" />
     <ClInclude Include="game\sdk\structs\var_mapping.h" />
@@ -337,7 +345,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
-    <None Include="game\sdk\enums\e_move_type.h" />
     <None Include="hacks\misc\scaleform\files\alerts.js" />
     <None Include="hacks\misc\scaleform\files\deathnotices.js" />
     <None Include="hacks\misc\scaleform\files\health_and_ammo.js" />

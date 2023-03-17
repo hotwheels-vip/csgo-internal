@@ -161,7 +161,7 @@ void n_movement::impl_t::edge_jump( )
 		g_prediction.begin( g_ctx.m_local, g_ctx.m_cmd );
 		g_prediction.end( g_ctx.m_local );
 
-		if ( g_ctx.m_local->get_move_type( ) != e_move_type::movetype_ladder ) {
+		if ( g_ctx.m_local->get_move_type( ) != e_move_types::move_type_ladder ) {
 			if ( GET_VARIABLE( g_variables.m_edge_jump_ladder, bool ) )
 				g_ctx.m_cmd->m_buttons |= e_command_buttons::in_jump;
 		} else // remove jump flag while in ladder

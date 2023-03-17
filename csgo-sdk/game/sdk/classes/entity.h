@@ -3,6 +3,7 @@
 #include "../../../utilities/memory/virtual.h"
 #include "../structs/var_mapping.h" /* TODO ~ move to separate files, end structures with the suffix _t */
 #include "c_utl_vector.h"
+#include "c_breakable_with_prop_data.h"
 
 enum class e_class_ids;
 
@@ -20,20 +21,6 @@ struct matrix3x4_t;
 struct data_map_t;
 struct bounding_box_t;
 
-enum e_movecollide {
-	movecollide_default = 0,
-
-	// these ones only work for movetype_fly + movetype_flygravity
-	movecollide_fly_bounce, // bounces, reflects, based on elasticity of surface and object - applies friction (adjust velocity)
-	movecollide_fly_custom, // touch() will modify the velocity however it likes
-	movecollide_fly_slide,  // slides along surfaces (no bounce) - applies friciton (adjusts velocity)
-
-	movecollide_count, // number of different movecollides
-
-	// when adding new movecollide types, make sure this is correct
-	movecollide_max_bits = 3
-};
-
 class c_handle_entity
 {
 public:
@@ -46,8 +33,8 @@ class c_collideable
 {
 public:
 	virtual c_handle_entity* get_entity_handle( )                                                 = 0;
-	virtual c_vector& get_obb_mins( )                                                                 = 0;
-	virtual c_vector& get_obb_maxs( )                                                                 = 0;
+	virtual c_vector& get_obb_mins( )                                                             = 0;
+	virtual c_vector& get_obb_maxs( )                                                             = 0;
 	virtual void world_space_trigger_bounds( c_vector* world_mins, c_vector* world_maxs ) const   = 0;
 	virtual bool test_collision( const ray_t& ray, unsigned int contents_mask, c_game_trace& tr ) = 0;
 	virtual bool test_hitboxes( const ray_t& ray, unsigned int contents_mask, c_game_trace& tr )  = 0;
@@ -248,6 +235,7 @@ public:
 	NETVAR_VARIABLE( bool, is_predictable, "CBaseEntity->m_bPredictable" );
 	NETVAR_VARIABLE( int, get_model_index, "CBaseEntity->m_nModelIndex" );
 	NETVAR_VARIABLE( unsigned int, get_owner_entity_handle, "CBaseEntity->m_hOwnerEntity" );
+	NETVAR_VARIABLE( int, get_collision_group, "CBaseEntity->m_CollisionGroup" );
 	NETVAR_VARIABLE( int, get_effects, "CBaseEntity->m_fEffects" );
 	NETVAR_VARIABLE( int, is_spotted, "CBaseEntity->m_bSpotted" );
 
@@ -327,8 +315,6 @@ public:
 	ADD_DATAFIELD( float, get_surface_friction, this->get_prediction_desc_map( ), "m_surfaceFriction" );
 	ADD_DATAFIELD( const matrix3x4_t, get_coordinate_frame, this->get_data_desc_map( ), "m_rgflCoordinateFrame" );
 	ADD_DATAFIELD( int, get_move_type, this->get_prediction_desc_map( ), "m_MoveType" );
-	ADD_DATAFIELD( int, get_move_collide, this->get_prediction_desc_map( ),
-	               "m_MoveCollide" ); /* movetype + 1, this datamap var aint right i dont thinker */
 	ADD_DATAFIELD( float, get_stamina, this->get_prediction_desc_map( ), "m_flStamina" );
 	ADD_DATAFIELD( bool, is_reloading, this->get_prediction_desc_map( ), "m_bInReload" );
 
@@ -345,6 +331,11 @@ public:
 	const int is_max_health( )
 	{
 		return g_virtual.call< int >( this, 123 );
+	}
+
+	unsigned int physics_solid_mask_for_entity( )
+	{
+		return g_virtual.call< unsigned int >( this, 152 );
 	}
 
 	void pre_think( )
@@ -417,9 +408,11 @@ public:
 	bool is_valid_enemy( );
 	bool is_valid_player( );
 	bool is_armored( const int hit_group );
+	bool is_breakable( );
 
 	int get_bone_by_hash( const unsigned int hash ) const;
 	int get_max_health( );
+	int& get_take_damage( );
 
 	c_vector get_bone_position( int bone );
 	c_vector get_hitbox_position( int hitbox, float point_scale = 0.5f );
@@ -429,4 +422,10 @@ public:
 	bool can_see_player( c_base_entity* player );
 	bool can_see_matrix( c_base_entity* player, matrix3x4_t* matrix );
 	c_user_cmd& get_last_command( );
+};
+
+class c_breakable_surface : public c_base_entity, public c_breakable_with_prop_data
+{
+public:
+	NETVAR_VARIABLE( bool, is_broken, "CBreakableSurface->m_bIsBroken" );
 };
