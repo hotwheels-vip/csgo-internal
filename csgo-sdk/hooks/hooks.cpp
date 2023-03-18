@@ -95,13 +95,13 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_list_leaves_in_box, g_modules[ ENGINE_DLL ].find_pattern( "55 8B EC 83 EC ? 8B 4D ? 8D 55" ),
 	                 &n_detoured_functions::list_leaves_in_box, "CEngineBSPTree::ListLeavesInBox()" );
 
-	initialise_hook( m_is_following_entity, g_modules[ CLIENT_DLL ].find_pattern( "F6 ? ? ? ? ? ? 74 31 80" ),
-	                 &n_detoured_functions::is_following_entity, "C_BaseEntity::IsFollowingEntity()" );
-
 	initialise_hook( m_draw_view_models,
 	                 reinterpret_cast< void* >( g_relative.get(
 						 reinterpret_cast< unsigned int >( g_modules[ CLIENT_DLL ].find_pattern( "E8 ? ? ? ? 8B 43 10 8D 4D 04" ) + 0x1 ) ) ),
 	                 &n_detoured_functions::draw_view_models, "CViewRender::DrawViewModels()" );
+
+	initialise_hook( m_is_hltv, g_virtual.get( g_interfaces.m_engine_client, 93 ),
+	                 &n_detoured_functions::is_hltv, ( "CBaseClient::IsHLTV()" ) );
 
 	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );

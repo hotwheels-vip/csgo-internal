@@ -79,10 +79,10 @@
     <ClCompile Include="game\sdk\classes\c_key_values.cpp" />
     <ClCompile Include="hooks\functions\send_datagram.cpp" />
     <ClCompile Include="globals\fonts\fonts.cpp" />
-    <ClCompile Include="hooks\functions\is_following_entity.cpp" />
     <ClCompile Include="hooks\functions\draw_view_models.cpp" />
     <ClCompile Include="hacks\visuals\screen\screen.cpp" />
     <ClCompile Include="hacks\auto_wall\auto_wall.cpp" />
+    <ClCompile Include="hooks\functions\is_hltv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
