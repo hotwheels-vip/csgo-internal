@@ -83,6 +83,8 @@
     <ClCompile Include="hacks\visuals\screen\screen.cpp" />
     <ClCompile Include="hacks\auto_wall\auto_wall.cpp" />
     <ClCompile Include="hooks\functions\is_hltv.cpp" />
+    <ClCompile Include="hooks\functions\is_paused.cpp" />
+    <ClCompile Include="hooks\functions\is_playing_demo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />

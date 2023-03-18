@@ -55,6 +55,8 @@ namespace n_hooks
 		c_detour_hook m_send_datagram{ };
 		c_detour_hook m_draw_view_models{ };
 		c_detour_hook m_is_hltv{ };
+		c_detour_hook m_is_paused{ };
+		c_detour_hook m_is_playing_demo{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -103,5 +105,7 @@ namespace n_detoured_functions
 	int __fastcall list_leaves_in_box( void* ecx, void* edx, const c_vector& mins, const c_vector& maxs, unsigned short* list, int list_max );
 	int __fastcall send_datagram( c_net_channel* net_channel, int edx, bf_write* datagram );
 	void __fastcall draw_view_models( void* ecx, void* edx, c_view_setup& setup, bool draw_view_model, bool draw_scope_lens_mask );
-	bool __fastcall is_hltv( void* ecx, void* edx );
+	bool __cdecl is_hltv( void* ecx, void* edx );
+	bool __cdecl is_paused( void* ecx, void* edx );
+	bool __fastcall is_playing_demo( void* ecx, void* edx );
 } // namespace n_detoured_functions

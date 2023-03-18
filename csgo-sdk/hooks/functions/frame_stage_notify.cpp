@@ -21,9 +21,6 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 	if ( !g_ctx.m_local )
 		return original( ecx, edx, stage );
 
-	if ( !g_ctx.m_local->is_alive( ) || g_ctx.m_local->get_observer_mode( ) != e_obs_mode::obs_mode_none )
-		g_edicts.reset( );
-
 	g_edicts.on_frame_stage_notify( stage );
 	g_movement.on_frame_stage_notify( stage );
 	g_animations.on_frame_stage_notify( stage );
@@ -31,11 +28,11 @@ void __fastcall n_detoured_functions::frame_stage_notify( void* ecx, void* edx, 
 	g_debugger.on_frame_stage_notify( stage );
 #endif
 	if ( stage == net_update_end ) {
-		for ( auto m_event = g_interfaces.m_client_state->m_events; m_event; m_event = m_event->m_next ) {
-			if ( m_event->m_class_id )
+		for ( auto events = g_interfaces.m_client_state->m_events; events; events = events->m_next ) {
+			if ( events->m_class_id )
 				break;
 
-			m_event->m_fire_delay = 0.f;
+			events->m_fire_delay = 0.f;
 		}
 
 		g_interfaces.m_engine_client->fire_events( );

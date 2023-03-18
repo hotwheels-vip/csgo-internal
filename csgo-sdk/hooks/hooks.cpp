@@ -103,6 +103,12 @@ bool n_hooks::impl_t::on_attach( )
 	initialise_hook( m_is_hltv, g_virtual.get( g_interfaces.m_engine_client, 93 ),
 	                 &n_detoured_functions::is_hltv, ( "CBaseClient::IsHLTV()" ) );
 
+	initialise_hook( m_is_paused, g_virtual.get( g_interfaces.m_engine_client, 90 ),
+	                 &n_detoured_functions::is_paused, ( "CBaseClient::IsPaused()" ) );
+
+	initialise_hook( m_is_playing_demo, g_virtual.get( g_interfaces.m_engine_client, 82 ), &n_detoured_functions::is_playing_demo,
+	                 ( "CBaseClient::IsPlayingDemo()" ) );
+
 	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );
 	initialise_hook( m_end_scene, g_virtual.get( g_interfaces.m_direct_device, 42 ), &n_detoured_functions::end_scene,
