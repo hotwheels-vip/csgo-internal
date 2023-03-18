@@ -44,6 +44,7 @@
 #include "../classes/c_view_setup.h"
 #include "../classes/c_weapon_data.h"
 #include "../classes/c_weapon_system.h"
+#include "../classes/c_net_message.h"
 #include "../classes/entity.h"
 
 // panorama

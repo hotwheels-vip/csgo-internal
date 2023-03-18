@@ -16,14 +16,14 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 
 	c_user_cmd* cmd                   = g_interfaces.m_input->get_user_cmd( sequence_number );
 	c_verified_user_cmd* verified_cmd = g_interfaces.m_input->get_verified_cmd( sequence_number );
-	auto client_state_net_channel     = g_interfaces.m_client_state->m_net_channel;
 
-	if ( !cmd || !verified_cmd || !cmd->m_command_number || cmd->m_tick_count == 0 )
+	if ( !cmd || !verified_cmd || !is_active )
 		return;
 
 	g_ctx.m_cmd = cmd;
 
-	const auto local = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
+	const auto local       = g_interfaces.m_client_entity_list->get< c_base_entity >( g_interfaces.m_engine_client->get_local_player( ) );
+	const auto net_channel = g_interfaces.m_client_state->m_net_channel;
 
 	g_ctx.m_local = local;
 
@@ -52,13 +52,14 @@ void __stdcall create_move( int sequence_number, float input_sample_frametime, b
 		g_movement.on_create_move_post( );
 	}( );
 
-	if ( client_state_net_channel ) {
-		g_lagcomp.on_create_move_update( client_state_net_channel );
+	if ( net_channel ) {
+		g_lagcomp.on_create_move_update( net_channel );
 
-		if ( !g_hooks.m_send_datagram.is_hooked( ) ) {
-			if ( g_hooks.m_send_datagram.create( g_virtual.get( client_state_net_channel, 46 ), &n_detoured_functions::send_datagram ) )
-				g_console.print( "hooked datagram" );
-		}
+		if ( !g_hooks.m_send_net_msg.is_hooked( ) )
+			g_hooks.m_send_net_msg.create( g_virtual.get( net_channel, 40 ), &n_detoured_functions::send_net_msg );
+
+		if ( !g_hooks.m_send_datagram.is_hooked( ) )
+			g_hooks.m_send_datagram.create( g_virtual.get( net_channel, 46 ), &n_detoured_functions::send_datagram );
 	}
 
 	cmd->m_view_point.normalize( );

@@ -18,7 +18,8 @@ c_base_entity* n_aimbot::impl_t::find_closest_player( )
 
 		const auto hitbox_position = entity->get_hitbox_position( hitbox_head );
 
-		const auto angle = g_math.calculate_angle( eye_position, hitbox_position );
+		auto angle = g_math.calculate_angle( eye_position, hitbox_position );
+		angle -= ( g_ctx.m_local->get_punch( ) * g_convars[ HASH_BT( "weapon_recoil_scale" ) ]->get_float( ) );
 
 		if ( GET_VARIABLE( g_variables.m_backtrack_enable, bool ) ) {
 			g_lagcomp.backtrack_player( entity );
@@ -75,13 +76,11 @@ void n_aimbot::impl_t::on_create_move_post( )
 	                             ? g_math.calculate_angle( eye_position, entity->get_hitbox_position( hitbox_head, g_ctx.m_record->m_matrix ) )
 	                             : g_math.calculate_angle( eye_position, entity->get_hitbox_position( hitbox_head ) );
 
-	auto recoil_angle = g_ctx.m_local->get_punch( ) * ( g_convars[ HASH_BT( "weapon_recoil_scale" ) ]->get_float( ) * -1.f );
+	angles_to_head -= g_ctx.m_cmd->m_view_point;
+	angles_to_head -= ( g_ctx.m_local->get_punch( ) * g_convars[ HASH_BT( "weapon_recoil_scale" ) ]->get_float( ) );
+	angles_to_head.normalize( );
 
-	angles_to_head += recoil_angle;
+	g_ctx.m_cmd->m_view_point += angles_to_head;
 
-	angles_to_head = angles_to_head.normalize( );
-
-	g_ctx.m_cmd->m_view_point = angles_to_head;
-
-	g_interfaces.m_engine_client->set_view_angles( g_ctx.m_cmd->m_view_point );
+	//g_interfaces.m_engine_client->set_view_angles( g_ctx.m_cmd->m_view_point );
 }

@@ -85,6 +85,7 @@
     <ClCompile Include="hooks\functions\is_hltv.cpp" />
     <ClCompile Include="hooks\functions\is_paused.cpp" />
     <ClCompile Include="hooks\functions\is_playing_demo.cpp" />
+    <ClCompile Include="hooks\functions\send_net_msg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />
@@ -327,6 +328,7 @@
     <ClInclude Include="game\sdk\structs\string_t.h" />
     <ClInclude Include="game\sdk\enums\e_multiplayer_physics_mode.h" />
     <ClInclude Include="game\sdk\enums\e_valve_decals.h" />
+    <ClInclude Include="game\sdk\classes\c_net_message.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

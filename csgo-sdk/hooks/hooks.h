@@ -5,8 +5,6 @@
 #include <d3d9.h>
 #include <stdint.h>
 
-// [\/] fw decs to prevent include errors
-
 class c_vector;
 class c_view_setup;
 class c_material;
@@ -14,6 +12,7 @@ class c_animation_state;
 class c_base_entity;
 class c_move_data;
 class c_net_channel;
+class c_net_message;
 class bf_write;
 
 struct game_event_t;
@@ -57,6 +56,7 @@ namespace n_hooks
 		c_detour_hook m_is_hltv{ };
 		c_detour_hook m_is_paused{ };
 		c_detour_hook m_is_playing_demo{ };
+		c_detour_hook m_send_net_msg{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -108,4 +108,5 @@ namespace n_detoured_functions
 	bool __cdecl is_hltv( void* ecx, void* edx );
 	bool __cdecl is_paused( void* ecx, void* edx );
 	bool __fastcall is_playing_demo( void* ecx, void* edx );
+	bool __fastcall send_net_msg( void* ecx, void* edx, c_net_message* message, bool force_reliable, bool voice );
 } // namespace n_detoured_functions

@@ -15,8 +15,6 @@ namespace n_entity_cache
 	struct impl_t {
 		void on_add_entity( c_base_entity* entity );
 		void on_remove_entity( c_base_entity* entity );
-		void on_level_init_pre_entity( );
-		void on_level_shutdown( );
 
 		void enumerate( e_enumeration_type type, const std::function< void( c_base_entity* ) >& function ) const;
 	};

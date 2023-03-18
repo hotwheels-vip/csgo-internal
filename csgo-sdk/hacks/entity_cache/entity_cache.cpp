@@ -51,24 +51,6 @@ void n_entity_cache::impl_t::on_remove_entity( c_base_entity* entity )
 	}
 }
 
-void n_entity_cache::impl_t::on_level_init_pre_entity( )
-{
-	if ( !cached_players.empty( ) )
-		cached_players.clear( );
-
-	if ( !cached_edicts.empty( ) )
-		cached_edicts.clear( );
-}
-
-void n_entity_cache::impl_t::on_level_shutdown( )
-{
-	if ( !cached_players.empty( ) )
-		cached_players.clear( );
-
-	if ( !cached_edicts.empty( ) )
-		cached_edicts.clear( );
-}
-
 void n_entity_cache::impl_t::enumerate( e_enumeration_type type, const std::function< void( c_base_entity* ) >& function ) const
 {
 	switch ( type ) { /* could be done with the ?, : operator but oh well! */
