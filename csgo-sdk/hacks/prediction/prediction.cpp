@@ -158,15 +158,11 @@ void n_prediction::impl_t::update_button_state( c_base_entity* local, c_user_cmd
 
 void n_prediction::impl_t::restore_entity_to_predicted_frame( int frame )
 {
-	// sanity
-	if ( g_ctx.m_local->get_observer_mode( ) > 0 )
-		return;
-
 	static auto cl_predict = g_convars[ HASH_BT( "cl_predict" ) ];
 	if ( !cl_predict->get_int( ) )
 		return;
 
-	if ( !g_ctx.m_local->is_predictable( ) )
+	if ( !g_ctx.m_local->is_predictable( ) || g_ctx.m_local->get_health( ) == 0 /* AAA */ )
 		return;
 
 	g_ctx.m_local->restore_data( "RestoreEntityToPredictedFrame", frame, 2 /* PC_EVERYTHING */ );

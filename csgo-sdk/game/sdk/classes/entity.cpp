@@ -239,6 +239,10 @@ void c_base_entity::restore_data( const char* context, int slot, int type )
 {
 	static const auto restore_data_fn = reinterpret_cast< void( __thiscall* )( void*, const char*, int, int ) >(
 		g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 E4 F8 83 EC 44 53 56 8B" ) );
+
+	if ( !( context ) )
+		return;
+
 	// manual fix for deathcam crash
 	restore_data_fn( this, context, slot, type );
 }

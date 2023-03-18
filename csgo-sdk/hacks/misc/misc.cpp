@@ -393,10 +393,14 @@ void n_misc::impl_t::draw_spectator_list( )
 
 	ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_Alpha, spectators_list_ui_animation.AnimationData->second );
 
+	int flags = ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar |
+	            ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize;
+
+	if ( !( g_ctx.m_is_window_focused ) )
+		flags |= ImGuiWindowFlags_::ImGuiWindowFlags_NoMove;
+
 	ImGui::SetNextWindowSizeConstraints( ImVec2( title_text_size.x + 40.f, title_text_size.y + 5.f ), ImVec2( FLT_MAX, FLT_MAX ) );
-	ImGui::Begin( ( "hotwheels-spectators-list-ui" ), 0,
-	              ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar |
-	                  ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize );
+	ImGui::Begin( ( "hotwheels-spectators-list-ui" ), 0, flags );
 	{
 		const auto window = ImGui::GetCurrentWindow( );
 

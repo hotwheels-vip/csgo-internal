@@ -19,7 +19,7 @@ namespace n_ctx
 			int m_invis_layer_amt = 0;
 		} m_chams;
 
-		bool m_unloading{ };
+		bool m_unloading{ }, m_is_window_focused{ };
 
 		// fps lower then server tickrate
 		bool m_low_fps = false;

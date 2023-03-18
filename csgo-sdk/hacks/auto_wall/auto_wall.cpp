@@ -175,7 +175,7 @@ bool n_auto_wall::impl_t::trace_to_exit( trace_t& enter_trace, trace_t& exit_tra
 				clip_trace_to_players( end, start, e_mask::mask_shot_hull | e_contents::contents_hitbox, &filter, &exit_trace, -60.f );
 			}
 
-			if ( exit_trace.m_start_solid && exit_trace.surface.m_flags & surf_hitbox ) {
+			if ( exit_trace.m_start_solid && exit_trace.surface.m_flags & e_surf_type::surf_hitbox ) {
 				ray_t ray( start, position );
 				c_trace_filter filter( exit_trace.m_hit_entity );
 
