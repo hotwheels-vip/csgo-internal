@@ -82,5 +82,5 @@ void n_aimbot::impl_t::on_create_move_post( )
 
 	g_ctx.m_cmd->m_view_point += angles_to_head;
 
-	//g_interfaces.m_engine_client->set_view_angles( g_ctx.m_cmd->m_view_point );
+	g_interfaces.m_engine_client->set_view_angles( g_ctx.m_cmd->m_view_point );
 }
