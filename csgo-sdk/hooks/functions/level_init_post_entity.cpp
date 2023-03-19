@@ -1,4 +1,5 @@
 #include "../../hacks/misc/scaleform/scaleform.h"
+#include "../../hacks/avatar_cache/avatar_cache.h"
 #include "../hooks.h"
 
 void __fastcall n_detoured_functions::level_init_post_entity( void* ecx, void* edx )

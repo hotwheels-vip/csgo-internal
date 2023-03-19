@@ -1,5 +1,5 @@
 #pragma once
-
+#include <array>
 class c_base_entity;
 struct IDirect3DTexture9;
 
@@ -10,9 +10,10 @@ namespace n_avatar_cache
 		
 		void on_add_entity( c_base_entity* entity );
 		void on_remove_entity( c_base_entity* entity );
+		void reset( );
 
 	private:
-		IDirect3DTexture9* m_cached_avatars[ 64 ]{ };
+		std::array< IDirect3DTexture9*, 64 > m_cached_avatars{ };
 	};
 } // namespace n_avatar_cache
 

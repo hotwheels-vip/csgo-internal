@@ -44,3 +44,15 @@ void n_avatar_cache::impl_t::on_remove_entity( c_base_entity* entity )
 		this->m_cached_avatars[ index ] = nullptr;
 	}
 }
+
+void n_avatar_cache::impl_t::reset( )
+{
+	for ( unsigned int iterator = 0; iterator < m_cached_avatars.size( ); iterator++ ) {
+		if ( iterator < m_cached_avatars.size( ) ) {
+			if ( this->m_cached_avatars[ iterator ] != nullptr ) {
+				this->m_cached_avatars[ iterator ]->Release( );
+				this->m_cached_avatars[ iterator ] = nullptr;
+			}
+		}
+	}
+}
