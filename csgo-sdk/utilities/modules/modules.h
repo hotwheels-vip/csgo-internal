@@ -11,9 +11,7 @@ public:
 	}
 
 	unsigned char* find_pattern( const char* signature );
-
 	void* find_interface( const char* interface_name );
-
 	void* find_export( unsigned int hash );
 
 	void* get_value( )

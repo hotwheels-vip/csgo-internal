@@ -18,9 +18,6 @@ c_base_entity* n_aimbot::impl_t::find_closest_player( )
 
 		const auto hitbox_position = entity->get_hitbox_position( hitbox_head );
 
-		auto angle = g_math.calculate_angle( eye_position, hitbox_position );
-		angle -= ( g_ctx.m_local->get_punch( ) * g_convars[ HASH_BT( "weapon_recoil_scale" ) ]->get_float( ) );
-
 		if ( GET_VARIABLE( g_variables.m_backtrack_enable, bool ) ) {
 			g_lagcomp.backtrack_player( entity );
 			if ( !g_ctx.m_local->can_see_player( entity ) && !g_ctx.m_local->can_see_matrix( entity, g_ctx.m_record->m_matrix ) )
@@ -33,7 +30,10 @@ c_base_entity* n_aimbot::impl_t::find_closest_player( )
 				return;
 		}
 
-		if ( float calculated_fov = g_math.calculate_fov( g_prediction.backup_data.m_view_angles, angle ); calculated_fov < closest_fov ) {
+		auto angle = g_math.calculate_angle( eye_position, hitbox_position );
+		angle -= ( g_ctx.m_local->get_punch( ) * g_convars[ HASH_BT( "weapon_recoil_scale" ) ]->get_float( ) );
+
+		if ( float calculated_fov = g_math.calculate_fov( g_ctx.m_cmd->m_view_point, angle ); calculated_fov < closest_fov ) {
 			closest_fov    = calculated_fov;
 			closest_player = entity;
 		}
@@ -81,6 +81,4 @@ void n_aimbot::impl_t::on_create_move_post( )
 	angles_to_head.normalize( );
 
 	g_ctx.m_cmd->m_view_point += angles_to_head;
-
-	g_interfaces.m_engine_client->set_view_angles( g_ctx.m_cmd->m_view_point );
 }

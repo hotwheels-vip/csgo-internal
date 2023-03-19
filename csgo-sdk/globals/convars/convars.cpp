@@ -13,7 +13,7 @@ std::unordered_map< unsigned int, c_cconvar* > convars = { };
 
 bool n_convars::impl_t::on_attach( )
 {
-	c_con_base* iterator = **reinterpret_cast< c_con_base*** >( reinterpret_cast< unsigned long >( g_interfaces.m_convar ) + 0x34 ); /* 0x13f62db8 */
+	c_con_base* iterator = **reinterpret_cast< c_con_base*** >( reinterpret_cast< unsigned long >( g_interfaces.m_convar ) + 0x34 );
 	if ( !iterator )
 		return false;
 
