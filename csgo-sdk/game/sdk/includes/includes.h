@@ -31,6 +31,7 @@
 #include "../classes/c_move_helper.h"
 #include "../classes/c_multiplayer_physics.h"
 #include "../classes/c_net_channel_info.h"
+#include "../classes/c_net_message.h"
 #include "../classes/c_panel.h"
 #include "../classes/c_physics_collisons.h"
 #include "../classes/c_prediction.h"
@@ -44,10 +45,7 @@
 #include "../classes/c_view_setup.h"
 #include "../classes/c_weapon_data.h"
 #include "../classes/c_weapon_system.h"
-#include "../classes/c_net_message.h"
 #include "../classes/entity.h"
-
-// panorama
 #include "../classes/panorama/c_panorama_ui_engine.h"
 
 #include "../structs/bounding_box_t.h"
@@ -59,6 +57,7 @@
 #include "../structs/model_render_info_t.h"
 #include "../structs/mstudiobone_t.h"
 #include "../structs/player_info_t.h"
+#include "../structs/rect_t.h"
 #include "../structs/recv_prop_t.h"
 #include "../structs/recv_table_t.h"
 #include "../structs/renderable_info_t.h"
@@ -85,8 +84,8 @@
 #include "../enums/e_preview_image_ret_val.h"
 #include "../enums/e_send_prop_type.h"
 #include "../enums/e_team_id.h"
-#include "../enums/e_weapon_type.h"
 #include "../enums/e_valve_decals.h"
+#include "../enums/e_weapon_type.h"
 
 #include <d3d9.h>
 

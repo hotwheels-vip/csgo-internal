@@ -329,6 +329,7 @@
     <ClInclude Include="game\sdk\enums\e_multiplayer_physics_mode.h" />
     <ClInclude Include="game\sdk\enums\e_valve_decals.h" />
     <ClInclude Include="game\sdk\classes\c_net_message.h" />
+    <ClInclude Include="game\sdk\structs\rect_t.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

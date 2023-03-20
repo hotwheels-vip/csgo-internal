@@ -296,6 +296,7 @@
     <ClInclude Include="game\sdk\structs\mstudiobone_t.h" />
     <ClInclude Include="game\sdk\structs\mstudiohitboxset_t.h" />
     <ClInclude Include="game\sdk\structs\player_info_t.h" />
+    <ClInclude Include="game\sdk\structs\rect_t.h" />
     <ClInclude Include="game\sdk\structs\recv_table_t.h" />
     <ClInclude Include="game\sdk\structs\recv_prop_t.h" />
     <ClInclude Include="game\sdk\structs\renderable_info_t.h" />

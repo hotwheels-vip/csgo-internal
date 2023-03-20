@@ -146,6 +146,9 @@ namespace n_variables
 		ADD_VARIABLE( bool, m_disable_post_processing, false );
 		ADD_VARIABLE( bool, m_remove_panorama_blur, false );
 
+		/* visuals - screen */
+		ADD_VARIABLE( bool, m_motion_blur, false );
+
 		/* misc - movement */
 		ADD_VARIABLE( bool, m_bunny_hop, false );
 		ADD_VARIABLE( bool, m_no_crouch_cooldown, false );

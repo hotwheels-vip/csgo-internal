@@ -70,8 +70,20 @@ void n_players::impl_t::players( )
 			this->m_fading_alpha[ index ] += delta_time;
 		}
 
-		const auto collideable = entity->get_collideable( );
+		const auto client_renderable = entity->get_client_renderable( );
+		if ( !client_renderable )
+			return;
+
+		const auto client_unknown = client_renderable->get_client_unknown( );
+		if ( !client_unknown )
+			return;
+
+		const auto collideable = client_unknown->get_collideable( );
 		if ( !collideable )
+			return;
+
+		const auto client_entity = client_unknown->get_client_entity( );
+		if ( !client_entity )
 			return;
 
 		if ( this->m_fading_alpha[ index ] >= 1.0f )
@@ -82,16 +94,8 @@ void n_players::impl_t::players( )
 			return;
 		}
 
-		const bool in_view_frustrum = !g_interfaces.m_engine_client->cull_box( collideable->get_obb_mins( ) + entity->get_abs_origin( ),
-		                                                                       collideable->get_obb_maxs( ) + entity->get_abs_origin( ) );
-
-		const auto client_renderable = entity->get_client_renderable( );
-		if ( !client_renderable )
-			return;
-
-		const auto client_unknown = client_renderable->get_client_unknown( );
-		if ( !client_unknown )
-			return;
+		const bool in_view_frustrum = !g_interfaces.m_engine_client->cull_box( collideable->get_obb_mins( ) + client_entity->get_abs_origin( ),
+		                                                                       collideable->get_obb_maxs( ) + client_entity->get_abs_origin( ) );
 
 		const auto client_networkable = client_unknown->get_client_networkable( );
 		if ( !client_networkable )
@@ -101,7 +105,7 @@ void n_players::impl_t::players( )
 			if ( !GET_VARIABLE( g_variables.m_out_of_fov_arrows, bool ) || in_view_frustrum )
 				return;
 
-			const c_vector position_difference = g_ctx.m_local->get_abs_origin( ) - entity->get_abs_origin( );
+			const c_vector position_difference = g_ctx.m_local->get_abs_origin( ) - client_entity->get_abs_origin( );
 
 			float x = std::cos( yaw ) * position_difference.m_y - std::sin( yaw ) * position_difference.m_x;
 			float y = std::cos( yaw ) * position_difference.m_x + std::sin( yaw ) * position_difference.m_y;
@@ -373,7 +377,7 @@ void n_players::impl_t::players( )
 			if ( !draw_skeleton )
 				return;
 
-			static auto draw_skeleton_matrix = [ & ]( matrix3x4_t* bone_matrix ) {
+			auto draw_skeleton_matrix = [ & ]( matrix3x4_t* bone_matrix ) {
 				if ( !bone_matrix )
 					return;
 

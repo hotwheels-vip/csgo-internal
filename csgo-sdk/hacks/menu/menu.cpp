@@ -480,6 +480,7 @@ void n_menu::impl_t::on_end_scene( )
 					break;
 				}
 				case 2: /* screen */ {
+					ImGui::Checkbox( "motion blur", &GET_VARIABLE( g_variables.m_motion_blur, bool ) );
 					break;
 				}
 				}
@@ -840,9 +841,10 @@ void n_menu::impl_t::on_end_scene( )
 					ImGui::SliderInt( "size##indicator font", &GET_VARIABLE( g_variables.m_indicator_font_settings, font_setting_t ).m_size, 0, 50,
 					                  "%d", 0, false );
 
-					ImGui::MultiCombo( "font flags##indicator font", GET_VARIABLE( g_variables.m_indicator_font_flags, std::vector< bool > ),
+					ImGui::MultiCombo(
+						"font flags##indicator font", GET_VARIABLE( g_variables.m_indicator_font_flags, std::vector< bool > ),
 						{ "no hinting", "no autohint", "force autohint", "light hinting", "monohinting", "bold", "oblique", "monochrome" },
-					                   GET_VARIABLE( g_variables.m_indicator_font_flags, std::vector< bool > ).size( ), false );
+						GET_VARIABLE( g_variables.m_indicator_font_flags, std::vector< bool > ).size( ), false );
 
 					if ( ImGui::Button( "reset to default##indicator font", ImVec2( ( ImGui::GetContentRegionAvail( ).x - 5.f ), 15.f ), false ) ) {
 						g_render.m_custom_fonts[ e_custom_font_names::custom_font_name_indicator ] =

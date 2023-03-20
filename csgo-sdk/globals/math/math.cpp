@@ -61,6 +61,30 @@ void n_math::impl_t::angle_vectors( const c_angle& angle, c_vector* forward, c_v
 	}
 }
 
+void n_math::impl_t::angle_matrix( const c_angle& angles, matrix3x4_t& matrix )
+{
+	float sr{ }, sp{ }, sy{ }, cr{ }, cp{ }, cy{ };
+
+	this->sin_cos( deg2rad( angles.m_y ), &sy, &cy );
+	this->sin_cos( deg2rad( angles.m_x ), &sp, &cp );
+	this->sin_cos( deg2rad( angles.m_z ), &sr, &cr );
+
+	matrix[ 0 ][ 0 ] = cp * cy;
+	matrix[ 1 ][ 0 ] = cp * sy;
+	matrix[ 2 ][ 0 ] = -sp;
+
+	matrix[ 0 ][ 1 ] = sr * sp * cy + cr * -sy;
+	matrix[ 1 ][ 1 ] = sr * sp * sy + cr * cy;
+	matrix[ 2 ][ 1 ] = sr * cp;
+	matrix[ 0 ][ 2 ] = ( cr * sp * cy + -sr * -sy );
+	matrix[ 1 ][ 2 ] = ( cr * sp * sy + -sr * cy );
+	matrix[ 2 ][ 2 ] = cr * cp;
+
+	matrix[ 0 ][ 3 ] = 0.0f;
+	matrix[ 1 ][ 3 ] = 0.0f;
+	matrix[ 2 ][ 3 ] = 0.0f;
+}
+
 c_angle n_math::impl_t::calculate_angle( const c_vector& start, const c_vector& end )
 {
 	c_angle out{ };

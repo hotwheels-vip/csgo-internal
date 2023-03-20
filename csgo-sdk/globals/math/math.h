@@ -26,6 +26,8 @@ namespace n_math
 
 		void angle_vectors( const c_angle& angle, c_vector* forward, c_vector* right = nullptr, c_vector* up = nullptr );
 
+		void angle_matrix( const c_angle& angles, matrix3x4_t& matrix );
+
 		c_angle calculate_angle( const c_vector& start, const c_vector& end );
 
 		float calculate_fov( const c_angle& view_point, const c_angle& aim_angle );
