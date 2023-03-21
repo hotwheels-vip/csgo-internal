@@ -91,18 +91,19 @@ void* module_t::find_export( unsigned int hash )
 	auto nt_headers  = reinterpret_cast< IMAGE_NT_HEADERS* >( reinterpret_cast< unsigned int >( this->m_value ) + dos_headers->e_lfanew );
 	IMAGE_OPTIONAL_HEADER* optional_header = &nt_headers->OptionalHeader;
 
-	uintptr_t exportdir_address = optional_header->DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ].VirtualAddress;
+	unsigned int exportdir_address = optional_header->DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ].VirtualAddress;
 
 	if ( optional_header->DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ].Size <= 0U )
 		return nullptr;
 
 	auto export_directory = reinterpret_cast< IMAGE_EXPORT_DIRECTORY* >( reinterpret_cast< unsigned int >( this->m_value ) + exportdir_address );
-	auto names_rva        = reinterpret_cast< uintptr_t* >( reinterpret_cast< unsigned int >( this->m_value ) + export_directory->AddressOfNames );
-	auto functions_rva = reinterpret_cast< uintptr_t* >( reinterpret_cast< unsigned int >( this->m_value ) + export_directory->AddressOfFunctions );
+	auto names_rva        = reinterpret_cast< unsigned int* >( reinterpret_cast< unsigned int >( this->m_value ) + export_directory->AddressOfNames );
+	auto functions_rva =
+		reinterpret_cast< unsigned int* >( reinterpret_cast< unsigned int >( this->m_value ) + export_directory->AddressOfFunctions );
 	auto name_ordinals =
 		reinterpret_cast< unsigned short* >( reinterpret_cast< unsigned int >( this->m_value ) + export_directory->AddressOfNameOrdinals );
 
-	for ( size_t i = 0; i < export_directory->AddressOfFunctions; i++ ) {
+	for ( unsigned int i = 0; i < export_directory->AddressOfFunctions; i++ ) {
 		if ( HASH_RT( reinterpret_cast< const char* >( reinterpret_cast< unsigned int >( this->m_value ) + names_rva[ i ] ) ) == hash )
 			return reinterpret_cast< void* >( reinterpret_cast< unsigned int >( this->m_value ) + functions_rva[ name_ordinals[ i ] ] );
 	}
