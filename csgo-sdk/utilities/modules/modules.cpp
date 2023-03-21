@@ -112,10 +112,10 @@ void* module_t::find_export( unsigned int hash )
 
 bool n_modules::impl_t::on_attach( )
 {
-	const _PEB32* peb_data = reinterpret_cast< _PEB32* >( __readfsdword( 0x30 ) );
+	const _PEB32* peb = reinterpret_cast< _PEB32* >( __readfsdword( 0x30 ) );
 
 	while ( this->m_modules.find( SERVERBROWSER_DLL ) == this->m_modules.end( ) ) {
-		for ( LIST_ENTRY* list_entry = peb_data->Ldr->InLoadOrderModuleList.Flink; list_entry != &peb_data->Ldr->InLoadOrderModuleList;
+		for ( LIST_ENTRY* list_entry = peb->Ldr->InLoadOrderModuleList.Flink; list_entry != &peb->Ldr->InLoadOrderModuleList;
 		      list_entry             = list_entry->Flink ) {
 			const _LDR_DATA_TABLE_ENTRY* entry = CONTAINING_RECORD( list_entry, _LDR_DATA_TABLE_ENTRY, InLoadOrderLinks );
 

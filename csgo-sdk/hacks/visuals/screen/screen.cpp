@@ -37,13 +37,12 @@ bool n_screen::impl_t::on_draw_view_models( c_view_setup& setup )
 	float h = static_cast< float >( setup.m_height );
 
 	static auto resolve_full_frame_depth = g_convars[ HASH_BT( "mat_resolveFullFrameDepth" ) ];
-
 	if ( resolve_full_frame_depth->get_int( ) == 1 )
 		resolve_full_frame_depth->set_value( 0 );
 
 	bool blur_forward        = false;
 	float rotation_intensity = 1.f;
-	float blur_strength      = 1.f;
+	float blur_strength      = 2.f;
 	float falling_min        = 5.f;
 	float falling_max        = 10.f;
 	float falling_intensity  = 0.f;
