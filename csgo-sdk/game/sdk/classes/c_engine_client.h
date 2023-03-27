@@ -133,14 +133,12 @@ public:
 
 	void set_view_angles( c_angle& view_angle )
 	{
-		using fn = void( __thiscall* )( c_engine_client*, c_angle& );
-		return ( *( fn** )this )[ 19 ]( this, std::ref( view_angle ) );
+		g_virtual.call< void >( this, 19, std::ref( view_angle ) );
 	}
 
 	void get_view_angles( c_angle& view_angle )
 	{
-		using fn = void( __thiscall* )( c_engine_client*, c_angle& );
-		return ( *( fn** )this )[ 18 ]( this, std::ref( view_angle ) );
+		g_virtual.call< void >( this, 18, std::ref( view_angle ) );
 	}
 
 	unsigned int get_engine_build_number( )

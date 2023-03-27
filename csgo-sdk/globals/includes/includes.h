@@ -10,6 +10,9 @@
 /* hiding functions from the imports table */
 #include "../../dependencies/lazy_importer/lazy_importer.h"
 
+/* media player */
+#include "../media_player/media_player.h"
+
 /* configuration system */
 #include "../config/config.h"
 #include "../config/variables.h"

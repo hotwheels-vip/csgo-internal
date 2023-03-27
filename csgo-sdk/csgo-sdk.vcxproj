@@ -43,6 +43,7 @@
     <ClCompile Include="globals\convars\convars.cpp" />
     <ClCompile Include="globals\fonts\fonts.cpp" />
     <ClCompile Include="globals\math\math.cpp" />
+    <ClCompile Include="globals\media_player\media_player.cpp" />
     <ClCompile Include="hacks\aimbot\aimbot.cpp" />
     <ClCompile Include="hacks\animations\animations.cpp" />
     <ClCompile Include="hacks\auto_wall\auto_wall.cpp" />
@@ -314,6 +315,7 @@
     <ClInclude Include="globals\logger\logger.h" />
     <ClInclude Include="globals\macros\macros.h" />
     <ClInclude Include="globals\math\math.h" />
+    <ClInclude Include="globals\media_player\media_player.h" />
     <ClInclude Include="hacks\aimbot\aimbot.h" />
     <ClInclude Include="hacks\animations\animations.h" />
     <ClInclude Include="hacks\auto_wall\auto_wall.h" />

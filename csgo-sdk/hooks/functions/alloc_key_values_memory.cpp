@@ -1,7 +1,6 @@
 #include "../../globals/includes/includes.h"
-#include "../hooks.h"
-
 #include "../../utilities/memory/relative.h"
+#include "../hooks.h"
 
 void* __fastcall n_detoured_functions::alloc_key_values_memory( void* ecx, void* edx, int size )
 {

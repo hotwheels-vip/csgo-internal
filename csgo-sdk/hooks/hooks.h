@@ -57,6 +57,7 @@ namespace n_hooks
 		c_detour_hook m_is_paused{ };
 		c_detour_hook m_is_playing_demo{ };
 		c_detour_hook m_send_net_msg{ };
+		c_detour_hook m_draw_static_prop_array_fast{ };
 
 		/* hook last, as we want the menu to initialise when the cheat has initialised */
 		c_detour_hook m_lock_cursor{ };
@@ -109,4 +110,6 @@ namespace n_detoured_functions
 	bool __cdecl is_paused( void* ecx, void* edx );
 	bool __fastcall is_playing_demo( void* ecx, void* edx );
 	bool __fastcall send_net_msg( void* ecx, void* edx, c_net_message* message, bool force_reliable, bool voice );
+	int __fastcall draw_static_prop_array_fast( void* ecx, void* edx, void* props, int count, bool shadow_depth );
+
 } // namespace n_detoured_functions
