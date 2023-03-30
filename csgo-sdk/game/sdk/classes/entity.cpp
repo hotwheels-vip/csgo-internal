@@ -159,7 +159,7 @@ bool c_base_entity::is_breakable( )
 			return false;
 
 		const auto client_networkable = client_unknown->get_client_networkable( );
-		if ( !client_networkable)
+		if ( !client_networkable )
 			return false;
 
 		const auto client_class = client_networkable->get_client_class( );
@@ -172,8 +172,8 @@ bool c_base_entity::is_breakable( )
 	}
 
 	if ( const int collision_group = this->get_collision_group( ); collision_group != e_collision_group::collision_group_pushaway &&
-	                                                             collision_group !=   e_collision_group::collision_group_breakable_glass &&
-	                                                             collision_group !=   e_collision_group::collision_group_none )
+	                                                               collision_group != e_collision_group::collision_group_breakable_glass &&
+	                                                               collision_group != e_collision_group::collision_group_none )
 		return false;
 
 	if ( health > 200 )
@@ -191,7 +191,7 @@ bool c_base_entity::is_breakable( )
 				if ( surface->is_broken( ) )
 					return false;
 			}
-		} else if ( this->physics_solid_mask_for_entity( ) & e_contents::contents_playerclip ) 
+		} else if ( this->physics_solid_mask_for_entity( ) & e_contents::contents_playerclip )
 			return false;
 	}
 
@@ -243,7 +243,6 @@ void c_base_entity::restore_data( const char* context, int slot, int type )
 	if ( !( context ) )
 		return;
 
-	// manual fix for deathcam crash
 	restore_data_fn( this, context, slot, type );
 }
 
@@ -253,6 +252,35 @@ void c_base_entity::on_post_restore_data( )
 		reinterpret_cast< void( __thiscall* )( void* ) >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 51 53 56 6A" ) );
 
 	on_post_restore_data_fn( this );
+}
+
+void c_base_entity::set_collision_bounds( const c_vector& mins, const c_vector& maxs )
+{
+	const auto client_renderable = this->get_client_renderable( );
+	if ( !client_renderable )
+		return;
+
+	const auto client_unknown = client_renderable->get_client_unknown( );
+	if ( !client_unknown )
+		return;
+
+	const auto collideable = client_unknown->get_collideable( );
+	if ( !collideable )
+		return;
+
+	static auto set_collision_bounds_fn = reinterpret_cast< void( __thiscall* )( c_collideable*, const c_vector&, const c_vector& ) >(
+		g_modules[ CLIENT_DLL ].find_pattern( "53 8B DC 83 EC 08 83 E4 F8 83 C4 04 55 8B 6B 04 89 6C 24 04 8B EC 83 EC 18 56 57 8B 7B" ) );
+
+	const auto backup_collision_change_origin = this->get_collision_change_origin( ),
+			   backup_collision_change_time   = this->get_collision_change_time( );
+
+	this->get_collision_change_origin( ) = *reinterpret_cast< float* >( this + 0x4B ) + collideable->get_obb_maxs( ).m_z;
+	this->get_collision_change_time( )   = g_interfaces.m_global_vars_base->m_current_time;
+
+	set_collision_bounds_fn( collideable, mins, maxs );
+
+	this->get_collision_change_origin( ) = backup_collision_change_origin;
+	this->get_collision_change_time( )   = backup_collision_change_time;
 }
 
 bool c_base_entity::physics_run_think( int think_method )
