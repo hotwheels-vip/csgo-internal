@@ -2,8 +2,8 @@
 #include "../../../globals/netvars/netvars.h"
 #include "../../../utilities/memory/virtual.h"
 #include "../structs/var_mapping.h" /* TODO ~ move to separate files, end structures with the suffix _t */
-#include "c_utl_vector.h"
 #include "c_breakable_with_prop_data.h"
+#include "c_utl_vector.h"
 
 enum class e_class_ids;
 
@@ -251,6 +251,10 @@ public:
 	NETVAR_VARIABLE( int, get_survival_team, "CCSPlayer->m_nSurvivalTeam" );
 	NETVAR_VARIABLE( int, get_armor, "CCSPlayer->m_ArmorValue" );
 	NETVAR_VARIABLE( bool, is_scoped, "CCSPlayer->m_bIsScoped" );
+
+	NETVAR_VARIABLE_OFFSET( int, get_collision_change_time, "CCSPlayer->m_bIsScoped", -0x50 );
+	NETVAR_VARIABLE_OFFSET( int, get_collision_change_origin, "CCSPlayer->m_bIsScoped", -0x54 );
+
 	NETVAR_VARIABLE( bool, has_heavy_armor, "CCSPlayer->m_bHasHeavyArmor" );
 	NETVAR_VARIABLE( bool, has_helmet, "CCSPlayer->m_bHasHelmet" );
 

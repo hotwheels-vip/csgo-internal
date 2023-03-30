@@ -68,7 +68,7 @@ bool n_hooks::impl_t::on_attach( )
 	                 &n_detoured_functions::modify_eye_position, "CBaseAnimating::ModifyEyePos()" );
 
 	initialise_hook( m_override_mouse_input, g_virtual.get( g_interfaces.m_client_mode, 23 ), &n_detoured_functions::override_mouse_input,
-	                 ( "IClientModeShared::OverrideMouseInput()" ) );
+	                 "IClientModeShared::OverrideMouseInput()" );
 
 	initialise_hook( m_glow_effect_spectator, g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 EC 14 53 8B 5D 0C 56 57 85 DB 74" ),
 	                 &n_detoured_functions::glow_effect_spectator, "CCSPlayer::GlowEffectSpectator()" );
@@ -87,10 +87,10 @@ bool n_hooks::impl_t::on_attach( )
 
 	initialise_hook( m_set_image_data_r8g8b8a8,
 	                 g_modules[ PANORAMA_DLL ].find_pattern( "55 8B EC 83 E4 F8 81 ? ? ? ? ? 53 56 57 8B F9 8B ? ? ? ? ? 8B" ),
-	                 &n_detoured_functions::set_image_data_r8g8b8a8, ( "CImageData::SetImageDataR8G8B8A8()" ) );
+	                 &n_detoured_functions::set_image_data_r8g8b8a8, "CImageData::SetImageDataR8G8B8A8()" );
 
 	initialise_hook( m_net_earliertempents, g_virtual.get( g_convars[ HASH_BT( "net_earliertempents" ) ], 13 ),
-	                 &n_detoured_functions::net_earliertempents, ( "net_earliertempents::GetBool()" ) );
+	                 &n_detoured_functions::net_earliertempents, "net_earliertempents::GetBool()" );
 
 	initialise_hook( m_list_leaves_in_box, g_modules[ ENGINE_DLL ].find_pattern( "55 8B EC 83 EC ? 8B 4D ? 8D 55" ),
 	                 &n_detoured_functions::list_leaves_in_box, "CEngineBSPTree::ListLeavesInBox()" );
@@ -100,14 +100,12 @@ bool n_hooks::impl_t::on_attach( )
 						 reinterpret_cast< unsigned int >( g_modules[ CLIENT_DLL ].find_pattern( "E8 ? ? ? ? 8B 43 10 8D 4D 04" ) + 0x1 ) ) ),
 	                 &n_detoured_functions::draw_view_models, "CViewRender::DrawViewModels()" );
 
-	initialise_hook( m_is_hltv, g_virtual.get( g_interfaces.m_engine_client, 93 ),
-	                 &n_detoured_functions::is_hltv, ( "CBaseClient::IsHLTV()" ) );
+	initialise_hook( m_is_hltv, g_virtual.get( g_interfaces.m_engine_client, 93 ), &n_detoured_functions::is_hltv, "CBaseClient::IsHLTV()" );
 
-	initialise_hook( m_is_paused, g_virtual.get( g_interfaces.m_engine_client, 90 ),
-	                 &n_detoured_functions::is_paused, ( "CBaseClient::IsPaused()" ) );
+	initialise_hook( m_is_paused, g_virtual.get( g_interfaces.m_engine_client, 90 ), &n_detoured_functions::is_paused, "CBaseClient::IsPaused()" );
 
 	initialise_hook( m_is_playing_demo, g_virtual.get( g_interfaces.m_engine_client, 82 ), &n_detoured_functions::is_playing_demo,
-	                 ( "CBaseClient::IsPlayingDemo()" ) );
+	                 "CBaseClient::IsPlayingDemo()" );
 
 	initialise_hook( m_lock_cursor, g_virtual.get( g_interfaces.m_surface, 67 ), &n_detoured_functions::lock_cursor, "ISurface::LockCursor()" );
 	initialise_hook( m_reset, g_virtual.get( g_interfaces.m_direct_device, 16 ), &n_detoured_functions::reset, "IDirect3DDevice9::Reset()" );
