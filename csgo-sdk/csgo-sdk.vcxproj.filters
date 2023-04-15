@@ -87,6 +87,7 @@
     <ClCompile Include="hooks\functions\send_net_msg.cpp" />
     <ClCompile Include="hooks\functions\set_image_data_r8g8b8a8.cpp" />
     <ClCompile Include="hooks\functions\wndproc.cpp" />
+    <ClCompile Include="hooks\functions\do_post_screen_effects.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\sdk\includes\includes.h" />

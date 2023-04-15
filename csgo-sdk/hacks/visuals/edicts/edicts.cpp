@@ -8,9 +8,10 @@ static vcollide_t precipitation_collideable{ };
 
 void n_edicts::impl_t::on_frame_stage_notify( int stage )
 {
+	this->precipitation( stage );
+
 	switch ( stage ) {
 	case 5: {
-		this->precipitation( );
 		this->fog( );
 		break;
 	}
@@ -21,6 +22,7 @@ void n_edicts::impl_t::on_paint_traverse( )
 {
 	if ( GET_VARIABLE( g_variables.m_dropped_weapons, bool ) )
 		this->dropped_weapons( );
+
 	if ( GET_VARIABLE( g_variables.m_thrown_objects, bool ) )
 		this->projectiles( );
 }
@@ -303,7 +305,7 @@ void n_edicts::impl_t::dropped_weapons( )
 	} );
 }
 
-void n_edicts::impl_t::precipitation( )
+void n_edicts::impl_t::precipitation( int stage )
 {
 	if ( !GET_VARIABLE( g_variables.m_precipitation, bool ) ) {
 		this->reset( );
@@ -344,59 +346,62 @@ void n_edicts::impl_t::precipitation( )
 
 	last_type = weather_type;
 
-	if ( m_created )
-		return;
+	if ( stage == e_client_frame_stage::render_start && !( this->m_created ) ) {
+		memset( &precipitation_collideable, 0, sizeof( precipitation_collideable ) );
 
-	memset( &precipitation_collideable, 0, sizeof( precipitation_collideable ) );
-
-	static c_base_client* precipitation_client_class = nullptr;
-	if ( !precipitation_client_class ) {
-		for ( auto client_class = g_interfaces.m_base_client->get_all_classes( ); client_class; client_class = client_class->m_next ) {
-			if ( client_class->m_class_id == e_class_ids::c_precipitation ) {
-				precipitation_client_class = client_class;
-				break;
+		static c_base_client* precipitation_client_class = nullptr;
+		if ( !precipitation_client_class ) {
+			for ( auto client_class = g_interfaces.m_base_client->get_all_classes( ); client_class; client_class = client_class->m_next ) {
+				if ( client_class->m_class_id == e_class_ids::c_precipitation ) {
+					precipitation_client_class = client_class;
+					break;
+				}
 			}
 		}
-	}
 
-	if ( precipitation_client_class && precipitation_client_class->m_create_fn ) {
-		void* rain_networkable = ( ( void* ( * )( int, int ))precipitation_client_class->m_create_fn )( 2048 - 1, 0 );
-		if ( !rain_networkable )
-			return;
+		if ( precipitation_client_class && precipitation_client_class->m_create_fn ) {
+			void* rain_networkable = ( ( void* ( * )( int, int ))precipitation_client_class->m_create_fn )( 2048 - 1, 0 );
+			if ( !rain_networkable )
+				return;
 
-		const auto rain_unknown = ( ( c_client_renderable* )rain_networkable )->get_client_unknown( );
-		if ( !rain_unknown )
-			return;
+			const auto rain_unknown = ( ( c_client_renderable* )rain_networkable )->get_client_unknown( );
+			if ( !rain_unknown )
+				return;
 
-		const auto entity = rain_unknown->get_base_entity( );
-		if ( !entity )
-			return;
+			const auto entity = rain_unknown->get_base_entity( );
+			if ( !entity )
+				return;
 
-		const auto networkable = entity->get_client_networkable( );
-		if ( !networkable )
-			return;
+			const auto networkable = entity->get_client_networkable( );
+			if ( !networkable )
+				return;
 
-		networkable->pre_data_update( 0 );
-		networkable->on_pre_data_changed( 0 );
-		entity->get_index( ) = -1;
+			networkable->pre_data_update( 0 );
+			networkable->on_pre_data_changed( 0 );
+			entity->get_index( ) = -1;
 
-		*( int* )( ( uintptr_t )entity + 0xA00 ) = weather_type;
+			*( int* )( ( uintptr_t )entity + 0xA00 ) = weather_type;
 
-		const auto collideable = entity->get_collideable( );
-		if ( !collideable )
-			return;
+			const auto collideable = entity->get_collideable( );
+			if ( !collideable )
+				return;
 
-		collideable->get_obb_mins( ) = c_vector( -32768.f, -32768.f, -32768.f );
-		collideable->get_obb_maxs( ) = c_vector( 32768.f, 32768.f, 32768.f );
+			collideable->get_obb_mins( ) = c_vector( -32768.f, -32768.f, -32768.f );
+			collideable->get_obb_maxs( ) = c_vector( 32768.f, 32768.f, 32768.f );
 
-		g_interfaces.m_physics_collison->v_collide_load( &precipitation_collideable, 1, ( const char* )collide_data, sizeof( collide_data ) );
+			g_interfaces.m_physics_collison->v_collide_load( &precipitation_collideable, 1, ( const char* )collide_data, sizeof( collide_data ) );
 
-		entity->get_model_index( ) = -1;
+			entity->get_model_index( ) = -1;
 
-		networkable->on_data_changed( 0 );
-		networkable->post_data_update( 0 );
+			networkable->on_data_changed( 0 );
+			networkable->post_data_update( 0 );
 
-		m_created = true;
+			static auto precipitation_init_fn =
+				reinterpret_cast< int( __thiscall* )( void* ) >( g_modules[ CLIENT_DLL ].find_pattern( "55 8B EC 83 EC 5C 8B C1" ) );
+			precipitation_init_fn( entity );
+
+			m_created = true;
+		}
 	}
 }
 

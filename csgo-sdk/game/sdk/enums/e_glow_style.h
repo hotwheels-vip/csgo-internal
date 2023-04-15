@@ -1,4 +1,5 @@
 #pragma once
+
 enum e_glow_style : int {
 	glow_style_default = 0,
 	glow_style_rim_3d,

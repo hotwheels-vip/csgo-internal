@@ -75,7 +75,7 @@ namespace n_edicts
 	private:
 		void dropped_weapons( );
 
-		void precipitation( );
+		void precipitation( int stage );
 		void fog( );
 
 		void disable_post_processing( );

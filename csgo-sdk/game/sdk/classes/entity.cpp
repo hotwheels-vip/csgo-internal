@@ -14,10 +14,10 @@ void c_client_entity::set_abs_origin( const c_vector& origin )
 
 void c_base_entity::invalidate_bone_cache( )
 {
-	static auto invalidate_bone_cache_address = reinterpret_cast< std::uintptr_t >(
+	static auto invalidate_bone_cache_fn = reinterpret_cast< std::uintptr_t >(
 		g_modules[ CLIENT_DLL ].find_pattern( "80 ? ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 ? ? ? ? ? ? ? ? ? 89 ? ? ? ? ? C3" ) );
 
-	reinterpret_cast< void( __thiscall* )( void* ) >( invalidate_bone_cache_address )( this );
+	reinterpret_cast< void( __thiscall* )( void* ) >( invalidate_bone_cache_fn )( this );
 }
 
 void c_client_entity::set_abs_angles( const c_angle& angle )
